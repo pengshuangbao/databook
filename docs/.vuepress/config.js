@@ -99,9 +99,9 @@ function getBigdataSidebar () {
     'kudu',
     'redis',
     'zookeeper',
-    '数据挖掘',
-    '解决方案',
-    '设计',
+    'data-mining',
+    'solution',
+    'design',
     'other'
   ]
 }
