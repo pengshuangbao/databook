@@ -5,8 +5,8 @@ module.exports = ctx => ({
   locales: {
     '/': {
       lang: 'en-US',
-      title: 'VuePress',
-      description: 'Vue-powered Static Site Generator'
+      title: '编程秘籍',
+      description: '失传已久的绝世秘籍'
     }
   },
   head: [
