@@ -51,7 +51,7 @@ print(selectionSort([5, 3, 6, 2, 10]))
 
 ## 6. 什么是调用栈？ 
 
-计算机在内部使用被称为调用栈的栈 假设你调用greet("maggie")，计算机将首先为该函数调用分配一块 内存。
+计算机在内部使用被称为调用栈的栈 假设你调用greet("maggie")，计算机将首先为该函数调用分配一块内存。
 ![image](http://static.lovedata.net/jpg/2018/7/6/3d0bf4631e38a37219535b9d32621a26.jpg-wm)  ![image](http://static.lovedata.net/jpg/2018/7/6/0610519a8258a28e0928292ac7e66fc7.jpg-wm)
 函数返回的时候 ，栈顶内存被弹出  ![image](http://static.lovedata.net/jpg/2018/7/6/c0b07e5719c30250f81d2df6d3f112c4.jpg-wm)
 
