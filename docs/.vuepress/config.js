@@ -6,7 +6,7 @@ module.exports = ctx => ({
     '/': {
       lang: 'en-US',
       title: '狂想手册',
-      description: '狂想手册'
+      description: '狂想-手册'
     }
   },
   head: [
