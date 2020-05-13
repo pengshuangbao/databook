@@ -4,7 +4,7 @@ module.exports = ctx => ({
   dest: './dist',
   locales: {
     '/': {
-      lang: 'en-US',
+      lang: 'zh-CN',
       title: '狂想手册',
       description: '狂想-手册'
     }
