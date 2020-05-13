@@ -5,8 +5,8 @@ module.exports = ctx => ({
   locales: {
     '/': {
       lang: 'en-US',
-      title: '编程秘籍',
-      description: '失传已久的绝世秘籍'
+      title: '狂想手册',
+      description: '狂想手册'
     }
   },
   head: [
