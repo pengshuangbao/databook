@@ -120,9 +120,8 @@ function getBigdataSidebar () {
   return [
     {
       title: 'Hadoop',
-      collapsable: false,
+      collapsable: true,
       children: [
-        '',
         'hadoop/hadoop',
         'hadoop/hdfs',
         'hadoop/yarn'
@@ -130,14 +129,21 @@ function getBigdataSidebar () {
     },
     {
       title: 'Spark',
-      collapsable: false,
+      collapsable: true,
       children: [
         'spark/spark-streaming',
         'spark/spark-sql',
         'spark/spark'
       ]
+    },{
+      title: 'Flink',
+      collapsable: true,
+      //sidebarDepth: 2,  
+      children: [
+        'flink/',
+        'flink/通关手册'
+      ]
     },
-    'flink',
     'hbase',
     'hive',
     'kafka',
