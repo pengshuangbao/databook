@@ -35,7 +35,13 @@ module.exports = ctx => ({
         lastUpdated: 'Last Updated',
         nav: require('./nav/en'),
         sidebar: {
-          '/bigdata/': getBigdataSidebar()
+          '/java/': getJavaSidebar(),
+          '/bigdata/': getBigdataSidebar(),
+          '/algorithm/': getAlgorithmSidebar(),
+          '/architecture/': getArchitectureSidebar(),
+          '/computer/': getComputerSidebar(),
+          '/database/': getDatabaseSidebar(),
+          '/ops/': getOpsSidebar(),
         }
       }
     }
@@ -67,6 +73,47 @@ module.exports = ctx => ({
     '.vuepress/nav/zh.js'
   ]
 })
+
+function getAlgorithmSidebar(){
+  return []
+}
+
+function getArchitectureSidebar(){
+  return ['distribute']
+}
+
+function getComputerSidebar(){
+  return ['network']
+}
+
+function getDatabaseSidebar(){
+  return []
+}
+
+function getOpsSidebar(){
+  return []
+}
+
+function getJavaSidebar(){
+  return [
+    'jvm',
+    'coding'
+  ]
+}
+
+function getJavaSidebar(){
+  return [
+    'jvm',
+    'coding'
+  ]
+}
+
+function getJavaSidebar(){
+  return [
+    'jvm',
+    'coding'
+  ]
+}
 
 
 function getBigdataSidebar () {
