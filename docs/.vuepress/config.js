@@ -124,7 +124,8 @@ function getBigdataSidebar () {
       children: [
         'hadoop/hadoop',
         'hadoop/hdfs',
-        'hadoop/yarn'
+        'hadoop/yarn',
+        'hadoop/学习资源'
       ]
     },
     {
