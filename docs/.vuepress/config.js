@@ -141,13 +141,21 @@ function getBigdataSidebar () {
       //sidebarDepth: 2,  
       children: [
         'flink/',
-        'flink/通关手册'
+        'flink/通关手册',
+        'flink/学习资源'
+      ]
+    },{
+      title: 'Kylin',
+      collapsable: true,
+      //sidebarDepth: 2,  
+      children: [
+        'kylin/',
+        'kylin/学习资源'
       ]
     },
     'hbase',
     'hive',
     'kafka',
-    'kylin',
     'impala',
     'kudu',
     'redis',

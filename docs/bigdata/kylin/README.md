@@ -1,8 +1,8 @@
-# kylin
+# Kylin
 
 [[toc]]
 
-## kylin 概述？
+## kylin 概述
 
 Hadoop平台上的开源OLAP引擎,多维立方体预计算技术，将sql提升到亚秒级别
 
@@ -10,7 +10,7 @@ Hadoop平台上的开源OLAP引擎,多维立方体预计算技术，将sql提升
 
 空间换时间，线性增加的资源需求到线性降低的查询时间
 
-## kylin的构建原理？
+## kylin的构建原理
 
 ![image](http://static.lovedata.net/jpg/2018/7/10/05133de3b393e6366d11797a2386987b.jpg-wm)
 
