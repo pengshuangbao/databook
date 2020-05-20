@@ -642,11 +642,23 @@ Kafka是分布式消息系统，需要处理海量的消息，Kafka的设计是�
 
  ![image](http://static.lovedata.net/20-05-18-16d862bf39db2bb72a414f1bb5b51184.png-wm)
 
-## 67. Kafka 分区数可以增加或减少吗？为什么？
+## 67. Kafka 分区数可以增加或减少吗？为什么？ 
 
 我们可以使用 bin/kafka-topics.sh 命令对 Kafka 增加 Kafka 的分区数据，但是 Kafka 不支持减少分区数。 
 
 Kafka 分区数据不支持减少是由很多原因的，比如减少的分区其数据放到哪里去？是删除，还是保留？删除的话，那么这些没消费的消息不就丢了。如果保留这些消息如何放到其他分区里面？追加到其他分区后面的话那么就破坏了 Kafka 单个分区的有序性。如果要保证删除分区数据插入到其他分区保证有序性，那么实现起来逻辑就会非常复杂。
+
+
+
+## 68. kafka 可以脱离 zookeeper 单独使用吗？为什么？
+
+## 69. kafka 有几种数据保留的策略？
+
+## 70. kafka 同时设置了 7 天和 10G 清除数据，到第五天的时候消息达到了 10G，这个时候 kafka 将如何处理？
+
+## 71. 什么情况会导致 kafka 运行变慢？
+
+
 
 
 
@@ -656,3 +668,4 @@ Kafka 分区数据不支持减少是由很多原因的，比如减少的分区�
 [Kafka文件存储机制那些事 -](https://tech.meituan.com/kafka-fs-design-theory.html)
 [kafka存储结构 - CSDN博客](https://blog.csdn.net/yaolong336/article/details/80047701)
 [Kafka读写原理与存储结构 | Hello, World](https://qinzhaokun.github.io/2017/09/10/Kafka%E8%AF%BB%E5%86%99%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/)
+

@@ -111,7 +111,8 @@ function getJavaSidebar(){
 function getJavaSidebar(){
   return [
     'jvm',
-    'coding'
+    'coding',
+    '多线程'
   ]
 }
 
