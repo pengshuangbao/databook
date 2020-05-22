@@ -112,7 +112,8 @@ function getJavaSidebar(){
   return [
     'jvm',
     'coding',
-    '多线程'
+    '多线程',
+    '学习资源'
   ]
 }
 
