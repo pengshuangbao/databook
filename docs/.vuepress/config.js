@@ -154,10 +154,17 @@ function getBigdataSidebar () {
         'kylin/',
         'kylin/学习资源'
       ]
+    },{
+      title: 'Kafka',
+      collapsable: true,
+      //sidebarDepth: 2,  
+      children: [
+        'kafka/',
+        'kafka/学习资源'
+      ]
     },
     'hbase',
     'hive',
-    'kafka',
     'impala',
     'kudu',
     'redis',
