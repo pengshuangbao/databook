@@ -145,8 +145,9 @@ function getBigdataSidebar () {
       children: [
         'flink/',
         'flink/通关手册',
-        'flink/学习资源'
-      ]
+        'flink/学习资源',
+        'flink/开源动态'
+      ],
     },{
       title: 'Kylin',
       collapsable: true,
