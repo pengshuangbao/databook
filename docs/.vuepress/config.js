@@ -154,7 +154,8 @@ function getBigdataSidebar () {
       //sidebarDepth: 2,  
       children: [
         'kylin/',
-        'kylin/学习资源'
+        'kylin/学习资源',
+        'kylin/开园动态'
       ]
     },{
       title: 'Kafka',
