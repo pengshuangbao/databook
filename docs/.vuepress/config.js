@@ -176,7 +176,6 @@ function getBigdataSidebar () {
         'hbase/性能优化'
       ]
     },
-    'hbase',
     'hive',
     'impala',
     'kudu',
