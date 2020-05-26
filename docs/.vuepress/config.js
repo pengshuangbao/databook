@@ -165,6 +165,16 @@ function getBigdataSidebar () {
         'kafka/',
         'kafka/学习资源'
       ]
+    },{
+      title: 'Hbase',
+      collapsable: true,
+      //sidebarDepth: 2,  
+      children: [
+        'hbase/',
+        'hbase/学习资源',
+        'hbase/开源动态',
+        'hbase/性能优化'
+      ]
     },
     'hbase',
     'hive',
