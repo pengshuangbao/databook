@@ -67,3 +67,7 @@
 ### Recovery
 
 一旦遇到故障，Flink 选择最近一个完成的 checkpoint k。系统重新部署整个分布式数据流，重置所有 operator 的状态到 checkpoint k。数据源被置为从 Sk 位置读取
+
+
+
+## Flink java 泛型擦除问题
