@@ -75,7 +75,7 @@ module.exports = ctx => ({
 })
 
 function getAlgorithmSidebar(){
-  return []
+  return ['','算法基础','数据结构','算法']
 }
 
 function getArchitectureSidebar(){
