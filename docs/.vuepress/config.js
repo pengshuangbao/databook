@@ -175,6 +175,14 @@ function getBigdataSidebar () {
         'hbase/开源动态',
         'hbase/性能优化'
       ]
+    },{
+      title: 'ClickHouse',
+      collapsable: true,
+      //sidebarDepth: 2,  
+      children: [
+        'clickhouse/',
+        'clickhouse/学习资源'
+      ]
     },
     'hive',
     'impala',
