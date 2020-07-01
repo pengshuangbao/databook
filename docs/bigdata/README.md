@@ -9,3 +9,6 @@
 ## 3. Parquet 的理解和应用？
 
 ## 4. 木桶原理解释？
+
+## 5.[ROLAP和MOLAP的概念和差别](https://www.cnblogs.com/8899man/p/5863814.html)
+

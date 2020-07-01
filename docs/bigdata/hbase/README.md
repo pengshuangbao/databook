@@ -86,7 +86,7 @@ MaxTenuringThreshold=15已经相对比较大，
 3. Encode/Decode
    1. ![image](http://static.lovedata.net/jpg/2018/7/4/c1a4dd238f14c8e72933f0cc57b689dd.jpg-wm) 
    2.   因此一般建议使用PREFIX_TREE编码压缩
- 
+
 [HBase最佳实践－列族设计优化 – 有态度的HBase/Spark/BigData](http://hbasefly.com/2016/07/02/hbase-pracise-cfsetting/)
 
 ### 6.3 读性能优化
@@ -245,3 +245,17 @@ BlockCache也称为读缓存，HBase会将一次文件查找的Block块缓存到
 1. BlockCache的内容
 
 ## 16. 行式存储和列式存储的优劣势？
+
+
+
+## 17. Hbase 二级索引实现
+
+1. [技术分享 | HBase二级索引实现方案 - 后端 - 掘金](https://juejin.im/entry/5bae42f7f265da0aa5291913)
+   1. ![image](http://static.lovedata.net/20-06-30-d0a62c86d8017f664384df7850ea85c9.png-wm)
+   2. **IndexTable的创建过程如下：**
+      1. 获取DataTable的所有RegionInfo，得到所有DataTable Region的StartKey。
+      2. 结合索引定义和DataTable Region的StartKey信息，调用HBaseAdmin的createTable(final HTableDescriptor desc, byte [][] splitKeys)方法创建索引表。
+      3. 通过以上两步便建立了IndexTable Region和DataTable Region的以StartKey为依据的一一对应关系。
+   3.   **IndexTable RowKey**
+      1. ![image](http://static.lovedata.net/20-06-30-a687eca5fb78d81e08f143ba69b47dc6.png-wm)
+

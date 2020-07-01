@@ -6,7 +6,7 @@
 
 1. [Kudu+Impala介绍 | 微店数据科学团队博客](https://juejin.im/entry/5a72d3d1f265da3e4d730b37)
 2. Kudu作为底层存储，在支持高并发低延迟kv查询的同时，还保持良好的Scan性能，该特性使得其理论上能够同时兼顾OLTP类和OLAP类查询
-3. 愿意为非洲不同品种羚羊，速度快
+3. 原意为非洲不同品种羚羊，速度快
 
 ## 2. kudu和impla 的不足之处
 
@@ -62,3 +62,4 @@
 - Impala不适合超长时间的SQL请求；
 - Impala不支持高并发读写操作，即使Kudu是支持的；
 - Impala和Hive有部分语法不兼容。
+

@@ -183,10 +183,24 @@ function getBigdataSidebar () {
         'clickhouse/',
         'clickhouse/学习资源'
       ]
+    },{
+      title: 'Impala',
+      collapsable: true,
+      //sidebarDepth: 2,  
+      children: [
+        'impala/',
+        'impala/学习资源'
+      ]
+    },{
+      title: 'Kudu',
+      collapsable: true,
+      //sidebarDepth: 2,  
+      children: [
+        'kudu/',
+        'kudu/学习资源'
+      ]
     },
     'hive',
-    'impala',
-    'kudu',
     'redis',
     'zookeeper',
     'data-mining',

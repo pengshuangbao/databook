@@ -10,7 +10,7 @@
 2. 没有存储，负责解析sql
 3. 定位类似hive，关注即席查询sql快速解析
 4. 长sql还是hive更合适
-5. group by sql 使用内存计算，建议内存128G以上  **Hive使用MR，效率低，稳定性好**
+5. group by sql 使用内存计算，建议内存128G以上  **Hhttps://zhuanlan.zhihu.com/p/65593795ive使用MR，效率低，稳定性好**
 6. 不支持高并发，由于单个sql执行代价较高
 7. 不能代替hive
 8. 至少需要128G以上内存，并且把80%分配给Impala

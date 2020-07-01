@@ -49,3 +49,9 @@
 
 
 
+
+
+## 14. G1垃圾收集器
+
+[深入理解 Java G1 垃圾收集器 | 水晶命匣](http://ghoulich.xninja.org/2018/01/27/understanding-g1-garbage-collector-in-java/)
+
