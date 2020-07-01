@@ -199,6 +199,14 @@ function getBigdataSidebar () {
         'kudu/',
         'kudu/学习资源'
       ]
+    },{
+      title: 'CDH',
+      collapsable: true,
+      //sidebarDepth: 2,  
+      children: [
+        'CDH/',
+        'CDH/学习资源'
+      ]
     },
     'hive',
     'redis',
