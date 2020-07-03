@@ -1,6 +1,6 @@
 # Hbase
 
-[[toc]]
+[toc]
 
 ![知识图谱](http://static.lovedata.net/jpg/2018/6/20/7620334c24d3e79d5ec4954bd5003e87.jpg-wm)
 

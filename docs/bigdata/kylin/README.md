@@ -1,6 +1,6 @@
 # Kylin
 
-[[toc]]
+[toc]
 
 ## kylin 概述
 

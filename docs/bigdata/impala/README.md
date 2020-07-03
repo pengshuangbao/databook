@@ -1,6 +1,6 @@
 # Impala
 
-[[toc]]
+[toc]
 
 ## 1. impala 特点
 

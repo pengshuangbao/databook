@@ -1,6 +1,6 @@
 # Kudu
 
-[[toc]]
+[toc]
 
 ## 1. Kudu的特点
 

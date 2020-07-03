@@ -1,6 +1,6 @@
 # Spark SQL
 
-[[toc]]
+[toc]
 
 文档地址
 

@@ -1,6 +1,6 @@
 # HDFS
 
-[[toc]]
+[toc]
 
 ## 1. hdfs 是什么
 

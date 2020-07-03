@@ -1,6 +1,6 @@
 # Kafka
 
-[[toc]]
+[toc]
 
 ## 0.kafka的概念相关的问题？
 

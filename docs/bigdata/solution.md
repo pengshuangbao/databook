@@ -1,6 +1,6 @@
 # 解决方案
 
-[[toc]]
+[toc]
 
 ## Impala + Kudu 
 

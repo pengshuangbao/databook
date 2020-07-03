@@ -1,6 +1,6 @@
 # Zookeeper
 
-[[toc]]
+[toc]
 
 ## 1. Zookeeper实现原理，zab协议以及原子广播协议;
 

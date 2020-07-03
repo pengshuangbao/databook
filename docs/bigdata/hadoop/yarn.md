@@ -1,6 +1,6 @@
 # Yarn
 
-[[toc]]
+[toc]
 
 ## 1 YARN的新特性
 

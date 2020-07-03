@@ -1,6 +1,6 @@
 # Hadoop
 
-[[toc]]
+[toc]
 
 ## 1. Mapreduce
 
