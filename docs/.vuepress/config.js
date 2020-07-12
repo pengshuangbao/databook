@@ -128,7 +128,15 @@ function getJavaSidebar(){
     'jvm',
     'coding',
     '多线程',
-    '学习资源'
+    '学习资源',
+    {
+      title: 'Spring',
+      collapsable: true,
+      children: [
+        'spring/',
+        'spring/学习资源'
+      ]
+    }
   ]
 }
 
