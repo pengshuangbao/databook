@@ -2,11 +2,11 @@
 
 [toc]
 
-![知识图谱](http://static.lovedata.net/jpg/2018/6/20/7620334c24d3e79d5ec4954bd5003e87.jpg-wm)
+![知识图谱](https://static.lovedata.net/jpg/2018/6/20/7620334c24d3e79d5ec4954bd5003e87.jpg-wm)
 
 ## 1.hbase 架构讲解
 
-![image](http://static.lovedata.net/jpg/2018/6/20/08bd66f5cd400fe609a745de9bd16dab.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/20/08bd66f5cd400fe609a745de9bd16dab.jpg-wm)
 
 参考
 [深入HBase架构解析（一） - 上善若水 - BlogJava](http://www.blogjava.net/DLevin/archive/2015/08/22/426877.html)
@@ -32,9 +32,9 @@ BucketCache中offheap模式来讲，即使HBase数据块是缓存在堆外内存
 
 调优
 
-![image](http://static.lovedata.net/jpg/2018/7/3/5c09485d9305477941bffcd45b75dcfd.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/3/5c09485d9305477941bffcd45b75dcfd.jpg-wm)
 
-![image](http://static.lovedata.net/jpg/2018/7/3/04fe6da6ad071a7178c031b794386f55.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/3/04fe6da6ad071a7178c031b794386f55.jpg-wm)
 **可见BucketCache模式比LruBlockCache模式GC表现好很多，强烈建议线上配置BucketCache模式**
 
 需要加上-XX:+PrintTenuringDistribution 才能打印对应日志
@@ -72,7 +72,7 @@ MaxTenuringThreshold=15已经相对比较大，
 参考
 [HBase最佳实践－CMS GC调优 – 有态度的HBase/Spark/BigData](http://hbasefly.com/2016/08/09/hbase-cms-gc/)
 
-![image](http://static.lovedata.net/jpg/2018/7/3/84a839d36fbeae1fdda1751f58b99c00.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/3/84a839d36fbeae1fdda1751f58b99c00.jpg-wm)
 
 [HBase GC的前生今世 – 身世篇 – 有态度的HBase/Spark/BigData](http://hbasefly.com/2016/05/21/hbase-gc-1/)
 
@@ -81,10 +81,10 @@ MaxTenuringThreshold=15已经相对比较大，
 ### 6.2 列族设计优化
 
 1. BlockSize设置 块大小是HBase的一个重要配置选项，默认块大小为64K。对于不同的业务数据，块大小的合理设置对读写性能有很大的影响。而对块大小的调整，主要取决于两点 1 用户平均读取数据的大小 2 数据平均键值对规模
-2. 数据编码/压缩  Compress/DeCompress ![image](http://static.lovedata.net/jpg/2018/7/4/7f1b7a9dbc7212a7dcfe4033df9b063b.jpg-wm)  
-    1. 可见，压缩特性就是使用CPU资源换取磁盘空间资源，对读写性能并不会有太大影响。HBase目前提供了三种常用的压缩方式：GZip | LZO | Snappy ![image](http://static.lovedata.net/jpg/2018/7/4/a953dabaad6041703d6a5f91128de571.jpg-wm)  Snappy的压缩率最低，但是编解码速率最高，对CPU的消耗也最小，目前一般建议使用Snappy。
+2. 数据编码/压缩  Compress/DeCompress ![image](https://static.lovedata.net/jpg/2018/7/4/7f1b7a9dbc7212a7dcfe4033df9b063b.jpg-wm)  
+    1. 可见，压缩特性就是使用CPU资源换取磁盘空间资源，对读写性能并不会有太大影响。HBase目前提供了三种常用的压缩方式：GZip | LZO | Snappy ![image](https://static.lovedata.net/jpg/2018/7/4/a953dabaad6041703d6a5f91128de571.jpg-wm)  Snappy的压缩率最低，但是编解码速率最高，对CPU的消耗也最小，目前一般建议使用Snappy。
 3. Encode/Decode
-   1. ![image](http://static.lovedata.net/jpg/2018/7/4/c1a4dd238f14c8e72933f0cc57b689dd.jpg-wm) 
+   1. ![image](https://static.lovedata.net/jpg/2018/7/4/c1a4dd238f14c8e72933f0cc57b689dd.jpg-wm) 
    2.   因此一般建议使用PREFIX_TREE编码压缩
 
 [HBase最佳实践－列族设计优化 – 有态度的HBase/Spark/BigData](http://hbasefly.com/2016/07/02/hbase-pracise-cfsetting/)
@@ -122,9 +122,9 @@ HDFS相关优化
 2. Hedged Read功能是否开启？
 3. 数据本地率是否太低？数据本地率低的原因一般是因为Region迁移（自动balance开启、RegionServer宕机迁移、手动迁移等）,因此一方面可以通过避免Region无故迁移来保持数据本地率，另一方面如果数据本地率很低，也可以通过执行major_compact提升数据本地率到100%。   优化建议：避免Region无故迁移，比如关闭自动balance、RS宕机及时拉起并迁回飘走的Region等；在业务低峰期执行major_compact提升数据本地率
 
-![image](http://static.lovedata.net/jpg/2018/7/3/453bce3c61d13bdc252ac602d17b85d0.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/3/453bce3c61d13bdc252ac602d17b85d0.jpg-wm)
 
-![image](http://static.lovedata.net/jpg/2018/7/3/6aa1c1434d723ccfe84d37039e961032.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/3/6aa1c1434d723ccfe84d37039e961032.jpg-wm)
 
 [HBase最佳实践－读性能优化策略 – 有态度的HBase/Spark/BigData](http://hbasefly.com/2016/11/11/hbase%e6%9c%80%e4%bd%b3%e5%ae%9e%e8%b7%b5%ef%bc%8d%e8%af%bb%e6%80%a7%e8%83%bd%e4%bc%98%e5%8c%96%e7%ad%96%e7%95%a5/)
 
@@ -132,7 +132,7 @@ HDFS相关优化
 
 HBase数据写入通常会遇到两类问题，一类是写性能较差，另一类是数据根本写不进去。这两类问题的切入点也不尽相同，如下图所示：
 
-![image](http://static.lovedata.net/jpg/2018/7/3/a93d759e4458811e7aa76535125c65c4.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/3/a93d759e4458811e7aa76535125c65c4.jpg-wm)
 
 1. 是否需要写WAL？WAL是否需要同步写入？  ，比如某些推荐业务，这类业务即使丢失一部分用户行为数据可能对推荐结果并不构成很大影响   优化推荐：根据业务关注点在WAL机制与写入吞吐量之间做出选择 
 2. Put是否可以同步批量提交？  HBase分别提供了单条put以及批量put的API接口，使用批量put接口可以减少客户端到RegionServer之间的RPC连接数，提高写入性能。另外需要注意的是，批量put请求要么全部成功返回，要么抛出异常。  **优化建议：使用批量put进行写入请求** 
@@ -200,7 +200,7 @@ HBase的rowkey在底层是HFile存储数据的，以键值对存放到SortedMap�
 
 > 服务器端RegionServer接收到客户端的写入请求后，首先会反序列化为Put对象，然后执行各种检查操作，比如检查region是否是只读、memstore大小是否超过blockingMemstoreSize 
 
-![image](http://static.lovedata.net/jpg/2018/6/20/183daf0ec61cdcf47aaff6fe85ae9389.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/20/183daf0ec61cdcf47aaff6fe85ae9389.jpg-wm)
 
 1. 获取行锁、Region更新共享锁 同行数据的原子性
 2. 开始写事务：获取write number，用于实现MVCC，实现数据的非锁定读，在保证读写一致性的前提下提高读取性能
@@ -218,21 +218,21 @@ HBase的rowkey在底层是HFile存储数据的，以键值对存放到SortedMap�
 
 > 查询比较复杂，一是因为整个HBase存储引擎基于LSM-Like树实现   其二是因为HBase中更新操作以及删除操作实现都很简单，更新操作并没有更新原有数据  是插入了一条打上”deleted”标签的数据，而真正的数据删除发生在系统异步执行Major_Compact的时候 但是对于数据读取来说却意味着套上了层层枷锁
 
-![image](http://static.lovedata.net/jpg/2018/6/20/d0f9a3466084169a700b73db005584d6.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/20/d0f9a3466084169a700b73db005584d6.jpg-wm)
 
-![image](http://static.lovedata.net/jpg/2018/6/20/d358a28eb3558b62c1ee23169f5b0620.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/20/d358a28eb3558b62c1ee23169f5b0620.jpg-wm)
 
-![客户端缓存RegionServer地址信息](http://static.lovedata.net/jpg/2018/6/20/3f6ec491d3504cbb4a163fa7ff7b0998.jpg-wm)
+![客户端缓存RegionServer地址信息](https://static.lovedata.net/jpg/2018/6/20/3f6ec491d3504cbb4a163fa7ff7b0998.jpg-wm)
 
 scan数据就和开发商盖房一样，也是分成两步：组建施工队体系，明确每个工人的职责；一层一层盖楼。
 
  scanner体系的核心在于三层scanner：RegionScanner、StoreScanner以及StoreFileScanner。三者是层级的关系，一个RegionScanner由多个StoreScanner构成，一张表由多个列族组成，就有多少个StoreScanner负责该列族的数据扫描。一个StoreScanner又是由多个StoreFileScanner组成。每个Store的数据由内存中的MemStore和磁盘上的StoreFile文件组成，相对应的，StoreScanner对象会雇佣一个MemStoreScanner和N个StoreFileScanner来进行实际的数据读取，每个StoreFile文件对应一个StoreFileScanner，注意：StoreFileScanner和MemstoreScanner是整个scan的最终执行者。 
 
-![image](http://static.lovedata.net/jpg/2018/6/20/931c83f325dd513936b66fafdf085282.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/20/931c83f325dd513936b66fafdf085282.jpg-wm)
 
  HBase中KeyValue是什么样的结构？
 
- ![image](http://static.lovedata.net/jpg/2018/6/20/9d1f2731d5383ed8461fdf2a8908ee8c.jpg-wm)
+ ![image](https://static.lovedata.net/jpg/2018/6/20/9d1f2731d5383ed8461fdf2a8908ee8c.jpg-wm)
 
 参考
 [HBase原理－迟到的‘数据读取流程’部分细节 – 有态度的HBase/Spark/BigData](http://hbasefly.com/2017/06/11/hbase-scan-2/)
@@ -251,11 +251,11 @@ BlockCache也称为读缓存，HBase会将一次文件查找的Block块缓存到
 ## 17. Hbase 二级索引实现
 
 1. [技术分享 | HBase二级索引实现方案 - 后端 - 掘金](https://juejin.im/entry/5bae42f7f265da0aa5291913)
-   1. ![image](http://static.lovedata.net/20-06-30-d0a62c86d8017f664384df7850ea85c9.png-wm)
+   1. ![image](https://static.lovedata.net/20-06-30-d0a62c86d8017f664384df7850ea85c9.png-wm)
    2. **IndexTable的创建过程如下：**
       1. 获取DataTable的所有RegionInfo，得到所有DataTable Region的StartKey。
       2. 结合索引定义和DataTable Region的StartKey信息，调用HBaseAdmin的createTable(final HTableDescriptor desc, byte [][] splitKeys)方法创建索引表。
       3. 通过以上两步便建立了IndexTable Region和DataTable Region的以StartKey为依据的一一对应关系。
    3.   **IndexTable RowKey**
-      1. ![image](http://static.lovedata.net/20-06-30-a687eca5fb78d81e08f143ba69b47dc6.png-wm)
+      1. ![image](https://static.lovedata.net/20-06-30-a687eca5fb78d81e08f143ba69b47dc6.png-wm)
 

@@ -20,7 +20,7 @@ Kudu+Impala为实时数据仓库存储提供了良好的解决方案。这套架
 
 > [第16期实录：用户分群 -- 得到实时大数据运营探索](https://mp.weixin.qq.com/s/yz3GCgAY1t8cTbviaNtnFQ)
 
- ![image](http://static.lovedata.net/20-07-03-cd6ce673112f45040cb8aeb138acd3e3.png-wm)
+ ![image](https://static.lovedata.net/20-07-03-cd6ce673112f45040cb8aeb138acd3e3.png-wm)
 
 ###  Merge流程
 
@@ -28,6 +28,6 @@ Kudu+Impala为实时数据仓库存储提供了良好的解决方案。这套架
 2. 对剩余Binlog数据进行二次筛选，按主键 **group by 取最新的Binlog**，无论是**insert或是update**；
 3. 将步骤2中生成的数据与存量数据合并，生成最新数据。如图中的黄色的1、2是受Binlog的update重放影响的，绿色的4是insert新增的。
 
-![image](http://static.lovedata.net/20-07-03-d99d464e7c25bea52f2cd0e3dfc879a5.png-wm)
+![image](https://static.lovedata.net/20-07-03-d99d464e7c25bea52f2cd0e3dfc879a5.png-wm)
 
-![image](http://static.lovedata.net/20-07-03-174c85904728226c3d499924c23d9ef5.png-wm)
+![image](https://static.lovedata.net/20-07-03-174c85904728226c3d499924c23d9ef5.png-wm)

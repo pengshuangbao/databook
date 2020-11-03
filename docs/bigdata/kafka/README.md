@@ -85,7 +85,7 @@ topic各分区都存在已提交的offset时，从offset后开始消费；只要
 1. leader是对应partition的概念，每个partition都有一个leader。
 2. 客户端生产消费消息都是只跟leader交互 (实现上简单。)
 3. ISR（In-Sync Replicas）直译就是跟上leader的副本
-4. ![image](http://static.lovedata.net/jpg/2018/5/29/8e14780235f97056c60785dce43f18e7.jpg-wm)
+4. ![image](https://static.lovedata.net/jpg/2018/5/29/8e14780235f97056c60785dce43f18e7.jpg-wm)
     1. High watermark（高水位线）以下简称HW，表示消息被leader和ISR内的follow都确认commit写入本地log，所以在HW位置以下的消息都可以被消费（不会丢失）
     2. Log end offset（日志结束位置）以下简称LEO，表示消息的最后位置。LEO>=HW，一般会有没提交的部分。
 5. 副本会有单独的线程（ReplicaFetcherThread），去从leader上去拉去消息同步。当follower的HW赶上leader的，就会保持或加入到 **ISR** 列表里，就说明此follower满足上述最基本的原则（跟上leader进度）。ISR列表存在zookeeper上。
@@ -102,7 +102,7 @@ topic各分区都存在已提交的offset时，从offset后开始消费；只要
 
 ## 6. kafka 的 rebalance 是怎样的？
 
-![image](http://static.lovedata.net/jpg/2018/6/29/9e105be3ad21eeabe8bab88988b09e87.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/29/9e105be3ad21eeabe8bab88988b09e87.jpg-wm)
 
 GroupCoordinator
 
@@ -136,7 +136,7 @@ Consumer 初始化时 group 状态变化
 
 ## 7. kafka中的offset状态，以及high.watermark是什么意思
 
-![image](http://static.lovedata.net/jpg/2018/5/25/c2fa3b250b6512a80279e8140b1421d7.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/5/25/c2fa3b250b6512a80279e8140b1421d7.jpg-wm)
 
 例如，在下图中，消费者的位置在偏移6，其最后的提交的偏移1.
 当分区重新分配给组中的另外一个使用者时，初始位置设置为最后一个已提交的偏移量。如果上面例子中的消费者突然崩溃了，那么接管的组成员将从偏移量1开始消费。在这种情况下，它必须重新处理消息直到崩溃消费者的位置6.
@@ -164,9 +164,9 @@ Consumer 初始化时 group 状态变化
 
 ## 11. kafka zookeeper中存储结构
 
-1. ![image](http://static.lovedata.net/jpg/2018/5/29/e579c3897235853981bb911ef3328e4e.jpg-wm)
-2. ![image](http://static.lovedata.net/jpg/2018/5/29/58462246b8030bb67d3a633305cfe12b.jpg-wm)
-3. ![image](http://static.lovedata.net/jpg/2018/5/29/dc69269178701fdeae11e3388340176e.jpg-wm)
+1. ![image](https://static.lovedata.net/jpg/2018/5/29/e579c3897235853981bb911ef3328e4e.jpg-wm)
+2. ![image](https://static.lovedata.net/jpg/2018/5/29/58462246b8030bb67d3a633305cfe12b.jpg-wm)
+3. ![image](https://static.lovedata.net/jpg/2018/5/29/dc69269178701fdeae11e3388340176e.jpg-wm)
 
 ## 12. 如果Zookeeper宕机了，kafka还能用吗？
 
@@ -378,7 +378,7 @@ acks=all 结合 min.insync.replicas 最安全的做法，可以通过异步模�
 
 ### 39.1 原理
 
-![image](http://static.lovedata.net/jpg/2018/6/29/6bcada812e760caa75d0129415f1c726.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/29/6bcada812e760caa75d0129415f1c726.jpg-wm)
 
 - Broker：消息中间件处理结点，一个Kafka节点就是一个broker，多个broker可以组成一个Kafka集群；
 - Topic：一类消息，例如page view日志、click日志等都可以以topic的形式存在，Kafka集群能够同时负责多个topic的分发；
@@ -392,12 +392,12 @@ segment file的组成
 
 - index file和data file，这两个文件是一一对应的，后缀”.index”和”.log”分别表示索引文件和数据文件；
 - partition的第一个segment从0开始，后续每个segment文件名为上一个segment文件最后一条消息的offset
-- ![image](http://static.lovedata.net/jpg/2018/6/29/51b401e9432e91897ee43a7c0645b628.jpg-wm) 
-- ![image](http://static.lovedata.net/jpg/2018/6/29/4fc28d18dcf62a1238ca33c3bdf400ab.jpg-wm)
+- ![image](https://static.lovedata.net/jpg/2018/6/29/51b401e9432e91897ee43a7c0645b628.jpg-wm) 
+- ![image](https://static.lovedata.net/jpg/2018/6/29/4fc28d18dcf62a1238ca33c3bdf400ab.jpg-wm)
 
 ### 39.2 在partition中如何通过offset查找message
 
-![image](http://static.lovedata.net/jpg/2018/6/29/c3235d6eb5770e966babeccb67d8ba4d.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/29/c3235d6eb5770e966babeccb67d8ba4d.jpg-wm)
 
 例如读取offset=368776的message，需要通过下面2个步骤查找。
 
@@ -408,13 +408,13 @@ segment file的组成
 第二步通过segment file查找message
 通过第一步定位到segment file，当offset=368776时，依次定位到00000000000000368769.index的元数据物理位置和00000000000000368769.log的物理偏移地址，然后再通过00000000000000368769.log顺序查找直到offset=368776为止。
 
-![image](http://static.lovedata.net/jpg/2018/6/29/94eec0f6538ca33006d49e788fe9f43d.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/29/94eec0f6538ca33006d49e788fe9f43d.jpg-wm)
 
 >index 文件中 的第一个是一个消息在log中的顺序，比如相对于第一个消息，是第三条消息，第二个值是在文件中的物理偏移量，用于文件查找，直接定位到这个position，直接打开后，打开了这个索引段对应的消息，比较消息的头几位数组，对比是否相等，如果不相等，则继续往下面去读，一直读到指定的offset
 
-![image](http://static.lovedata.net/jpg/2018/6/29/f5b24416d69381aa63db92eb1d6f124f.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/29/f5b24416d69381aa63db92eb1d6f124f.jpg-wm)
 
-![image](http://static.lovedata.net/jpg/2018/6/29/9d2397ceec6cd045f6e16d58c196a6c1.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/29/9d2397ceec6cd045f6e16d58c196a6c1.jpg-wm)
 
 ### 39.3 存储结构设计原因
 
@@ -427,7 +427,7 @@ segment file的组成
 
 ## 40 Kafka 的设计架构
 
-![image](http://static.lovedata.net/20-05-18-4f32a3358ce634a9b47e8ba8f647f51e.png-wm)
+![image](https://static.lovedata.net/20-05-18-4f32a3358ce634a9b47e8ba8f647f51e.png-wm)
 
 Kafka 架构分为以下几个部分
 
@@ -461,7 +461,7 @@ kafka 中的每个 partition 中的消息在写入时都是有序的，而且单
 
 一致性就是说不论是老的 Leader 还是新选举的 Leader，Consumer 都能读到一样的数据。
 
-![image](http://static.lovedata.net/20-05-18-299d662862e8674189d980a23c0074bf.png-wm)
+![image](https://static.lovedata.net/20-05-18-299d662862e8674189d980a23c0074bf.png-wm)
 
 假设分区的副本为3，其中副本0是 Leader，副本1和副本2是 follower，并且在 ISR 列表里面。虽然副本0已经写入了 Message4，但是 Consumer 只能读取到 Message2。因为所有的 ISR 都同步了 Message2，只有 High Water Mark 以上的消息才支持 Consumer 读取，而 High Water Mark 取决于 ISR 列表里面偏移量最小的分区，对应于上图的副本2，这个很类似于木桶原理。
 
@@ -503,7 +503,7 @@ ISR是由leader维护，follower从leader同步数据有一些延迟（具体可
 
 每个消费者从属于消费组。具体关系如下：
 
-![image](http://static.lovedata.net/20-05-18-a55bbf36a6eca98140a8ea123ae017e5.png-wm)
+![image](https://static.lovedata.net/20-05-18-a55bbf36a6eca98140a8ea123ae017e5.png-wm)
 
 ## 49. Kafka 的每个分区只能被一个消费者线程，如何做到多个线程同时消费一个分区？
 
@@ -640,7 +640,7 @@ Kafka是分布式消息系统，需要处理海量的消息，Kafka的设计是�
 
 现在的消费者同时支持以上两种行为，所以为啥还用旧消费者 API 呢？
 
- ![image](http://static.lovedata.net/20-05-18-16d862bf39db2bb72a414f1bb5b51184.png-wm)
+ ![image](https://static.lovedata.net/20-05-18-16d862bf39db2bb72a414f1bb5b51184.png-wm)
 
 ## 67. Kafka 分区数可以增加或减少吗？为什么？ 
 

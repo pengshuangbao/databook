@@ -182,11 +182,11 @@ JDK 1.7 中，采用分段锁的机制，实现并发的更新操作，底层采
 
 ③、每个桶是由若干个 HashEntry 对象链接起来的链表
 
-![image](http://static.lovedata.net/20-06-03-c97f24463903a7a7e9e5a46803deef03.png-wm)
+![image](https://static.lovedata.net/20-06-03-c97f24463903a7a7e9e5a46803deef03.png-wm)
 
 JDK 1.8 中，采用Node + CAS + Synchronized来保证并发安全。取消类 Segment，直接用 table 数组存储键值对；当 HashEntry 对象组成的链表长度超过 TREEIFY_THRESHOLD 时，链表转换为红黑树，提升性能。底层变更为数组 + 链表 + 红黑树。
 
-![image](http://static.lovedata.net/20-06-03-6c387f8657b63bc3b88e5f249784cde7.png-wm)
+![image](https://static.lovedata.net/20-06-03-6c387f8657b63bc3b88e5f249784cde7.png-wm)
 
 ####  
 

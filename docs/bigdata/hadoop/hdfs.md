@@ -25,9 +25,9 @@ Hadoop **对于压缩格式的是自动识别** 。如果我们压缩的文件�
 
 如果压缩的文件没有扩展名，则需要在执行 MapReduce 任务的时候指定输入格式。
 
-![image](http://static.lovedata.net/jpg/2018/6/28/8b8797f41d9aeb4401af87932f0a2aa1.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/28/8b8797f41d9aeb4401af87932f0a2aa1.jpg-wm)
 
-![image](http://static.lovedata.net/jpg/2018/6/28/da4a53d587b5b848dbde4935cb87cd8c.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/28/da4a53d587b5b848dbde4935cb87cd8c.jpg-wm)
 
 因此我们可以得出
 
@@ -58,7 +58,7 @@ Hadoop **对于压缩格式的是自动识别** 。如果我们压缩的文件�
 
 ## 1 读数据流程
 
-![image](http://static.lovedata.net/jpg/2018/5/31/459e0d017d85b47b3e1380b1985d2225.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/5/31/459e0d017d85b47b3e1380b1985d2225.jpg-wm)
 
 1. 客户端(Client)调用FileSystem的open()函数打开文件。
 2. DistributeFileSystem通过RPC调用元数据节点，得
@@ -71,7 +71,7 @@ Hadoop **对于压缩格式的是自动识别** 。如果我们压缩的文件�
 
 ## 2 写数据流程
 
-![image](http://static.lovedata.net/jpg/2018/5/31/3d11422458fe21f376f2f478a7bf1073.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/5/31/3d11422458fe21f376f2f478a7bf1073.jpg-wm)
 
 1. 客户端调用create()函数创建文件。
 2. DistributedFileSystem通过RPC调用 **元数据节点** ，在文件系统的 **命名空间** 中创建一个新的文件。元数据节点会首先确定文件原先不存在，并且客户端有创建文件的权限，然后创建新文件。
@@ -164,7 +164,7 @@ HDFS适合存储半结构化和非结构化数据，若有严格的结构化数�
 
 ### 9.3 namenode 备用 HA
 
-![image](http://static.lovedata.net/jpg/2018/7/4/7a050172879277cd9604c7c9f917eb31.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/4/7a050172879277cd9604c7c9f917eb31.jpg-wm)
 
 ### 9.4 两种高可用性共享存储 NFS过滤器和QJM
 

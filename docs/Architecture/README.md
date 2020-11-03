@@ -16,7 +16,7 @@
 
 识别装饰器模式，可以通过识别类设计特征来进行判断，也就是其类构造函数以相同的抽象类或者接口为输入参数。因为装饰器模式本质上是包装同类型实例，我们对目标对象的调用，往往会通过包装类覆盖过的方法，迂回调用被包装的实例，这就可以很自然地实现增加额外逻辑的目的，也就是所谓的“装饰”。
 
-![InputStream 的装饰模式实践](http://static.lovedata.net/jpg/2018/7/16/4aefeb2a2613a53ae9abd1d47418f2ae.jpg-wm)
+![InputStream 的装饰模式实践](https://static.lovedata.net/jpg/2018/7/16/4aefeb2a2613a53ae9abd1d47418f2ae.jpg-wm)
 
 使用构建器模式，可以比较优雅地解决构建复杂对象的麻烦，这里的“复杂”是指类似需要输入的参数组合较多，如果用构造函数，我们往往需要为每一种可能的输入参数组合实现相应的构造函数，一系列复杂的构造函数会让代码阅读性和可维护性变得很差。
 
@@ -26,9 +26,9 @@
 
 [学习分布式不得不会的CAP理论 - 后端 - 掘金](https://juejin.im/entry/5b4bf64c6fb9a04fcc4490d1)
 
-![image](http://static.lovedata.net/jpg/2018/7/16/bf4e5f4e46b7abf4cfe320fc17877ee3.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/16/bf4e5f4e46b7abf4cfe320fc17877ee3.jpg-wm)
 
-![image](http://static.lovedata.net/jpg/2018/7/16/9de96224df9bc684682fe154e5aa1e3f.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/16/9de96224df9bc684682fe154e5aa1e3f.jpg-wm)
 
 1. 三种一致性策略
 

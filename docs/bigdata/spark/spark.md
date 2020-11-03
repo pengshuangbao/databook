@@ -34,15 +34,15 @@
 
 [用实例说明Spark stage划分原理 - bonelee - 博客园](https://www.cnblogs.com/bonelee/p/6039469.html)
 
-![image](http://static.lovedata.net/jpg/2018/6/14/cf900b9cbd52d3a84fd8f04dba7c199f.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/14/cf900b9cbd52d3a84fd8f04dba7c199f.jpg-wm)
 
-![image](http://static.lovedata.net/jpg/2018/7/13/f98a94e948fe9d9b63643db96606fab3.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/13/f98a94e948fe9d9b63643db96606fab3.jpg-wm)
 
 ### 1.4.spark如何保证宕机迅速恢复
 
 ### 1.5. RDD的原理以及持久化原理
 
-![image](http://static.lovedata.net/jpg/2018/6/14/e224b35496ac4de184008bbb09894893.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/14/e224b35496ac4de184008bbb09894893.jpg-wm)
 
 ### 1.6. spark排序实现流程，reduce端怎么实现的；
 
@@ -78,13 +78,13 @@
 1. yarn-client用于测试，因为他的Driver运行在本地客户端，会与yarn集群产生较大的网络通信，从而导致网卡流量激增；它的好处在于直接执行时，在本地可以查看到所有的log，方便调试；
 2. yarn-cluster用于生产环境，因为Driver运行在NodeManager，相当于一个ApplicationMaster，没有网卡流量激增的问题；缺点在于调试不方便，本地用spark-submit提交后，看不到log，只能通过yarn application_id这种命令来查看，很麻烦
 
-![image](http://static.lovedata.net/jpg/2018/7/16/b4e773e7305d67cf7f0f95475565e2b3.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/16/b4e773e7305d67cf7f0f95475565e2b3.jpg-wm)
 
-![image](http://static.lovedata.net/jpg/2018/7/16/30a73b39fab370ec772c6a768bba0515.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/16/30a73b39fab370ec772c6a768bba0515.jpg-wm)
 
-![image](http://static.lovedata.net/jpg/2018/7/16/0fe9fe0e348a9ea7c258cdbe806610e7.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/16/0fe9fe0e348a9ea7c258cdbe806610e7.jpg-wm)
 
-![image](http://static.lovedata.net/jpg/2018/7/16/87a6250639209f2a955781bfa8c5b8fd.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/16/87a6250639209f2a955781bfa8c5b8fd.jpg-wm)
 
 ### 1.12.spark运行原理，从提交一个jar到最后返回结果，整个过程
 
@@ -96,7 +96,7 @@
 6. task在executor中进行计算并保存结果。
 7. 如果driver中的main()方法执行完成退出，或者调用了SparkContext#stop()，driver会终止executor进程，并且通过集群管理器释放资源。
 
-![image](http://static.lovedata.net/jpg/2018/6/25/08c8c49a405cc88b2ad3ec169b09ca18.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/25/08c8c49a405cc88b2ad3ec169b09ca18.jpg-wm)
 
 ### Yarn-Cluster
 
@@ -106,11 +106,11 @@
 步骤四：YarnClusterSchedulerBackend在NodeManager上启动Executor
 步骤五：Executor启动Task，开始执行任务 
 
-![image](http://static.lovedata.net/jpg/2018/6/25/db6d9c7a2c79d10b803760d02bccb7f1.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/25/db6d9c7a2c79d10b803760d02bccb7f1.jpg-wm)
 
 ### Yarn-Client
 
-![image](http://static.lovedata.net/jpg/2018/6/25/883bd9e6fef3896ed47d4c4fd942c19b.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/25/883bd9e6fef3896ed47d4c4fd942c19b.jpg-wm)
 
 参考
 [spark提交应用的全流程分析 - CSDN博客](https://blog.csdn.net/jediael_lu/article/details/76735217)
@@ -119,7 +119,7 @@
 
 宽依赖就是stage划分的依据
 
-![image](http://static.lovedata.net/jpg/2018/7/13/5e1a7fa922dbf6c2d5e646071d1bcb47.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/13/5e1a7fa922dbf6c2d5e646071d1bcb47.jpg-wm)
 
 ### 1.14. spark rpc，spark2.0为啥舍弃了akka，而用netty
 
@@ -139,36 +139,36 @@
 
 ### 1.22. dagschedule、taskschedule、schedulebankend实现原理；
 
-![image](http://static.lovedata.net/jpg/2018/7/13/0d54689ccc31b5ded3369e8ae9656432.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/13/0d54689ccc31b5ded3369e8ae9656432.jpg-wm)
 
-![image](http://static.lovedata.net/jpg/2018/7/13/5ed17c17f013769c3defd665667653fe.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/13/5ed17c17f013769c3defd665667653fe.jpg-wm)
 
-![image](http://static.lovedata.net/jpg/2018/7/13/c3df67b9b516c6bc25b7d4a70dfabcac.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/13/c3df67b9b516c6bc25b7d4a70dfabcac.jpg-wm)
 
-![image](http://static.lovedata.net/jpg/2018/7/13/30383ea00b1199a91e48deb8b1b9563d.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/13/30383ea00b1199a91e48deb8b1b9563d.jpg-wm)
 
 stage 划分
 
-![image](http://static.lovedata.net/jpg/2018/7/13/d48db9cdff54eb6cea4e1d9dcf0d7726.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/13/d48db9cdff54eb6cea4e1d9dcf0d7726.jpg-wm)
 
 > 宽依赖就是认为是Dagd的分界线,或者说根据宽依赖将job分为不同的阶段（stage）
 
-![image](http://static.lovedata.net/jpg/2018/7/13/37054531f120f5531db40dcf90a03d13.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/13/37054531f120f5531db40dcf90a03d13.jpg-wm)
 
 ### 1.23. 宽依赖、窄依赖的概念？宽依赖、窄依赖的例子？以下图中所指的是何种依赖
 
-![image](http://static.lovedata.net/jpg/2018/7/4/52cbbb0ea8777f912ef6f6383cc1f5eb.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/4/52cbbb0ea8777f912ef6f6383cc1f5eb.jpg-wm)
 
-![image](http://static.lovedata.net/jpg/2018/7/4/b2053b3741affbafd63dff5ca58ca0b7.jpg-wm)
-![image](http://static.lovedata.net/jpg/2018/6/22/cef170091c377f5f7840ca80a9f9287c.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/4/b2053b3741affbafd63dff5ca58ca0b7.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/22/cef170091c377f5f7840ca80a9f9287c.jpg-wm)
 
-![image](http://static.lovedata.net/jpg/2018/7/13/fddef8da2524d01a32515fd4a69837c9.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/13/fddef8da2524d01a32515fd4a69837c9.jpg-wm)
 
 ### 1.24. Spark数据倾斜，怎么定位、怎么解决（阿里）；
 
 [spark提交应用的全流程分析 - CSDN博客](https://www.cnblogs.com/LHWorldBlog/p/8506121.html)
 
-![【Spark篇】---Spark解决数据倾斜问题](http://static.lovedata.net/jpg/2018/6/14/a6f6512145359189c2a4e9f9afac7673.jpg-wm)
+![【Spark篇】---Spark解决数据倾斜问题](https://static.lovedata.net/jpg/2018/6/14/a6f6512145359189c2a4e9f9afac7673.jpg-wm)
 
 ### 1.25 spark有哪些组件？
 
@@ -186,15 +186,15 @@ stage 划分
 
 ### 1.27 spark 架构
 
-![spark基础运行架构](http://static.lovedata.net/jpg/2018/6/14/a6f6512145359189c2a4e9f9afac7673.jpg-wm)
+![spark基础运行架构](https://static.lovedata.net/jpg/2018/6/14/a6f6512145359189c2a4e9f9afac7673.jpg-wm)
 
-![spark结合yarn集群背后的运行流程](http://static.lovedata.net/jpg/2018/6/14/34668f2bad595ff835fdf0823dfb99c6.jpg-wm)
+![spark结合yarn集群背后的运行流程](https://static.lovedata.net/jpg/2018/6/14/34668f2bad595ff835fdf0823dfb99c6.jpg-wm)
 
-![image](http://static.lovedata.net/jpg/2018/6/14/3a907f0488496c7a39fb6bec02966e25.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/14/3a907f0488496c7a39fb6bec02966e25.jpg-wm)
 
 ### 1.28 spark task解析？
 
-![image](http://static.lovedata.net/jpg/2018/7/13/f243b2f1b3fae98fda495c5fc8fb3fea.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/13/f243b2f1b3fae98fda495c5fc8fb3fea.jpg-wm)
 
 
 ### spark  集群 100g内存 有两百g文件，去读取，有什么问题。
@@ -212,7 +212,7 @@ stage 划分
 
 比如如下两幅图，就是典型的例子，分别基于reduceByKey和groupByKey进行单词计数。其中第一张图是groupByKey的原理图，可以看到，没有进行任何本地聚合时，所有数据都会在集群节点之间传输；第二张图是reduceByKey的原理图，可以看到，每个节点本地的相同key数据，都进行了预聚合，然后才传输到其他节点上进行全局聚合。
 
-![image](http://static.lovedata.net/jpg/2018/6/14/31d0199949271ef1641a7be918818fcd.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/14/31d0199949271ef1641a7be918818fcd.jpg-wm)
 
 ### 2.2 如何使用高性能的算子？
 
@@ -232,7 +232,7 @@ stage 划分
 2. 解决方案二：过滤少数导致倾斜的key  
 3. 解决方案三：提高shuffle操作的并行度  spark.sql.shuffle.partitions   reduceByKey(1000)
 4. 解决方案四：两阶段聚合（局部聚合+全局聚合）打随机数，预聚合，然后去掉随机数，在进行全局聚合  适用于聚合类型，如果是join类的shuffle操作，还得用其他的解决方案。
-   1. ![image](http://static.lovedata.net/jpg/2018/6/14/6d4482e3b2738463ed2ce881be07244b.jpg-wm)
+   1. ![image](https://static.lovedata.net/jpg/2018/6/14/6d4482e3b2738463ed2ce881be07244b.jpg-wm)
 5. 解决方案五：将reduce join转为map join  在对RDD使用join类操作，或者是在Spark SQL中使用join语句时，而且join操作中的一个RDD或表的数据量比较小（比如几百M或者一两G），比较适用此方案。
     1. 不使用join算子进行连接操作，而使用Broadcast变量与map类算子实现join操作，进而完全规避掉shuffle类的操作，彻底避免数据倾斜的发生和出现。
     2. 对join操作导致的数据倾斜，效果非常好，因为根本就不会发生shuffle，也就根本不会发生数据倾斜。  适用场景较少，因为这个方案只适用于一个大表和一个小表的情况
@@ -246,7 +246,7 @@ stage 划分
         再将附加了随机前缀的独立RDD与另一个膨胀n倍的独立RDD进行join，此时就可以将原先相同的key打散成n份，分散到多个task中去进行join了。
         而另外两个普通的RDD就照常join即可。
         最后将两次join的结果使用union算子合并起来即可，就是最终的join结果。
-        ![image](http://static.lovedata.net/jpg/2018/6/14/de04f1729bec2ba1c5b6569952473d38.jpg-wm)
+        ![image](https://static.lovedata.net/jpg/2018/6/14/de04f1729bec2ba1c5b6569952473d38.jpg-wm)
 7. 解决方案七：使用随机前缀和扩容RDD进行join
 
 [Spark性能优化指南——高级篇 -](https://tech.meituan.com/spark-tuning-pro.html)

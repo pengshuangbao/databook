@@ -34,13 +34,13 @@
 
 [大数据时代快速SQL引擎-Impala](https://blog.csdn.net/yu616568/article/details/52431835)
 
-![image](http://static.lovedata.net/jpg/2018/5/21/84f8934b8517992c953bdf693d06b162.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/5/21/84f8934b8517992c953bdf693d06b162.jpg-wm)
 
 下图展示了执行select t1.n1, t2.n2, count(1) as c from t1 join t2 on t1.id = t2.id join t3 on t1.id = t3.id where t3.n3 between ‘a’ and ‘f’ group by t1.n1, t2.n2 order by c desc limit 100;查询的执行逻辑，首先Query Planner生成单机的物理执行计划，如下图所示：
 
-![image](http://static.lovedata.net/jpg/2018/5/21/379355edbd81503c0f525b698f70e543.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/5/21/379355edbd81503c0f525b698f70e543.jpg-wm)
 
-![image](http://static.lovedata.net/jpg/2018/5/21/293fc15dcc24eafafc9e577f9850a1a0.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/5/21/293fc15dcc24eafafc9e577f9850a1a0.jpg-wm)
 
 ## 4. Impala的部署方式
 
@@ -49,14 +49,14 @@
 混合部署意味着将Impala集群部署在Hadoop集群之上，共享整个Hadoop集群的资源，
 前者的优势是Impala可以和Hadoop集群共享数据，不需要进行数据的拷贝，但是存在Impala和Hadoop集群抢占资源的情况，进而可能影响Impala的查询性能
 
-![image](http://static.lovedata.net/jpg/2018/5/21/8651108dd21a447b7f781417cfb4a353.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/5/21/8651108dd21a447b7f781417cfb4a353.jpg-wm)
 
 ## 4.2 独立部署
 
 独立部署则是单独使用部分机器只部署HDFS和Impala
 而后者可以提供稳定的高性能，但是需要持续的从Hadoop集群拷贝数据到Impala集群上，增加了ETL的复杂度
 
-![image](http://static.lovedata.net/jpg/2018/5/21/a022911b475d7424a30cc3b68673820a.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/5/21/a022911b475d7424a30cc3b68673820a.jpg-wm)
 
 
 

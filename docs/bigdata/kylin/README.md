@@ -6,15 +6,15 @@
 
 Hadoop平台上的开源OLAP引擎,多维立方体预计算技术，将sql提升到亚秒级别
 
-![image](http://static.lovedata.net/jpg/2018/7/4/4bb2dc72ea9e7c1ca0fe7f39b39ee58a.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/4/4bb2dc72ea9e7c1ca0fe7f39b39ee58a.jpg-wm)
 
 空间换时间，线性增加的资源需求到线性降低的查询时间
 
 ## kylin的构建原理
 
-![image](http://static.lovedata.net/jpg/2018/7/10/05133de3b393e6366d11797a2386987b.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/10/05133de3b393e6366d11797a2386987b.jpg-wm)
 
-![image](http://static.lovedata.net/jpg/2018/7/10/da963f940d5ec0716df33433d0d5811d.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/10/da963f940d5ec0716df33433d0d5811d.jpg-wm)
 
 [编程小梦|Apache Kylin Cube 构建原理](https://blog.bcmeng.com/post/kylin-cube.html)
 
