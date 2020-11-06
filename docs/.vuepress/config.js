@@ -15,7 +15,7 @@ module.exports = ctx => ({
         includeLevel: [2,3],
         slugify:function(s){
           return slugify(s)
-        },
+        }, 
         markerPattern: /^\[toc\]/im
       });
     }
