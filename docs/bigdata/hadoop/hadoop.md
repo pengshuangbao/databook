@@ -2,9 +2,9 @@
 
 [toc]
 
-## 1. Mapreduce
+## Mapreduce
 
-### 1.1 Mapreduce的过程
+###  Mapreduce的过程
 
  ![image](https://static.lovedata.net/jpg/2018/5/18/21730e68df257d648a1c17284040c966.jpg-wm)
  1. 由算个阶段构成 **Map、shuffle、Reduce**
@@ -15,7 +15,7 @@
  ![Map shuffle](https://static.lovedata.net/jpg/2018/5/18/f29021d32b6c5c447e53e7aebd4e326b.jpg-wm)
  6. [MapReduce shuffle过程详解](https://blog.csdn.net/u014374284/article/details/49205885)
 
-### 1.2 谈谈数据倾斜，如何发生的，并给出优化方案
+###  谈谈数据倾斜，如何发生的，并给出优化方案
 
 - 集群中，某个map任务的key对应的value值远远大于其他节点的key所对应的值，导致某个节点mapreduce执行效率很慢，解决根本方法就是避免某个节点上执行任务数据量过大，可以使用map阶段的partiion对过大的数据进行分区，大数据块分成小数据块
 - [http://www.docin.com/p-1443821582.html](http://www.docin.com/p-1443821582.html)
@@ -41,12 +41,12 @@
 - 在 key 上面做文章，在 map 阶段将造成倾斜的key 先分成多组，例如 aaa 这个 key,map 时随机在 aaa 后面加上 1,2,3,4 这四个数字之一，把 key 先分成四组，先进行一次运算，之后再恢复 key 进行最终运算
 - [https://www.zhihu.com/question/27593027](https://www.zhihu.com/question/27593027)
 
-### 1.3 简单概述hadoop的combine与partition的区别
+###  简单概述hadoop的combine与partition的区别
 
 - combine分为map端和reduce端，作用是把同一个key的键值对合并在一起，可以自定义的。减少网络  传输
 - partition是分割map每个节点的结果，按照key分别映射给不同的reduce
 
-### 1.4 MapReduce 中排序发生在哪几个阶段？这些排序是否可以避免？为什么？
+###  MapReduce 中排序发生在哪几个阶段？这些排序是否可以避免？为什么？
 
 - 一个MapReduce作业由Map阶段和Reduce阶段两部分组成，这两阶段会对数据排序
 - MapReduce框架本质就是一个Distributed Sort
@@ -57,7 +57,7 @@
 - [https://www.zhihu.com/question/35999547/answer/65443663](https://www.zhihu.com/question/35999547/answer/65443663)
 - [https://blog.csdn.net/play_chess_ITmanito/article/details/51089200](https://blog.csdn.net/play_chess_ITmanito/article/details/51089200)
 
-### 1.5 hadoop的shuffer的概念
+###  hadoop的shuffer的概念
 
 ![image](https://static.lovedata.net/jpg/2018/5/20/9633d38b5494528b083a881c61c6d12a.jpg-wm)
 
@@ -74,7 +74,7 @@
   - 传入到reduce任务当中
 - [Hadoop-Shuffle过程](https://blog.csdn.net/clerk0324/article/details/52461135)
 
-### 1.6 hadoop的二次排序
+###  hadoop的二次排序
 
 1. Hadoop MapReduce 二次排序原理及其应用
     - 在0.20.0以前使用的是
@@ -93,9 +93,9 @@
     2. [Hadoop SecondrySort 中有了sort为什么要使用setGroupingComparatorClass排序的解释](http://www.360doc.com/content/15/0428/21/23016082_466665862.shtml)
     3. [bigdata-practice/SortMapReduce.java at master · pengshuangbao/bigdata-practice · GitHub](https://github.com/pengshuangbao/bigdata-practice/blob/master/src/main/java/com/lovedata/bigdata/hadoop/sort/secondary/SortMapReduce.java)
 
-### 1.7 如何减少Hadoop Map端到Reduce端的数据传输量？
+###  如何减少Hadoop Map端到Reduce端的数据传输量？
 
-### 1.8 hadoop常见的链接join操作？
+###  hadoop常见的链接join操作？
 
 ![内连接和外连接](https://static.lovedata.net/jpg/2018/5/24/8f84a6747faa534c0b03a90b356cd383.jpg-wm)
 
@@ -131,7 +131,7 @@
 因而可将小表中的key保存到BloomFilter中，在map阶段过滤大表，可能有一些不在小表中的记录没有过滤掉（但是在小表中的记录一定不会过滤掉），这没关系，只不过增加了少量的网络IO而已。
 更多关于BloomFilter的介绍，可参考：[Bloom Filter概念和原理 - CSDN博客](http://blog.csdn.net/jiaomeng/article/details/1495500)
 
-### 1.9 简答说一下hadoop的map-reduce编程模型
+###  简答说一下hadoop的map-reduce编程模型
 
 1. map task会从本地文件系统读取数据，转换成key-value形式的键值对集
 2. 使用的是hadoop内置的数据类型，比如longwritable、text等
@@ -141,7 +141,7 @@
 6. 之后进行一个combiner归约操作，其实就是一个本地段的reduce预处理，以减小后面shufle和reducer的工作量
 7. reduce task会通过网络将各个数据收集进行reduce处理，最后将数据保存或者显示，结束整个job
 
-### 1.10 hadoop的TextInputFormat作用是什么，如何自定义实现
+###  hadoop的TextInputFormat作用是什么，如何自定义实现
 
 InputFormat会在map操作之前对数据进行两方面的预处理
 
@@ -152,7 +152,7 @@ InputFormat会在map操作之前对数据进行两方面的预处理
 自定义类继承InputFormat接口，重写createRecordReader和isSplitable方法
 在createRecordReader中可以自定义分隔符
 
-### 1.11 hadoop和spark的都是并行计算，那么他们有什么相同和区别
+###  hadoop和spark的都是并行计算，那么他们有什么相同和区别
 
 1. 相同点
    1. 都是用mr模型来进行并行计算 
@@ -162,23 +162,23 @@ InputFormat会在map操作之前对数据进行两方面的预处理
    3. **hadoop的job只有map和reduce操作，表达能力比较欠缺而且在mr过程中会重复的读写hdfs，造成大量的io操作，多个job需要自己管理关系**
    4. **spark的迭代计算都是在内存中进行的，API中提供了大量的RDD操作如join，groupby等，而且通过DAG图可以实现良好的容错**
 
-### 1.12 map-reduce程序运行的时候会有什么比较常见的问题
+###  map-reduce程序运行的时候会有什么比较常见的问题
 
 比如说作业中大部分都完成了，但是总有几个reduce一直在运行
 这是因为这几个reduce中的处理的数据要远远大于其他的reduce，可能是因为对键值对任务划分的不均匀造成的数据倾斜
 解决的方法可以在分区的时候重新定义分区规则对于value数据很多的key可以进行拆分、均匀打散等处理，或者是在map端的combiner中进行数据预处理的操作
 
-### 1.13 WritableComparator 如何使用
+###  WritableComparator 如何使用
 
-## 2. 其他问题
+## 其他问题
 
-### 2.1 简单概述hadoop中的角色的分配以及功能
+###  简单概述hadoop中的角色的分配以及功能
 
-### 2.2 hadoop的优化（性能调优）
+###  hadoop的优化（性能调优）
 
 [hadoop性能调优与运维 - CSDN博客](https://blog.csdn.net/hy245120020/article/details/75202058)
 
-### 2.3 hadoop1与hadoop2的区别
+###  hadoop1与hadoop2的区别
 
 [Hadoop1.X 与 Hadoop2.X区别及改进 - 奥斯卡影帝 - 博客园](https://www.cnblogs.com/douzhanshen/p/6582809.html)
 
@@ -198,14 +198,14 @@ YARN 并不是下一代MapReduce（MRv2），下一代MapReduce与第一代MapRe
 
 该架构将JobTracker中的资源管理及任务生命周期管理（包括定时触发及监控），拆分成两个独立的服务， **用于管理全部资源的ResourceManager以及管理每个应用的ApplicationMaster，**  ResourceManager用于管理向应用程序分配计算资源，每个ApplicationMaster用于管理应用程序、调度以及协调
 
-### 2.4 hadoop3的新特性
+###  hadoop3的新特性
 
 [hadoop3.0新特性 - CSDN博客](https://blog.csdn.net/liu1390910/article/details/78825371)
 [Hadoop 3.x 新特性剖析系列1 - 哥不是小萝莉 - 博客园](https://www.cnblogs.com/smartloli/p/8827623.html)
 
-### 2.5 hadoop中两个大表实现join的操作，简单描述？
+###  hadoop中两个大表实现join的操作，简单描述？
 
-### 2.6 hadoop 是什么？
+###  hadoop 是什么？
 
  　Hadoop是在分布式服务器集群上存储海量数据并运行分布式分析应用的一个平台，其核心部件是HDFS与MapReduce
 
@@ -213,17 +213,17 @@ YARN 并不是下一代MapReduce（MRv2），下一代MapReduce与第一代MapRe
 
   MapReduce是一个计算框架：MapReduce的核心思想是把计算任务分配给集群内的服务器里执行。通过对计算任务的拆分（Map计算\Reduce计算）再根据任务调度器（JobTracker）对任务进行分布式计算。
 
-## 3. Hadoop运维
+## Hadoop运维
 
- #### 3.1 杀死一个job?
+ ####  杀死一个job?
   yarn job -list
   yarn application -kill jobId
 
- #### 3.2 删除hdfs上的/tmp/aaa目录
+ ####  删除hdfs上的/tmp/aaa目录
 1) hadoop fs -rm hdfs://host:port/file /user/hadoop/emptydir 
 3.加入一个新的存储节点和删除一个计算节点需要刷新集群状态命令？
 
-#### 3.3 hadoop 集群 加入一个新的存储节点和删除一个计算节点需要刷新集群状态命令
+####  hadoop 集群 加入一个新的存储节点和删除一个计算节点需要刷新集群状态命令
 
 方式1：静态添加datanode，停止namenode方式
 

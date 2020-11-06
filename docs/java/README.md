@@ -2,7 +2,7 @@
 
 [toc]
 
-## 1. 内存溢出了怎么去定位？
+## 内存溢出了怎么去定位？
 
 [Java内存溢出定位和解决方案（new）](https://www.cnblogs.com/snowwhite/p/9471710.html "  ")
 
@@ -12,15 +12,15 @@ https://www.cnblogs.com/LUO77/p/5816326.html)
 
 
 
-## 2. HashMap
+## HashMap
 
-###  1：HashMap 的数据结构？
+### HashMap 的数据结构？
 
 A：哈希表结构（链表散列：数组+链表）实现，结合数组和链表的优点。当链表长度超过 8 时，链表转换为红黑树。
 
 transient Node<K,V>\[\] table;
 
-### 2：HashMap 的工作原理？
+### HashMap 的工作原理？
 
 HashMap 底层是 hash 数组和单向链表实现，数组中的每个元素都是链表，由 Node 内部类（实现 Map.Entry接口）实现，HashMap 通过 put & get 方法存储和获取。
 
@@ -42,19 +42,19 @@ iii. 如果 K 的 hash 值在 HashMap 中存在，且它们两者 equals 返回 
 
 hashCode 是定位的，存储位置；equals是定性的，比较两者是否相等。
 
-### 3.当两个对象的 hashCode 相同会发生什么？
+### 当两个对象的 hashCode 相同会发生什么？
 
 [因为 hashCode 相同，不一定就是相等的（equals方法比较），所以两个对象所在数组的下标相同，"碰撞"就此发生。又因为 HashMap 使用链表存储对象，这个 Node 会存储到链表中。为什么要重写 hashcode 和 equals 方法？推荐看下。](http://mp.weixin.qq.com/s?__biz=MzI2MTIzMzY3Mw==&mid=2247489051&idx=4&sn=651c4a067c2f1d59151f484475144c20&chksm=ea5cdb7ddd2b526bcb46214f83f80859c8603497323a3cf933e511b6f018af666dd74b0e584d&scene=21#wechat_redirect)
 
-### 4.你知道 hash 的实现吗？为什么要这样实现？
+### 你知道 hash 的实现吗？为什么要这样实现？
 
 JDK 1.8 中，是通过 hashCode() 的高 16 位异或低 16 位实现的：(h = k.hashCode()) ^ (h >>> 16)，主要是从速度，功效和质量来考虑的，减少系统的开销，也不会造成因为高位没有参与下标的计算，从而引起的碰撞。
 
-### 5.为什么要用异或运算符？
+### 为什么要用异或运算符？
 
 保证了对象的 hashCode 的 32 位值只要有一位发生改变，整个 hash() 返回值就会改变。尽可能的减少碰撞。
 
-### 6.HashMap 的 table 的容量如何确定？loadFactor 是什么？该容量如何变化？这种变化会带来什么问题？
+### HashMap 的 table 的容量如何确定？loadFactor 是什么？该容量如何变化？这种变化会带来什么问题？
 
 [①、table 数组大小是由 capacity 这个参数确定的，默认是16，也可以构造时传入，最大限制是1<<30；](http://mp.weixin.qq.com/s?__biz=MzI2MTIzMzY3Mw==&mid=2247489478&idx=4&sn=ad7321cd1948f0c8eaf955aaaa7a2046&chksm=ea5cdaa0dd2b53b67ac2b9ba12935e13cb59250180fa302bd61629968e24f8853f208790fe80&scene=21#wechat_redirect)
 
@@ -64,7 +64,7 @@ JDK 1.8 中，是通过 hashCode() 的高 16 位异或低 16 位实现的：(h =
 
 ④、如果数据很大的情况下，扩展时将会带来性能的损失，在性能要求很高的地方，这种损失很可能很致命。
 
-### 7.HashMap中put方法的过程？
+### HashMap中put方法的过程？
 
 答：“调用哈希函数获取Key对应的hash值，再计算其数组下标；
 
@@ -76,17 +76,17 @@ JDK 1.8 中，是通过 hashCode() 的高 16 位异或低 16 位实现的：(h =
 
 如果集合中的键值对大于12，调用resize方法进行数组扩容。”
 
-### 8.数组扩容的过程？
+### 数组扩容的过程？
 
 创建一个新的数组，其容量为旧数组的两倍，并重新计算旧数组中结点的存储位置。结点在新数组中的位置只有两种，原下标位置或原下标+旧数组的大小。
 
-### 9.拉链法导致的链表过深问题为什么不用二叉查找树代替，而选择红黑树？为什么不一直使用红黑树？
+### 拉链法导致的链表过深问题为什么不用二叉查找树代替，而选择红黑树？为什么不一直使用红黑树？
 
 [之所以选择红黑树是为了解决二叉查找树的缺陷，二叉查找树在特殊情况下会变成一条线性结构（这就跟原来使用链表结构一样了，造成很深的问题），遍历查找会非常慢。推荐：面试问红黑树，我脸都绿了。](http://mp.weixin.qq.com/s?__biz=MzI2MTIzMzY3Mw==&mid=2247489139&idx=2&sn=9670f4aa9a1b240352b5387f776fb284&chksm=ea5cdb15dd2b5203cd904cdadf8e1061b6e1e6af6a51c9116eceee4313f889945e529381162d&scene=21#wechat_redirect)
 
 [而红黑树在插入新数据后可能需要通过左旋，右旋、变色这些操作来保持平衡，引入红黑树就是为了查找数据快，解决链表查询深度的问题，我们知道红黑树属于平衡二叉树，但是为了保持“平衡”是需要付出代价的，但是该代价所损耗的资源要比遍历线性链表要少，所以当长度大于8的时候，会使用红黑树，如果链表长度很短的话，根本不需要引入红黑树，引入反而会慢。](http://mp.weixin.qq.com/s?__biz=MzI2MTIzMzY3Mw==&mid=2247489139&idx=2&sn=9670f4aa9a1b240352b5387f776fb284&chksm=ea5cdb15dd2b5203cd904cdadf8e1061b6e1e6af6a51c9116eceee4313f889945e529381162d&scene=21#wechat_redirect)
 
-### 10.说说你对红黑树的见解？
+### 说说你对红黑树的见解？
 
 - 每个节点非红即黑
 - 根节点总是黑色的
@@ -98,7 +98,7 @@ JDK 1.8 中，是通过 hashCode() 的高 16 位异或低 16 位实现的：(h =
 
 ####  
 
-### 11.jdk8中对HashMap做了哪些改变？
+### jdk8中对HashMap做了哪些改变？
 
 在java 1.8中，如果链表的长度超过了8，那么链表将转换为红黑树。（桶的数量必须大于64，小于64的时候只会扩容）
 
@@ -108,7 +108,7 @@ JDK 1.8 中，是通过 hashCode() 的高 16 位异或低 16 位实现的：(h =
 
 #### 
 
-### 12.HashMap，LinkedHashMap，TreeMap 有什么区别？
+### HashMap，LinkedHashMap，TreeMap 有什么区别？
 
 HashMap 参考其他问题；
 
@@ -118,7 +118,7 @@ TreeMap 实现 SortMap 接口，能够把它保存的记录根据键排序（默
 
 
 
-### 13.HashMap & TreeMap & LinkedHashMap 使用场景？
+### HashMap & TreeMap & LinkedHashMap 使用场景？
 
 一般情况下，使用最多的是 HashMap。
 
@@ -130,7 +130,7 @@ LinkedHashMap：在需要输出的顺序和输入的顺序相同的情况下。
 
 
 
-### 14.HashMap 和 HashTable 有什么区别？
+### HashMap 和 HashTable 有什么区别？
 
 ①、HashMap 是线程不安全的，HashTable 是线程安全的；
 
@@ -144,7 +144,7 @@ LinkedHashMap：在需要输出的顺序和输入的顺序相同的情况下。
 
 
 
-### 15.Java 中的另一个线程安全的与 HashMap 极其类似的类是什么？同样是线程安全，它与 HashTable 在线程同步上有什么不同？
+### Java 中的另一个线程安全的与 HashMap 极其类似的类是什么？同样是线程安全，它与 HashTable 在线程同步上有什么不同？
 
 ConcurrentHashMap 类（是 Java并发包 java.util.concurrent 中提供的一个线程安全且高效的 HashMap 实现）。
 
@@ -154,11 +154,11 @@ HashTable 是使用 synchronize 关键字加锁的原理（就是对对象加锁
 
 
 
-### 16.HashMap & ConcurrentHashMap 的区别？
+### HashMap & ConcurrentHashMap 的区别？
 
 除了加锁，原理上无太大区别。另外，HashMap 的键值对允许有null，但是ConCurrentHashMap 都不允许。
 
-### 17.为什么 ConcurrentHashMap 比 HashTable 效率要高？
+### 为什么 ConcurrentHashMap 比 HashTable 效率要高？
 
 HashTable 使用一把锁（锁住整个链表结构）处理并发问题，多个线程竞争一把锁，容易阻塞；
 
@@ -172,7 +172,7 @@ ConcurrentHashMap
 
 
 
-### 18.针对 ConcurrentHashMap 锁机制具体分析（JDK 1.7 VS JDK 1.8）
+### 针对 ConcurrentHashMap 锁机制具体分析（JDK 1.7 VS JDK 1.8）
 
 JDK 1.7 中，采用分段锁的机制，实现并发的更新操作，底层采用数组+链表的存储结构，包括两个核心静态内部类 Segment 和 HashEntry。
 
@@ -190,7 +190,7 @@ JDK 1.8 中，采用Node + CAS + Synchronized来保证并发安全。取消类 S
 
 ####  
 
-### 19.ConcurrentHashMap 在 JDK 1.8 中，为什么要使用内置锁 synchronized 来代替重入锁 ReentrantLock？
+### ConcurrentHashMap 在 JDK 1.8 中，为什么要使用内置锁 synchronized 来代替重入锁 ReentrantLock？
 
 ①、粒度降低了；
 
@@ -200,7 +200,7 @@ JDK 1.8 中，采用Node + CAS + Synchronized来保证并发安全。取消类 S
 
  
 
-### 20.ConcurrentHashMap 简单介绍？
+### ConcurrentHashMap 简单介绍？
 
 ①、重要的常量：
 
@@ -248,7 +248,7 @@ helpTransfer()：调用多个工作线程一起帮助进行扩容，这样的效
 
 以上都不符合的话，就往下遍历结点，匹配就返回，否则最后就返回 null。
 
-### 21.ConcurrentHashMap 的并发度是什么？
+### ConcurrentHashMap 的并发度是什么？
 
 程序运行时能够同时更新 ConccurentHashMap 且不产生锁竞争的最大线程数。默认为 16，且可以在构造函数中设置。
 
@@ -256,7 +256,7 @@ helpTransfer()：调用多个工作线程一起帮助进行扩容，这样的效
 
 ## Java核心技术
 
-### 16. 第16讲 | synchronized底层如何实现？什么是锁的升级、降级？
+### 第16讲 | synchronized底层如何实现？什么是锁的升级、降级？
 
 
 

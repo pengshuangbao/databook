@@ -2,11 +2,11 @@
 
 [toc]
 
-## 2. Spark Streaming 基础
+## Spark Streaming 基础
 
-### 2.1 Spark Streaming和Storm有何区别？ 应用场景？
+###  Spark Streaming和Storm有何区别？ 应用场景？
 
-### 2.2 Spark Streaming 原理
+###  Spark Streaming 原理
 
 ![image](https://static.lovedata.net/jpg/2018/6/14/4c10e84fe55db71e105e0a2a7c3ad10a.jpg-wm)
 ![image](https://static.lovedata.net/jpg/2018/6/14/4cd553817fa7f91d206508dad84ded7a.jpg-wm)
@@ -17,7 +17,7 @@
 
 1. [CoolplaySpark/0.1 Spark Streaming 实现思路与模块概述.md at master · lw-lin/CoolplaySpark · GitHub](https://github.com/lw-lin/CoolplaySpark/blob/master/Spark%20Streaming%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E7%B3%BB%E5%88%97/0.1%20Spark%20Streaming%20%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF%E4%B8%8E%E6%A8%A1%E5%9D%97%E6%A6%82%E8%BF%B0.md#24)
 
-### 2.3 SS 整体模块
+###  SS 整体模块
 
 - 模块 1：DAG 静态定义
   - 应该首先对计算逻辑描述为一个 RDD DAG 的“模板”，在后面 Job 动态生成的时候，针对每个 batch，Spark Streaming 都将根据这个“模板”生成一个 RDD DAG 的实例。
@@ -55,7 +55,7 @@
 
 ![image](https://static.lovedata.net/jpg/2018/6/14/d1d50e147a96b818046405f877daaddd.jpg-wm)
 
-### 2.4 DStream, DStreamGraph 架构原理
+###  DStream, DStreamGraph 架构原理
 
 1. Spark Streaming 的 模块 1 DAG 静态定义 要解决的问题就是如何把计算逻辑描述为一个 RDD DAG 的“模板”，在后面 Job 动态生成的时候，针对每个 batch，都将根据这个“模板”生成一个 RDD DAG 的实例。
 2. 这个 RDD “模板”对应的具体的类是 DStream，RDD DAG “模板”对应的具体类是 DStreamGraph。
@@ -87,7 +87,7 @@
 参考
 [CoolplaySpark/1.1 DStream, DStreamGraph 详解.md at master · lw-lin/CoolplaySpark · GitHub](https://github.com/lw-lin/CoolplaySpark/blob/master/Spark%20Streaming%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E7%B3%BB%E5%88%97/1.1%20DStream%2C%20DStreamGraph%20%E8%AF%A6%E8%A7%A3.md)
 
-### 2.5 DStream 生成 RDD 的原理
+###  DStream 生成 RDD 的原理
 
 1. Spark Streaming 的 模块 1 DAG 静态定义 要解决的问题就是如何把计算逻辑描述为一个 RDD DAG 的“模板”，在后面 Job 动态生成的时候，针对每个 batch，都将根据这个“模板”生成一个 RDD DAG 的实例。![image](https://static.lovedata.net/jpg/2018/6/14/854a01530c476d05f6987ac329873022.jpg-wm)
 2. RDD “模板”对应的具体的类是 DStream，RDD DAG “模板”对应的具体类是 DStreamGraph。
@@ -114,7 +114,7 @@
 参考
 [CoolplaySpark/1.2 DStream 生成 RDD 实例详解.md at master · lw-lin/CoolplaySpark · GitHub](https://github.com/lw-lin/CoolplaySpark/blob/master/Spark%20Streaming%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E7%B3%BB%E5%88%97/1.2%20DStream%20%E7%94%9F%E6%88%90%20RDD%20%E5%AE%9E%E4%BE%8B%E8%AF%A6%E8%A7%A3.md)
 
-### 2.6 JobScheduler, Job, JobSet 原理
+###  JobScheduler, Job, JobSet 原理
 
 1. 在 Spark Streaming 程序在 ssc.start() 开始运行时，将 JobScheduler 的实例给 start() 运行起来。
 2. Spark Streaming 的 Job 总调度者 JobScheduler
@@ -137,7 +137,7 @@
 参考
 [CoolplaySpark/2.1 JobScheduler, Job, JobSet 详解.md at master · lw-lin/CoolplaySpark · GitHub](https://github.com/lw-lin/CoolplaySpark/blob/master/Spark%20Streaming%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E7%B3%BB%E5%88%97/2.1%20JobScheduler%2C%20Job%2C%20JobSet%20%E8%AF%A6%E8%A7%A3.md)
 
-### 2.7 JobGenerator 原理
+###  JobGenerator 原理
 
 1. ![image](https://static.lovedata.net/jpg/2018/6/14/d6c70b578147b38650a148e27262d1d6.jpg-wm)
 2. 在启动了 RPC 处理线程 eventLoop 后，就会根据是否是第一次启动，也就是是否存在 checkpoint，来具体的决定是 restart() 还是 startFirstTime()。
@@ -164,7 +164,7 @@
  参考
  [CoolplaySpark/2.2 JobGenerator 详解.md at master · lw-lin/CoolplaySpark · GitHub](https://github.com/lw-lin/CoolplaySpark/blob/master/Spark%20Streaming%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E7%B3%BB%E5%88%97/2.2%20JobGenerator%20%E8%AF%A6%E8%A7%A3.md)
 
-### 2.8 Receiver 分发详解
+###  Receiver 分发详解
 
 1. ReceiverTracker 自身运行在 driver 端，是一个管理分布在各个 executor 上的 Receiver 的总指挥者。在 ssc.start() 时，将隐含地调用 ReceiverTracker.start()；而 ReceiverTracker.start() 最重要的任务就是调用自己的 launchReceivers() 方法将 Receiver 分发到多个 executor 上去。然后在每个 executor 上，由 ReceiverSupervisor 来分别启动一个 Receiver 接收数据
     ![image](https://static.lovedata.net/jpg/2018/6/14/224b9ad7f4aa02d535ecc1a7930b84f6.jpg-wm)
@@ -179,7 +179,7 @@
 参考
 [CoolplaySpark/3.1 Receiver 分发详解.md at master · lw-lin/CoolplaySpark · GitHub](https://github.com/lw-lin/CoolplaySpark/blob/master/Spark%20Streaming%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E7%B3%BB%E5%88%97/3.1%20Receiver%20%E5%88%86%E5%8F%91%E8%AF%A6%E8%A7%A3.md)
 
-### 2.9 Receiver, ReceiverSupervisor, BlockGenerator, ReceivedBlockHandler 详解
+###  Receiver, ReceiverSupervisor, BlockGenerator, ReceivedBlockHandler 详解
 
 1. ![image](https://static.lovedata.net/jpg/2018/6/14/2a3cb6bdc7b04cb41c90c04a9b1e7d08.jpg-wm)
 2. ReceiverSupervisor 将在 executor 端作为的主要角色，并且：
@@ -201,12 +201,12 @@
 参考
 [CoolplaySpark/3.2 Receiver, ReceiverSupervisor, BlockGenerator, ReceivedBlockHandler 详解.md at master · lw-lin/CoolplaySpark · GitHub](https://github.com/lw-lin/CoolplaySpark/blob/master/Spark%20Streaming%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E7%B3%BB%E5%88%97/3.2%20Receiver%2C%20ReceiverSupervisor%2C%20BlockGenerator%2C%20ReceivedBlockHandler%20%E8%AF%A6%E8%A7%A3.md)
 
-### 2.10 ReceiverTraker, ReceivedBlockTracker 详解
+###  ReceiverTraker, ReceivedBlockTracker 详解
 
 1. ![image](https://static.lovedata.net/jpg/2018/6/14/f922757b3191a274fd1d7a0e6a9e6868.jpg-wm)
 2. ![image](https://static.lovedata.net/jpg/2018/6/14/98d3fc9cb3c2a8acf556428ac2a8ace2.jpg-wm)
 
-### 2.11 常用名词介绍
+###  常用名词介绍
 
 1. Dstream
     1. ![image](https://static.lovedata.net/jpg/2018/6/15/2b403056ff561e785fda3803acb7a8d0.jpg-wm)
@@ -214,7 +214,7 @@
     3. ![image](https://static.lovedata.net/jpg/2018/6/15/3d0a26d27d1edbc997f753f04640ac27.jpg-wm)
     4. ![image](https://static.lovedata.net/jpg/2018/6/15/3136b9d092d4fbaaba9ded7fffde1943.jpg-wm)
 
-### 2.12 SS与Storm的对比
+###  SS与Storm的对比
 
 ![image](https://static.lovedata.net/jpg/2018/6/19/d25e02bd208bec1aab06ccaeb47027f4.jpg-wm)
 ![image](https://static.lovedata.net/jpg/2018/6/19/edfed7795fb19be856de49e138064267.jpg-wm)

@@ -4,24 +4,24 @@
 
 ![知识图谱](https://static.lovedata.net/jpg/2018/6/20/7620334c24d3e79d5ec4954bd5003e87.jpg-wm)
 
-## 1.hbase 架构讲解
+## hbase 架构讲解
 
 ![image](https://static.lovedata.net/jpg/2018/6/20/08bd66f5cd400fe609a745de9bd16dab.jpg-wm)
 
 参考
 [深入HBase架构解析（一） - 上善若水 - BlogJava](http://www.blogjava.net/DLevin/archive/2015/08/22/426877.html)
 
-## 3. Hbase  热点现象及解决办法
+## Hbase  热点现象及解决办法
 
-## 4. RowKey的设计原则？
+## RowKey的设计原则？
 
 rowkey的设计原则：各个列簇数据平衡，长度原则、相邻原则，创建表的时候设置表放入regionserver缓存中，避免自动增长和时间，使用字节数组代替string，最大长度64kb，最好16字节以内，按天分表，两个字节散列，四个字节存储时分毫秒。
 
-## 5. HBase和传统数据库的区别；
+## HBase和传统数据库的区别；
 
-## 6. Hbase 优化
+## Hbase 优化
 
-### 6.1 GC优化
+###  GC优化
 
 BucketCache中offheap模式来讲，即使HBase数据块是缓存在堆外内存的，但是在读取的时候还是会首先将堆外内存中的block加载到JVM内存中
 
@@ -78,7 +78,7 @@ MaxTenuringThreshold=15已经相对比较大，
 
 [HBase GC的前生今世 – 演进篇 – 有态度的HBase/Spark/BigData](http://hbasefly.com/2016/05/29/hbase-gc-2/)
 
-### 6.2 列族设计优化
+###  列族设计优化
 
 1. BlockSize设置 块大小是HBase的一个重要配置选项，默认块大小为64K。对于不同的业务数据，块大小的合理设置对读写性能有很大的影响。而对块大小的调整，主要取决于两点 1 用户平均读取数据的大小 2 数据平均键值对规模
 2. 数据编码/压缩  Compress/DeCompress ![image](https://static.lovedata.net/jpg/2018/7/4/7f1b7a9dbc7212a7dcfe4033df9b063b.jpg-wm)  
@@ -89,7 +89,7 @@ MaxTenuringThreshold=15已经相对比较大，
 
 [HBase最佳实践－列族设计优化 – 有态度的HBase/Spark/BigData](http://hbasefly.com/2016/07/02/hbase-pracise-cfsetting/)
 
-### 6.3 读性能优化
+###  读性能优化
 
  一般情况下，读请求延迟较大通常存在三种场景，分别为：
 1. 仅有某业务延迟较大，集群其他业务都正常
@@ -128,7 +128,7 @@ HDFS相关优化
 
 [HBase最佳实践－读性能优化策略 – 有态度的HBase/Spark/BigData](http://hbasefly.com/2016/11/11/hbase%e6%9c%80%e4%bd%b3%e5%ae%9e%e8%b7%b5%ef%bc%8d%e8%af%bb%e6%80%a7%e8%83%bd%e4%bc%98%e5%8c%96%e7%ad%96%e7%95%a5/)
 
-### 6.4 写性能优化
+###  写性能优化
 
 HBase数据写入通常会遇到两类问题，一类是写性能较差，另一类是数据根本写不进去。这两类问题的切入点也不尽相同，如下图所示：
 
@@ -149,19 +149,19 @@ HBase数据写入通常会遇到两类问题，一类是写性能较差，另一
 
 [HBase最佳实践－写性能优化策略 – 有态度的HBase/Spark/BigData](http://hbasefly.com/2016/12/10/hbase-parctice-write/)
 
-## 7. HBase Master和Regionserver的交互；
+## HBase Master和Regionserver的交互；
 
-## 8. HBase的HA，Zookeeper在其中的作用；
+## HBase的HA，Zookeeper在其中的作用；
 
-## 9. Master宕机的时候，哪些能正常工作，读写数据；
+## Master宕机的时候，哪些能正常工作，读写数据；
 
-## 10. region分裂的过程？
+## region分裂的过程？
 
-## 11. Hbase 列簇的设计原则
+## Hbase 列簇的设计原则
 
 列族的设计原则：尽可能少（按照列族进行存储，按照region进行读取，不必要的io操作），经常和不经常使用的两类数据放入不同列族中，列族名字尽可能短。
 
-## 12. hbase性能解决方案：
+## hbase性能解决方案：
 
 1、hbase怎么给web前台提供接口来访问?
 hbase有一个web的默认端口60010，是提供客户端用来访问hbase的
@@ -186,7 +186,7 @@ hbase.regionserver.handler.count属性，可以适当的放大。默认值为10�
 6、直接将时间戳作为行健，在写入单个region 时候会发生热点问题，为什么呢?
 HBase的rowkey在底层是HFile存储数据的，以键值对存放到SortedMap中。并且region中的rowkey是有序存储，若时间比较集中。就会存储到一个region中，这样一个region的数据变多，其它的region数据很好，加载数据就会很慢。直到region分裂可以解决。
 
-## 13. HBase － 数据写入流程解析
+## HBase － 数据写入流程解析
 
 > HBase默认适用于写多读少的应用
 
@@ -214,7 +214,7 @@ HBase的rowkey在底层是HFile存储数据的，以键值对存放到SortedMap�
 参考
 [HBase － 数据写入流程解析 – 有态度的HBase/Spark/BigData](http://hbasefly.com/2016/03/23/hbase_writer/)
 
-## 14. HBase 数据读取流程
+## HBase 数据读取流程
 
 > 查询比较复杂，一是因为整个HBase存储引擎基于LSM-Like树实现   其二是因为HBase中更新操作以及删除操作实现都很简单，更新操作并没有更新原有数据  是插入了一条打上”deleted”标签的数据，而真正的数据删除发生在系统异步执行Major_Compact的时候 但是对于数据读取来说却意味着套上了层层枷锁
 
@@ -238,17 +238,17 @@ scan数据就和开发商盖房一样，也是分成两步：组建施工队体�
 [HBase原理－迟到的‘数据读取流程’部分细节 – 有态度的HBase/Spark/BigData](http://hbasefly.com/2017/06/11/hbase-scan-2/)
 [HBase原理－数据读取流程解析 – 有态度的HBase/Spark/BigData](http://hbasefly.com/2016/12/21/hbase-getorscan/)
 
-## 15. Hbase BlockCache的理解
+## Hbase BlockCache的理解
 
 BlockCache也称为读缓存，HBase会将一次文件查找的Block块缓存到Cache中，以便后续同一请求或者邻近数据查找请求直接从内存中获取，避免昂贵的IO操作，重要性不言而喻。BlockCache有两种实现机制：LRUBlockCache和BucketCache（通常是off-heap）
 
 1. BlockCache的内容
 
-## 16. 行式存储和列式存储的优劣势？
+## 行式存储和列式存储的优劣势？
 
 
 
-## 17. Hbase 二级索引实现
+## Hbase 二级索引实现
 
 1. [技术分享 | HBase二级索引实现方案 - 后端 - 掘金](https://juejin.im/entry/5bae42f7f265da0aa5291913)
    1. ![image](https://static.lovedata.net/20-06-30-d0a62c86d8017f664384df7850ea85c9.png-wm)

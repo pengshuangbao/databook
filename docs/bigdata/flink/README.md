@@ -183,7 +183,7 @@
 
 ### HiveCatalog
 
-#### 1. 两种类型的表
+#### 两种类型的表
 
 > flink 使用 *is_generic* 属性累区分一个表是hive兼容表还是通用表，默认是通用表，如果要创建hive兼容表，则需要将 *is_generic* 设置为false
 
@@ -196,7 +196,7 @@
 
 > 从1.11开始，使用Hive方言的时候，flink允许用户使用hive语法编写sql，通过提供与hive兼容性，改善互操作性，减少**切换**
 
-#### 1. 两种方言 
+#### 两种方言 
 
 - HIve
 - default
@@ -248,7 +248,7 @@ tableEnv.getConfig().setSqlDialect(SqlDialect.DEFAULT);
 
 ## Flink启动与停止
 
-### 1. Flink流式人物何时停止?
+### Flink流式人物何时停止?
 
 1. [Apache Flink User Mailing List archive. - Signal for End of Stream](http://apache-flink-user-mailing-list-archive.2336050.n4.nabble.com/Signal-for-End-of-Stream-td20002.html)
 

@@ -2,13 +2,13 @@
 
 [toc]
 
-## 1. Redis的主键争用问题如何解决？
+## Redis的主键争用问题如何解决？
 
 使用watch 他会监测键，确保被修改后，后面的修改会失败SETNX 如果key不存在等同于set返回0，存在返回1
 
 [Redis的乐观同步方法 Redis的并发写入同步](https://blog.csdn.net/youxijishu/article/details/41956983)
 
-## 2. Redis的事物原理？
+## Redis的事物原理？
 
 1. 满足一致性和隔离性，不满足原子性和持久性（依赖具体持久模型）
 
@@ -34,13 +34,13 @@
 >
 > [redis的事务和watch](https://www.jianshu.com/p/361cb9cd13d5)
 
-## 3. Redis事务的CAS操作
+## Redis事务的CAS操作
 
 CAS，Check and Set 。乐观锁实现使用Redis 自有的watch multi exec等命令进行封装。
 
 [Redis CAS乐观锁实现](https://www.jianshu.com/p/08a1a9f2f4dd)
 
-## 4. Redis持久化的几种方式
+## Redis持久化的几种方式
 
   ![image](https://static.lovedata.net/jpg/2018/5/18/08b055b90a3f67829d73a2453a109c9d.jpg-wm)
 
@@ -63,7 +63,7 @@ CAS，Check and Set 。乐观锁实现使用Redis 自有的watch multi exec等�
   ![image](https://static.lovedata.net/jpg/2018/5/18/2bbde3193b3d168fa6e982c2416b2df7.jpg-wm)
 5. [redis持久化的几种方式](https://www.cnblogs.com/chenliangcl/p/7240350.html)
 
-## 5.Redis的缓存失效策略
+## Redis的缓存失效策略
 
 1. 通过DEL显示删除无用数据
 2. 通过过期时间（expiration）特性在给定的时限之后自动删除（自动删除）
@@ -75,7 +75,7 @@ CAS，Check and Set 。乐观锁实现使用Redis 自有的watch multi exec等�
     1. 消极方法（passive you
     2. 积极方法（active way），周期性地从设置了失效时间的主键中选择一部分失效的主键删除
 
-## 6. Redis所需内存 超过可用内存怎么办
+## Redis所需内存 超过可用内存怎么办
 
 超过maxmemory这个时候就该配置文件中的maxmemory-policy出场了。
 其默认值是noeviction。
@@ -85,7 +85,7 @@ CAS，Check and Set 。乐观锁实现使用Redis 自有的watch multi exec等�
 
 [Redis所需内存 超过可用内存怎么办 - 坦荡 - 博客园](https://www.cnblogs.com/tdws/p/5727633.html)
 
-## 7. Redis 中 String 类型可以容纳的最大数据长度
+## Redis 中 String 类型可以容纳的最大数据长度
 
 项目中使用redis存储，key-value方式，在Redis中字符串类型的Value最多可以容纳的数据长度是512M
 官方信息:

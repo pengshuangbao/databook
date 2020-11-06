@@ -10,11 +10,11 @@
 
 ## 选择排序
 
-### 1. 复杂度
+### 复杂度
 
 选择排序是一种灵巧的算法，速度不是很快   快速排序更快 运行时间为 O(nlogn)
 
-### 2. 算法
+### 算法
 
 ```python
 # Finds the smallest value in an array
@@ -126,7 +126,7 @@ print(ret)
 
 ## 常用算法
 
-### 1 二分查找算法
+### 二分查找算法
 
 ```python
 def binary_search(list, item):
@@ -249,7 +249,7 @@ def search(name):
 search("you")
 ```
 
-## 12 狄克斯特拉算法
+## 狄克斯特拉算法
 
 四个步骤
 
@@ -352,7 +352,7 @@ print(costs)
 仅当权重为正时狄克斯特拉算法才管用。
 如果图中包含负权边，请使用贝尔曼福德算
 
-## 13. 近似算法
+## 近似算法
 
 ```python
 # You pass an array in, and it gets converted to a set.

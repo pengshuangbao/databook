@@ -2,11 +2,11 @@
 
 [toc]
 
-## 1.Redis, 传统数据库,hbase,hive  每个之间的区别
+## Redis, 传统数据库,hbase,hive  每个之间的区别
 
-## 2. Redis、MongoDB和Memcached的区别
+## Redis、MongoDB和Memcached的区别
 
-## 3. 生产配置
+## 生产配置
 
 生产：7台 40Core  125G内存
 ![image](https://static.lovedata.net/jpg/2018/6/19/9af8e559f85674de59abdb85dc603a11.jpg-wm)
@@ -14,11 +14,11 @@
 HDFS配置  用了三十多T，总共100多T
 ![image](https://static.lovedata.net/jpg/2018/6/19/fb4ff0877db450291d8dd29c533e6d3e.jpg-wm)
 
-## 4. 斐波那契介绍
+## 斐波那契介绍
 
 斐波那契（FIBODATA）是社会化传播专家，是专业领先的 **H5传播大数据分析平台** 。掌握海量数据，通过斐波那契独创的 数据收集与分析评价技术， **能够生动的将社会传播的过程展现在你眼前**  **通过展示H5页面传播过程中的数据统计信息，让 你及时掌握社会化传播过程中的情况，弥补传播过程中的不足**，以取得更好的效果第三方平台可通过我们提供的SDK接 入我们得企业服务也可与我们合作，让第三方平台用户这届登录统计后台，为第三方平台的用户提供分析服务
 
-## 5. 功能模块
+## 功能模块
 
 数据概览  
 ![image](https://static.lovedata.net/jpg/2018/6/19/8bd75956119e675ff0914f7af1e977cb.jpg-wm)
@@ -53,12 +53,12 @@ HDFS配置  用了三十多T，总共100多T
 页面分析-访客浏览分析
 ![image](https://static.lovedata.net/jpg/2018/6/19/2d35f7a59da1c39f4cbee05e95e1c24e.jpg-wm)
 
-## 6. 斐波数据流图
+## 斐波数据流图
 
 ![image](https://static.lovedata.net/jpg/2018/6/19/0b4db3ab82c19c5daeceecfb5b9f4aa1.jpg-wm)
 ![image](https://static.lovedata.net/jpg/2018/6/19/9f24a9c1bf3b94bbff69f7d240ce6564.jpg-wm)
 
-## 7. 营销云
+## 营销云
 
 赢销云是一款数据化营销管理工具，帮助企业进行营销数字化，实现营销流程自动化、营销全过程数
 据化，助力企业精准掌握每一个用户，善用每一份营销资源。

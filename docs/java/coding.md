@@ -2,11 +2,11 @@
 
 [toc]
 
-## 1. 排序
+## 排序
 
 [一遍记住Java常用的八种排序算法与代码实现 - 简书](https://www.jianshu.com/p/5e171281a387)
 
-### 1.1 冒泡排序
+###  冒泡排序
 
 [常用算法Java实现之直接插入排序 - 潇潇Leslie - 博客园](https://www.cnblogs.com/LeslieXia/p/5808057.html)
 
@@ -59,7 +59,7 @@ public class BubbleSort {
 [0, 10, 25, 38, 45, 66, 88, 90]
 ```
 
-### 1.2 快速排序
+###  快速排序
 
 ```java
 
@@ -108,7 +108,7 @@ public class QuickSort {
 // [10, 25, 38, 45, 45, 66, 88, 90]
 ```
 
-### 1.3 直接插入排序
+###  直接插入排序
 
 ![image](https://static.lovedata.net/jpg/2018/6/22/480d879b4ef17c3d0aa4754bb12a5e7a.jpg-wm)
 
@@ -162,7 +162,7 @@ public class StraightInsertSort {
 [10, 12, 25, 38, 45, 66, 88, 90]
 ```
 
-### 1.4 选择排序
+###  选择排序
 
 ```java
 
@@ -199,6 +199,6 @@ public class SelectSort {
 // [10, 25, 38, 45, 45, 66, 88, 90]
 ```
 
-### 1.5 归并排序
+###  归并排序
 
-## 2. 请用Java实现非递归二分查找？
+## 请用Java实现非递归二分查找？

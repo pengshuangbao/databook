@@ -2,7 +2,7 @@
 
 [toc]
 
-## 1. impala 特点
+## impala 特点
 
 [Kudu+Impala介绍 | 微店数据科学团队博客](https://juejin.im/entry/5a72d3d1f265da3e4d730b37)
 
@@ -17,7 +17,7 @@
 9. 不会对表数据Cache，仅仅缓存一些表数据等元数据
 10. 可以使用 hive metastore **Hive 是必选组件**
 
-## 2. Impala为什么会这么快？
+## Impala为什么会这么快？
 
 为速度而生，执行效率优化，非MR模型，MR sql转换为MR原语，需要多层迭代，造成极大浪费
 
@@ -30,7 +30,7 @@
   - 代码效率曾采用C++，提速
   - 程序内存使用上，利用C++天然优势，遵循极少内存使用原则
 
-## 3. Impala 查询流程
+## Impala 查询流程
 
 [大数据时代快速SQL引擎-Impala](https://blog.csdn.net/yu616568/article/details/52431835)
 
@@ -42,16 +42,16 @@
 
 ![image](https://static.lovedata.net/jpg/2018/5/21/293fc15dcc24eafafc9e577f9850a1a0.jpg-wm)
 
-## 4. Impala的部署方式
+## Impala的部署方式
 
-## 4.1 混合部署
+##  混合部署
 
 混合部署意味着将Impala集群部署在Hadoop集群之上，共享整个Hadoop集群的资源，
 前者的优势是Impala可以和Hadoop集群共享数据，不需要进行数据的拷贝，但是存在Impala和Hadoop集群抢占资源的情况，进而可能影响Impala的查询性能
 
 ![image](https://static.lovedata.net/jpg/2018/5/21/8651108dd21a447b7f781417cfb4a353.jpg-wm)
 
-## 4.2 独立部署
+##  独立部署
 
 独立部署则是单独使用部分机器只部署HDFS和Impala
 而后者可以提供稳定的高性能，但是需要持续的从Hadoop集群拷贝数据到Impala集群上，增加了ETL的复杂度
@@ -60,7 +60,7 @@
 
 
 
-## 5. impala和hive的关系
+## impala和hive的关系
 
 > [impala - 林哥博客 |  菜鸟技术聚集地](http://iochina.top/2019/08/28/impala/)
 
@@ -112,7 +112,7 @@
 
 
 
-## 6. Impala不足
+## Impala不足
 
 > [impala - 林哥博客 |  菜鸟技术聚集地](http://iochina.top/2019/08/28/impala/)
 
