@@ -8,7 +8,6 @@
 
 ## Parquet 的理解和应用?
 
-## 木桶原理解释?
 
 ## ROLAP MOLAP 区别
   
