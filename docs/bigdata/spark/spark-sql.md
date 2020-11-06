@@ -39,7 +39,7 @@ Spark SQL 的功能之一是执行 SQL 查询.Spark SQL 也能够被用于从已
 
 ### DataFrame
 
-一个 DataFrame 是一个 Dataset 组成的指定列.它的概念与一个在关系型数据库或者在 R/Python 中的表是相等的, 但是有很多优化. DataFrames 可以从大量的 sources 中构造出来, 比如: 结构化的文本文件, Hive中的表, 外部数据库, 或者已经存在的 RDDs. DataFrame API 可以在 Scala, Java, Python, 和 R中实现. 在 Scala 和 Java中, DataFrame 由 DataSet 中的 RowS（多个 Row）来表示. 在 the Scala API中, DataFrame 仅仅是一个 Dataset[Row]类型的别名. 然而, 在 Java API中, 用户需要去使用 Dataset<Row> 去代表一个 DataFrame.
+一个 DataFrame 是一个 Dataset 组成的指定列.它的概念与一个在关系型数据库或者在 R/Python 中的表是相等的, 但是有很多优化. DataFrames 可以从大量的 sources 中构造出来, 比如: 结构化的文本文件, Hive中的表, 外部数据库, 或者已经存在的 RDDs. DataFrame API 可以在 Scala, Java, Python, 和 R中实现. 在 Scala 和 Java中, DataFrame 由 DataSet 中的 RowS（多个 Row）来表示. 在 the Scala API中, DataFrame 仅仅是一个 Dataset[Row]类型的别名. 然而, 在 Java API中, 用户需要去使用 Dataset 去代表一个 DataFrame.
 
 与RDD相似，DataFrame也是数据的一个不可变分布式集合。但与RDD不同的是，数据都被组织到有名字的列中，就像关系型数据库中的表一样。 **设计DataFrame的目的就是要让对大型数据集的处理变得更简单** ，它让开发者可以为分布式的数据集指定一个模式，进行更高层次的抽象。它提供了特定领域内专用的API来处理你的分布式数据，并让更多的人可以更方便地使用Spark，而不仅限于专业的数据工程师。
 

@@ -1,4 +1,5 @@
 const { fs, path } = require('@vuepress/shared-utils')
+const slugify = require('@vuepress/shared-utils/lib/slugify')
 
 module.exports = ctx => ({
   markdown: {
@@ -9,9 +10,12 @@ module.exports = ctx => ({
       //includeLevel: [2, 3]
     },
     extendMarkdown: md => {
-      // 使用更多的 markdown-it 插件!
+      // 使用更多的 markdown-it 插件! 配置: https://github.com/Oktavilla/markdown-it-table-of-contents
       md.use(require("markdown-it-table-of-contents"), {
         includeLevel: [2,3],
+        slugify:function(s){
+          return slugify(s)
+        },
         markerPattern: /^\[toc\]/im
       });
     }
