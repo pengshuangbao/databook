@@ -43,7 +43,7 @@ Hadoop **对于压缩格式的是自动识别** 。如果我们压缩的文件�
 
 [HADOOP与HDFS数据压缩格式 - 简书](https://www.jianshu.com/p/b50bc3f8819c)
 
-## 文件大小默认为 64M，改为 128M 有啥影响,bloack大小为什么增大默认为128M
+## 文件大小默认为 64M,改为 128M 有啥影响,bloack大小为什么增大默认为128M
 
 1. 减轻了namenode的压力
   原因是hadoop集群在启动的时候，datanode会上报自己的block的信息给namenode。namenode把这些信息放到内存中。那么如果块变大了，那么namenode的记录的信息相对减少，所以namenode就有更多的内存去做的别的事情，使得整个集群的性能增强。
@@ -54,7 +54,7 @@ Hadoop **对于压缩格式的是自动识别** 。如果我们压缩的文件�
 3. 参考
    1. [Hadoop-2.X中HDFS文件块bloack大小为什么增大默认为128M-Hadoop|YARN-about云开发-活到老 学到老](http://www.aboutyun.com/thread-7514-1-1.html)
 
-## 讲述HDFS上传文件和读文件的流程？
+## 讲述HDFS上传文件和读文件的流程?
 
 ## 读数据流程
 
@@ -85,11 +85,11 @@ Hadoop **对于压缩格式的是自动识别** 。如果我们压缩的文件�
 
 1. [HDFS文件读取、写入过程详解 - CSDN博客](https://blog.csdn.net/xu__cg/article/details/68106221)
 
-## HDFS在上传文件的时候，如果其中一个块突然损坏了怎么办？（读取文件的异常处理）
+## HDFS在上传文件的时候,如果其中一个块突然损坏了怎么办?（读取文件的异常处理）
 
 [HDFS 异常处理与恢复 - mindwind - 博客园](https://www.cnblogs.com/mindwind/p/4833098.html)
 
-## HDFS NameNode 和 DataNode 之间是如何通信，如何协作的？
+## HDFS NameNode 和 DataNode 之间是如何通信,如何协作的?
 
 client和namenode之间是通过rpc通信；
 datanode和namenode之间是通过rpc通信；
@@ -110,7 +110,7 @@ HBase是一个数据库，一个NoSql的数据库，像其他数据库一样提�
 6. 多版本数据 如上文提到的根据Row key和Column key定位到的Value可以有任意数量的版本值，因此对于需要存储变动历史记录的数据，用HBase就非常方便了。比如上例中的author的Address是会变动的，业务上一般只需要最新的值，但有时可能需要查询到历史值。
 7. 超大数据量 当数据量越来越大，RDBMS数据库撑不住了，就出现了读写分离策略，通过一个Master专门负责写操作，多个Slave负责读操作，服务器成本倍增。随着压力增加，Master撑不住了，这时就要分库了，把关联不大的数据分开部署，一些join查询不能用了，需要借助中间层。随着数据量的进一步增加，一个表的记录越来越大，查询就变得很慢，于是又得搞分表，比如按ID取模分成多个表以减少单个表的记录数。经历过这些事的人都知道过程是多么的折腾。采用HBase就简单了，只需要加机器即可，HBase会自动水平切分扩展，跟Hadoop的无缝集成保障了其数据可靠性（HDFS）和海量数据分析的高性能（MapReduce）。
 
-### hadoop主要应用于数据量大的离线场景。特征为：
+### hadoop主要应用于数据量大的离线场景特征为：
 
 1. 数据量大。一般真正线上用Hadoop的，集群规模都在上百台到几千台的机器。这种情况下，T级别的数据也是很小的。Coursera上一门课了有句话觉得很不错：Don't use hadoop, your data isn't that big
 2. 离线。Mapreduce框架下，很难处理实时计算，作业都以日志分析这样的线下作业为主。另外，集群中一般都会有大量作业等待被调度，保证资源充分利用。
@@ -150,13 +150,13 @@ HDFS适合存储半结构化和非结构化数据，若有严格的结构化数�
 2. [（第3篇）HDFS是什么？HDFS适合做什么？我们应该怎样操作HDFS系统？ - 何石-博客 - 博客园](https://www.cnblogs.com/shijiaoyun/p/6761637.html)
 3. [hbase常识及habse适合什么场景 - 天下尽好 - 博客园](https://www.cnblogs.com/Little-Li/p/7878219.html)
 
-## Hadoop namenode的ha，主备切换实现原理，日志同步原理，QJM中用到的分布式一致性算法（就是paxos算法）
+## Hadoop namenode的ha,主备切换实现原理,日志同步原理,QJM中用到的分布式一致性算法（就是paxos算法）
 
 ###  联邦HDFS
 
 2.x 引入联邦HDFS，加入多个namenode，m每个namenode管理文件系统空间的一部分，m每个nn管理y一个命名空间卷(namespace volume) 由命名空间卷的原数据和一个 data pool 数据池组成。数据池包含该命名空间下的所有数据块
 
-###  namenode 宕机后，新的namenode恢复要做的操作
+###  namenode 宕机后,新的namenode恢复要做的操作
 
 1. 将命名空间的映像导入到内存中
 2. 重演编辑日志

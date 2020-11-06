@@ -4,7 +4,7 @@
 
 ## 一、异步编程
 
-###  java的Future和Scala的Future有何区别？
+###  java的Future和Scala的Future有何区别?
 
 Jav a 也提供了 Future ，它跟 S ca l a 的 Futur e 非常不同 。 两种Future 都是用来表示某个异步计算的结果，但 Ja va 的 Future 要求通过阻塞的 ge t 方法来访问这个结果 。 虽然可以在调用 ge t 之前线调用 i sDone 来判断某个 Java 的 Future 是否已经完成，从而避免阻塞，你却必须等到 Java 的Future 完成之后才能继续用这个结果做进一步的计算
 

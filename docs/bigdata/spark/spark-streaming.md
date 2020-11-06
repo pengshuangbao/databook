@@ -4,7 +4,7 @@
 
 ## Spark Streaming 基础
 
-###  Spark Streaming和Storm有何区别？ 应用场景？
+###  Spark Streaming和Storm有何区别? 应用场景?
 
 ###  Spark Streaming 原理
 

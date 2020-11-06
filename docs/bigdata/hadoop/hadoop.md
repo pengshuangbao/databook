@@ -15,7 +15,7 @@
  ![Map shuffle](https://static.lovedata.net/jpg/2018/5/18/f29021d32b6c5c447e53e7aebd4e326b.jpg-wm)
  6. [MapReduce shuffle过程详解](https://blog.csdn.net/u014374284/article/details/49205885)
 
-###  谈谈数据倾斜，如何发生的，并给出优化方案
+###  谈谈数据倾斜,如何发生的,并给出优化方案
 
 - 集群中，某个map任务的key对应的value值远远大于其他节点的key所对应的值，导致某个节点mapreduce执行效率很慢，解决根本方法就是避免某个节点上执行任务数据量过大，可以使用map阶段的partiion对过大的数据进行分区，大数据块分成小数据块
 - [http://www.docin.com/p-1443821582.html](http://www.docin.com/p-1443821582.html)
@@ -46,7 +46,7 @@
 - combine分为map端和reduce端，作用是把同一个key的键值对合并在一起，可以自定义的。减少网络  传输
 - partition是分割map每个节点的结果，按照key分别映射给不同的reduce
 
-###  MapReduce 中排序发生在哪几个阶段？这些排序是否可以避免？为什么？
+###  MapReduce 中排序发生在哪几个阶段?这些排序是否可以避免?为什么?
 
 - 一个MapReduce作业由Map阶段和Reduce阶段两部分组成，这两阶段会对数据排序
 - MapReduce框架本质就是一个Distributed Sort
@@ -93,9 +93,9 @@
     2. [Hadoop SecondrySort 中有了sort为什么要使用setGroupingComparatorClass排序的解释](http://www.360doc.com/content/15/0428/21/23016082_466665862.shtml)
     3. [bigdata-practice/SortMapReduce.java at master · pengshuangbao/bigdata-practice · GitHub](https://github.com/pengshuangbao/bigdata-practice/blob/master/src/main/java/com/lovedata/bigdata/hadoop/sort/secondary/SortMapReduce.java)
 
-###  如何减少Hadoop Map端到Reduce端的数据传输量？
+###  如何减少Hadoop Map端到Reduce端的数据传输量?
 
-###  hadoop常见的链接join操作？
+###  hadoop常见的链接join操作?
 
 ![内连接和外连接](https://static.lovedata.net/jpg/2018/5/24/8f84a6747faa534c0b03a90b356cd383.jpg-wm)
 
@@ -141,7 +141,7 @@
 6. 之后进行一个combiner归约操作，其实就是一个本地段的reduce预处理，以减小后面shufle和reducer的工作量
 7. reduce task会通过网络将各个数据收集进行reduce处理，最后将数据保存或者显示，结束整个job
 
-###  hadoop的TextInputFormat作用是什么，如何自定义实现
+###  hadoop的TextInputFormat作用是什么,如何自定义实现
 
 InputFormat会在map操作之前对数据进行两方面的预处理
 
@@ -152,7 +152,7 @@ InputFormat会在map操作之前对数据进行两方面的预处理
 自定义类继承InputFormat接口，重写createRecordReader和isSplitable方法
 在createRecordReader中可以自定义分隔符
 
-###  hadoop和spark的都是并行计算，那么他们有什么相同和区别
+###  hadoop和spark的都是并行计算,那么他们有什么相同和区别
 
 1. 相同点
    1. 都是用mr模型来进行并行计算 
@@ -203,9 +203,9 @@ YARN 并不是下一代MapReduce（MRv2），下一代MapReduce与第一代MapRe
 [hadoop3.0新特性 - CSDN博客](https://blog.csdn.net/liu1390910/article/details/78825371)
 [Hadoop 3.x 新特性剖析系列1 - 哥不是小萝莉 - 博客园](https://www.cnblogs.com/smartloli/p/8827623.html)
 
-###  hadoop中两个大表实现join的操作，简单描述？
+###  hadoop中两个大表实现join的操作,简单描述?
 
-###  hadoop 是什么？
+###  hadoop 是什么?
 
  　Hadoop是在分布式服务器集群上存储海量数据并运行分布式分析应用的一个平台，其核心部件是HDFS与MapReduce
 

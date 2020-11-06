@@ -6,7 +6,7 @@
 
 [Spark SQL and DataFrames - Spark 2.2.0 中文文档 - ApacheCN](http://spark.apachecn.org/docs/cn/2.2.0/sql-programming-guide.html)
 
-## Spark sql 是什么？
+## Spark sql 是什么?
 
 Spark SQL 是 Spark 处理结构化数据的一个模块.与基础的 Spark RDD API 不同, Spark SQL 提供了查询结构化数据及计算结果等信息的接口.在内部, Spark SQL 使用这个额外的信息去执行额外的优化.有几种方式可以跟 Spark SQL 进行交互, 包括 SQL 和 Dataset API.当使用相同执行引擎进行计算时, 无论使用哪种 API / 语言都可以快速的计算.这种统一意味着开发人员能够在基于提供最自然的方式来表达一个给定的 transformation API 之间实现轻松的来回切换不同的 .
 
@@ -14,7 +14,7 @@ Spark SQL 的功能之一是执行 SQL 查询.Spark SQL 也能够被用于从已
 
 当以另外的编程语言运行SQL 时, 查询结果将以 Dataset/DataFrame的形式返回
 
-## RDD Datasets and DataFrames 的概念和区别？
+## RDD Datasets and DataFrames 的概念和区别?
 
 ![image](https://static.lovedata.net/jpg/2018/6/30/12b6c98673ad154e2de0a741fe012b92.jpg-wm)
 
@@ -45,7 +45,7 @@ Spark SQL 的功能之一是执行 SQL 查询.Spark SQL 也能够被用于从已
 
 ### RDD
 
-### 该什么时候使用DataFrame或Dataset呢？
+### 该什么时候使用DataFrame或Dataset呢?
 
 - 如果你需要丰富的语义、高级抽象和特定领域专用的API，那就使用DataFrame或Dataset；
 - 如果你的处理需要对半结构化数据进行高级处理，如filter、map、aggregation、average、sum、SQL查询、列式访问或使用lambda函数，那就使用DataFrame或Dataset；

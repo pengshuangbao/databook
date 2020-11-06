@@ -10,11 +10,11 @@
 
 ## Hive UADF 聚合函数  
 
-## Hive UDF 自定义函数  他们作用的数据范围是什么？
+## Hive UDF 自定义函数  他们作用的数据范围是什么?
 
 [Hive自定义函数(UDF、UDAF) - CSDN博客](https://blog.csdn.net/scgaliguodong123_/article/details/46993005)
 
-## hive 动态分区是怎么回事？
+## hive 动态分区是怎么回事?
 
 [hive动态分区插入实验 - CSDN博客](https://blog.csdn.net/wzy0623/article/details/50817883)
 [Hive动态分区 - 简书](https://www.jianshu.com/p/e7debf0980e3)

@@ -13,7 +13,7 @@
 
 ## Hbase  热点现象及解决办法
 
-## RowKey的设计原则？
+## RowKey的设计原则?
 
 rowkey的设计原则：各个列簇数据平衡，长度原则、相邻原则，创建表的时候设置表放入regionserver缓存中，避免自动增长和时间，使用字节数组代替string，最大长度64kb，最好16字节以内，按天分表，两个字节散列，四个字节存储时分毫秒。
 
@@ -151,11 +151,11 @@ HBase数据写入通常会遇到两类问题，一类是写性能较差，另一
 
 ## HBase Master和Regionserver的交互；
 
-## HBase的HA，Zookeeper在其中的作用；
+## HBase的HA,Zookeeper在其中的作用；
 
-## Master宕机的时候，哪些能正常工作，读写数据；
+## Master宕机的时候,哪些能正常工作,读写数据；
 
-## region分裂的过程？
+## region分裂的过程?
 
 ## Hbase 列簇的设计原则
 
@@ -244,7 +244,7 @@ BlockCache也称为读缓存，HBase会将一次文件查找的Block块缓存到
 
 1. BlockCache的内容
 
-## 行式存储和列式存储的优劣势？
+## 行式存储和列式存储的优劣势?
 
 
 

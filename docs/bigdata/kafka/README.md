@@ -2,7 +2,7 @@
 
 [toc]
 
-## kafka的概念相关的问题？
+## kafka的概念相关的问题?
 
 1. kafka是一个分布式的、可分区的、可复制的提交日志服务，复制是核心，保证了了可用性和持久性
 
@@ -14,7 +14,7 @@
 - 容错性：允许集群中节点失败（若副本数量为n,则允许n-1个节点失败）
 - 高并发：支持数千个客户端同时读写
 
-## kafka 新旧API的特点？
+## kafka 新旧API的特点?
 
 [Kafka 0.9 新消费者API](https://www.cnblogs.com/admln/p/5446361.html)
 
@@ -38,7 +38,7 @@ topic各分区都存在已提交的offset时，从offset后开始消费；只要
 
 是否由客户端自动提交offset
 
-## kafka 版本的演进？
+## kafka 版本的演进?
 
 [kafka各个版本特性预览介绍](https://blog.csdn.net/hesi9555/article/details/70237744)
 
@@ -80,7 +80,7 @@ topic各分区都存在已提交的offset时，从offset后开始消费；只要
 2. 所有消息包含了时间戳字段
 3. Kafka Consumer Max Records，在Kafka 0.9.0.0，开发者们在新consumer上使用poll()函数的时候是几乎无法控制返回消息的条数。不过值得高兴的是，此版本的Kafka引入了max.poll.records参数，允许开发者控制返回消息的条数。
 
-## kafka 的leader 选举机制是怎样实现的以及各个版本的实现？
+## kafka 的leader 选举机制是怎样实现的以及各个版本的实现?
 
 1. leader是对应partition的概念，每个partition都有一个leader。
 2. 客户端生产消费消息都是只跟leader交互 (实现上简单。)
@@ -100,7 +100,7 @@ topic各分区都存在已提交的offset时，从offset后开始消费；只要
     2. [kafka的leader选举过程 - 简书](https://www.jianshu.com/p/c987b5e055b0)
 8. unclean.leader.election.enable 默认是true，表示允许不在ISR列表的follower，选举为leader（最坏的打算，可能丢消息）
 
-## kafka 的 rebalance 是怎样的？
+## kafka 的 rebalance 是怎样的?
 
 ![image](https://static.lovedata.net/jpg/2018/6/29/9e105be3ad21eeabe8bab88988b09e87.jpg-wm)
 
@@ -134,7 +134,7 @@ Consumer 初始化时 group 状态变化
 [Kafka源码深度解析－序列7 －Consumer －coordinator协议与heartbeat实现原理 - CSDN博客](https://blog.csdn.net/chunlongyu/article/details/52791874)
 
 
-## kafka中的offset状态，以及high.watermark是什么意思
+## kafka中的offset状态,以及high.watermark是什么意思
 
 ![image](https://static.lovedata.net/jpg/2018/5/25/c2fa3b250b6512a80279e8140b1421d7.jpg-wm)
 
@@ -143,9 +143,9 @@ Consumer 初始化时 group 状态变化
 
 该图还显示了日志中的另外两个重要位置。日志结束偏移量是写入日志的最后一条消息的偏移量。高水印是成功复制到所有日志副本的最后一条消息的偏移量。从消费者的角度来看，主要知道的是，你只能读取高水印。这防止消费者读取稍后可能丢失的未复制数据。
 
-## Kafak本身提供的新的组协调协议是怎样的机制？
+## Kafak本身提供的新的组协调协议是怎样的机制?
 
-## kafka 使用场景？
+## kafka 使用场景?
 
 - 日志收集：一个公司可以用Kafka可以收集各种服务的log，通过kafka以统一接口服务的方式开放给各种consumer，例如hadoop、Hbase、Solr等。
 - 消息系统：解耦和生产者和消费者、缓存消息等。
@@ -168,7 +168,7 @@ Consumer 初始化时 group 状态变化
 2. ![image](https://static.lovedata.net/jpg/2018/5/29/58462246b8030bb67d3a633305cfe12b.jpg-wm)
 3. ![image](https://static.lovedata.net/jpg/2018/5/29/dc69269178701fdeae11e3388340176e.jpg-wm)
 
-## 如果Zookeeper宕机了，kafka还能用吗？
+## 如果Zookeeper宕机了,kafka还能用吗?
 
 ## kafka 发送消息的三种方式
 
@@ -178,7 +178,7 @@ Consumer 初始化时 group 状态变化
 2. 同步发送，调用send() 返回一个Futrue对象，调用get()方法进行等待，可能抛出异常，有可重试异常和不可重试异常（如数据太大）
 3. 异步发送，调用send()方法，指定一个回调函数，服务器返回相应的时候调用该函数 (实现producer.Callback的onComplete方法)
 
-## kafka生产者有哪些重要的配置？
+## kafka生产者有哪些重要的配置?
 
 ###  acks
 
@@ -220,12 +220,12 @@ acks 指定了必须要多少个分区副本收到消息，生产者才会认为
 2. 如果retries为非零， max.in.flight.requests.per.connection>1,如果一个消息社保，第二批次成功，第一次重试成功后，那么顺序就乱了
 3. 一般设置retries>0,把max.in.flight.requests.per.connection设置为1，保证有序
 
-## 什么是Avro？
+## 什么是Avro?
 
 1. Avro 是一种与语言无关的序列化格式，通过schema定义，schema使用json描述，数据被序列为二进制或者json（一般二进制），schema内嵌在数据文件里， **兼容新旧版本**
 2. 使用schema注册表来生产者注册schema，消费者获取schema，使用Confluent Schema Registry注册表
 
-## kafka主题增加分区后，原来的路由到分区A的数据，还会路由到A吗？
+## kafka主题增加分区后,原来的路由到分区A的数据,还会路由到A吗?
 
 不会，回路由到其他分区，要想不变，就是在创建主题的时候，把分区规划好，而且永远不要增加新分区
 
@@ -235,7 +235,7 @@ acks 指定了必须要多少个分区副本收到消息，生产者才会认为
 2. 兼职不是null，并且使用默认分区，使用kafka对键进行散列（这里散列使用所有分区，包括不可用的，可能会发生错误）
 3. 自定义分区
 
-## 什么时候发生重新分配reblance？
+## 什么时候发生重新分配reblance?
 
 在主题发生变化时，比如管理员添加了新的分区，会发生。
 分区所有权从一个消费者转移到另一个消费者，这样的行为成为再均衡，给消费者群组带来了高可用性和伸缩性
@@ -243,15 +243,15 @@ acks 指定了必须要多少个分区副本收到消息，生产者才会认为
 消费者向群组协调器broker发送心跳维持所有权关系，在轮询消息和提交偏移量的时候发送心跳。
 消费者必须持续的轮询向kafka请求数据，否则会被认为已经死掉，导致重新分配哦。
 
-## KafkaConsumer在订阅数据后退出了不关闭会有什么后果？
+## KafkaConsumer在订阅数据后退出了不关闭会有什么后果?
 
 如果不管，网络连接和socket也不会关闭，就不能立即出发再均衡，要等待协调器发现心跳没了才确认他死亡了，这样就需要更长的时间，导致群组在一段时间内无法读取消息
 
-## 消费者线程安全问题？
+## 消费者线程安全问题?
 
 同一个群组，无法让一个线程运行多个消费者，也无法让多个线程安全的共享一个消费者，按照规则，一个消费者使用一个线程。如果要多线程使用ExecutorServcie启动多个线程，让每个线程运行自己的消费者。
 
-## 消费者的重要配置？
+## 消费者的重要配置?
 
 1. fetch.min.bytes 从服务器获取的最小字节数，如果数据不够，不会马上返回。针对于数据量不大的情况下，避免频繁的网络连接
 2. fetch.max.wait.ms 等待broker数据的超时时间，与上面配置配套。不能老等是吧
@@ -259,7 +259,7 @@ acks 指定了必须要多少个分区副本收到消息，生产者才会认为
 4. session.timeout.ms 指定消费者被认为死亡之前可以与服务器断开连接的时间，hearbeat.interval.ms指定pool想协调器发送心跳的频率，一般比timeout.ms小，一般为他的三分之一
 5. [enableautocommit-的含义](#3-kafka-enableautocommit-的含义)
 
-## 消费者偏移量自动提交的方式？
+## 消费者偏移量自动提交的方式?
 
 1. 自动提交 设置 anable.auto.commit=true,每 auto.commit.interval.ms 控制提交偏移量，默认5s，也是轮询里进行，每次轮询判断是否该提交了，无法完全避免消息被重复处理， **因为他并不能知道哪一条消息被处理掉了**
 2. 手动提交偏移量  anable.auto.commit=false 使用commitSync()提交（提交poll最新的偏移量） 需要确保处理完成消息后调用该方法
@@ -278,11 +278,11 @@ acks 指定了必须要多少个分区副本收到消息，生产者才会认为
 
 使用partitionsFor("topic") 获取某个主题所有的分区，并且从土偶哦 consumer.assin(topicparitions) 分配分区，不能获取新的分区通知。
 
-## kafka高可用如何保证数据不丢失不重复消费？
+## kafka高可用如何保证数据不丢失不重复消费?
 
 [Spark Streaming和Kafka整合保证数据零丢失 - FelixZh - 博客园](https://www.cnblogs.com/felixzh/p/6371253.html)
 
-## kafka控制器的选举方式？
+## kafka控制器的选举方式?
 
 1. kafka通过zk的临时节点选举控制器，在节点加入集群或者退出通知控制器，控制器负责加入或者离开集群式进行分区的首领选举，使用 epoch避免脑裂（两个节点都认为自己是当前的控制器：通过controller epoch 的新旧来判断）
 
@@ -294,22 +294,22 @@ acks 指定了必须要多少个分区副本收到消息，生产者才会认为
 2. 首领接到请求后首先判断请求是否有效：指定偏移是否存在  否则返回一个错误
 3. kafka使用  **零复制** 技术，直接从文件（linux文件缓冲区） 里发送到网络，不是使用缓冲区，避免了字节复制，也不需要内存缓冲区
 
-## kafka 有哪些保证？
+## kafka 有哪些保证?
 
 1. kafka保证分区消息的顺序 同生产者，同分区
 2. 只有当消息被写入分区所有的同步副本时候，才被认为是已提交的。
 3. 只要还有一个副本是活跃的，那么已提交的消息就不会丢失
 4. 消费者只能读取已被提交的消息
 
-## 副本满足什么条件才被认为是同步的？
+## 副本满足什么条件才被认为是同步的?
 
 1. 与zk有一个活跃会话，在过去六秒。。 向zk发送过心跳
 2. 过去十秒。。向首领发送过消息
 3. 在过去十秒从首领那里获取最新的消息（必须是零延迟的）
 
-## kafka IRS 副本下线的一些机制？  
+## kafka IRS 副本下线的一些机制?  
 
-## 不完全的首领选举的解释？
+## 不完全的首领选举的解释?
 
 unclean.leader.electon.enable=true 允许不同步的副本成为首领，面临丢失消息的风险，可能造成一些不一致的情况，设置为false，就是等待原先的首领重新上线，降低可用性，银行系统一般禁用掉这个配置。在实时点击流分析系统，一般会启用不完全的首领选举
 
@@ -344,7 +344,7 @@ acks=all 结合 min.insync.replicas 最安全的做法，可以通过异步模�
 3. 达到重试次数上限，消息占用内存达到上限
 
 
-## 如何保证消费者的可靠性？
+## 如何保证消费者的可靠性?
 
 > 只有被提交到kafka，并写入所有副本的数据，对消费者是可用的，具备一致性，消费者唯一要做的是跟踪哪些消息是已经读取过的，哪些没有读取过
 
@@ -354,11 +354,11 @@ acks=all 结合 min.insync.replicas 最安全的做法，可以通过异步模�
 长时间处理
 消费者复杂计算的时候，暂停轮询不能超过几秒钟，即使不想获取更多数据，也要保持轮询，这样客户端才能网broker发送心跳，一般使用线程池处理数据，然后puase暂停消费者，保持轮询，不获取新数据，知道处理完成
 
-## kafka at-least-once at-most-once exactly-once 语义？
+## kafka at-least-once at-most-once exactly-once 语义?
 
 [Kafka设计解析（八）- Exactly Once语义与事务机制原理 - 郭俊Jason - 博客园](https://www.cnblogs.com/jasongj/p/7912348.html)
 
-## 如何验证kafka的配置是否可靠？
+## 如何验证kafka的配置是否可靠?
 
 使用Verfiable Producer 和 VerifiableConsumer来验证
 
@@ -370,7 +370,7 @@ acks=all 结合 min.insync.replicas 最安全的做法，可以通过异步模�
 4. 不完全首领选举测试
 
 
-## Kafka 可靠性方面的了解？
+## Kafka 可靠性方面的了解?
 
 [kafka 数据可靠性深度解读 - ImportNew](http://www.importnew.com/24973.html)
 
@@ -441,17 +441,17 @@ Kafka 架构分为以下几个部分
 
 
 
-## Kafka 分区的目的？
+## Kafka 分区的目的?
 
 分区对于 Kafka 集群的好处是：实现负载均衡。分区对于消费者来说，可以提高并发度，提高效率。
 
-## Kafka 是如何做到消息的有序性？
+## Kafka 是如何做到消息的有序性?
 
 kafka 中的每个 partition 中的消息在写入时都是有序的，而且单独一个 partition 只能由一个消费者去消费，可以在里面保证消息的顺序性。但是分区之间的消息是不保证有序的。
 
 
 
-## Kafka 的高可靠性是怎么实现的？
+## Kafka 的高可靠性是怎么实现的?
 
 [Kafka 是如何保证数据可靠性和一致性](http://mp.weixin.qq.com/s?__biz=MzA5MTc0NTMwNQ==&mid=2650716970&idx=1&sn=3875dd83ca35c683bfa42135c55a03ab&chksm=887da65cbf0a2f4aeae51f4d41fa8dec9c66af17fbc423eb5a1b0d35d20348880c8b2539ddbf&scene=21#wechat_redirect)
 
@@ -469,7 +469,7 @@ kafka 中的每个 partition 中的消息在写入时都是有序的，而且单
 
 当然，引入了 High Water Mark 机制，会导致 Broker 间的消息复制因为某些原因变慢，那么消息到达消费者的时间也会随之变长（因为我们会先等待消息复制完毕）。延迟时间可以通过参数 replica.lag.time.max.ms 参数配置，它指定了副本在复制消息时可被允许的最大延迟时间。
 
-## ISR、OSR、AR 是什么？
+## ISR、OSR、AR 是什么?
 
 ISR：In-Sync Replicas 副本同步队列
 
@@ -491,7 +491,7 @@ ISR是由leader维护，follower从leader同步数据有一些延迟（具体可
 
   
 
-## Kafka 在什么情况下会出现消息丢失？
+## Kafka 在什么情况下会出现消息丢失?
 
 [Kafka 是如何保证数据可靠性和一致性](http://mp.weixin.qq.com/s?__biz=MzA5MTc0NTMwNQ==&mid=2650716970&idx=1&sn=3875dd83ca35c683bfa42135c55a03ab&chksm=887da65cbf0a2f4aeae51f4d41fa8dec9c66af17fbc423eb5a1b0d35d20348880c8b2539ddbf&scene=21#wechat_redirect)
 
@@ -499,17 +499,17 @@ ISR是由leader维护，follower从leader同步数据有一些延迟（具体可
 
 [Kafka 是如何保证数据可靠性和一致性](http://mp.weixin.qq.com/s?__biz=MzA5MTc0NTMwNQ==&mid=2650716970&idx=1&sn=3875dd83ca35c683bfa42135c55a03ab&chksm=887da65cbf0a2f4aeae51f4d41fa8dec9c66af17fbc423eb5a1b0d35d20348880c8b2539ddbf&scene=21#wechat_redirect)
 
-## 消费者和消费者组有什么关系？
+## 消费者和消费者组有什么关系?
 
 每个消费者从属于消费组。具体关系如下：
 
 ![image](https://static.lovedata.net/20-05-18-a55bbf36a6eca98140a8ea123ae017e5.png-wm)
 
-## Kafka 的每个分区只能被一个消费者线程，如何做到多个线程同时消费一个分区？
+## Kafka 的每个分区只能被一个消费者线程,如何做到多个线程同时消费一个分区?
 
 [参见我这篇文章：Airbnb 是如何通过 balanced Kafka reader 来扩展 Spark streaming 实时流处理能力的](http://mp.weixin.qq.com/s?__biz=MzA5MTc0NTMwNQ==&mid=2650716863&idx=1&sn=20d42a18ad084eb1adc8db126cae71cd&chksm=887da7c9bf0a2edf8b30a3dd783a4f3f1097078ff3a840d25f57b8eaa06815c63fadd0bcb68b&scene=21#wechat_redirect)
 
-## 数据传输的事务有几种？
+## 数据传输的事务有几种?
 
 数据传输的事务定义通常有以下三种级别：
 
@@ -519,11 +519,11 @@ ISR是由leader维护，follower从leader同步数据有一些延迟（具体可
 
 （3）精确的一次（Exactly once）: 不会漏传输也不会重复传输,每个消息都传输被
 
-## Kafka 消费者是否可以消费指定分区消息？
+## Kafka 消费者是否可以消费指定分区消息?
 
 Kafa consumer消费消息时，向broker发出fetch请求去消费特定分区的消息，consumer指定消息在日志中的偏移量（offset），就可以消费从这个位置开始的消息，customer拥有了offset的控制权，可以向后回滚去重新消费之前的消息，这是很有意义的
 
-## Kafka消息是采用Pull模式，还是Push模式？
+## Kafka消息是采用Pull模式,还是Push模式?
 
 Kafka最初考虑的问题是，customer应该从brokes拉取消息还是brokers将消息推送到consumer，也就是pull还push。在这方面，Kafka遵循了一种大部分消息系统共同的传统的设计：producer将消息推送到broker，consumer从broker拉取消息。
 
@@ -533,11 +533,11 @@ Pull模式的另外一个好处是consumer可以自主决定是否批量的从br
 
 Pull有个缺点是，如果broker没有可供消费的消息，将导致consumer不断在循环中轮询，直到新消息到t达。为了避免这点，Kafka有个参数可以让consumer阻塞知道新消息到达(当然也可以阻塞知道消息的数量达到某个特定的量这样就可以批量发
 
-## Kafka 消息格式的演变清楚吗？
+## Kafka 消息格式的演变清楚吗?
 
 Kafka 的消息格式经过了四次大变化，具体[Apache Kafka消息格式的演变(0.7.x~0.10.x)](http://mp.weixin.qq.com/s?__biz=MzA5MTc0NTMwNQ==&mid=2650714506&idx=1&sn=6499c694e0ab80a8cf0186544507dfd0&chksm=887dacfcbf0a25ea2106ccddbaa8c39bae2f4dd0754a4528bc198d0b8d164115b2ea103db6ff&scene=21#wechat_redirect)。
 
-## Kafka 偏移量的演变清楚吗？
+## Kafka 偏移量的演变清楚吗?
 
 参见我这篇文章：[图解Apache Kafka消息偏移量的演变(0.7.x~0.10.x)](http://mp.weixin.qq.com/s?__biz=MzA5MTc0NTMwNQ==&mid=2650714529&idx=1&sn=e85eff6266ccac2d6532bb636c5b92c2&chksm=887dacd7bf0a25c1032e52c28b06d46c76de6dc290100f176b2ac8ebfb063f0c81efe83b4bf5&scene=21#wechat_redirect)
 
@@ -585,13 +585,13 @@ Kafka 的消息格式经过了四次大变化，具体[Apache Kafka消息格式�
 
 参见我这篇文章 [Kafka分区分配策略(Partition Assignment Strategy)](http://mp.weixin.qq.com/s?__biz=MzA5MTc0NTMwNQ==&mid=2650715861&idx=1&sn=03ff472f21fd429ac09559aca8f2b2bc&chksm=887daba3bf0a22b58e46e1c214f6b44592ada2d1b3e21137ead9d63ff86e41f094660252fd16&scene=21#wechat_redirect)
 
-## Kafka Producer 是如何动态感知主题分区数变化的？
+## Kafka Producer 是如何动态感知主题分区数变化的?
 
 [参见我这篇文章：Kafka Producer是如何动态感知Topic分区数变化](http://mp.weixin.qq.com/s?__biz=MzA5MTc0NTMwNQ==&mid=403008823&idx=1&sn=442e1909d509f312d5057e4cfc478793&chksm=0d8670413af1f957ebdcea08cef0244447a5bd23bafd3a50efd326a949e4fa2142493476b497&scene=21#wechat_redirect)
 
 
 
-##  Kafka 是如何实现高吞吐率的？
+##  Kafka 是如何实现高吞吐率的?
 
 Kafka是分布式消息系统，需要处理海量的消息，Kafka的设计是把所有的消息都写入速度低容量大的硬盘，以此来换取更强的存储能力，但实际上，使用硬盘并没有带来过多的性能损失。kafka主要使用了以下几个方式实现了超高的吞吐率：
 
@@ -603,7 +603,7 @@ Kafka是分布式消息系统，需要处理海量的消息，Kafka的设计是�
 
 [具体参见：Kafka是如何实现高吞吐率的](http://mp.weixin.qq.com/s?__biz=MzA5MTc0NTMwNQ==&mid=402790390&idx=1&sn=f0200f45e6697d703bf694fed7573fe1&chksm=0d810a803af68396857cf45264bead78e7f3b56cd8e49853bc798c50bc3ed4fea4440f52c901&scene=21#wechat_redirect)
 
-## Kafka 监控都有哪些？
+## Kafka 监控都有哪些?
 
 [参见我另外几篇文章：Apache Kafka监控之KafkaOffsetMonitor](http://mp.weixin.qq.com/s?__biz=MzA5MTc0NTMwNQ==&mid=200581484&idx=1&sn=3e14a01cf1eb514dfdde73a6f032643d&chksm=1e77bc1a2900350cf546522ff9ce4a6387c0f797ba056ff18f19180c06ad6c8817e4ba337974&scene=21#wechat_redirect)
 
@@ -617,7 +617,7 @@ Kafka是分布式消息系统，需要处理海量的消息，Kafka的设计是�
 
 [参见我另外几篇文章](http://mp.weixin.qq.com/s?__biz=MzA5MTc0NTMwNQ==&mid=200581484&idx=1&sn=3e14a01cf1eb514dfdde73a6f032643d&chksm=1e77bc1a2900350cf546522ff9ce4a6387c0f797ba056ff18f19180c06ad6c8817e4ba337974&scene=21#wechat_redirect)：如何为Kafka集群选择合适的Topics/Partitions数量
 
-## 谈谈你对 Kafka 事务的了解？
+## 谈谈你对 Kafka 事务的了解?
 
 参见这篇文章：http://www.jasongj.com/kafka/transaction/
 
@@ -625,7 +625,7 @@ Kafka是分布式消息系统，需要处理海量的消息，Kafka的设计是�
 
 参见这篇文章：https://www.jianshu.com/p/b1599f46229b
 
-## Kafka 缺点？
+## Kafka 缺点?
 
 - 由于是批量发送，数据并非真正的实时；
 - 对于mqtt协议不支持；
@@ -642,7 +642,7 @@ Kafka是分布式消息系统，需要处理海量的消息，Kafka的设计是�
 
  ![image](https://static.lovedata.net/20-05-18-16d862bf39db2bb72a414f1bb5b51184.png-wm)
 
-## Kafka 分区数可以增加或减少吗？为什么？ 
+## Kafka 分区数可以增加或减少吗?为什么? 
 
 我们可以使用 bin/kafka-topics.sh 命令对 Kafka 增加 Kafka 的分区数据，但是 Kafka 不支持减少分区数。 
 
@@ -650,13 +650,13 @@ Kafka 分区数据不支持减少是由很多原因的，比如减少的分区�
 
 
 
-## kafka 可以脱离 zookeeper 单独使用吗？为什么？
+## kafka 可以脱离 zookeeper 单独使用吗?为什么?
 
-## kafka 有几种数据保留的策略？
+## kafka 有几种数据保留的策略?
 
-## kafka 同时设置了 7 天和 10G 清除数据，到第五天的时候消息达到了 10G，这个时候 kafka 将如何处理？
+## kafka 同时设置了 7 天和 10G 清除数据,到第五天的时候消息达到了 10G,这个时候 kafka 将如何处理?
 
-## 什么情况会导致 kafka 运行变慢？
+## 什么情况会导致 kafka 运行变慢?
 
 
 

@@ -4,7 +4,7 @@
 
 ## 基础知识
 
-### Spark性能优化主要有哪些手段？
+### Spark性能优化主要有哪些手段?
 
 1、常规性能调优：分配资源、并行度。。。等
 
@@ -19,7 +19,7 @@
 [spark性能调优都有哪些方法 - CSDN博客](https://blog.csdn.net/HANLIPENGHANLIPENG/article/details/78393450)
 [spark性能优化 - 掘金](https://juejin.im/post/5a40b9bcf265da4312812653)
 
-###  对于Spark你觉得他对于现有大数据的现状的优势和劣势在哪里？
+###  对于Spark你觉得他对于现有大数据的现状的优势和劣势在哪里?
 
 1.Spark的内存计算 主要体现在哪里？
 (a) spark, 相比与map reduce最大的速度提升在于做重复计算时，spark可以重复使用相关的缓存数据，而M/R则会笨拙的不断进行disk i/o.
@@ -30,7 +30,7 @@
 
 [spark与hadoop相比，存在哪些缺陷（劣势） - 云+社区 - 腾讯云](https://cloud.tencent.com/developer/article/1074623)
 
-###  Spark的Shuffle原理及调优？
+###  Spark的Shuffle原理及调优?
 
 [用实例说明Spark stage划分原理 - bonelee - 博客园](https://www.cnblogs.com/bonelee/p/6039469.html)
 
@@ -44,7 +44,7 @@
 
 ![image](https://static.lovedata.net/jpg/2018/6/14/e224b35496ac4de184008bbb09894893.jpg-wm)
 
-###  spark排序实现流程，reduce端怎么实现的；
+###  spark排序实现流程,reduce端怎么实现的；
 
 ### Spark的特点是什么
 
@@ -67,9 +67,9 @@
 - on mesos(集群模式)： 运行在 mesos 资源管理器框架之上，由 mesos 负责资源管理，Spark 负责任务调度和计算
 - on cloud(集群模式)：比如 AWS 的 EC2，使用这个模式能很方便的访问 Amazon的 S3;Spark 支持多种分布式存储系统：HDFS 和 S3
 
-### spark 实现高可用性：High Availability？
+### spark 实现高可用性：High Availability?
 
-###  spark中怎么解决内存泄漏问题？
+###  spark中怎么解决内存泄漏问题?
 
 [Spark面对OOM问题的解决方法及优化总结 - CSDN博客](https://blog.csdn.net/yhb315279058/article/details/51035631)
 
@@ -86,7 +86,7 @@
 
 ![image](https://static.lovedata.net/jpg/2018/7/16/87a6250639209f2a955781bfa8c5b8fd.jpg-wm)
 
-### spark运行原理，从提交一个jar到最后返回结果，整个过程
+### spark运行原理,从提交一个jar到最后返回结果,整个过程
 
 1. 用户通过spark-submit脚本提交应用。
 2. spark-submit根据用户代码及配置确定使用哪个资源管理器，以及在合适的位置启动driver。
@@ -115,27 +115,27 @@
 参考
 [spark提交应用的全流程分析 - CSDN博客](https://blog.csdn.net/jediael_lu/article/details/76735217)
 
-###  spark的stage划分是怎么实现的？拓扑排序？怎么实现？还有什么算法实现？
+###  spark的stage划分是怎么实现的?拓扑排序?怎么实现?还有什么算法实现?
 
 宽依赖就是stage划分的依据
 
 ![image](https://static.lovedata.net/jpg/2018/7/13/5e1a7fa922dbf6c2d5e646071d1bcb47.jpg-wm)
 
-###  spark rpc，spark2.0为啥舍弃了akka，而用netty
+###  spark rpc,spark2.0为啥舍弃了akka,而用netty
 
-###  spark的各种shuffle，与mapreduce的对比;
+###  spark的各种shuffle,与mapreduce的对比;
 
-###  spark的各种ha，master的ha，worker的ha，executor的ha，driver的ha,task的ha,在容错的时候对集群或是task有什么影响？
+###  spark的各种ha,master的ha,worker的ha,executor的ha,driver的ha,task的ha,在容错的时候对集群或是task有什么影响?
 
-### spark的内存管理机制，spark1.6前后对比分析
+### spark的内存管理机制,spark1.6前后对比分析
 
-###  spark2.0做出了哪些优化？tungsten引擎？cpu与内存两个方面分别说明
+###  spark2.0做出了哪些优化?tungsten引擎?cpu与内存两个方面分别说明
 
 ### spark rdd、dataframe、dataset区别
 
-###  HashPartitioner与RangePartitioner的实现，以及水塘抽样；
+###  HashPartitioner与RangePartitioner的实现,以及水塘抽样；
 
-###  spark有哪几种join，使用场景，以及实现原理
+###  spark有哪几种join,使用场景,以及实现原理
 
 ###  dagschedule、taskschedule、schedulebankend实现原理；
 
@@ -155,7 +155,7 @@ stage 划分
 
 ![image](https://static.lovedata.net/jpg/2018/7/13/37054531f120f5531db40dcf90a03d13.jpg-wm)
 
-###  宽依赖、窄依赖的概念？宽依赖、窄依赖的例子？以下图中所指的是何种依赖
+###  宽依赖、窄依赖的概念?宽依赖、窄依赖的例子?以下图中所指的是何种依赖
 
 ![image](https://static.lovedata.net/jpg/2018/7/4/52cbbb0ea8777f912ef6f6383cc1f5eb.jpg-wm)
 
@@ -164,13 +164,13 @@ stage 划分
 
 ![image](https://static.lovedata.net/jpg/2018/7/13/fddef8da2524d01a32515fd4a69837c9.jpg-wm)
 
-###  Spark数据倾斜，怎么定位、怎么解决（阿里）；
+###  Spark数据倾斜,怎么定位、怎么解决（阿里）；
 
 [spark提交应用的全流程分析 - CSDN博客](https://www.cnblogs.com/LHWorldBlog/p/8506121.html)
 
 ![【Spark篇】---Spark解决数据倾斜问题](https://static.lovedata.net/jpg/2018/6/14/a6f6512145359189c2a4e9f9afac7673.jpg-wm)
 
-###  spark有哪些组件？
+###  spark有哪些组件?
 
 - master：管理集群和节点，不参与计算。
 - worker：计算节点，进程本身不参与计算，和master汇报。
@@ -192,12 +192,12 @@ stage 划分
 
 ![image](https://static.lovedata.net/jpg/2018/6/14/3a907f0488496c7a39fb6bec02966e25.jpg-wm)
 
-###  spark task解析？
+###  spark task解析?
 
 ![image](https://static.lovedata.net/jpg/2018/7/13/f243b2f1b3fae98fda495c5fc8fb3fea.jpg-wm)
 
 
-### spark  集群 100g内存 有两百g文件，去读取，有什么问题。
+### spark  集群 100g内存 有两百g文件,去读取,有什么问题
 
 1. [内存有限的情况下 Spark 如何处理 T 级别的数据 - abcde - CSDN博客 ](https://blog.csdn.net/asdfsadfasdfsa/article/details/78606365)
 2. 只有在用户要求Spark cache该RDD，且storage level要求在内存中cache时，Iterator计算出的结果才会被保留，通过cache manager放入内存池
@@ -206,7 +206,7 @@ stage 划分
 
 ## Spark 优化
 
-###  reduceByKey或者aggregateByKey与groupByKey的区别？
+###  reduceByKey或者aggregateByKey与groupByKey的区别?
 
 因为reduceByKey和aggregateByKey算子都会使用用户自定义的函数对每个节点本地的相同key进行预聚合。而groupByKey算子是不会进行预聚合的，全量的数据会在集群的各个节点之间分发和传输，性能相对来说比较差。
 
@@ -214,7 +214,7 @@ stage 划分
 
 ![image](https://static.lovedata.net/jpg/2018/6/14/31d0199949271ef1641a7be918818fcd.jpg-wm)
 
-###  如何使用高性能的算子？
+###  如何使用高性能的算子?
 
 1. 使用reduceByKey/aggregateByKey替代groupByKey
 2. 使用mapPartitions替代普通map 可能出现OOM 因为可能一个分区数据量太大

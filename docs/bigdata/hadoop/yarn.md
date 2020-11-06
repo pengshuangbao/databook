@@ -4,7 +4,7 @@
 
 ## YARN的新特性
 
-## hadoop的调度策略的实现，你们使用的是那种策略，为什么？
+## hadoop的调度策略的实现,你们使用的是那种策略,为什么?
 
 [YARN资源调度策略 // foolbear的冥想盆](http://jxy.me/2015/04/30/yarn-resource-scheduler/)
 
@@ -77,7 +77,7 @@ Container是RM分配资源的基本单位。每个Container包含特定数量的
 
 需要熟悉下Yarn资源调度机制
 
-## 画一个yarn架构图，及其通信流程；
+## 画一个yarn架构图,及其通信流程；
 
 ![image](https://static.lovedata.net/jpg/2018/7/4/33789bff3b6481fa26da13c743d815c7.jpg-wm)
 ![image](https://static.lovedata.net/jpg/2018/7/4/50b9c520a08ac25c70008cf1fb620ed9.jpg-wm)

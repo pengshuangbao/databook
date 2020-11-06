@@ -44,12 +44,12 @@ def selectionSort(arr):
 print(selectionSort([5, 3, 6, 2, 10]))
 ```
 
-## 什么是递归？
+## 什么是递归?
 
 递归，就是自己调用自己
 ![image](https://static.lovedata.net/jpg/2018/7/6/4b9404a72ba84922e51ba6f465954e2f.jpg-wm)
 
-## 什么是调用栈？ 
+## 什么是调用栈? 
 
 计算机在内部使用被称为调用栈的栈 假设你调用greet("maggie")，计算机将首先为该函数调用分配一块内存。
 ![image](https://static.lovedata.net/jpg/2018/7/6/3d0bf4631e38a37219535b9d32621a26.jpg-wm)  ![image](https://static.lovedata.net/jpg/2018/7/6/0610519a8258a28e0928292ac7e66fc7.jpg-wm)
@@ -82,7 +82,7 @@ return x * fact(x-1)
 
 ![image](https://static.lovedata.net/jpg/2018/7/11/63664761ef6f41b78ed4340e3b421fa8.jpg-wm)
 
-## 什么是分而治之(Divide and conquer, D&C)？
+## 什么是分而治之(Divide and conquer, D&C)?
 
 分而治之是你学习的第一种通用的问题解决方法  一种著名的递归式问题解决方法。
 
@@ -429,7 +429,7 @@ O(1)就是最低的时空复杂度了，也就是耗时/耗空间与输入数据
 1. 分类就是编组
 2. 回归就是预测结果（如一个数字）
 
-## 二分查找树？
+## 二分查找树?
 
 ![image](https://static.lovedata.net/jpg/2018/7/10/f74775e83489e3920cdf0f5572647d33.jpg-wm)
 
