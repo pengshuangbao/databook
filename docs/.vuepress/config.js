@@ -132,7 +132,18 @@ function getJavaSidebar(){
     'jvm',
     'coding',
     '多线程',
-    '学习资源'
+    '学习资源',
+    {
+      title: 'jvm进阶',
+      collapsable: true,
+      children: [
+        'jvm进阶/01JVM与Java体系结构',
+        'jvm进阶/02类加载子系统',
+        'jvm进阶/03运行时数据区概念及线程',
+        'jvm进阶/04程序计数器',
+        'jvm进阶/05虚拟机栈'
+      ]
+    }
   ]
 }
 
