@@ -1,4 +1,4 @@
-# java
+java
 
 [toc]
 
@@ -258,11 +258,195 @@ helpTransfer()：调用多个工作线程一起帮助进行扩容，这样的效
 
 ### 第16讲 | synchronized底层如何实现?什么是锁的升级、降级?
 
+### 第17讲｜一个线程两次调用 start() 方法会出现什么情况？谈谈线程的生命周期和状态转移。
+
+Java 的线程是不允许启动两次的，第二次调用必然会抛出 IllegalThreadStateException，这是一种运行时异常，多次调用 start 被认为是编程错误。
+
+线程状态(java.lang.Thread.State):
+
+新建（NEW），表示线程被创建出来还没真正启动的状态，可以认为它是个 Java 内部状态。
+
+- **新建（NEW）**，表示线程被创建出来还没真正启动的状态，可以认为它是个 Java 内部状态。
+- **就绪（RUNNABLE）**，表示该线程已经在 JVM 中执行，当然由于执行需要计算资源，它可能是正在运行，也可能还在等待系统分配给它 CPU 片段，在就绪队列里面排队。
+- 在其他一些分析中，会额外区分一种状态 RUNNING，但是从 Java API 的角度，并不能表示出来。
+- **阻塞（BLOCKED）**，这个状态和我们前面两讲介绍的同步非常相关，阻塞表示线程在等待 Monitor lock。比如，线程试图通过 synchronized 去获取某个锁，但是其他线程已经独占了，那么当前线程就会处于阻塞状态。
+- **等待（WAITING）**，表示正在等待其他线程采取某些操作。一个常见的场景是类似生产者消费者模式，发现任务条件尚未满足，就让当前消费者线程等待（wait），另外的生产者线程去准备任务数据，然后通过类似 notify 等动作，通知消费线程可以继续工作了。Thread.join() 也会令线程进入等待状态。
+- **计时等待（TIMED_WAIT）**，其进入条件和等待状态类似，但是调用的是存在超时条件的方法，比如 wait 或 join 等方法的指定超时版本，如下面示例：
+- **终止（TERMINATED）**，不管是意外退出还是正常执行结束，线程已经完成使命，终止运行，也有人把这个状态叫作死亡。
+
+#### 线程是什么？
+
+1. 操作系统的角度：线程被认为是最小的调度单元，一个进程有多个线程
+
+2. 任务的真正运作者，有自己的栈（Stack）、寄存器（Register）、本地存储（Thread Local）等
+
+3. 和进程内其他线程共享文件描述符、虚拟地址空间
+
+具体实现中，线程还分为<u>**内核线程**</u>、<u>**用户线程**</u>。 
+
+当前JVM ： 现在的模型是**一对一映射**到操作系统**内核线程**。
+
+内部源码都是JNI
+
+```java
+private native void start0();
+private native void setPriority0(int newPriority);
+private native void interrupt0();
+```
+
+
+
+#### 线程状态转换
+
+![image](https://static.lovedata.net/20-11-10-e4595cfcccbe936fcf0f9030ad397382.png-wm)
+
+
+
+#### 为什么需要并发包？
+
+Thread 和 Object 的方法，听起来简单，但是实际应用中被证明**非常晦涩、易错**，这也是为什么 Java 后来又引入了并发包。总的来说，有了并发包，大多数情况下，我们已经不再需要去调用 wait/notify 之类的方法了。
+
+
+
+#### 守护线程（Daemon Thread）
+
+有的时候应用中需要一个长期驻留的服务程序，但是不希望其影响应用退出，就可以将其设置为守护线程，如果 JVM 发现只有守护线程存在时，将结束进程，具体可以参考下面代码段。注意，**必须在线程启动之前设置。**
+
+```java
+Thread daemonThread = new Thread();
+daemonThread.setDaemon(true);
+daemonThread.start();
+```
+
+
+
+#### ThreadLocal(线程本地变量)
+
+Java 提供的一种**保存线程私有信息**的机制，因为其在整个**线程生命周期内有效**，所以可以方便地在一个线程关联的不同业务模块之间**<u>传递信息</u>**，比如事务 ID、Cookie 等上下文相关信息。
+
+废弃项目的回收依赖于显式地触发，否则就要等待线程结束，进而回收相应 ThreadLocalMap！这就是很多 **<u>OOM 的来源</u>**，所以通常都会建议，应用一定要自己负责 remove，并且不要和线程池配合，因为 worker 线程往往是不会退出的。
+
+**线程池一般不建议和thread local配合...**
+
+### 第18讲 | 什么情况下Java程序会产生死锁？如何定位、修复？
+
+死锁是一种特定的程序状态，在实体之间，由于循环依赖导致彼此一直处于等待之中，没有任何个体可以继续前进。死锁不仅仅是在线程之间会发生，存在资源独占的进程之间同样也可能出现死锁。通常来说，我们大多是聚焦在多线程场景中的死锁，指两个或多个线程之间，由于互相持有对方需要的锁，而永久处于阻塞的状态。
+
+![image](https://static.lovedata.net/20-11-10-d59a0eed6e578bf4624dd61bdbfacf13.png-wm)
+
+定位问题四板斧
+
+**free  df.  jstack  jstat**
+
+死锁代码
+
+```java
+
+public class DeadLockSample extends Thread {
+  private String first;
+  private String second;
+  public DeadLockSample(String name, String first, String second) {
+      super(name);
+      this.first = first;
+      this.second = second;
+  }
+
+  public  void run() {
+      synchronized (first) {
+          System.out.println(this.getName() + " obtained: " + first);
+          try {
+              Thread.sleep(1000L);
+              synchronized (second) {
+                  System.out.println(this.getName() + " obtained: " + second);
+              }
+          } catch (InterruptedException e) {
+              // Do nothing
+          }
+      }
+  }
+  public static void main(String[] args) throws InterruptedException {
+      String lockA = "lockA";
+      String lockB = "lockB";
+      DeadLockSample t1 = new DeadLockSample("Thread1", lockA, lockB);
+      DeadLockSample t2 = new DeadLockSample("Thread2", lockB, lockA);
+      t1.start();
+      t2.start();
+      t1.join();
+      t2.join();
+  }
+}
+```
+
+
+
+#### 如何在编程中尽量预防死锁呢？
+
+1. 如果可能的话，尽量避免使用多个锁，并且只有需要时才持有锁
+2. 如果必须使用多个锁，尽量设计好锁的获取顺序  
+3. 使用带超时的方法，为程序带来更多可控性。
+
+
+
+### 第19讲 | Java并发包提供了哪些并发工具类？
+
+- 提供了比 synchronized 更加高级的各种同步结构，包括 **CountDownLatch、CyclicBarrier、Semaphore** 等，可以实现更加丰富的多线程操作，比如利用 Semaphore 作为资源控制器，限制同时进行工作的线程数量。
+- 各种线程安全的容器，比如最常见的 **ConcurrentHashMap、有序的 ConcurrentSkipListMap**，或者通过类似快照机制，实现线程安全的动态数组 CopyOnWriteArrayList 等。
+- 各种并发队列实现，如各种 BlockingQueue 实现，比较典型的 **ArrayBlockingQueue、 SynchronousQueue** 或针对特定场景的 PriorityBlockingQueue 等。
+- 强大的 **Executor** 框架，可以创建各种不同类型的线程池，调度任务运行等，绝大部分情况下，不再需要自己从头实现线程池和任务调度器。
+
+
+
+#### Semaphore信号量
+
+它通过控制一定数量的允许（permit）的方式，来达到限制通用资源访问的目的。
+
+#### CountDownLatch 和 CyclicBarrier
+
+- **CountDownLatch** 是**不可以重置**的，所以**无法重用**；而 CyclicBarrier 则没有这种限制，可以重用。
+- CountDownLatch 的基本操作组合是 **countDown/await。**调用 await 的线程阻塞等待 **countDown** 足够的次数，不管你是在一个线程还是多个线程里 countDown，只要次数足够即可。所以就像 Brain Goetz 说过的，***CountDownLatch 操作的是事件***。
+- **CyclicBarrier** 的基本操作组合，则就是 **await**，当所有的伙伴（parties）都调用了 **await**，才会继续进行任务*，**并自动进行重置**。注意，正常情况下，CyclicBarrier 的重置都是自动发生的，如果我们调用 reset 方法，但还有线程在等待，就会导致等待线程被打扰，抛出 BrokenBarrierException 异常。
+- CyclicBarrier 侧重点是**<u>*线程*</u>**，而不是**<u>*调用事件*</u>**，它的典型应用场景是用来***<u>等待并发线程结束</u>***。
+
+![image](https://static.lovedata.net/20-11-10-8bb926900cc9db63c472e4e89d9ab60c.png-wm)
 
 
 
 
 
+Map 放入或者获取的速度，而不在乎顺序，大多推荐使用 **ConcurrentHashMap**，反之则使用 **ConcurrentSkipListMap**；
+
+如果我们需要对大量数据进行非常频繁地修改，**ConcurrentSkipListMap** 也可能表现出优势。
 
 
+
+#### 为什么并发容器里面没有 ConcurrentTreeMap 呢？
+
+这是因为 TreeMap 要实现**高效的线程安全**是非常困难的，它的实现基于复杂的红黑树。为保证访问效率，当我们**<u>*插入或删除节点时，会移动节点进行平衡操作*</u>**，这导致在并发场景中难以进行合理粒度的同步。而 **SkipList** 结构则要相对简单很多，通过**层次结构提高访问速度**，虽然不够紧凑，空间使用有一定提高（O(nlogn)），但是在增删元素时线程安全的开销要好很多
+
+![image](https://static.lovedata.net/20-11-10-c3dceb25c189ab256550fc6fb7896b39.png-wm)
+
+
+
+#### CopyOnWrite 到底是什么意思呢？
+
+它的原理是，任何修改操作，如 add、set、remove，都会拷贝原数组，修改后替换原来的数组，通过这种防御性的方式，实现另类的线程安全
+
+```java
+
+public boolean add(E e) {
+  synchronized (lock) {
+      Object[] elements = getArray();
+      int len = elements.length;
+           // 拷贝
+      Object[] newElements = Arrays.copyOf(elements, len + 1);
+      newElements[len] = e;
+           // 替换
+      setArray(newElements);
+      return true;
+            }
+}
+final void setArray(Object[] a) {
+  array = a;
+}
+```
 
