@@ -450,3 +450,143 @@ final void setArray(Object[] a) {
 }
 ```
 
+
+
+### 第20讲 | 并发包中的ConcurrentLinkedQueue和LinkedBlockingQueue有什么区别？ ***
+
+Concurrent 类型基于 **lock-free**，在常见的多线程访问场景，一般可以<u>*提供较高吞吐量</u>*。
+
+而 LinkedBlockingQueue 内部则是**基于锁**，并提供了 **BlockingQueue** 的等待性方法。
+
+java.util.concurrent 包提供的容器（Queue、List、Set）、Map，从命名上可以大概区分为 **Concurrent***、**CopyOnWrite**和 **Blocking**等三类
+
+- Concurrent 类型没有类似 CopyOnWrite 之类容器相对较重的修改开销
+- Concurrent 往往提供了较低的遍历一致性 遍历的时候容器发生修改，迭代器仍然可以继续进行遍历。
+- 与弱一致性对应的，就是我介绍过的同步容器常见的行为“fail-fast”，也就是检测到容器在遍历过程中发生了修改，则抛出 ConcurrentModificationException，不再继续遍历。
+- 弱一致性的另外一个体现是，size 等操作准确性是有限的 未必是 100% 准确。
+- 读取的性能具有一定的不确定性。
+
+![image](https://static.lovedata.net/20-11-11-f161aac8ce385005fdf088facbfcaed1.png-wm)
+
+
+
+**Blocking** 意味着其提供了特定的等待性操作，获取时（take）等待元素进队，或者插入时（put）等待队列出现空位。
+
+```java
+
+ /**
+ * 获取并移除队列头结点，如果必要，其会等待直到队列出现元素
+…
+ */
+E take() throws InterruptedException;
+
+/**
+ * 插入元素，如果队列已满，则等待直到队列出现空闲空间
+   …
+ */
+void put(E e) throws InterruptedException;  
+```
+
+
+
+#### BlockingQueue是否有界的问题
+
+1. ArrayBlockingQueue 是最典型的的有界队列 内部是final 数组，初始化的时候指定容量。
+2. LinkedBlockingQueue，容易被误解为**无边界**，但其实其行为和内部代码都是基于有界的逻辑实现的，只不过如果我们没有在创建队列时就指定容量，那么其容量限制就自动被设置为 Integer.MAX_VALUE，成为了无界队列
+3. SynchronousQueue，这是一个非常奇葩的队列实现，每个删除操作都要等待插入操作，反之每个插入操作也都要等待删除动作。那么这个队列的容量是多少呢？是 1 吗？其实不是的，其内部容量是 0
+4. PriorityBlockingQueue 是无边界的优先队列，虽然严格意义上来讲，其大小总归是要受系统资源影响。
+5. DelayedQueue 和 LinkedTransferQueue 同样是无边界的队列。对于无边界的队列，有一个自然的结果，就是 put 操作永远也不会发生其他 BlockingQueue 的那种等待情况。
+
+LinkedBlockingQueue
+
+```java
+
+/** Lock held by take, poll, etc */
+private final ReentrantLock takeLock = new ReentrantLock();
+
+/** Wait queue for waiting takes */
+private final Condition notEmpty = takeLock.newCondition();
+
+/** Lock held by put, offer, etc */
+private final ReentrantLock putLock = new ReentrantLock();
+
+/** Wait queue for waiting puts */
+private final Condition notFull = putLock.newCondition();
+```
+
+
+
+
+
+#### 场景
+
+- 考虑应用场景中对队列边界的要求。ArrayBlockingQueue 是有明确的容量限制的，而 LinkedBlockingQueue 则取决于我们是否在创建时指定，SynchronousQueue 则干脆不能缓存任何元素。
+- 从空间利用角度，数组结构的 ArrayBlockingQueue 要比 LinkedBlockingQueue 紧凑，因为其不需要创建所谓节点，但是其初始分配阶段就需要一段连续的空间，所以初始内存需求更大。
+- 通用场景中，LinkedBlockingQueue 的吞吐量一般优于 ArrayBlockingQueue，因为它实现了<u>***更加细粒度的锁操作***</u>。ArrayBlockingQueue 实现比较简单，性能更好预测，属于表现稳定的“选手”。
+- 如果我们需要实现的是**两个线程之间接力性（handoff）的场景**，按照专栏上一讲的例子，你可能会选择 **CountDownLatch**，但是SynchronousQueue也是完美符合这种场景的，**而且线程间协调和数据传输统一起来**，代码更加规范。
+- 可能令人意外的是，很多时候 SynchronousQueue 的性能表现，往往大大超过其他实现，尤其是在队列元素较小的场景。
+
+
+
+#### 阻塞队列与非阻塞队列
+
+##### 非阻塞队列：
+
+也就是一般的队列，没有阻塞队列的两个阻塞功能。其主要方法如下
+
+- boolean add(E e)：将元素e插入到队列末尾，插入成功，返回true；插入失败（即队列已满），抛出异常；
+- boolean offer(E e)：将元素e插入到队列末尾，插入成功，则返回true；插入失败（即队列已满），返回false；
+- E remove()：移除队首元素，若移除成功，则返回true；移除失败（队列为空），则会抛出异常；
+- E poll()：获取队首元素并移除，若队列不为空，则返回队首元素；否则返回null；
+- E element()：获取队首元素并不移除元素，若队列不为空，则返回队首元素；否则抛出异常;
+- [E peek](https://www.baidu.com/s?wd=peek&tn=24004469_oem_dg&rsv_dl=gh_pl_sl_csd)()：获取队首元素并不移除元素，若队列不为空，则返回队首元素；否则返回null;
+
+##### 阻塞队列
+
+队列一般都有着两个阻塞操作，即插入与取出。
+
+当队列满时，会阻塞元素的插入，直到队列有空闲时停止阻塞，新元素才可以继续插入。
+
+当队列为空时，移除元素的线程会一直被阻塞等待，直到队列中有元素时才可以继续取出。
+
+**除拥有普通队列的方法之外，阻塞队列提供了另外4个常用的方法：**
+
+- put(E e)：向队尾插入元素，若队列已满，则被阻塞等待，直到有空闲才继续插入。
+
+- take()：从队首取出元素，若队列为空，则被阻塞等待，直到有元素才继续取出。
+
+-  offer(E e,long timeout, TimeUnit unit)：向队尾插入元素，若队列已满，则计时等待，当时间期限达到时，若队列还是满的，则返回false；若等待在期限内，队列空闲，则插入成功，返回true；
+
+-  poll(long timeout, TimeUnit unit)：从队首取出元素，如果队列空，则计时等待，当时间期限达到时，若队列还是空的，则返回null；若等待在期限内，队列中有元素，否则返回取得的元素；
+
+#### 二者区别
+
+首先二者都是线程安全的得队列，都可以用于生产与消费模型的场景。
+
+|          | ConcurrentLinkedQueue | LinkedBlockingQueue |
+| -------- | --------------------- | ------------------- |
+| 线程安全 | 安全                  | 安全                |
+| 阻塞     | 阻塞                  | 不阻塞              |
+| 实现     | ReentranceLock        | CAS+自旋锁          |
+
+
+
+### 第21讲 | Java并发类库提供的线程池有哪几种？ 分别有什么特点？
+
+​	[Java线程池的四种用法与使用场景](https://juejin.im/post/6844904020792836103)
+
+- newCachedThreadPool()，它是一种用来处理大量短时间工作任务的线程池，具有几个鲜明特点：**它会试图缓存线程并重用**，当无缓存线程可用时，就会创建新的**工作线程**；如果线程闲置的时间超过 60 秒，则被终止并移出缓存；长时间闲置时，这种线程池，不会消耗什么资源。其内部使用 SynchronousQueue 作为工作队列。
+  - **不足**：这种方式虽然可以根据业务场景自动的扩展线程数来处理我们的业务，但是最多需要多少个线程同时处理缺是我们无法控制的；
+  - **优点**：如果当第二个任务开始，第一个任务已经执行结束，那么第二个任务会复用第一个任务创建的线程，并不会重新创建新的线程，提高了线程的复用率；
+- newFixedThreadPool(int nThreads)，重用指定数目（nThreads）的线程，其背后使用的是无界的工作队列，任何时候最多有 nThreads 个工作线程是活动的。这意味着，如果任务数量超过了活动队列数目，将在工作队列中等待空闲线程出现；如果有工作线程退出，将会有新的工作线程被创建，以补足指定的数目 nThreads。
+  - 优点： newFixedThreadPool的线程数是可以进行控制的，因此我们可以通过控制最大线程来使我们的服务器打到最大的使用率，同事又可以保证及时流量突然增大也不会占用服务器过多的资源
+- newSingleThreadExecutor()，它的特点在于工作线程数目被限制为 1，操作一个无界的工作队列，所以它保证了所有任务的都是被顺序执行，最多会有一个任务处于活动状态，并且不允许使用者改动线程池实例，因此可以避免其改变线程数目。
+- newSingleThreadScheduledExecutor() 和 newScheduledThreadPool(int corePoolSize)，创建的是个 ScheduledExecutorService，可以进行定时或周期性的工作调度，区别在于单一工作线程还是多个工作线程。
+- newWorkStealingPool(int parallelism)，这是一个经常被人忽略的线程池，Java 8 才加入这个创建方法，其内部会构建ForkJoinPool，利用Work-Stealing算法，并行地处理任务，不保证处理顺序。
+
+
+
+
+
+
+

@@ -2,11 +2,13 @@
 
 [toc]
 
-## 其他面试题
+## 性能工具图
 
-###  [linux面试基础考题 - CSDN博客](http://blog.csdn.net/hzrandd/article/details/50787483)
+![image](https://static.lovedata.net/20-11-11-7ceebb617ce3ee156789b652255df844.png-wm)
 
-## 线上CPU100%,如何定位和排查问题
+
+
+## Java程序CPU100%,快速定位排查
 
 - top -c 显示进程运行信息列表 键入P(大写p)，线程按照CPU使用率排序
 - top -Hp 10765 显示一个进程的线程运行信息列表(线程肯定是归属于某一个进程的) 键入P(大写p)，线程按照CPU使用率排序
@@ -14,3 +16,4 @@
 - 使用 jstack 工具 jstack 10765 | grep '0x2a34' -C5 --color
 - [线上服务CPU100%问题快速定位实战](http://www.cnblogs.com/winner-0715/p/7521638.html)
 - [线上服务 CPU 100%？一键定位 so easy！](https://my.oschina.net/leejun2005/blog/1524687)
+
