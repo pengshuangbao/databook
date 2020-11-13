@@ -2,6 +2,8 @@
 
 [toc]
 
+![image](https://static.lovedata.net/20-11-12-4de097552699ea1f899d8682ab03f59a.png-wm)
+
 ## Flink 容错机制
 
 ### 介绍
