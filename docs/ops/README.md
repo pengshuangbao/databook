@@ -8,12 +8,123 @@
 
 
 
-## Java程序CPU100%,快速定位排查
+## 基本
 
-- top -c 显示进程运行信息列表 键入P(大写p)，线程按照CPU使用率排序
-- top -Hp 10765 显示一个进程的线程运行信息列表(线程肯定是归属于某一个进程的) 键入P(大写p)，线程按照CPU使用率排序
-- 将线程PID转化为16进制 printf "%x\n" 10804
-- 使用 jstack 工具 jstack 10765 | grep '0x2a34' -C5 --color
-- [线上服务CPU100%问题快速定位实战](http://www.cnblogs.com/winner-0715/p/7521638.html)
-- [线上服务 CPU 100%？一键定位 so easy！](https://my.oschina.net/leejun2005/blog/1524687)
+### 查看机器配置
+
+```shelll
+lscpu
+```
+
+### 查看内存大小
+
+```shell
+free -m
+```
+
+### 硬盘大小
+
+```shell
+lsblk
+```
+
+### ssh-copy-id远程登录
+
+```shell
+#生成公钥
+ssh-keygen  
+#用ssh-copy-id将公钥复制到远程机器中
+ssh-copy-id -i .ssh/id_rsa.pub  root@192.168.x.xxx
+#登录到远程机器不用输入密码
+ssh root@192.168.x.xxx
+```
+
+### 新建软连接
+
+```shell
+ln -s source link
+```
+
+
+
+### find
+
+#### find 命令找到大于100M文件  
+
+```shell
+find . -size +100M
+```
+
+
+
+## 磁盘
+
+### du
+
+####  查看某个目录 大小
+
+```shell
+du -bsh /usr/
+```
+
+#### 查看当前目录下各个文件占用情况
+
+```shell
+du -ah --max-depth=1 .
+```
+
+#### 按照MB来显示单位并排序
+
+```shell
+du -ahm --max-depth=1  ./|sort -n
+```
+
+#### 查看文件夹占用(查看根目录下所有文件的大小)
+
+```shell
+du -sm /*
+```
+
+
+
+## 网络
+
+#### 查看监听端口
+
+```shell
+netstat -atunlp | grep LISTEN
+```
+
+#### 查看 某一个端口的占用情况
+
+```shell
+netstat -atunlp | grep 2181 | awk '{ print $5" : "$7 }' | sort | uniq -c
+```
+
+
+
+## 程序
+
+### 循环干掉job
+
+```shell
+ps -ef | grep flume  | grep -v grep | awk '{print $2}' | xargs kill -9
+```
+
+
+
+### tmux
+
+#### 新建窗口
+
+```shell
+tmux   new -s peng
+```
+
+#### 打开窗
+
+```shell
+#Ctrl+B  然后按一下D  就可以退出这个窗口，进入外部shell
+tmux a -t peng
+```
 

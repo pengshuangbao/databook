@@ -110,7 +110,7 @@ function getDatabaseSidebar(){
 }
 
 function getOpsSidebar(){
-  return []
+  return ['ops']
 }
 
 function getJavaSidebar(){
@@ -132,6 +132,7 @@ function getJavaSidebar(){
     'jvm',
     'coding',
     '多线程',
+    'java',
     '学习资源',
     {
       title: 'jvm进阶',
@@ -158,6 +159,7 @@ function getBigdataSidebar () {
       children: [
         'hadoop/hadoop',
         'hadoop/hdfs',
+        'hadoop/HDFS源码剖析',
         'hadoop/yarn',
         'hadoop/学习资源'
       ]
