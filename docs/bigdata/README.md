@@ -2,13 +2,20 @@
 
 [toc]
 
-## Redis, 传统数据库,hbase,hive  每个之间的区别
-
-## Redis、MongoDB和Memcached的区别
-
-## Parquet 的理解和应用?
 
 
-## ROLAP MOLAP 区别
-  
-- [ROLAP和MOLAP的概念和差别](https://www.cnblogs.com/8899man/p/5863814.html)
+## Hadoop
+
+### HDFS
+
+![image](https://static.lovedata.net/20-11-14-d49d7e3da21361172ebac59925d3bfe0.png-wm)
+
+![image](https://static.lovedata.net/20-11-14-05f910e5845a2203d4a264423cfb5827.png-wm)
+
+### Yarn
+
+![image](https://static.lovedata.net/20-11-14-1451617abad849214404f81317333628.png-wm)
+
+## Flink
+
+![image](https://static.lovedata.net/20-11-12-4de097552699ea1f899d8682ab03f59a.png-wm)
