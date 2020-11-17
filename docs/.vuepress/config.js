@@ -242,9 +242,16 @@ function getBigdataSidebar () {
         'CDH/',
         'CDH/学习资源'
       ]
+    },{
+      title: 'Redis',
+      collapsable: true,
+      //sidebarDepth: 2,  
+      children: [
+        'redis/',
+        'redis/Redis核心技术与实战'
+      ]
     },
     'hive',
-    'redis',
     'zookeeper',
     'data-mining',
     'solution',

@@ -57,10 +57,10 @@ CAS，Check and Set 。乐观锁实现使用Redis 自有的watch multi exec等�
    4. 缺点： 速度较慢、文件比RDB大
 
 3. 选择标准
-  二者选择的标准，就是看系统是愿意牺牲一些性能，换取更高的缓存一致性（aof），还是愿意写操作频繁的时候，不启用备份来换取更高的性能，待手动运行save的时候，再做备份（rdb）。rdb这个就更有些 eventually consistent的意思了。
+   二者选择的标准，就是看系统是愿意牺牲一些性能，换取更高的缓存一致性（aof），还是愿意写操作频繁的时候，不启用备份来换取更高的性能，待手动运行save的时候，再做备份（rdb）。rdb这个就更有些 eventually consistent的意思了。
 
 4. 常用配置
-  ![image](https://static.lovedata.net/jpg/2018/5/18/2bbde3193b3d168fa6e982c2416b2df7.jpg-wm)
+   ![image](https://static.lovedata.net/jpg/2018/5/18/2bbde3193b3d168fa6e982c2416b2df7.jpg-wm)
 5. [redis持久化的几种方式](https://www.cnblogs.com/chenliangcl/p/7240350.html)
 
 ## Redis的缓存失效策略
@@ -72,8 +72,8 @@ CAS，Check and Set 。乐观锁实现使用Redis 自有的watch multi exec等�
 5. 如果同时很多缓存失效，则会有缓存穿透问题
 6. [Redis的缓存策略和主键失效机制](http://www.cnblogs.com/binyue/p/3726842.html)
 7. 失效的内部实现 Redis 删除失效主键的方法主要有两种：
-    1. 消极方法（passive you
-    2. 积极方法（active way），周期性地从设置了失效时间的主键中选择一部分失效的主键删除
+   1. 消极方法（passive you
+   2. 积极方法（active way），周期性地从设置了失效时间的主键中选择一部分失效的主键删除
 
 ## Redis所需内存 超过可用内存怎么办
 
@@ -93,4 +93,4 @@ A String value can be at max 512 Megabytes in length.
 
 ![image](https://static.lovedata.net/jpg/2018/7/12/94588e9b96f8967a7b201047166c54af.jpg-wm)
 
-[Redis 中 String 类型可以容纳的最大数据长度 - CSDN博客](https://blog.csdn.net/HeatDeath/article/details/80170303)
+[Redis 中 String 类型可以容纳的最大数据长度 - CSDN博客](
