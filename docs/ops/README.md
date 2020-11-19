@@ -128,3 +128,21 @@ tmux   new -s peng
 tmux a -t peng
 ```
 
+
+
+#### 文件输入
+
+```shell
+cat >1.txt<<EOF  
+Hello,world!  
+EOF  
+
+cat << EOF > 1.txt
+Hello,world! 
+EOF
+```
+
+
+
+
+
