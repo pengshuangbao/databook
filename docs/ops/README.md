@@ -136,7 +136,7 @@ tmux a -t peng
 
 
 
-#### 文件输入
+### 文件输入
 
 ```shell
 cat >1.txt<<EOF  
@@ -148,7 +148,13 @@ Hello,world!
 EOF
 ```
 
+## docker
 
+### docker查看日志
+
+```shell
+docker logs  -f -t --tail 100  pushgateway
+```
 
 
 

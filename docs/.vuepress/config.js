@@ -98,7 +98,7 @@ function getAlgorithmSidebar(){
 }
 
 function getArchitectureSidebar(){
-  return ['distribute']
+  return ['architecture']
 }
 
 function getComputerSidebar(){

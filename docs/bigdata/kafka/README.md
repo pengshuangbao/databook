@@ -14,9 +14,7 @@
 - 容错性：允许集群中节点失败（若副本数量为n,则允许n-1个节点失败）
 - 高并发：支持数千个客户端同时读写
 
-## kafka 新旧API的特点?
 
-[Kafka 0.9 新消费者API](https://www.cnblogs.com/admln/p/5446361.html)
 
 ## kafka 新版API auto.offset.reset 的含义
 
@@ -34,51 +32,11 @@ topic各分区都存在已提交的offset时，从offset后开始消费；只要
 
 [Kafka auto.offset.reset值详解](https://blog.csdn.net/lishuangzhe7047/article/details/74530417)
 
-## kafka enable.auto.commit 的含义
 
-是否由客户端自动提交offset
 
 ## kafka 版本的演进?
 
-[kafka各个版本特性预览介绍](https://blog.csdn.net/hesi9555/article/details/70237744)
-
-### 之前
-
-1. kafka删除topic的功能存在bug
-2. comsumer定期提交已经消费的kafka消息的offset位置到zookeeper中保存，对zookeeper而言，每次写操作代价是很昂贵的，而且zookeeper集群是不能扩展写能力的
-
-### 2
-
-1. 可以把comsumer提交的offset记录在compacted topic（__comsumer_offsets）中，该topic设置最高级别的持久化保证，即ack=-1
-    1. __consumer_offsets由一个三元组< comsumer group, topic, partiotion> 组成的key和offset值组成，在内存也维持一个最新的视图view，所以读取很快。
-    2. kafka可以频繁的对offset做检查点checkpoint，即使每消费一条消息提交一次offset。
-    3. 在0.8.1中，已经实验性的加入这个功能，0.8.2中可以广泛使用.
-
-### 
-
-1. 安全方面改进(在0.9之前，Kafka安全方面的考虑几乎为0，在进行外网传输时，只好通过Linux的防火墙、或其他网络安全方面进行配置。相信这一点，让很多用户在考虑使用Kafka进行外网消息交互时有些担心。)
-    1. 客户端连接borker使用SSL或SASL进行验证
-    2. borker连接ZooKeeper进行权限管理
-    3. 数据传输进行加密（需要考虑性能方面的影响）
-    4. 客户端读、写操作可以进行授权管理
-    5. 可以对外部的可插拔模块的进行授权管理
-2. Kafka Connect 它可以和外部系统、数据集建立一个数据流的连接，实现数据的输入、输出。有以下特性：
-    1. 使用了一个通用的框架，可以在这个框架上非常方便的开发、管理Kafka Connect接口
-    2. 支持分布式模式或单机模式进行运行
-    3. 支持REST接口，可以通过REST API提交、管理 Kafka Connect集群
-    4. offset自动管理
-3. 新的Comsumer API
-    1. 新的Comsumer API不再有high-level、low-level之分了，而是自己维护offset 这样做的好处是避免应用出现异常时，数据未消费成功但Position已经提交，导致消息未消费的情况发生
-    2. Kafka可以自行维护Offset、消费者的Position。也可以开发者自己来维护Offset，实现相关的业务需求。
-    3. 消费时，可以只消费指定的Partitions
-    4. 可以使用外部存储记录Offset，如数据库之类的
-    5. 可以使用多线程进行消费
-
-### 
-
-1. 机架感知以便隔离副本 跨域多个机架或者可用区域，提高弹性和可用性
-2. 所有消息包含了时间戳字段
-3. Kafka Consumer Max Records，在Kafka 0.9.0.0，开发者们在新consumer上使用poll()函数的时候是几乎无法控制返回消息的条数。不过值得高兴的是，此版本的Kafka引入了max.poll.records参数，允许开发者控制返回消息的条数。
+[kafka各个版本特性预览介绍](https://app.yinxiang.com/shard/s24/nl/6616351/d8379b85-e64e-437f-9b18-325066195350/)
 
 ## kafka 的leader 选举机制是怎样实现的以及各个版本的实现?
 
@@ -89,7 +47,7 @@ topic各分区都存在已提交的offset时，从offset后开始消费；只要
     1. High watermark（高水位线）以下简称HW，表示消息被leader和ISR内的follow都确认commit写入本地log，所以在HW位置以下的消息都可以被消费（不会丢失）
     2. Log end offset（日志结束位置）以下简称LEO，表示消息的最后位置。LEO>=HW，一般会有没提交的部分。
 5. 副本会有单独的线程（ReplicaFetcherThread），去从leader上去拉去消息同步。当follower的HW赶上leader的，就会保持或加入到 **ISR** 列表里，就说明此follower满足上述最基本的原则（跟上leader进度）。ISR列表存在zookeeper上。
-    1. replica.lag.max.messages 落后的消息个数 （Kafka 0.10.0 移除了落后消息个数参数（replica.lag.max.messages），原因是这个值不好把控，需要经验值，不用的业务服务器环境，这个值可能不同，不然会频繁的移除加入ISR列表） [Kafka副本管理—— 为何去掉replica.lag.max.messages参数 - huxihx - 博客园](http://www.cnblogs.com/huxi2b/p/5903354.html)
+    1. replica.lag.max.messages 落后的消息个数 （**Kafka 0.10.0 移除了落后消息个数参数**（replica.lag.max.messages），原因是这个值不好把控，需要经验值，不用的业务服务器环境，这个值可能不同，不然会频繁的移除加入ISR列表） [Kafka副本管理—— 为何去掉replica.lag.max.messages参数 - huxihx - 博客园](http://www.cnblogs.com/huxi2b/p/5903354.html)
     2. replica.lag.time.max.ms 多长时间没有发送FetchQuest请求拉去leader数据
 6. producer的ack参数选择，取优先考虑可靠性，还是优先考虑高并发。以下不用的参数，会导致有可能丢消息。
     - 0表示纯异步，不等待，写进socket buffer就继续。
@@ -104,7 +62,11 @@ topic各分区都存在已提交的offset时，从offset后开始消费；只要
 
 ![image](https://static.lovedata.net/jpg/2018/6/29/9e105be3ad21eeabe8bab88988b09e87.jpg-wm)
 
-GroupCoordinator
+**__consumer_offsets**
+
+`__consumer_offsets` 是 Kafka 内部使用的一个 topic，专门用来存储 group 消费的情况，默认情况下有50个 partition，每个 partition 三副本，而具体 group 的消费情况要存储到哪一个 partition 上，是根据 `abs(GroupId.hashCode()) % NumPartitions` 来计算（其中，`NumPartitions` 是`__consumer_offsets` 的 partition 数，默认是50个）的
+
+**GroupCoordinator**
 
 根据上面所述，一个具体的 group，是根据其 group 名进行 hash 并计算得到其具对应的 partition 值，该 partition leader 所在 Broker 即为该 Group 所对应的 GroupCoordinator，GroupCoordinator 会存储与该 group 相关的所有的 Meta 信息。
 
@@ -217,13 +179,8 @@ acks 指定了必须要多少个分区副本收到消息，生产者才会认为
 >银行存款取款场景下，顺序很重要
 
 1. 可以保证一个分区的消息是有序的
-2. 如果retries为非零， max.in.flight.requests.per.connection>1,如果一个消息社保，第二批次成功，第一次重试成功后，那么顺序就乱了
+2. 如果retries为非零， max.in.flight.requests.per.connection>1,如果一个消息失败，第二批次成功，第一次重试成功后，那么顺序就乱了
 3. 一般设置retries>0,把max.in.flight.requests.per.connection设置为1，保证有序
-
-## 什么是Avro?
-
-1. Avro 是一种与语言无关的序列化格式，通过schema定义，schema使用json描述，数据被序列为二进制或者json（一般二进制），schema内嵌在数据文件里， **兼容新旧版本**
-2. 使用schema注册表来生产者注册schema，消费者获取schema，使用Confluent Schema Registry注册表
 
 ## kafka主题增加分区后,原来的路由到分区A的数据,还会路由到A吗?
 
@@ -238,14 +195,15 @@ acks 指定了必须要多少个分区副本收到消息，生产者才会认为
 ## 什么时候发生重新分配reblance?
 
 在主题发生变化时，比如管理员添加了新的分区，会发生。
-分区所有权从一个消费者转移到另一个消费者，这样的行为成为再均衡，给消费者群组带来了高可用性和伸缩性
+分区所有权从一个消费者转移到另一个消费者，这样的行为称为再均衡，给消费者群组带来了高可用性和伸缩性
+
 弊端： 消费者群组一段时间不能读取消息。
 消费者向群组协调器broker发送心跳维持所有权关系，在轮询消息和提交偏移量的时候发送心跳。
 消费者必须持续的轮询向kafka请求数据，否则会被认为已经死掉，导致重新分配哦。
 
 ## KafkaConsumer在订阅数据后退出了不关闭会有什么后果?
 
-如果不管，网络连接和socket也不会关闭，就不能立即出发再均衡，要等待协调器发现心跳没了才确认他死亡了，这样就需要更长的时间，导致群组在一段时间内无法读取消息
+如果不关，网络连接和socket也不会关闭，就不能立即出发再均衡，要等待协调器发现心跳没了才确认他死亡了，这样就需要更长的时间，导致群组在一段时间内无法读取消息
 
 ## 消费者线程安全问题?
 
@@ -274,17 +232,15 @@ acks 指定了必须要多少个分区副本收到消息，生产者才会认为
 
 在ShutdownHook调用 consumer.wakeup（）方法，该方法在调用后，consumer调用poll的时候会抛出WakeupException
 
-## 新版API如何消费指定的分区
-
-使用partitionsFor("topic") 获取某个主题所有的分区，并且从土偶哦 consumer.assin(topicparitions) 分配分区，不能获取新的分区通知。
-
 ## kafka高可用如何保证数据不丢失不重复消费?
 
 [Spark Streaming和Kafka整合保证数据零丢失 - FelixZh - 博客园](https://www.cnblogs.com/felixzh/p/6371253.html)
 
 ## kafka控制器的选举方式?
 
-1. kafka通过zk的临时节点选举控制器，在节点加入集群或者退出通知控制器，控制器负责加入或者离开集群式进行分区的首领选举，使用 epoch避免脑裂（两个节点都认为自己是当前的控制器：通过controller epoch 的新旧来判断）
+1. kafka通过zk的临时节点选举控制器，在节点加入集群或者退出通知控制器，控制器负责加入或者离开集群时进行分区的首领选举，使用 epoch避免脑裂（两个节点都认为自己是当前的控制器：通过controller epoch 的新旧来判断）
+
+![image](https://static.lovedata.net/20-11-20-bbc8bcc9cb30879bfcf2a47de7338da5.png-wm)
 
 [KafkaController介绍 - CSDN博客](https://blog.csdn.net/zhanglh046/article/details/72821995)
 
@@ -358,16 +314,7 @@ acks=all 结合 min.insync.replicas 最安全的做法，可以通过异步模�
 
 [Kafka设计解析（八）- Exactly Once语义与事务机制原理 - 郭俊Jason - 博客园](https://www.cnblogs.com/jasongj/p/7912348.html)
 
-## 如何验证kafka的配置是否可靠?
 
-使用Verfiable Producer 和 VerifiableConsumer来验证
-
-从以下几个方面测试
-
-1. 首领选举 停掉首领
-2. 控制器选举 重启控制器后系统需要多少时间来回复状态
-3. 依次重启
-4. 不完全首领选举测试
 
 
 ## Kafka 可靠性方面的了解?
