@@ -111,6 +111,12 @@ netstat -atunlp | grep 2181 | awk '{ print $5" : "$7 }' | sort | uniq -c
 ps -ef | grep flume  | grep -v grep | awk '{print $2}' | xargs kill -9
 ```
 
+### 杀死一个程序
+
+```shell
+kill -9 `ps aux|grep redis|grep -v grep|awk '{print $2}'`
+```
+
 
 
 ### tmux
