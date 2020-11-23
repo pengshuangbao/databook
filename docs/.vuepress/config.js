@@ -145,7 +145,8 @@ function getJavaSidebar(){
         'jvm进阶/05虚拟机栈',
         'jvm进阶/06本地方法接口',
         'jvm进阶/07本地方法栈',
-        'jvm进阶/08堆'
+        'jvm进阶/08堆',
+        'jvm进阶/09方法区'
       ]
     }
   ]
