@@ -42,3 +42,60 @@
 
 ![image](https://static.lovedata.net/20-11-16-a69a39febc0ce88ae987d5b343d1e38a.png-wm)
 
+
+
+## 命令
+
+### Kafka
+
+#### 旧版本查看指定Offset消息
+
+```shell
+./kafka-run-class.sh kafka.tools.SimpleConsumerShell \
+  --broker-list '' \
+  --topic '' \
+  --max-messages 1 \
+  --offset 12351880242 \
+  --partition 2
+```
+
+
+
+#### Kafka 2.x版本查看制定Offset消息
+
+```shell
+kafka-console-consumer --bootstrap-server '' --topic ''  --offset 9043367 --partition 0  --max-messages 10  
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
