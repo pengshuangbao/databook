@@ -158,3 +158,54 @@ docker logs  -f -t --tail 100  pushgateway
 
 
 
+### docker日志过大，清空日志
+
+```shell
+cd /var/lib/docker/containers/ab3424fef89b061abce15854402d125afb59558c6aced9088d7bc2c588abb101
+cat /dev/null > *-json.log
+```
+
+### 批量杀死删除容器
+
+```shell
+docker kill `docker ps -a | grep 'xxx' | grep -v grep|awk '{print $1}'`
+docker rm `docker ps -a | grep 'xxx' | grep -v grep|awk '{print $1}'`
+```
+
+
+
+
+
+## Git
+
+### 恢复修改
+
+#### 未使用 git add 缓存代码
+
+```shell
+#放弃修改某一个文件(注意加上"--")
+git checkout -- readme.md
+#放弃所有的文件修改
+git checkout . 
+```
+
+
+
+#### 已经使用了 git add 缓存了代码
+
+```shell
+ #放弃某个文件
+ git reset HEAD readme.md
+ #放弃所有缓存
+ git reset HEAD .
+```
+
+#### 已经用 git commit 提交了代码
+
+```shell
+#来回退到上一次commit的状态
+git reset --hard HEAD^
+#回退到任何一个版本
+git reset --hard  commitid 
+```
+

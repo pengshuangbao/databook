@@ -69,6 +69,14 @@ kafka-console-consumer --bootstrap-server '' --topic ''  --offset 9043367 --part
 
 
 
+### hadoop
+
+#### 查看hdfs的文件占用
+
+```shell
+sudo -u hdfs hadoop fs  -du -h /
+```
+
 
 
 
