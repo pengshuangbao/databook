@@ -55,6 +55,10 @@ ln -s source link
 find . -size +100M
 ```
 
+### sed
+
+[如何使用 sed 命令删除文件中的行](https://juejin.cn/post/6844903926756704269)
+
 
 
 ## 磁盘
