@@ -24,8 +24,8 @@ module.exports = ctx => ({
   locales: {
     '/': {
       lang: 'zh-CN',
-      title: '狂想手册',
-      description: '狂想-手册'
+      title: '编程手册',
+      description: '编程-手册'
     }
   },
   head: [

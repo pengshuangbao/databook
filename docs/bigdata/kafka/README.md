@@ -605,10 +605,6 @@ Kafka 分区数据不支持减少是由很多原因的，比如减少的分区�
 
 ## 什么情况会导致 kafka 运行变慢?
 
-
-
-
-
 参考
 
 [Kafka之数据存储 | Matt's Blog](http://matt33.com/2016/03/08/kafka-store/)
@@ -618,3 +614,79 @@ Kafka 分区数据不支持减少是由很多原因的，比如减少的分区�
 
 
 
+## Kafka什么时候丢数据场景?
+
+[Kafka如果丢了消息，怎么处理的?](https://mp.weixin.qq.com/s/ZxOURh6ljGRFTewTDJa7Jw)
+
+![image](https://static.lovedata.net/20-12-22-c33036322c6757f7679db4e08646d62c.png-wm)
+
+
+
+### Broker
+
+kafka本身原因，为了性能和吞吐量，数据异步批量存储在磁盘
+
+由于linux操作系统决定的，回西安存储到页缓存(page cache) 按照条件刷盘(page cache 到file)
+
+![image](https://static.lovedata.net/20-12-22-b96b20d0ab95c26d9d4ecf405fedd4f1.png-wm)
+
+#### ack制协调
+
+- acks=0 producer不等待broker的响应，效率最高，但是消息很可能会丢
+- acks=1 leader broker收到消息后，不等待其他follower的响应，即返回ack leader收到消息，写入pagecache，就返回了，如果leader断电了， 数据就会丢失
+- acks=-1，leader broker收到消息后，挂起，等待所有ISR列表中的follower返回结果后，再返回ack。-1等效与all。
+
+![image](https://static.lovedata.net/20-12-22-4a1c4336839eb2f08411c613016aefd9.png-wm)
+
+如上图中：
+
+- acks=0，总耗时f(t) = f(1)。
+- acks=1，总耗时f(t) = f(1) + f(2)。
+- acks=-1，总耗时f(t) = f(1) + max( f(A) , f(B) ) + f(2)。
+
+性能依次递减，可靠性依次升高。
+
+
+
+### Producer
+
+Producer丢失消息，发生在生产者客户端。
+
+为了提升效率，客户端缓存本地buffer中，打包成块按照时间间隔发送buffer
+
+通过buffer可以将生产者改为异步的方式
+
+BUT
+
+buffer数据就是危险的。
+
+一旦producer被非法的停止了，那么buffer中的数据将丢失
+
+producer内存不够了，策略是丢弃，则会丢失数据
+
+消息速度太快，程序崩溃
+
+![image](https://static.lovedata.net/20-12-22-788bad75a9e1ff0c8354eec3efd47d5e.png-wm)
+
+![image](https://static.lovedata.net/20-12-22-ddc53065e08a1ed73b246983a329b5d3.png-wm)
+
+
+
+#### 思路：
+
+1. 同步发送，产生消息的时候，使用阻塞线程池，线程数有上限
+2. 扩大buffer容量，缓解，无法杜绝
+3. 不将消息发送buffer，写入本地磁盘或者其他介质
+
+### Consumer
+
+Consumer消费消息有下面几个步骤：
+
+1. 接收消息
+2. 处理消息
+3. 反馈“处理完毕”（commited）
+
+Consumer的消费方式主要分为两种：
+
+- 自动提交offset，Automatic Offset Committing
+- 手动提交offset，Manual Offset Control
