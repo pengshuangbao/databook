@@ -105,6 +105,139 @@ netstat -atunlp | grep LISTEN
 netstat -atunlp | grep 2181 | awk '{ print $5" : "$7 }' | sort | uniq -c
 ```
 
+## CPU
+
+### 查看当前系统的 NUMA Node
+
+```shell
+numactl --hardware
+```
+
+```bash
+available: 2 nodes (0-1)
+node 0 cpus: 0 2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38
+node 0 size: 65442 MB
+node 0 free: 294 MB
+node 1 cpus: 1 3 5 7 9 11 13 15 17 19 21 23 25 27 29 31 33 35 37 39
+node 1 size: 65536 MB
+node 1 free: 4251 MB
+node distances:
+node   0   1
+  0:  10  21
+  1:  21  10
+```
+
+### 查看Socket信息
+
+> 一个Socket对应主板上面的一个插槽，也指一个CPU封装，在/proc/cpuinfo中，physical id就是Socket的ID
+
+```shell
+cat /proc/cpuinfo | grep "physical id"
+```
+
+```bash
+physical id	: 0
+physical id	: 1
+physical id	: 0
+physical id	: 1
+#...后面省略了36行，都是0，1
+```
+
+### 查看有几个Socket
+
+```shell
+grep 'physical id' /proc/cpuinfo | awk -F: '{print $2 | "sort -un"}'
+```
+
+```bash
+ 0
+ 1
+```
+
+### 查看每个 Socket 有几个 Processor
+
+```shell
+grep 'physical id' /proc/cpuinfo | awk -F: '{print $2}' | sort | uniq -c
+```
+
+```bash
+ 20  0
+ 20  1
+```
+
+查看Socket对应哪些Processor
+
+```shell
+awk -F: '{ 
+    if ($1 ~ /processor/) {
+        gsub(/ /,"",$2);
+        p_id=$2;
+    } else if ($1 ~ /physical id/){
+        gsub(/ /,"",$2);
+        s_id=$2;
+        arr[s_id]=arr[s_id] " " p_id
+    }
+} 
+
+END{
+    for (i in arr) 
+        print arr[i];
+}' /proc/cpuinfo | cut -c2-
+```
+
+```bash
+0 2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38
+1 3 5 7 9 11 13 15 17 19 21 23 25 27 29 31 33 35 37 39
+```
+
+
+
+### 在 /proc/cpuinfo 中查看 Core 信息
+
+> 表明一个Socket有10个Core，他们的id分别是 0,1,10,11,12,2,3,4,8,9
+>
+> 前面的查到机器有2个socket，所以总共有20个Core，每个Core有两个Processor，总共四十个
+
+```shell
+cat /proc/cpuinfo |grep "core id" | sort -u
+```
+
+```bash
+core id		: 0
+core id		: 1
+core id		: 10
+core id		: 11
+core id		: 12
+core id		: 2
+core id		: 3
+core id		: 4
+core id		: 8
+core id		: 9
+cpu cores	: 10
+```
+
+### 获取总的 Processor 数
+
+```shell
+cat /proc/cpuinfo | grep "processor" | wc -l
+```
+
+```bash
+40
+```
+
+### 获取每个 Socket 的 Processor 数
+
+```shell
+cat /proc/cpuinfo | grep "siblings" | sort -u
+```
+
+```bash
+siblings	: 20
+```
+
+
+
 
 
 ## 程序
@@ -212,4 +345,45 @@ git reset --hard HEAD^
 #回退到任何一个版本
 git reset --hard  commitid 
 ```
+
+
+
+## Kafka
+
+### 查看指定消息
+
+#### 旧版本查看指定Offset消息
+
+```shell
+./kafka-run-class.sh kafka.tools.SimpleConsumerShell \
+  --broker-list '' \
+  --topic '' \
+  --max-messages 1 \
+  --offset 12351880242 \
+  --partition 2
+```
+
+
+
+#### Kafka 2.x版本查看制定Offset消息
+
+```shell
+kafka-console-consumer --bootstrap-server '' --topic ''  --offset 9043367 --partition 0  --max-messages 10  
+```
+
+
+
+## hadoop
+
+### HDFS
+
+#### 查看hdfs的文件占用
+
+```shell
+sudo -u hdfs hadoop fs  -du -h /
+```
+
+
+
+
 

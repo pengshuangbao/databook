@@ -102,7 +102,7 @@ function getArchitectureSidebar(){
 }
 
 function getComputerSidebar(){
-  return ['network']
+  return ['network','cpu']
 }
 
 function getDatabaseSidebar(){
