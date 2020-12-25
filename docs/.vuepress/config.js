@@ -151,7 +151,8 @@ function getJavaSidebar(){
         'jvm进阶/11直接内存',
         'jvm进阶/12执行引擎',
         'jvm进阶/13StringTable',
-        'jvm进阶/14垃圾回收概述'
+        'jvm进阶/15垃圾回收相关算法',
+        'jvm进阶/16垃圾回收相关概念'
       ]
     }
   ]

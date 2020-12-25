@@ -16,6 +16,8 @@
 
 [CPU 拓扑：从 SMP 谈到 NUMA （理论篇） | 长亭的网志空间](https://ctimbai.github.io/2018/05/10/tech/CPU%E6%8B%93%E6%89%91%EF%BC%9A%E4%BB%8ESMP%E8%B0%88%E5%88%B0NUMA%EF%BC%88%E5%AE%9E%E8%B7%B5%E7%AF%87%EF%BC%89/)
 
+[CPU 拓扑：从 SMP 谈到 NUMA （理论篇） | 长亭的网志空间](https://ctimbai.github.io/2018/05/03/tech/CPU%E6%8B%93%E6%89%91%E4%BB%8ESMP%E8%B0%88%E5%88%B0NUMA%EF%BC%88%E7%90%86%E8%AE%BA%E7%AF%87%EF%BC%89/)
+
 几个概念：Node，Socket，Core，Thread
 
 NUMA 技术的主要思想是将 CPU 进行**分组**，Node 即是分组的抽象，一个 Node 表示一个分组，一个分组可以由多个 CPU 组成。每个 Node 都有自己的**本地资源，包括内存、IO 等**。
@@ -40,7 +42,9 @@ Thread就是**逻辑核**，或者称之为超线程，提升CPU的处理能力�
 
 
 
-## CPU拓扑打印脚本
+## CPU拓扑
+
+[CPU Topology - 团子的小窝](https://kodango.com/cpu-topology)
 
 ```shell
 #!/bin/bash

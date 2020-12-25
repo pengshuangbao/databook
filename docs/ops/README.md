@@ -107,7 +107,43 @@ netstat -atunlp | grep 2181 | awk '{ print $5" : "$7 }' | sort | uniq -c
 
 ## CPU
 
+### CPU概览
+
+```shell
+lscpu
+```
+
+```bash
+Architecture:          x86_64
+CPU op-mode(s):        32-bit, 64-bit
+Byte Order:            Little Endian
+CPU(s):                40 #总的逻辑CPU个数
+On-line CPU(s) list:   0-39 #在线CPU编号列表
+Thread(s) per core:    2 #每个Core的逻辑CPU个数
+Core(s) per socket:    10 #每个Socket上的Core个数
+Socket(s):             2#多少个Socket(插槽,物理CPU)
+NUMA node(s):          2#多少个node
+Vendor ID:             GenuineIntel
+CPU family:            6
+Model:                 79
+Model name:            Intel(R) Xeon(R) CPU E5-2630 v4 @ 2.20GHz
+Stepping:              1
+CPU MHz:               1319.484
+BogoMIPS:              4399.44
+Virtualization:        VT-x
+L1d cache:             32K
+L1i cache:             32K
+L2 cache:              256K
+L3 cache:              25600K
+NUMA node0 CPU(s):     0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38
+NUMA node1 CPU(s):     1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39
+```
+
+
+
 ### 查看当前系统的 NUMA Node
+
+ [打印CPU拓扑](https://databook.lovedata.net/computer/cpu.html#cpu%E6%8B%93%E6%89%91%E6%89%93%E5%8D%B0%E8%84%9A%E6%9C%AC)
 
 ```shell
 numactl --hardware
