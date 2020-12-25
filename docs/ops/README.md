@@ -10,17 +10,63 @@
 
 ## 基本
 
-### 查看机器配置
+### 查看CPU配置
 
 ```shelll
 lscpu
 ```
 
+### top
+
+[top图解PDF](https://drive.google.com/file/d/1C9HxJDVXc3F6Wr4mlxBpmEFFizDW_MsI/view)
+
+![top](http://static.lovedata.net/top.gif-wm)
+
+
+
 ### 查看内存大小
 
+![image](https://static.lovedata.net/20-12-25-d5d85be0e48724a26aa85d9cc9c2e860.png-wm)
+
+#### 输出便于理解的内存信息
+
 ```shell
-free -m
+free -h
 ```
+
+```bash
+              total        used        free      shared  buff/cache   available
+Mem:           125G         71G        5.1G        4.0G         49G         49G
+Swap:          127G        2.0G        126G
+```
+
+#### 定时输出
+
+```shell
+free -h -s 3
+```
+
+```bash
+ total        used        free      shared  buff/cache   available
+Mem:           125G         71G        6.3G        4.0G         48G         49G
+Swap:          127G        2.0G        126G
+
+              total        used        free      shared  buff/cache   available
+Mem:           125G         71G        6.3G        4.0G         48G         49G
+Swap:          127G        2.0G        126G
+
+              total        used        free      shared  buff/cache   available
+Mem:           125G         71G        6.3G        4.0G         48G         49G
+Swap:          127G        2.0G        126G
+
+              total        used        free      shared  buff/cache   available
+Mem:           125G         71G        6.3G        4.0G         48G         49G
+Swap:          127G        2.0G        126G
+```
+
+
+
+
 
 ### 硬盘大小
 
