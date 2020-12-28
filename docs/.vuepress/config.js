@@ -61,6 +61,7 @@ module.exports = ctx => ({
           '/computer/': getComputerSidebar(),
           '/database/': getDatabaseSidebar(),
           '/ops/': getOpsSidebar(),
+          '/programming/': getProgrammingSidebar()
         }
       }
     }
@@ -96,39 +97,30 @@ module.exports = ctx => ({
 function getAlgorithmSidebar(){
   return ['','算法基础','数据结构','算法']
 }
+function getProgrammingSidebar(){
+  return ['python','scala']
+}
 
 function getArchitectureSidebar(){
-  return ['architecture']
+  return ['','architecture']
 }
 
 function getComputerSidebar(){
-  return ['network','cpu','memory']
+  return ['','network','cpu','memory']
 }
 
 function getDatabaseSidebar(){
-  return []
+  return ['']
 }
 
 function getOpsSidebar(){
-  return ['ops']
+  return ['','java']
 }
+
 
 function getJavaSidebar(){
   return [
-    'jvm',
-    'coding'
-  ]
-}
-
-function getJavaSidebar(){
-  return [
-    'jvm',
-    'coding'
-  ]
-}
-
-function getJavaSidebar(){
-  return [
+    '',
     'jvm',
     'coding',
     '多线程',
@@ -152,6 +144,7 @@ function getJavaSidebar(){
         'jvm进阶/12执行引擎',
         'jvm进阶/13StringTable',
         'jvm进阶/15垃圾回收相关算法',
+        'jvm进阶/16垃圾回收相关概念',
         'jvm进阶/16垃圾回收相关概念'
       ]
     }
@@ -161,6 +154,7 @@ function getJavaSidebar(){
 
 function getBigdataSidebar () {
   return [
+    '',
     {
       title: 'Hadoop',
       collapsable: true,

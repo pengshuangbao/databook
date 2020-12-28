@@ -1,6 +1,6 @@
 
 
-# java
+# Java
 
 [toc]
 
@@ -19,24 +19,4 @@
 ### 方法区演进
 
 ![image](https://static.lovedata.net/20-11-17-d9b5fc39f9efb516d20a168aa74f77e3.png-wm)
-
-## 命令
-
-### 堆内存快找Dump
-
-```shell
-jmap -dump:live,format=b,file=xxxx.hprof pid
-```
-
-
-
-#### 查看JVM内存信息 jmap
-
-```shell
-jmap -heap pid
-```
-
-
-
-
 

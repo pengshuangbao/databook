@@ -25,5 +25,24 @@ module.exports = [
   {
     text: '运维 ',
     link: '/ops/'
+  },
+  {
+    text: '编程',
+    ariaLabel: '编程',
+    items:[
+      {
+        text: '语言',
+        items: [
+          {
+            text:'Python',
+            link:'/programming/python.html'
+          },
+          {
+            text:'Scala',
+            link:'/programming/scala.html'
+          }
+        ]
+      }
+    ]
   }
 ]
