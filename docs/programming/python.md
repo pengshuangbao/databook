@@ -66,7 +66,7 @@ df = pd.read_csv('csv', low_memory=False, encoding='utf-8',
                      dtype=str, engine='c')
 df_est = pd.read_csv('csv', low_memory=False,
                          encoding='utf-8',
-                         dtype=str, engine='c')
+                         dtype=str, engine='c') 
 mpd = pd.merge(df, df_est, how='inner', on=['province', 'global_day'])
 ```
 
