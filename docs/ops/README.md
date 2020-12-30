@@ -105,6 +105,20 @@ find . -size +100M
 
 [如何使用 sed 命令删除文件中的行](https://juejin.cn/post/6844903926756704269)
 
+### Rsysc
+
+#### 复制文件夹并且排除某一些文件
+
+> `-a`参数表示archive模式，`-v`表示详细链模式输出，`-z`表示传输文件时使用压缩传输的模式
+>
+> `--exclude`后面的路径不能为绝对路径，必须为相对路径才可以，否则出错
+
+```shell
+rsync -av --exclude=theme-default/README.md --exclude=theme-default/__tests__  --exclude=theme-default/package.json theme-default /Applications/projects/databook/
+```
+
+[Linux下tar、cp命令排除某个目录或文件 - ReggieQiao - 博客园](https://www.cnblogs.com/reggieqiao/p/13268584.html)
+
 
 
 ## 磁盘

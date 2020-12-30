@@ -2,7 +2,23 @@
 
 ## 基础
 
+### 格式化输出
 
+|             |                    |                                                              |
+| ----------- | ------------------ | ------------------------------------------------------------ |
+| %s          | 字符串             | print ("His name is %s"%("Aviad"))                           |
+| %d          | 整数               | print ("He is %d years old"%(25))                            |
+| %f          | 浮点数             | print ("His height is %f m"%(1.83))                          |
+| %.2f        | 浮点数(保留小数点) | print ("His height is %.2f m"%(1.83))                        |
+| %10s  %8.2f | 指定占位符宽度     | print ("Name:%10s Age:%8d Height:%8.2f"%("Aviad",25,1.83))<br />![image](https://static.lovedata.net/20-12-29-e710c540b1beb47c4e3e436f14028d63.png-wm) |
+| bin(10)     | 二进制整数         |                                                              |
+| oct(10)     | 八进制整数         |                                                              |
+| hex(10)     | 十六进制整数       |                                                              |
+|             |                    |                                                              |
+
+
+
+[Python格式化输出 %s %d %f_ Hey_cancan的博客-CSDN博客](https://blog.csdn.net/weixin_40583388/article/details/78600101)
 
 ## Pandas
 
