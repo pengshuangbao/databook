@@ -62,7 +62,8 @@ module.exports = ctx => ({
           '/database/': getDatabaseSidebar(),
           '/ops/': getOpsSidebar(),
           '/programming/': getProgrammingSidebar()
-        }
+        },
+        sidebarDepth: 3,
       }
     }
   },
