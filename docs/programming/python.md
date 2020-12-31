@@ -36,7 +36,7 @@ Python格式化输出 %s %d %f_ Hey_cancan的博客-CSDN博客](https://blog.csd
 
 ### 列表
 
-#### 如何不区分大小写的判断一个元素是否在一个列表中
+#### 不区分大小写的判断一个元素是否在一个列表中
 
 ```python
 arr1 = ['Jack', 'mAry', 'bob']

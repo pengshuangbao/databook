@@ -12,7 +12,7 @@ module.exports = ctx => ({
     extendMarkdown: md => {
       // 使用更多的 markdown-it 插件! 配置: https://github.com/Oktavilla/markdown-it-table-of-contents
       md.use(require("markdown-it-table-of-contents"), {
-        includeLevel: [2,3],
+        includeLevel: [3,4],
         slugify:function(s){
           return slugify(s)
         }, 
@@ -146,7 +146,8 @@ function getJavaSidebar(){
         'jvm进阶/13StringTable',
         'jvm进阶/15垃圾回收相关算法',
         'jvm进阶/16垃圾回收相关概念',
-        'jvm进阶/16垃圾回收相关概念'
+        'jvm进阶/16垃圾回收相关概念',
+        'jvm进阶/17垃圾回收器'
       ]
     }
   ]
