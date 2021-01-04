@@ -34,3 +34,13 @@
 
 
 
+### JVM日志
+
+#### 新生代
+
+![image](https://static.lovedata.net/21-01-03-4614cf7fdb48c83661a43575ab5c431c.png-wm)
+
+#### 老年代
+
+![image](https://static.lovedata.net/21-01-03-9e9a18c86b3aaefe79cb5cbd534867a3.png-wm)
+

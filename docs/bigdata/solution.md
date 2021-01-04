@@ -2,6 +2,10 @@
 
 [toc]
 
+## 大数据量漏斗查询
+
+[每天数百亿用户行为数据，美团点评怎么实现秒级转化分析？ - 美团技术团队](https://tech.meituan.com/2018/03/20/user-funnel-analysis-design-build.html)
+
 ## Impala + Kudu 
 
 Kudu+Impala为实时数据仓库存储提供了良好的解决方案。这套架构在支持随机读写的同时还能保持良好的Scan性能，同时其对Spark等流式计算框架有官方的客户端支持。这些特性意味着数据可以从Spark实时计算中实时的写入Kudu，上层的Impala提供BI分析SQL查询，对于数据挖掘和算法等需求可以在Spark迭代计算框架上直接操作Kudu底层数据。
