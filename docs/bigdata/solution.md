@@ -10,6 +10,8 @@
 
 Kudu+Impala为实时数据仓库存储提供了良好的解决方案。这套架构在支持随机读写的同时还能保持良好的Scan性能，同时其对Spark等流式计算框架有官方的客户端支持。这些特性意味着数据可以从Spark实时计算中实时的写入Kudu，上层的Impala提供BI分析SQL查询，对于数据挖掘和算法等需求可以在Spark迭代计算框架上直接操作Kudu底层数据。
 
+[使用Apache Kudu和Impala实现存储分层 - 大鹏的个人空间 - OSCHINA - 中文开源技术交流社区](https://my.oschina.net/dabird/blog/3051625)
+
 
 
 ## Flink + Canal  增量同步

@@ -96,11 +96,73 @@
 
 
 
+### 使用excel展示字节码数据
+
+```java
+public class Demo {
+    private int num = 1;
+
+    public int add(){
+        num = num + 2;
+        return num;
+
+    }
+}
+```
+
+![image](https://static.lovedata.net/21-01-05-1d311f8b27dcd9ec29e5fe5c544a6ca9.png-wm)
+
+### 魔数
+
+![image](https://static.lovedata.net/21-01-05-2635d937687f68c841cd2b770bce4b82.png-wm)
+
+### 版本号
+
+![image](https://static.lovedata.net/21-01-05-70be54f9207ed29718fe9b175670b6dd.png-wm)
+
+![image](https://static.lovedata.net/21-01-05-1990681b2000e434d3a6360f0e711360.png-wm)
+
+#### 使用低版本的jdk运行高版本jdk编译的class文件
+
+![image](https://static.lovedata.net/21-01-05-44575f5ddbb868dd007f1d9c87dcda97.png-wm)
+
+### 常量池：存放所有常量
+
+![image](https://static.lovedata.net/21-01-05-f94e26dae185a9a189f55c5083436eb8.png-wm)
+
+![image](https://static.lovedata.net/21-01-05-4fa77f955394aeb04de436ace3d23016.png-wm)
+
+#### 常量池计数器
+
+![image](https://static.lovedata.net/21-01-05-982f0e10fdb60071ab52eecaf0c73686.png-wm)
+
+#### 常量池
+
+![image](https://static.lovedata.net/21-01-05-9250f633283e1e82b35eb381cdf110b1.png-wm)
+
+![image](https://static.lovedata.net/21-01-05-4bf9d3ef9fe2b6d390178d6a8bf61053.png-wm)
 
 
 
+### 字面量和符号引用
 
+![image](https://static.lovedata.net/21-01-05-0faccd76d23befdde321045b72c2a380.png-wm)
 
+![image](https://static.lovedata.net/21-01-05-40b78f1cc4fa9c52c0374883129f9130.png-wm)
+
+![image](https://static.lovedata.net/21-01-05-5247b1306c1ad86f5af886061be6aba0.png-wm)
+
+![image](https://static.lovedata.net/21-01-05-e05cdb2c45a9a7b2db5262811b7d2963.png-wm)
+
+![image](https://static.lovedata.net/21-01-05-fa7e3daab468ccc5075707ae6d9e353b.png-wm)
+
+![image](https://static.lovedata.net/21-01-05-5be80e22bbd87c9dd9c62138f69184dc.png-wm)
+
+![image](https://static.lovedata.net/21-01-05-a0b1257239eb40ea08c1ba7cde8978d0.png-wm)
+
+常量池已经加载到方法区中，成了运行时常量，具体的引用，动态链接指向具体的引用了。
+
+![image](https://static.lovedata.net/21-01-05-3e31b620f78b7173e50c179c9e80e833.png-wm)
 
 ## 使用javap指令解析class文件
 
