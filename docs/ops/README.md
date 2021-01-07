@@ -151,6 +151,16 @@ du -sm /*
 
 
 
+### IO测试
+
+#### 粗略测试磁盘速度
+
+```shell
+dd if=cm6.3.1-redhat7.tar.gz  bs=8k count=300000 of=/dev/null
+```
+
+
+
 ## 网络
 
 #### 查看监听端口
@@ -163,6 +173,28 @@ netstat -atunlp | grep LISTEN
 
 ```shell
 netstat -atunlp | grep 2181 | awk '{ print $5" : "$7 }' | sort | uniq -c
+```
+
+## 内存
+
+### 清除PageCache
+
+#### 仅清除页面缓存PageCache方法：
+
+```bash
+echo 1 > /proc/sys/vm/drop_caches
+```
+
+#### 清除目录项和inode节点：
+
+```bash
+echo 2 > /proc/sys/vm/drop_caches
+```
+
+#### 清除页面缓存、目录项和inode节点：
+
+```bash
+echo 3 > /proc/sys/vm/drop_caches
 ```
 
 ## CPU
@@ -405,7 +437,19 @@ docker kill `docker ps -a | grep 'xxx' | grep -v grep|awk '{print $1}'`
 docker rm `docker ps -a | grep 'xxx' | grep -v grep|awk '{print $1}'`
 ```
 
+### Docker镜像加速
 
+创建或修改 /etc/docker/daemon.json 文件，修改为如下形式
+
+```json
+{
+  "registry-mirrors": [
+    "https://registry.docker-cn.com",
+    "http://hub-mirror.c.163.com",
+    "https://docker.mirrors.ustc.edu.cn"
+  ]
+}
+```
 
 
 

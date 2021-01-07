@@ -164,6 +164,44 @@ public class Demo {
 
 ![image](https://static.lovedata.net/21-01-05-3e31b620f78b7173e50c179c9e80e833.png-wm)
 
+### 常量池常量解析
+
+```java
+package com.lovedata.bigdata.jvm;
+
+public class Demo {
+    private int num = 1;
+
+    public int add(){
+        num = num + 2;
+        return num;
+
+    }
+}
+```
+
+![image](https://static.lovedata.net/21-01-07-1a430c84d89c085aab64286bc7f1efd8.png-wm)
+
+![image](https://static.lovedata.net/21-01-07-3878c8cf8f25160cae846adca3d1c2df.png-wm)
+
+![image](https://static.lovedata.net/21-01-07-d57a3ddbdadcd40b7b063f7d3b622745.png-wm)
+
+![image](https://static.lovedata.net/21-01-07-34a004d6eb562c8885cba7139ecdf03b.png-wm)
+
+
+
+### 常量池总结
+
+总结1
+
+![image](https://static.lovedata.net/21-01-07-37a2cdbea3571472bc89b333c758ce07.png-wm)
+
+总结2
+
+![image](https://static.lovedata.net/21-01-07-2ffbb542ec4711b778944e600c852dd7.png-wm)
+
+
+
 ## 使用javap指令解析class文件
 
 ### javap的用法
