@@ -4,6 +4,19 @@
 
 ## 基础
 
+### 生成requirements.txt文件
+
+> 参考:https://github.com/bndr/pipreqs
+
+```shell
+#如果是python3,则换成pip3
+pip install pipreqs
+# 在当前目录生成
+pipreqs . --encoding=utf8 --force
+```
+
+
+
 ### 字符串
 
 #### 格式化输出
@@ -29,6 +42,57 @@ Python格式化输出 %s %d %f_ Hey_cancan的博客-CSDN博客](https://blog.csd
 ```
 
 [Python 百分比计算 - Blue·Sky - 博客园](https://www.cnblogs.com/BlueSkyyj/p/9451767.html)
+
+
+
+### 日期
+
+#### 格式化输出
+
+[Python中日期和时间格式化输出的方法 - Tom_Mo - 博客园](https://www.cnblogs.com/cxmo/p/10561808.html)
+
+```python
+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S');
+# '2013-09-17 08:06:17'
+
+now=datetime.datetime.now()
+now.strftime('%Y')
+# '2013'
+
+# 显示一周中的第几天，其中星期天为0，星期一为1
+import datetime
+now=datetime.datetime.now()
+now.strftime('%w')
+# '2'
+
+# 显示一年中的第几周，星期天为一周的第一天
+import datetime
+now=datetime.datetime.now()
+now.strftime('%U')
+# '37'
+
+# 显示一年中的第几周 星期一为一周的第一天
+now=datetime.datetime.now()
+now.strftime('%W')
+#'37'
+```
+
+
+
+#### 时间加减
+
+```python
+import datetime
+
+now = datetime.datetime.now()
+print(now.strftime('%Y-%m-%d %H:%M:%S'))
+
+add_hour = now + datetime.timedelta(hours=8)
+print(add_hour.strftime('%Y-%m-%d %H:%M:%S'))
+
+# 2021-01-08 15:18:50
+# 2021-01-08 23:18:50
+```
 
 
 

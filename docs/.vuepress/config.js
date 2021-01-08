@@ -107,7 +107,7 @@ function getArchitectureSidebar(){
 }
 
 function getComputerSidebar(){
-  return ['','network','cpu','memory']
+  return ['','network','cpu','disk','memory']
 }
 
 function getDatabaseSidebar(){
