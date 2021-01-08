@@ -144,7 +144,7 @@ public class Demo {
 
 
 
-### 字面量和符号引用
+#### 字面量和符号引用
 
 ![image](https://static.lovedata.net/21-01-05-0faccd76d23befdde321045b72c2a380.png-wm)
 
@@ -164,7 +164,7 @@ public class Demo {
 
 ![image](https://static.lovedata.net/21-01-05-3e31b620f78b7173e50c179c9e80e833.png-wm)
 
-### 常量池常量解析
+#### 常量池常量解析
 
 ```java
 package com.lovedata.bigdata.jvm;
@@ -190,7 +190,7 @@ public class Demo {
 
 
 
-### 常量池总结
+#### 常量池总结
 
 总结1
 
@@ -201,6 +201,64 @@ public class Demo {
 ![image](https://static.lovedata.net/21-01-07-2ffbb542ec4711b778944e600c852dd7.png-wm)
 
 
+
+### 访问标识
+
+![image](https://static.lovedata.net/21-01-08-12c9aae7288b84cec8a7809bff8096b8.png-wm)
+
+
+
+![image](https://static.lovedata.net/21-01-08-11ab37570e9e7d0978fb7d7429dfe9b1.png-wm)
+
+![image](https://static.lovedata.net/21-01-08-23318e9bf0709a68cdfa9c80fd676105.png-wm)
+
+#### 补充说明
+
+![image](https://static.lovedata.net/21-01-08-455f2af30b6fdf9bccbdaccd39206331.png-wm)
+
+
+
+### 类索引、父类索引、接口索引集合
+
+![image](https://static.lovedata.net/21-01-08-b5eb407e5d6848c7e51a13e17617f225.png-wm)
+
+![image](https://static.lovedata.net/21-01-08-88236478d51c6667efe29dbda828d5f7.png-wm)
+
+### 字段表集合
+
+![image](https://static.lovedata.net/21-01-08-e11443e0ae905fd303f1ebeba9ca6fc0.png-wm)
+
+
+
+#### fields_count 字段计数器
+
+![image](https://static.lovedata.net/21-01-08-1224575c070eaac806c5b21ae8298251.png-wm)
+
+#### fields[] 字段表
+
+![image](https://static.lovedata.net/21-01-08-3d70b297e17bfaf5d05cc597ff16a766.png-wm)
+
+##### 字段表访问标识
+
+![image](https://static.lovedata.net/21-01-08-37cfdeb1e1897c93877175801863e2bc.png-wm)
+
+##### 字段名索引
+
+![image](https://static.lovedata.net/21-01-08-06995beb140c87306ad440fce56fc2e7.png-wm)
+
+##### 描述符索引
+
+![image](https://static.lovedata.net/21-01-08-4af8ac6f120a72a5b1f2ca6fe7686f49.png-wm)
+
+![image](https://static.lovedata.net/21-01-08-054e30960af2a4a9c471d0c2d2b55630.png-wm)
+
+##### 属性表集合
+
+![image](https://static.lovedata.net/21-01-08-769bc8484afd5fcf84698d7aa84d63f3.png-wm)
+
+
+
+![image](https://static.lovedata.net/21-01-08-6f063cb4f0306671eeef334ee85f3a0e.png-wm)
 
 ## 使用javap指令解析class文件
 

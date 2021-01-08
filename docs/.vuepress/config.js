@@ -12,7 +12,7 @@ module.exports = ctx => ({
     extendMarkdown: md => {
       // 使用更多的 markdown-it 插件! 配置: https://github.com/Oktavilla/markdown-it-table-of-contents
       md.use(require("markdown-it-table-of-contents"), {
-        includeLevel: [3,4],
+        includeLevel: [2,3,4],
         slugify:function(s){
           return slugify(s)
         }, 
