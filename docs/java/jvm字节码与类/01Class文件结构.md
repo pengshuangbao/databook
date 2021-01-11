@@ -260,10 +260,163 @@ public class Demo {
 
 ![image](https://static.lovedata.net/21-01-08-6f063cb4f0306671eeef334ee85f3a0e.png-wm)
 
+
+
+### 方法表集合
+
+![image](https://static.lovedata.net/21-01-09-0e5b7209e8c8d60187f86ee893faeb9c.png-wm)
+
+![image](https://static.lovedata.net/21-01-09-5991e72949c264c8a5cd14f58b0a5bc9.png-wm)
+
+#### 
+
+#### 方法计数器
+
+![image](https://static.lovedata.net/21-01-09-879fc24c2515e6e274e47696b14fdbc3.png-wm)
+
+#### 方法表
+
+![image](https://static.lovedata.net/21-01-09-4410438cc0dde99730830b1c82c9d900.png-wm)
+
+![image](https://static.lovedata.net/21-01-09-7ff17d19e041b586ca4e57cc7ea7dfce.png-wm)
+
+### 属性表集合
+
+![image](https://static.lovedata.net/21-01-09-43629a77113899ea6e5754e5386025ca.png-wm)
+
+#### 属性计数器
+
+![image](https://static.lovedata.net/21-01-09-16f9d3b0ebf460acf7dd46a0c096e570.png-wm)
+
+#### 属性表
+
+![image](https://static.lovedata.net/21-01-09-6df7c9f96ffed2b2bd98c00e3ceff997.png-wm)
+
+![image](https://static.lovedata.net/21-01-09-c7102478cd180b9667276744fa24479b.png-wm)
+
+![image](https://static.lovedata.net/21-01-09-8c1e44ca56893a0b738412088ebb6410.png-wm)
+
+![image](https://static.lovedata.net/21-01-09-673aea3f6ba0c3ef60c543ad51018624.png-wm)
+
+![image](https://static.lovedata.net/21-01-09-c207fab428745bc1f2fc9ba6bb569727.png-wm)
+
+![image](https://static.lovedata.net/21-01-09-d6a30f9611e12881eddfc74534653396.png-wm)
+
+![image](https://static.lovedata.net/21-01-09-e08fa9bf65121d1ac08b2ce00bd52109.png-wm)
+
+![image](https://static.lovedata.net/21-01-09-22ba18541749f29c53466031fd3d23f9.png-wm)
+
+![image](https://static.lovedata.net/21-01-09-a424bad6a1433b38b45104c9bdbf7c5d.png-wm)
+
+![image](https://static.lovedata.net/21-01-09-69257a817f16d7fcc1076c7623aec699.png-wm)
+
+![image](https://static.lovedata.net/21-01-09-7df5f4cd48d3df4bd27f46d39749225e.png-wm)
+
+![image](https://static.lovedata.net/21-01-09-87f68b2f80f44d4ba368c0e6e3c71840.png-wm)
+
+![image](https://static.lovedata.net/21-01-09-4e3074d46513cab21160a92a0eb32a4e.png-wm)
+
+![image](https://static.lovedata.net/21-01-09-3013f85a9dfd93483e64a5fcb2bef812.png-wm)
+
+![image](https://static.lovedata.net/21-01-09-5cc4b0d309f63e992cc4781c08ae3ca6.png-wm)
+
 ## 使用javap指令解析class文件
 
+### 解析字节码的作用
+
+![image](https://static.lovedata.net/21-01-10-9604673158bd16758b18bbdae9d65b24.png-wm)
+
+### Java -g 操作
+
+![image](https://static.lovedata.net/21-01-10-b39fece3b903afbd6c571d19342f20e4.png-wm)
+
+![image](https://static.lovedata.net/21-01-10-8964e383f650407efa46bdeedf05db78.png-wm)
+
 ### javap的用法
+
+![image](https://static.lovedata.net/21-01-10-034f94774b278d4fabbd3ac61a372929.png-wm)
+
+![image](https://static.lovedata.net/21-01-10-f4ba089f44aee525c04767eb00f26749.png-wm)
+
+```java
+package com.atguigu.java1;
+
+public class JavapTest {
+    private int num;
+    boolean flag;
+    protected char gender;
+    public String info;
+
+    public static final int COUNTS = 1;
+    static{
+        String url = "www.atguigu.com";
+    }
+    {
+        info = "java";
+    }
+    public JavapTest(){
+
+    }
+    private JavapTest(boolean flag){
+        this.flag = flag;
+    }
+    private void methodPrivate(){
+
+    }
+    int getNum(int i){
+        return num + i;
+    }
+    protected char showGender(){
+        return gender;
+    }
+    public void showInfo(){
+        int i = 10;
+        System.out.println(info + i);
+    }
+}
+
+```
+
+
+
+![image](https://static.lovedata.net/21-01-10-b8938e3068ff91835a18c892b2c11af8.png-wm)
+
+![image](https://static.lovedata.net/21-01-10-62e861361fc9a5c43ef342c111c1139f.png-wm)
+
+
+
+![image](https://static.lovedata.net/21-01-10-c3f26d33c087cbbae036cb32744fbeb6.png-wm)
+
+
+
+![image](https://static.lovedata.net/21-01-10-c19d05e8858cbe11d5187f5dd783c3d8.png-wm)
+
+![image](https://static.lovedata.net/21-01-10-2df2ca5186ecf408156d635171d2171d.png-wm)
+
+![image](https://static.lovedata.net/21-01-10-f9ee4234d051c4a160c3235e3aa6d222.png-wm)
+
+![image](https://static.lovedata.net/21-01-10-aa6fb3b583953dae6f0c90fee821fafd.png-wm)
+
+![image](https://static.lovedata.net/21-01-10-c5cbe577b971d22d7e36cda3ee20b671.png-wm)
+
+
+
+![image](https://static.lovedata.net/21-01-10-6da3b62686a8af007ffe487c716e7e29.png-wm)
+
+![image](https://static.lovedata.net/21-01-10-118456b1e51b01f3cf82bb88d82643d5.png-wm)
+
+#### javap -c 和 javap -v的对比
+
+![image](https://static.lovedata.net/21-01-10-053a36932daa3896f15b8fa621ee40d6.png-wm)
+
+#### -v -l -c 的区别
+
+![image](https://static.lovedata.net/21-01-10-6fc8592bceef5981c3084a2a29d3ca39.png-wm)
+
+#### 使用javap -v -p JavapTest.class 输出所有方法包括私有方法的详细信息
 
 ### 使用举例
 
 ### 总结
+
+![image](https://static.lovedata.net/21-01-10-48e39458f6cec617697018a62f51494b.png-wm)
