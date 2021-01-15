@@ -19,6 +19,23 @@ pipreqs . --encoding=utf8 --force
 
 ### 字符串
 
+#### 输出进度条
+
+```python
+from time import sleep
+from tqdm import tqdm
+# 这里同样的，tqdm就是这个进度条最常用的一个方法
+# 里面存一个可迭代对象
+for i in tqdm(range(1, 500)):
+   # 模拟你的任务
+   sleep(0.01)
+sleep(0.5)
+```
+
+![image](https://static.lovedata.net/21-01-12-113e963323391fce21ed0360e7d439a4.png-wm)
+
+
+
 #### 格式化输出
 
 | 格式化      | 解释               | 举例                                                         |
@@ -42,6 +59,32 @@ Python格式化输出 %s %d %f_ Hey_cancan的博客-CSDN博客](https://blog.csd
 ```
 
 [Python 百分比计算 - Blue·Sky - 博客园](https://www.cnblogs.com/BlueSkyyj/p/9451767.html)
+
+#### 字符串表格格式输出
+
+[Python在命令行输出美观的表格 - FINTHON](https://finthon.com/python-prettytable/)
+
+```python
+import prettytable as pt
+ 
+table = pt.PrettyTable(['No', 'JOBID', 'NAME', 'STATUS'])
+table.add_row(['1', '101', 'job1', 'R'])
+table.add_row(['2', '102', 'job2', 'R'])
+table.add_row(['3', '103', 'job3', 'R'])
+table.add_row(['4', '104', 'job4', 'R'])
+print(table)
+```
+
+```bash
++----+-------+------+--------+
+| No | JOBID | 名字 | STATUS |
++----+-------+------+--------+
+| 1  |  101  | job1 |   R    |
+| 2  |  102  | job2 |   R    |
+| 3  |  103  | job3 |   R    |
+| 4  |  104  | job4 |   R    |
++----+-------+------+--------+
+```
 
 
 
