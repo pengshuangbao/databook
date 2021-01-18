@@ -159,6 +159,20 @@ du -sm /*
 dd if=cm6.3.1-redhat7.tar.gz  bs=8k count=300000 of=/dev/null
 ```
 
+#### 生成大文件
+
+```shell
+dd if=/dev/zero of=test bs=1M count=1000
+```
+
+
+
+#### 随机生成10个小文件
+
+```shell
+seq 10 | xargs -i dd if=/dev/zero of={}.dat bs=1024 count=1
+```
+
 
 
 ## 网络
