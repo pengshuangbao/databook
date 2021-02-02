@@ -61,7 +61,8 @@ module.exports = ctx => ({
           '/computer/': getComputerSidebar(),
           '/database/': getDatabaseSidebar(),
           '/ops/': getOpsSidebar(),
-          '/programming/': getProgrammingSidebar()
+          '/programming/': getProgrammingSidebar(),
+          '/book/':getBookSideBar()
         },
         sidebarDepth: 3,
       }
@@ -99,7 +100,10 @@ function getAlgorithmSidebar(){
   return ['','算法基础','数据结构','算法']
 }
 function getProgrammingSidebar(){
-  return ['python','scala']
+  return ['python','scala','card']
+}
+function getBookSideBar(){
+  return ['tech','growth','geek']
 }
 
 function getArchitectureSidebar(){

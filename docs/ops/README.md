@@ -119,6 +119,14 @@ rsync -av --exclude=theme-default/README.md --exclude=theme-default/__tests__  -
 
 [Linux下tar、cp命令排除某个目录或文件 - ReggieQiao - 博客园](https://www.cnblogs.com/reggieqiao/p/13268584.html)
 
+### dmesg
+
+查看系统消息
+
+```shell
+dmesg -T | less
+```
+
 
 
 ## 磁盘
@@ -524,6 +532,34 @@ git reset --hard  commitid
 ```shell
 kafka-console-consumer --bootstrap-server '' --topic ''  --offset 9043367 --partition 0  --max-messages 10  
 ```
+
+
+
+#### 查看topic详细信息
+
+```shell
+ kafka-topics.sh --zookeeper localhost:2181 --describe --topic main_topic
+```
+
+
+
+#### 查看指定offset
+
+```shell
+kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list 10.1.4.10:9092,10.1.4.13:9092,10.1.4.6:9092 --topic main_topic --time -1
+```
+
+
+
+> -1表示查询test各个分区当前最大的消息位移值(注意，这里的位移不只是consumer端的位移，而是指消息在每个分区的位置)
+>
+> ​    如果你要查询曾经生产过的最大消息数，那么只运行上面这条命令然后把各个分区的结果相加就可以了。但如果你需要查询当前集群中该topic的消息数，那么还需要运行下面这条命令：
+>
+> ```shell
+> kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list 10.162.160.115:9092 --topic s1mmetest --time -2
+> ```
+>
+> ​    -2表示去获取当前各个分区的最小位移。之后把运行第一条命令的结果与刚刚获取的位移之和相减就是集群中该topic的当前消息总数。
 
 
 

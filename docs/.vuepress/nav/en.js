@@ -42,6 +42,43 @@ module.exports = [
             link:'/programming/scala.html'
           }
         ]
+      },
+        {
+          text: '工具',
+          items:[
+            {
+              text:'Snippt',
+              link:'/programming/card.html'
+            }
+          ]
+      }
+    ]
+  },
+  {
+    text: '资源',
+    ariaLabel: '资源',
+    items:[
+      {
+        text: '我的书单',
+        items: [
+          {
+            text:'技术类',
+            link:'/book/tech.html'
+          },
+          {
+            text:'成长类',
+            link:'/book/growth.html'
+          }
+        ]
+      },
+      {
+        text:'专栏',
+        items:[
+          {
+            text: '专栏',
+            link:'/book/geek.html'
+          }
+        ]
       }
     ]
   }
