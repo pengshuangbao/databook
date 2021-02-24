@@ -61,6 +61,8 @@ public class BubbleSort {
 
 ###  快速排序
 
+![快速排序动图](http://static.lovedata.net/quick_sort_w.gif-wm)
+
 ```java
 
 import java.util.Arrays;

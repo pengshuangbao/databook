@@ -98,3 +98,9 @@ service iptables save
 firewall-cmd --get-default-zone
 ```
 
+
+
+## https
+
+[为什么https是安全的](https://mp.weixin.qq.com/s/-o2FDyUuECZhHCIOJsesNA)
+

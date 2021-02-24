@@ -1,6 +1,8 @@
-# 设计
+# 编程设计
 
 [toc]
+
+## WordCount的实现过程(Mapreduce实现)
 
 ## 海量URL去重
 
@@ -12,7 +14,7 @@
 ## 海量数据排序
 
 1. 原理同上，使用一个reducer，map输入后将value输出，利用mr的自动排序，然后reducer中用一个全局的linenumer变量 进行排号，这个号自增的，根据value list ，有多少个value，就输出多少次,用于处理相同值  
- 
+
 ## 个数中找出最大的10000个数（top K问题）
 
 1. top K问题很适合采用MapReduce框架解决，用户只需编写一个Map函数和两个Reduce 函数，然后提交到Hadoop（采用Mapchain和Reducechain）上即可解决该问题。具体而言，

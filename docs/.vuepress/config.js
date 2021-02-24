@@ -62,7 +62,8 @@ module.exports = ctx => ({
           '/database/': getDatabaseSidebar(),
           '/ops/': getOpsSidebar(),
           '/programming/': getProgrammingSidebar(),
-          '/book/':getBookSideBar()
+          '/book/':getBookSideBar(),
+          '/interview/':getInterviewSideBar()
         },
         sidebarDepth: 3,
       }
@@ -104,6 +105,10 @@ function getProgrammingSidebar(){
 }
 function getBookSideBar(){
   return ['tech','growth','geek']
+}
+
+function getInterviewSideBar(){
+  return ['tech','hr']
 }
 
 function getArchitectureSidebar(){
@@ -265,7 +270,8 @@ function getBigdataSidebar () {
       //sidebarDepth: 2,  
       children: [
         'redis/',
-        'redis/Redis核心技术与实战'
+        'redis/Redis核心技术与实战',
+        'redis/Redis核心技术与实战-实践篇'
       ]
     },
     'hive',

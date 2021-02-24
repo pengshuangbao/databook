@@ -72,11 +72,24 @@ module.exports = [
         ]
       },
       {
-        text:'专栏',
+        text:'网课',
         items:[
           {
             text: '专栏',
             link:'/book/geek.html'
+          }
+        ]
+      },
+      {
+        text:'面经',
+        items:[
+          {
+            text: '技术',
+            link:'/interview/tech.html'
+          },
+          {
+            text: '技术',
+            link:'/interview/hr.html'
           }
         ]
       }
