@@ -2979,23 +2979,505 @@ public class StringPermutation {
 
 
 
+### 面试题39--数组中出现次数超过一半的数字
+
+>   ```
+>   数组中有一个数字出现的次数超过数组长度的一半，请找出这个数字。例如输入一个长度为9的数组{1,2,3,2,2,2,5,4,2}。由于数字2在数组中出现了5次，超过数组长度的一半，因此输出2。如果不存在则输出0。
+>   ```
+
+可以先将数组排序，然后统计数字出现的次数，先将第一个数字出现次数初始化为1，如果遇到同样的数字，就加1，遇到不一样的就重新初始化为1重新开始计数，知道某个数字计数值大于n / 2（n是数组的长度），终止循环，返回当前数字就是我们要的答案。
+
+#### 切分法，时间复杂度O(n)
+
+注**意到排序之后，如果数组中存在某个数字超过数组长度的一半，那么数组中间的数字必然就是那个出现次数超过一半的数字。**这就将问题转化成了求数组的中位数，快速排序使用的切分算法可以方便地找出中位数，且时间复杂度为O(n)，找出中位数后还需要再遍历一边数组，检查该中位数是否出现次数超过数组长度的一半。总结一下，基于切分法有如下两个步骤：
+
+-   切分法找出中位数
+-   检查中位数
+
+```java
+package com.lovedata.interview.N39_MoreThanHalfNumber;
+
+/**
+ * @author pengshuangbao
+ * @date 2021/2/24 2:15 PM
+ * 数组中有一个数字出现的次数超过数组长度的一半，请找出这个数字。
+ * 例如输入一个长度为9的数组{1,2,3,2,2,2,5,4,2}。由于数字2在数组中出现了5次，超过数组长度的一半，因此输出2。如果不存在则输出0。
+ */
+public class MoreThanHalfNumber {
+
+    public int moreThanHalfNumber(int[] array) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        int mid = select(array, array.length / 2);
+        return checkIsMoreThanHalfNumber(array, mid);
+    }
+
+    private int checkIsMoreThanHalfNumber(int[] array, int mid) {
+        int count = 0;
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] == mid) {
+                count++;
+            }
+        }
+        return count > array.length / 2 ? mid : 0;
+    }
+
+    public int select(int[] array, int k) {
+        int low = 0;
+        int high = array.length - 1;
+        while (low <= high) {
+            int mid = partition(array, low, high);
+            if (mid == k) {
+                return array[k];
+            } else if (mid < k) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+        return array[k];
+    }
+
+    /**
+     * 基于数组的特性
+     *
+     * @param array
+     * @return
+     */
+    public int findNumMoreThanHalf(int[] array) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+
+        int count = 1;
+        int result = array[0];
+        for (int i = 1; i < array.length; i++) {
+            if (count == 0) {
+                result = array[i];
+                count = 1;
+            } else if (array[i] == result) {
+                count++;
+            } else {
+                count--;
+            }
+        }
+        return checkIsMoreThanHalfNumber(array, result);
+    }
+
+    public int partition(int[] array, int low, int high) {
+        int x = array[low];
+        while (low < high) {
+            while (low < high && array[high] >= x) {
+                high--;
+            }
+            array[low] = array[high];
+            while (low < high && array[low] <= x) {
+                low++;
+            }
+            array[high] = array[low];
+        }
+        array[low] = x;
+        return low;
+    }
+
+    public static void main(String[] args) {
+        int[] array = {1, 2, 3, 2, 2, 2, 5, 4, 2};
+        System.out.println(new MoreThanHalfNumber().moreThanHalfNumber(array));
+    }
+
+
+}
+
+```
+
+select方法是通用的选择排名为k的元素，只要参数传入n / 2即可求得中位数。partition方法会返回一个索引`j`，该索引的左半部分全小于索引出的值，右半部分全大于索引处的值，如果指定的排名k == j，那么问题就解决了；如果k < j，则需要在左半数组中继续查找；如果k > j，则需要在右半数组继续查找。循环中保证了low左边的值都小于arr[low, high]，而high右边的值都大于arr[low, high]，通过不断切分和k比较，直到子数组中只含有第k个元素，此时arr[0]~arr[k - 1]都小于a[k]而arr[k+1]即其后的所有都大于a[k]，a[k]刚好是排名第k的元素。
+
+另外while循环外还有一个`return a[k]`，保证了当数组长度为1，即high == low时不能进入while循环，应该直接返回a[k].
+
+找到中位数之后遍历一边数组，检查中位数出现次数是否超过数组长度一半即可。
+
+## 
+
+### 面试题40--最小的k个数
+
+>   ```
+>   输入n个整数，找出其中最小的K个数。例如输入4,5,1,6,2,7,3,8这8个数字，则最小的4个数字是1,2,3,4,。
+>   ```
+
+
+
+```java
+package com.lovedata.interview.N40_KLeastNumbers;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
+/**
+ * @author pengshuangbao
+ * @date 2021/2/24 2:47 PM
+ * 面试题40--最小的k个数
+ * >   输入n个整数，找出其中最小的K个数。例如输入4,5,1,6,2,7,3,8这8个数字，则最小的4个数字是1,2,3,4,。
+ * ##
+ */
+@SuppressWarnings("Duplicates")
+public class KLeastNumbers {
+
+
+    /**
+     * 使用快排的思想，需要改变数组的位置
+     * 切分法
+     *
+     * @param array
+     * @param k
+     * @return
+     */
+    public ArrayList<Integer> getKLeastNumbers(int[] array, int k) {
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        if (array == null || array.length == 0 || k > array.length || k <= 0) {
+            return arrayList;
+        }
+        select(array, k - 1);
+        for (int i = 0; i < k; i++) {
+            arrayList.add(array[i]);
+        }
+        return arrayList;
+    }
+
+    public int select(int[] array, int k) {
+        int low = 0;
+        int high = array.length - 1;
+        while (low <= high) {
+            int mid = partition(array, low, high);
+            if (mid == k) {
+                return array[k];
+            } else if (mid < k) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+        return array[k];
+    }
+
+
+    public int partition(int[] array, int low, int high) {
+        int x = array[low];
+        while (low < high) {
+            while (low < high && array[high] >= x) {
+                high--;
+            }
+            array[low] = array[high];
+            while (low < high && array[low] <= x) {
+                low++;
+            }
+            array[high] = array[low];
+        }
+        array[low] = x;
+        return low;
+    }
+
+    /**
+     * 上面两个方法都改变了输入数组
+     * 直接使用Java内置的优先队列
+     */
+    public ArrayList<Integer> getLeastK(int[] input, int k) {
+        ArrayList<Integer> list = new ArrayList<>();
+        if (input == null || input.length == 0 || k > input.length || k == 0) {
+            return list;
+        }
+
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Comparator.reverseOrder());
+        for (int a : input) {
+            maxHeap.offer(a);
+            // 只要size大于k，不断剔除最大值，最后优先队列里只剩最小的k个
+            if (maxHeap.size() > k) {
+                maxHeap.poll();
+            }
+        }
+        list.addAll(maxHeap);
+        return list;
+    }
+
+    public static void main(String[] args) {
+        int[] array = {1, 2, 3, 2, 2, 2, 5, 4, 2};
+
+        System.out.println(new KLeastNumbers().getKLeastNumbers(array, 7));
+        System.out.println(new KLeastNumbers().getLeastK(array, 7));
+    }
+
+}
+
+```
+
+
+
+### 面试题41--数据流中的中位数
+
+>   ```
+>   如何得到一个数据流中的中位数？如果从数据流中读出奇数个数值，那么中位数就是所有数值排序之后位于中间的数值。如果从数据流中读出偶数个数值，那么中位数就是所有数值排序之后中间两个数的平均值。
+>   ```
+
+![image](https://static.lovedata.net/21-02-24-65399ab03e615a1c9f88e0c5f9cf704e.png-wm)
+
+![image](https://static.lovedata.net/21-02-24-60c8975a1cba8503dfeec00c268fd3a0.png-wm)
+
+
+
+中位数将数组分成两部分，**中位数左边的部分比中位数右边的部分都要小，换言之：左边部分的最大值也不会超过右边部分的最小值。**要获取最大值、最小值，比较容易想到的就是最大堆和最小堆了。又注意到，被中位数分开的两个部分，其大小之差不会超过1。所以在往两个堆里存入元素时，要保证交替存入两个容器，比如：当前元素个数为奇数时，就默认存入最小堆中；当前元素个数为偶数时，就默认存入最大堆中；当前没有元素时，默认存入最大堆中。
+
+为了保证中位数左边部分的最大值也不会超过右边部分的最小值，**应该使用最大堆存放较小元素，最小堆存放较大元素。**有两种特殊情况：
+
+-   当前要存入最大堆中的元素比最小堆的最小值大，这样不能保证最大堆的最大值不会超过最小堆的最小值。此时需要将最小堆中的最小值弹出并存入最大堆中，并将当前元素存入最小堆中，其实就是将当前元素和最小堆的最小值交换了存储位置。
+-   当前要存入最小堆的元素比最大堆的最大值小，这样也不能保证最大堆的最大值不会超过最小堆的最小值。此时需要将最大堆中的最大值弹出并存入最小堆中，并将当前元素存入最大堆中。
+
+中位数的获取就很简单了，如果当前数据流中个数为奇数，则中位数一定是最大堆的最大值（因为上面规定了当前数据个数为偶数时存入最大堆中，之后数据个数变成奇数，因此要么最大堆的大小比最小堆一样，要么比最小堆大1）；如果当前数据流中个数为偶数，那么要求平均数，这两个中间值一个是最大堆的最大值，一个是最小堆的最小值。
+
+```java
+package com.lovedata.interview.N41_StreamMedian;
+
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
+/**
+ * @author pengshuangbao
+ * @date 2021/2/24 3:47 PM
+ */
+public class StreamMedian {
+
+    /**
+     * 最大堆，存中位数左边的数，也就是比中位数小的数，最大堆的最大值，肯定是比最小堆的最小值小
+     */
+    private PriorityQueue<Integer> maxPQ = new PriorityQueue<Integer>(Comparator.reverseOrder());
+    /**
+     * 最小堆，村中位数右边的数，也就是比中位数大的数，最小堆的最小值，肯定比最大堆的最大值大
+     */
+    private PriorityQueue<Integer> minPQ = new PriorityQueue<Integer>();
+
+
+    int count = 0;
+
+    public void insert(int number) {
+        //如果当前的count是0，则默认存入到最大堆，也就是左边的堆
+        if (count == 0) {
+            maxPQ.offer(number);
+        } else if ((count & 1) == 1) { // 如果当前总的数是奇数，则存入到最小堆
+            //又因为存入到最小堆的值比最大堆的最大值小，就不能保证右边的比左边的大了
+            //这个时候，就要把最大堆的最大值放到最小堆里面去，然后在把number存入到最大堆中去
+            if (number < maxPQ.peek()) {
+                minPQ.offer(maxPQ.poll());
+                maxPQ.offer(number);
+            } else {
+                minPQ.offer(number);
+            }
+        } else {
+            //如果是偶数，则存入到最大堆
+            //又因为存入到最大堆的值比最小堆的最小值大，就不能保证左边的比右边的小了
+            //这个时候，就要把最小堆的最小值放到最大堆里面去，然后在把number存入到最小堆中去
+            if (number > minPQ.peek()) {
+                maxPQ.offer(minPQ.poll());
+                minPQ.offer(number);
+            } else {
+                maxPQ.offer(number);
+            }
+        }
+        count++;
+    }
+
+    public Double getMedian() {
+        // 当数据流读个数为奇数时，最大堆的元素个数比最小堆多1,因此中位数在最大堆中
+        if ((count & 1) == 1) {
+            return Double.valueOf(maxPQ.peek());
+        }
+        // 当数据流个数为偶数时，最大堆和最小堆的元素个数一样，两个堆的元素都要用到
+        return Double.valueOf((maxPQ.peek() + minPQ.peek())) / 2;
+    }
+
+    public static void main(String[] args) {
+        StreamMedian s = new StreamMedian();
+        s.insert(1);
+        s.insert(2);
+        s.insert(3);
+        s.insert(3);
+        System.out.println(s.getMedian());
+    }
+}
+
+```
 
 
 
 
 
+下面来比较下各个方法的效率。
+
+| 数据结构       | 插入复杂度           | 得到中位数的复杂度   |
+| -------------- | -------------------- | -------------------- |
+| 没有排序的数组 | O(1)                 | O(n)                 |
+| 有序数组       | O(n)                 | O(1)                 |
+| 二叉查找树     | 平均O(lgn)，最差O(n) | 平均O(lgn)，最差O(n) |
+| 最大堆、最小堆 | O(lg n)              | O(1)                 |
 
 
 
 
 
+### 面试题42--连续子数组的最大和
+
+>   ```
+>   输入一个整型数组，数组里正负数都可能有，数组中的一个或者连续的多个整数组成一个子数组。求所有子数组的和的最大值，要求时间复杂度为O(n)
+>   ```
+
+![image](https://static.lovedata.net/21-02-24-d4cf3307bfe3afbdf0be09109fee441a.png-wm)
+
+
+
+我们可以举例分析数组的特点比如{1, -2, 3, 10, -4, 7, 2, -5}。首先记录下第一个元素，先假设它为最大和。当1加上-2时变成了-1，再加上3等于2，3前面加了一堆还不如不加，所以应该直接从3开始加，即**如果当前累加和是负数，那么它加上当前元素将使得新的累加和比当前元素还要小，此时应该将之前的累加和丢弃，从当前元素开始累加。**
+
+```java
+package com.lovedata.interview.N42_GreatestSumOfSubarrays;
+
+/**
+ * @author pengshuangbao
+ * @date 2021/2/24 4:25 PM
+ * # 面试题42--连续子数组的最大和
+ * 输入一个整型数组，数组里正负数都可能有，数组中的一个或者连续的多个整数组成一个子数组。求所有子数组的和的最大值，要求时间复杂度为O(n)
+ */
+public class GreatestSumOfSubarrays {
+
+    public int greatestSumOfSubarrays(int[] array) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        //需要两个变量，当前和，也就是截止到当前值的和
+        int curSum = array[0];
+        //到目前为止得到的最大和，会和当前和做比较=
+        int maxSum = array[0];
+        for (int i = 1; i < array.length; i++) {
+            //如果当前和是个负数，那么也就是说，前面的和加上i-1就没什么用，加了等于没加，那么直接从当前值继续开始
+            if (curSum < 0) {
+                curSum = array[i];
+            } else {
+                curSum += array[i];
+            }
+            //如果后面在遇上了负数，这里就不会大于maxSum,则最大和并不会改变，直到再次加上正数才会改变
+            if (curSum > maxSum) {
+                maxSum = curSum;
+            }
+        }
+        return maxSum;
+    }
+
+    public static void main(String[] args) {
+        int[] array = {1, -2, 3, 10, -4, 7, 2, -5};
+        System.out.println(new GreatestSumOfSubarrays().greatestSumOfSubarrays(array));
+    }
+}
+
+```
 
 
 
 
 
+### 面试题43--1~n整数中1出现的次数
+
+>   ```
+>   输入一个整数n，求1~n这n个整数的十进制表示中1出现的次数，例如输入12, 1~12中出现1的有1、10、11、12共5次
+>   ```
+
+## 计算每个数字出现1的次数
+
+比较直接的思路就是写一个方法可以统计任意整数1的个数，然后用一个循环得到对1~n每一个数调用该方法统计总的1的出现次数。
+
+```java
+package com.lovedata.interview.N43_NumberOf1;
+
+/**
+ * @author pengshuangbao
+ * @date 2021/2/24 4:47 PM
+ */
+public class NumberOf1 {
+
+    public int getNumberOf2(int n) {
+
+        if (n < 0) {
+            n = Math.abs(n);
+        }
+        int sum = 0;
+        for (int i = 1; i <= n; i++) {
+            sum += numberOf1(i);
+        }
+        return sum;
+    }
+
+    private int numberOf1(int i) {
+        int count = 0;
+        while (i != 0) {
+            if (i % 10 == 1) {
+                count++;
+            }
+            i = i / 10;
+        }
+        return count;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new NumberOf1().getNumberOf2(12));
+    }
+}
+
+```
 
 
+
+### 面试题45--把数组排成最小的数
+
+>   ```
+>   输入一个正整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。例如输入数组{3，32，321}，则打印出这三个数字能排成的最小数字为321323。
+>   ```
+
+这道题可以对数组排序，比如对于普通的数组{23, 12, 32}，可能会想到按照自然序排序后，得到{12, 23, 32}然后直接拼接起来就得到了最小的数字122332，但是像题中的例子按照自然序排好后就是{3, 32, 321}，如果直接拼接得到332321，是不是最小呢？可以发现排好后是{321, 32, 3}，才能得到最小数321323。**可见这已经不是自然序了，所以想到需要自定义一种比较方法，得到一种新的排序方式。**
+
+既然是要拼接数组中所有的数，保证拼接后的数最小，我们从最小的问题出发，当数组中只有两个数时，情况很简单，比如{3, 32}，有用两种方式拼接他们`"3"+"32"`和`"32"+"3"`，分别为332和323，因为323 < 332，所以将32排在3的前面，也就是对于数组中的任意两个数m和n，如何mn < nm，则应该将m排在n的前面。在Java中很好实现，只需重写一个Comparator即可。使用Java 8的lambda表达式可以简化这一过程。
+
+```java
+package com.lovedata.interview.N45_SortArrayForMinNumber;
+
+import java.util.ArrayList;
+
+import java.util.ArrayList;
+
+/**
+ * @author pengshuangbao
+ * @date 2021/2/24 7:39 PM
+ */
+public class SortArrayForMinNumber {
+    public String sortArrayForMinNumber(int[] array) {
+        if (array == null || array.length == 0) {
+            return null;
+        }
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        for (int i = 0; i < array.length; i++) {
+            list.add(array[i]);
+        }
+        list.sort((a, b) -> (a + "" + b).compareTo(b + "" + a));
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < list.size(); i++) {
+            sb.append(list.get(i));
+        }
+        return sb.toString();
+    }
+
+    public static void main(String[] args) {
+        int[] array = {23, 12, 32};
+        int[] array1 = {3, 32, 321};
+        System.out.println(new SortArrayForMinNumber().sortArrayForMinNumber(array));
+        System.out.println(new SortArrayForMinNumber().sortArrayForMinNumber(array1));
+    }
+}
+```
 
 
 
