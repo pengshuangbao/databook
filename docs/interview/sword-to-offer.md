@@ -3483,5 +3483,1493 @@ public class SortArrayForMinNumber {
 
 
 
+### 面试题47--礼物的最大价值
 
+>   ```
+>   在一个mxn的棋盘的每一格斗放油一个礼物，每个礼物都有一定的价值（大于0）从棋盘的左上角开始，每次可以往右边或者下边移动一格，知道到达棋盘的右下角。给定一个棋盘和上面的礼物，计算我们最多可以拿到多少价值的礼物
+>   ```
+
+#### 
+
+![image](https://static.lovedata.net/21-02-25-2288a3964e69f87453c2c8114d2579f5.png-wm)
+
+```java
+package com.lovedata.interview.N47_MaxValueOfGifts;
+
+/**
+ * @author pengshuangbao
+ * @date 2021/2/25 3:26 PM
+ * # 面试题47--礼物的最大价值
+ * >   在一个mxn的棋盘的每一格斗放油一个礼物，每个礼物都有一定的价值（大于0）从棋盘的左上角开始，每次可以往右边或者下边移动一格，
+ * 知道到达棋盘的右下角。给定一个棋盘和上面的礼物，计算我们最多可以拿到多少价值的礼物
+ * ## 递归--两个方向的深度优先搜索
+ */
+public class MaxValueOfGifts {
+
+
+    /**
+     * 通过递归的方式
+     * 有很多重复的计算。
+     *递归--两个方向的深度优先搜索
+     * @param gift
+     * @param rows
+     * @param cols
+     * @return
+     */
+    public int getMax(int[] gift, int rows, int cols) {
+        if (gift == null || gift.length == 0) {
+            return 0;
+        }
+        int[] max = new int[1];
+        select(gift, rows, cols, 0, 0, 0, max);
+        return max[0];
+    }
+
+    private void select(int[] gift, int rows, int cols, int row, int col, int curVal, int[] max) {
+        if (row >= rows || col >= cols) {
+            return;
+        }
+        int cur = gift[row * cols + col];
+        curVal += cur;
+        if (curVal > max[0]) {
+            max[0] = curVal;
+        }
+        select(gift, rows, cols, row + 1, col, curVal, max);
+        select(gift, rows, cols, row, col + 1, curVal, max);
+    }
+
+
+    /**
+     * 通过动态规划获取
+     * * 方法2：动态规划，到达f(i,j)处拥有的礼物价值和有两种情况：
+     * * 1、从左边来，即f(i, j) = f(i, j -1) + gift(i, j)
+     * * 2、从上边来，即f(i, j) = f(i -1, j) + gift(i, j)
+     * *
+     * * 保证到达每一个格子得到的礼物价值之和都是最大的，也就是取max[f(i, j-1), f(i-1, j)] +gift(i, j)
+     * * 可以发现，要知道当前格子能获得最大礼物价值，需要用到当前格子左边一个和上面一个格子的最大礼物价值和
+     *
+     * @param gift
+     * @param rows
+     * @param cols
+     * @return
+     */
+    public int getMaxVal(int[] gift, int rows, int cols) {
+        if (gift == null || gift.length == 0) {
+            return 0;
+        }
+        int[][] maxVal = new int[rows][cols];
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                int up = 0;
+                int left = 0;
+                //如果row大于0，则肯定不是第一行
+                if (row > 0) {
+                    up = maxVal[row - 1][col];
+                }
+                //如果col>与0，则肯定不是第一列
+                if (col > 0) {
+                    left = maxVal[row][col - 1];
+                }
+                maxVal[row][col] = Math.max(up, left) + gift[row * cols + col];
+            }
+        }
+        return maxVal[rows - 1][cols - 1];
+    }
+
+    /**
+     * 当前礼物的最大价值只依赖$f(i-1, j)$和$f(i, j -1)$这两个格子，因此只需要当前行i，
+     * 第j列的前面几个格子，也就是$f(i, 0)$~$f(i, j-1)$；以及i -1行的，第j列及其之后的几个格子，也就是$f(i-1, j)$~$f(i-1, cols-1)$
+     * 两部分加起来的个数刚好是棋盘的列数cols。所以只需要一个长度为cols的一维数组即可，优化如下。
+     *
+     * @param gift
+     * @param rows
+     * @param cols
+     * @return
+     */
+    public int betterGetMaxVal(int[] gift, int rows, int cols) {
+        if (gift == null || gift.length == 0) {
+            return 0;
+        }
+        int[] maxVal = new int[cols];
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                int up = 0;
+                int left = 0;
+                if (row > 0) {
+                    up = maxVal[col];
+                }
+                if (col > 0) {
+                    left = maxVal[col - 1];
+                }
+                maxVal[col] = Math.max(up, left) + gift[row * cols + col];
+            }
+        }
+        return maxVal[cols - 1];
+    }
+
+
+    public static void main(String[] args) {
+        int[] gift = {1, 10, 3, 8, 12, 2, 9, 6, 5, 7, 4, 11, 3, 7, 16, 5};
+        System.out.println(new MaxValueOfGifts().getMax(gift, 4, 4));
+        System.out.println(new MaxValueOfGifts().getMaxVal(gift, 4, 4));
+        System.out.println(new MaxValueOfGifts().betterGetMaxVal(gift, 4, 4));
+    }
+
+}
+
+```
+
+
+
+
+
+![image](https://static.lovedata.net/21-02-25-d382f5258a7bf62da641285c40fa1a0c.png-wm)
+
+
+
+
+
+### 面试题48--最长不含重复字符串的子字符串
+
+>   ```
+>   请从字符串中找出一个最长的不包含重复字符的子字符串，计算该最长子字符串的长度。假设字符串中只包含'a'~'z'之间的字符，例如在字符串"arabcacfr"中，最长的不含重复字符的子字符串是"acfr"，长度为4
+>   ```
+
+动态规划，**定义$f(i)$表示以第i个字符为结尾的不含重复字符的子字符串长度。**
+
+如果第i个字符之前没有出现过，则$f(i) = f(i -1) +1$，比如‘abc',$f(0) = 1$是必然的，然后字符’b‘之前没有出现过，则$f(1) = f(0)+1$, 字符’c'之前没有出现过，那么$f(2) = f(1) +1$,每次计算都会用到上一次计算的结果。
+
+如果第i个字符之前出现过呢？找到该字符上次出现的位置preIndex，当前位置i - preIndex就得到这两个重复字符之间的距离，设为d。此时有两种情况
+
+-   如果`d <= f(i-1)`,说明当前重复字符必然在f(i-1)所对应的字符串中，比如’bdcefgc‘，当前字符c前面出现过了，preIndex为2，此时`d = 6 -2 = 4` ,小于` f(i -1) = 7 (bdcefg)`我们只好丢弃前一次出现的字符c及其前面的所有字符，得到当前最长不含重复字符的子字符串为’efgc‘，即`f(i) = 4`, 多举几个例子就知道，应该让`f(i) = d`；
+
+-   如果`d > f(i-1)`, 这说明当前重复字符必然在f(i-1)所对应的字符串**之前**，比如`erabcdabr`当前字符r和索引1处的r重复，`preIndex =1, i = 8,d = 7`。而`f(i -1) = 4 (cdab)`,此时直接加1即可，即`f(i) = f(i-1) +1`
+
+```java
+package com.lovedata.interview.N48_LongestSubstringWithoutDup;
+
+/**
+ * @author pengshuangbao
+ * @date 2021/2/25 4:45 PM
+ */
+public class LongestSubstringWithoutDup {
+
+    public int getLongestSubstringWithoutDup(String str) {
+        if (str == null || str.length() == 0) {
+            return 0;
+        }
+
+        int curLen = 0;
+        int maxLen = 0;
+        int[] position = new int[26];
+        for (int i = 0; i < 26; i++) {
+            position[i] = -1;
+        }
+        for (int i = 0; i < str.length(); i++) {
+            int cur = str.charAt(i);
+            int preIndex = position[cur - 'a'];
+            //两种情况
+            // 第一种情况 当前字符串从未出现过，则长度加1
+            // 第二种情况 当 当前字符串到上一次出现的长度大于当前的最大长度,比如 adcda, d的最大长度为2,而a到第一个a的是 5 ，而长度大于2，说明a出现在 cd之前，不重复，则
+            //           长度为 2+1
+            if (preIndex == -1 || (i - preIndex > curLen)) {
+                curLen++;
+            } else {
+                // 这种情况，到上一个出现的距离小于 curLen,则表示重复了，需要重新计算
+                // 重新计算之前了，因为要求最大的，所以，后面的不一定就比前面的大，所以要把这个值暂存一下，后面可能用的到
+                if (curLen > maxLen) {
+                    maxLen = curLen;
+                }
+                curLen = i - preIndex;
+            }
+            //然后还要在存一下当前字符出现的坐标
+            position[cur - 'a'] = i;
+        }
+        if (curLen > maxLen) {
+            maxLen = curLen;
+        }
+        return maxLen;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new LongestSubstringWithoutDup().getLongestSubstringWithoutDup("arabcacrfe"));
+    }
+
+}
+
+```
+
+
+
+
+
+### 时间效率与空间效率的平衡
+
+硬件一直在摩尔定律发展，内存一年翻番。
+
+内存增加迅速，允许牺牲一定的空间为代价换取时间性能，以尽可能缩短软件相应时间
+
+很多时候时间效率和空间效率就像鱼与熊掌不可兼得。
+
+
+
+### 面试题49--丑数
+
+>   ```
+>   把只包含因子2、3和5的数称作丑数（Ugly Number）。例如6、8都是丑数，但14不是，因为它包含因子7。习惯上我们把1当做是第一个丑数。求按从小到大的顺序的第N个丑数。
+>   ```
+
+res[0] = 1 
+
+| i    | res                     | t2   | t3   | t5   |
+| ---- | ----------------------- | ---- | ---- | ---- |
+| 1    | [1,2]                   | 1    | 0    | 0    |
+| 2    | [1,2,3]                 | 1    | 1    | 0    |
+| 3    | [1,2,3,4]               | 2    | 1    | 0    |
+| 4    | [1,2,3,4,5]             | 2    | 1    | 1    |
+| 5    | [1,2,3,4,5,6]           | 3    | 2    | 1    |
+| 6    | [1,2,3,4,5,6,8]         | 4    | 2    | 1    |
+| 7    | [1,2,3,4,5,6,8,9]       | 4    | 3    | 1    |
+| 8    | [1,2,3,4,5,6,8,9,10]    | 5    | 3    | 2    |
+| 9    | [1,2,3,4,5,6,8,9,10,12] | 6    | 4    | 2    |
+
+>  // 比如 i =1 的时候，三个分别乘以最小数为2 下个丑数是2，那么当前集合为{1,2},刚才的2 是1x2得到的，因此下一个和2相乘的，肯定不可能是 1了，你得大于2啊，所以肯定是2(因为丑数已经有序了)，直接选择下一个就可以了，选择又得到了 4 3 5 得到最小的是3，所以为 {1,2,3},，刚才3由 1x3得到，所以下一个和3相乘的。应该是 下一个 2，然后又得到了 4 6 4 ,所以应该是 4 不断重复
+
+```java
+package com.lovedata.interview.N49_UglyNumber;
+
+/**
+ * 把只包含因子2、3和5的数称作丑数（Ugly Number）。例如6、8都是丑数，但14不是，因为它包含因子7。习惯上我们把1当做是第一个丑数。求按从小到大的顺序的第N个丑数。
+ */
+public class UglyNumber {
+
+    /**
+     * 1 2 3 4 5 6 8 9 10 12
+     * <p>
+     * 丑数应该是另一个丑数 乘以 2，3，4得到的结果（1除外）
+     * 创建一个数组，里面都是排好序的丑数， 每个都是前面的丑数乘以 2 3 5 得到的
+     * 关键：怎么确保丑数是排好序的
+     * 假设有多个排好序的丑数，最大的为M
+     * 如何产生下一个丑数，该数肯定是前面某个丑数乘以 2 3 5
+     * 比较笨的，把前面每个乘以2，拿出第一个大于M的M2，并且同理拿到M3 M5，只需取最小的就是下一个丑数了。
+     * <p>
+     * 把每个数分别 乘以 2 3 5 是可以 但是不是必须的。
+     * 因为丑数是顺序存放在数组中，对于乘以2而言，肯定有T2，在他之前的每个丑数乘以2得到的都会小于已有最大臭鼠
+     * 在他之后的结果都会太大，我们只需几下t2，， 3 5 同理
+     *
+     * @param index
+     * @return
+     */
+    public int uglyNumber(int index) {
+        if (index <= 0) {
+            return 0;
+        }
+        int t2 = 0;
+        int t3 = 0;
+        int t5 = 0;
+        int[] res = new int[index];
+        // 第一个丑数为1
+        res[0] = 1;
+        for (int i = 1; i < index; i++) {
+            // // 比如 i =1 的时候，三个分别乘以最小数为2 下个丑数是2，那么当前集合为{1,2},刚才的2 是1x2得到的
+            // ，因此下一个和2相乘的，肯定不可能是 1了，你得大于2啊，所以肯定是2(因为丑数已经有序了)，
+            // 直接选择下一个就可以了，选择又得到了 4 3 5 得到最小的是3，所以为 {1,2,3},，刚才3由 1x3得到，
+            // 所以下一个和3相乘的。应该是 下一个 2，然后又得到了 4 6 4 ,所以应该是 4 不断重复
+            int m2 = res[t2] * 2;
+            int m3 = res[t3] * 3;
+            int m5 = res[t5] * 5;
+            // 三个候选中最小的就是下一个丑数
+            res[i] = Math.min(m2, Math.min(m3, m5));
+            // 选择某个丑数后ti * i，指针右移从丑数集合中选择下一个丑数和i相乘，
+            // 注意是三个连续的if，也就是三个if都有可能执行。这种情况发生在三个候选中有多个最小值，指针都要右移，不然会存入重复的丑数
+            if (res[i] == m2) {
+                t2++;
+            }
+            if (res[i] == m3) {
+                t3++;
+            }
+            if (res[i] == m5) {
+                t5++;
+            }
+        }
+        return res[index - 1];
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new UglyNumber().uglyNumber(10));
+    }
+}
+
+
+```
+
+
+
+
+
+### 面试题50--第一个只出现一次的字符
+
+>   ```
+>   找出字符串中找出第一个只出现一次的字符，比如输入“abacceff",则输出'b'
+>   ```
+
+要想知道某个字符是不是只出现了一次，必须遍历字符串的每个字符。**因此可以先遍历一次，统计每个字符出现次数。再遍历一次，遇到某个字符出现字符为1就立即返回。**统计每个字符出现次数，可以用哈希表，不过如果输入中都是ASCII码，那么使用0-255表示即可。这样使用一个`int[] count = new int[256]`就能代替哈希表了，以`count[someChar] = times`这种方式表示某个字符出现的次数。比如‘a’的ASCII码是97，那么count[97]就表示了字符'a'的出现次数，以此类推。
+
+```java
+package Chap5;
+
+public class FirstAppearOnceChar {
+    /**
+     * 返回第一个不重复字符
+     */
+    public char firstNotRepeatingChar(String str) {
+        if (str == null || str.length() == 0) return '\0';
+        int[] count = new int[256];
+
+        for (int i = 0; i < str.length(); i++) {
+            count[str.charAt(i)]++;
+        }
+        for (int i = 0; i < str.length(); i++) {
+            if (count[str.charAt(i)] == 1) return str.charAt(i);
+        }
+        return '\0';
+    }
+
+    /**
+     * 返回第一个不重复字符在字符串中的索引
+     */
+    public int firstAppearOnceChar(String str) {
+        if (str == null || str.length() == 0) return -1;
+        int[] count = new int[256];
+
+        for (int i = 0; i < str.length(); i++) {
+            count[str.charAt(i)]++;
+        }
+        for (int i = 0; i < str.length(); i++) {
+            if (count[str.charAt(i)] == 1) return i;
+        }
+        return -1;
+    }
+}
+
+```
+
+上面两个方法，一个是返回第一个只出现一次的字符，一个返回第一个只出现一个的字符的索引，思路都一样。根据`count[someChar]`获取某个字符的出现次数时间复杂度为O(1),对于长度为n的字符串，总的复杂度为O(n).
+
+不过如果输入中含有特殊符号或者中文等，256位的ASCII表就不够用了，需要上Unicode了，总之看题目要求吧，要想通用就哈希表。
+
+#### 相关题目
+
+##### 扩展一
+
+>   ```
+>   定义一个函数，输入两个字符串，从第一个字符串中删除在第二个字符串中出现过的所有字符。比如第一个字符串"google"，第二个字符串为"aeiou"，删除后得到"ggl".
+>   ```
+
+使用一个`boolean occur[] = new int[256]`布尔型数组，对于第二个字符串中的每个字符，标记为true表示出现过。遍历第一个字符串，判断每个字符在occur中是不是fale，为false说明该字符没有在第二个字符串中出现过，保留。
+
+```java
+/**
+ * 从第一个字符串中删除第二个字符串中出现过的所有字符
+ */
+public String deleteFromAnother(String str, String another) {
+  	if (str == null || str.length() == 0 || another == null || another.length() == 0) return str;
+  	boolean[] occur = new boolean[256];
+  	StringBuilder sb = new StringBuilder();
+  	for (int i = 0; i < another.length(); i++) {
+    	occur[another.charAt(i)] = true;
+  	}
+
+  	for (int i = 0; i < str.length(); i++) {
+    	if (!occur[str.charAt(i)]) sb.append(str.charAt(i));
+  	}
+  	return sb.toString();
+}
+```
+
+##### 扩展二
+
+>   ```
+>   定义一个函数，删除一个字符串中所有重复出现的字符，比如输入"google"返回"gole"
+>   ```
+
+使用一个`boolean occur[] = new int[256]`布尔型数组，记录某个字符是否出现过。刚开始都初始化false，每添加一个字符就标记为true，这样下次遇到重复字符就不会再添加了。
+
+```java
+/**
+ * 删除字符串中所有的重复字符
+ */
+public String deleteRepeating(String str) {
+  	if (str == null || str.length() == 0) return str;
+
+  	boolean[] occur = new boolean[256];
+  	StringBuilder sb = new StringBuilder();
+  	for (int i = 0; i < str.length(); i++) {
+    	char ch = str.charAt(i);
+    	if (!occur[ch]) sb.append(ch);
+    	occur[ch] = true;
+  	}
+  	return sb.toString();
+}
+```
+
+##### 扩展三
+
+>   ```
+>   变位词，如果两个单词含有相同的字母且每个字母出现的次数还一样，那么这两个单词互为变位词。定义一个函数判断两个字符串是不是互为变位词。
+>   ```
+
+两个字符串含有相同的字母、每个字母出现的次数一样，先统计第一个字符串每个字符出现的次数，然后遍历第二个字符串，对于每个出现的字符，将统计表中相应字符的出现次数减1，**如果啷个字符串是变位词，那么遍历结束后，统计表中每个字符出现的字符都是0**。
+
+```java
+/**
+ * 变位词
+ */
+public boolean hasSameChar(String s1, String s2) {
+  	if (s1 == null || s2 ==null) return false;
+  	int[] count = new int[256];
+  	// 统计第一个字符串
+  	for (int i = 0; i < s1.length(); i++) {
+    	count[s1.charAt(i)]++;
+  	}
+  	// 第二个字符串中如果有该字符，就减去
+  	for (int i = 0; i < s2.length(); i++) {
+    	count[s2.charAt(i)]--;
+  	}
+  	// 如果是变位词，最后count数组每个位置都是0
+  	for (int i = 0; i < 256; i++) {
+    	if (count[i] != 0) return false;
+  	}
+  	return true;
+}
+```
+
+#### 题目二
+
+>   ```
+>   字符流中第一个只出现一次的字符。
+>   这次字符串是动态变化的了，比如现在只从字符流中读取了两个字符为"go"那么字符流中第一个只出现一次的字符是'g'，等到从字符流中读取了前6个字符"google"时，第一个只出现一次的字符变成了'l'.
+>   ```
+
+使用一个insert函数模拟从字符流中读到一个字符。这次统计表`int[] occur = new int[256]`记录的是字符出现的索引.
+
+-   如果某个字符出现过，那么`occur[someChar] >= 0`;
+-   对于没有出现过的字符，令`occur[someChar] = -1`;
+-   如果某个字符第二次出现，令`occur[someChar] = -2`。
+
+要获得当前字符串中第一个只出现一次的，只需从所有`occur[someChar] >= 0`中结果中找出出现索引最小的那个字符即可。
+
+```java
+package Chap5;
+
+public class AppearOnceInStream {
+  	// 记录某个字符出现的索引
+    private int[] count;
+    // 当前读取到的字符在字符串中的索引
+    private int index;
+    public AppearOnceInStream() {
+        count =  new int[256];
+        for (int i = 0; i < count.length; i++) {
+            count[i] = -1;
+        }
+    }
+	// 模拟读取字符流中的下一个字符
+    public void insert(char c) {
+        if (count[c] == -1) count[c] = index;
+        else if (count[c] >= 0) count[c] = -2;
+        index++;
+    }
+
+    public char firstAppearOnceChar() {
+        int minIndex = Integer.MAX_VALUE;
+        char c = '\0';
+        for (int i = 0; i < count.length; i++) {
+          	// 从所有count[i] >= 0的结果中找出最小的索引就是第一个只出现一次的字符
+            if (count[i] >= 0 && count[i] < minIndex) {
+                minIndex = count[i];
+                c = (char)i;
+            }
+        }
+        return c;
+    }
+
+    public static void main(String[] args) {
+        AppearOnceInStream a = new AppearOnceInStream();
+        a.insert('g');
+        a.insert('o');
+        System.out.println(a.firstAppearOnceChar());
+        a.insert('o');
+        a.insert('g');
+        a.insert('l');
+        a.insert('e');
+        System.out.println(a.firstAppearOnceChar());
+    }
+}
+
+```
+
+---
+
+
+
+### 面试题 52--两个链表的第一个公共结点
+
+>   ```
+>   输入两个单链表，找出它们的第一个公共结点。
+>   ```
+
+这道题有一个隐含条件：单链表只有一个next指针，如果两个链表有公共结点，那么从第一个公共结点前的一个结点开始，两个链表的next都指向同一个结点了。通俗点说就是两条路汇聚成了一条。
+
+#### 两个链表，逆序比较
+
+比如一条链表{1, 5, 6, 7, 8}另外一条{2, 3, 4, 5, 6, 7, 8}从结点5开始后面的结点都完全一样了。既然后面的结点完全一样，**我们可以从后往前比较两个链表当遇到某两个结点不同时，上次比较的结点就是逆序的最后一个公共结点了，即正序的第一个公共结点。**
+
+为了可以从后往前比较两个结点，栈可以实现我们的想法。
+
+```java
+package com.lovedata.interview.N52_FirstCommonNodesInLists;
+
+import utils.ListNode;
+
+import java.util.LinkedList;
+
+/**
+ * @author pengshuangbao
+ * @date 2021/3/2 3:41 PM
+ */
+public class FirstCommonNodesInLists {
+
+    /**
+     * 方法1：两个辅助栈，从尾到头，找到最后一个相同的结点
+     */
+    public ListNode findFirstCommonNodeStack(ListNode pHead1, ListNode pHead2) {
+        ListNode cur1 = pHead1;
+        ListNode cur2 = pHead2;
+        LinkedList<ListNode> stack1 = new LinkedList<>();
+        LinkedList<ListNode> stack2 = new LinkedList<>();
+        // 分别存入两个栈中
+        while (cur1 != null) {
+            stack1.push(cur1);
+            cur1 = cur1.next;
+        }
+        while (cur2 != null) {
+            stack2.push(cur2);
+            cur2 = cur2.next;
+        }
+        // 用于记录逆序的上一个公共结点
+        ListNode publicNode = null;
+        while (!stack1.isEmpty() && !stack2.isEmpty()) {
+            if (stack1.peek() == stack2.pop()) {
+                publicNode = stack1.pop();
+            }
+            // 当前比较的不相同时，返回逆序的最后一个公共结点（也就是正序的第一个公共结点）
+            else {
+                return publicNode;
+            }
+        }
+        return publicNode;
+    }
+
+}
+
+```
+
+
+
+## 面试中的各项能力
+
+
+
+![image](https://static.lovedata.net/21-03-02-400fb5d2aa91ca02ce331fc1e5613dcb.png-wm)
+
+![image](https://static.lovedata.net/21-03-02-8466bb0048d5c333e1dff70cd83f1827.png-wm)
+
+
+
+![image](https://static.lovedata.net/21-03-02-40e7dda401fa93e5d9605a386ad6f37a.png-wm)
+
+
+
+### 沟通能力和学习能力
+
+系统越来越复杂，团队越来越大，开发、测试、经历 沟通交流越来越重要。
+
+介绍项目经验、介绍解题思路的时候都需要 **逻辑清晰明了，语言详略得当、表述的时候终点突出，观点明确。**
+
+知之为知之，不知为不知。千万不能不懂装懂。 也就是说不要把自己不熟悉的领域写成熟悉，面试官一问便知。
+
+
+
+
+
+#### 学习能力
+
+计算机是一门更新速度快的学科，每年都有新技术涌现。 
+
+软件工程师需要具备很强的学习能力。
+
+只有具备很强的学习能力和学习愿望的人，才能不断完善自己的知识结构，不断学习新的先进技术，让自己的职业生涯保持长久的生命力。
+
+
+
+#### 两种方法考验学习能力：
+
+1. 最近在看什么书或者在做什么项目，从中学到了哪些新技术。考察学习愿望和学习能力。
+2. 抛出一个新概念， 能不能在较短时间内理解这个新概念并且解决
+
+
+
+#### 善于学习、沟通的人也善于提问
+
+面试官有一个重要的任务，就是考差学习愿望和学习能力。
+
+面试官提出一个新概念，没听说过，于是在已有的理解上提出进一步的问题，在得到回复后，几个来回，掌握了这个概念。体现了学习能力
+
+![image](https://static.lovedata.net/21-03-02-8e6b4fe972f353f1110dc487c2111b11.png-wm)
+
+
+
+### 知识迁移能力
+
+所谓学习能力，很重要的一点： 根据已经掌握的知识，技术能够迅速学习理解新的技术并且运用到实际工作中去。 也就是知识迁移能力。
+
+考验迁移能力的一种方法是把经典的问题，稍作变换，期待应聘者能找到和经典问题的联系，从中收到启发，把解决问题的思路迁移过来解决新的问题。
+
+另一种方法，先问一个简单的问题，在解答完成之后，再追问一个相关的同时难度更大的问题。
+
+通俗的说法就是“举一反三”
+
+
+
+### 面试题51--在排序数组中查找数字
+
+#### 面试题1
+
+>   ```
+>   统计一个数字在排序数组中出现的次数。
+>   ```
+
+```java
+package com.lovedata.interview.N53_01_NumberOfK;
+
+/**
+ * @author pengshuangbao
+ * 统计一个数字在排序数组中出现的次数。
+ * @date 2021/3/4 5:41 PM
+ */
+public class NumberOfK {
+
+    /**
+     * 常见方法 O(N)
+     *
+     * @param array
+     * @return
+     */
+    public int numberOfK1(int[] array, int k) {
+        if (array == null || array.length == 0) {
+            return -1;
+        }
+        int count = 0;
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] == k) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * 使用二分查找方法，先找到第一个，在找到第二个，因此时间复杂度还是 O(logn)
+     * O(logn)
+     *
+     * @param array
+     * @param k
+     * @return
+     */
+    public int numberOfK2(int[] array, int k) {
+        if (array == null || array.length == 0) {
+            return -1;
+        }
+        //先找第一个出现的下标
+        int first = getFirstK(array, k, 0, array.length - 1);
+        //找最后一个出现的下标
+        int last = getLastK(array, k, 0, array.length - 1);
+        if (last == -1 && first == -1) {
+            return -1;
+        } else {
+            return last - first + 1;
+
+        }
+    }
+
+    private int getLastK(int[] array, int k, int low, int high) {
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            if (k < array[mid]) {
+                high = mid - 1;
+            } else if (k > array[mid]) {
+                low = mid + 1;
+            } else {
+                // mid 要小于最大坐标，并且 mid的下一个也是k，说明还不是最后一个，继续往后找
+                if (mid < array.length - 1 && array[mid + 1] == k) {
+                    low = mid + 1;
+                } else {
+                    return mid;
+                }
+            }
+        }
+        return -1;
+    }
+
+    private int getFirstK(int[] array, int k, int low, int high) {
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            if (k < array[mid]) {
+                high = mid - 1;
+            } else if (k > array[mid]) {
+                low = mid + 1;
+            } else {
+                // 如果mid  == k 并且 mid 要大于0，并且他的前一个也是k，说明不是第一个，则继续在前面找
+                if (mid > 0 && array[mid - 1] == k) {
+                    high = mid - 1;
+                } else {
+                    // 否则的花，当前这个就是第一个
+                    return mid;
+                }
+            }
+        }
+        return -1;
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {1, 2, 3, 3, 3, 3, 4};
+        System.out.println(new NumberOfK().numberOfK1(arr, 3));
+        System.out.println(new NumberOfK().numberOfK2(arr, 3));
+    }
+
+}
+
+```
+
+
+
+#### 题目2
+
+>   ```
+>   0~n-1中缺失的数
+>   一个长度为n -1的递增排序数组中的所有数字都是唯一的，并且每个数字的都在范围0~n-1之内。在范围内0~n-1内的n个数字中有且只有一个数字不在该数组中，找出这个数字
+>   ```
+
+```java
+package com.lovedata.interview.N53_02_MissingNumber;
+
+/**
+ * @author pengshuangbao
+ * 0~n-1中缺失的数
+ * 一个长度为n -1的递增排序数组中的所有数字都是唯一的，并且每个数字的都在范围0~n-1之内。在范围内0~n-1内的n个数字中有且只有一个数字不在该数组中，找出这个数字
+ * @date 2021/3/4 7:34 PM
+ */
+public class MissingNumber {
+
+
+    public int findMissing(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return -1;
+        }
+        int low = 0;
+        int high = arr.length - 1;
+        int len = arr.length;
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            if (arr[mid] != mid) {
+                if (mid == 0 || arr[mid - 1] == mid - 1) {
+                    return mid;
+                } else {
+                    high = mid - 1;
+                }
+            } else {
+                low = mid + 1;
+            }
+        }
+        if (low == len) {
+            return len;
+        }
+        return -1;
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {0, 1, 2, 3, 4};
+        int[] arr1 = {0, 1, 2, 4};
+        System.out.println(new MissingNumber().findMissing(arr));
+        System.out.println(new MissingNumber().findMissing(arr1));
+    }
+}
+
+```
+
+
+
+#### 题目3
+
+>   ```
+>   数组中数值和下标相等的元素。
+>   假设一个单调递增的数组里的每个元素都是整数并且是唯一的。找出数组中任意一个数值等于其下标的元素。比如在数组{-3， -1， 1， 3， 5}，数字3和它的下标相等
+>   ```
+
+```java
+package com.lovedata.interview.N53_03_IntegerIdenticalToIndex;
+
+/**
+ * @author pengshuangbao
+ * @date 2021/3/4 7:54 PM
+ * 数组中数值和下标相等的元素。
+ * 假设一个单调递增的数组里的每个元素都是整数并且是唯一的。找出数组中任意一个数值等于其下标的元素。比如在数组{-3， -1， 1， 3， 5}，数字3和它的下标相等
+ */
+public class IntegerIdenticalToIndex {
+
+    public int findIntegerIdenticalToIndex(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return -1;
+        }
+        int low = 0;
+        int high = arr.length - 1;
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            if (arr[mid] == mid) {
+                return mid;
+            } else if (arr[mid] > mid) {
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
+        return -1;
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {-3, -1, 1, 3, 5};
+        System.out.println(new IntegerIdenticalToIndex().findIntegerIdenticalToIndex(arr));
+    }
+}
+
+```
+
+
+
+
+
+
+
+
+
+### 面试题54--二叉搜索树中排名为k的结点
+
+>   ```
+>   给定一颗二叉搜索树，请找出排名第k的结点。
+>   ```
+
+![image](https://static.lovedata.net/21-03-05-90f7cfb7bc5e756417e98f63e2ac590e.png-wm)
+
+注意是二叉搜索树，这说明对于任何结点，有父结点大于其左子结点且小于右子结点。**如果中序遍历这棵树，就能得到递增排序的序列。**
+
+接下来就很简单了，只需中序遍历到第k个结点，然后立即返回就行了。感觉对于这道题，非递归的中序遍历更好写一点。
+
+```java
+package com.lovedata.interview.N54_KthNodeInBST;
+
+import java.util.LinkedList;
+
+import utils.TreeNode;
+import utils.TreeOperation;
+
+/**
+ * @author pengshuangbao
+ * @date 2021/3/4 8:13 PM
+ */
+public class KthNodeInBST {
+
+    public TreeNode findKthNode(TreeNode root, int k) {
+        if (root == null || k <= 0) {
+            return null;
+        }
+        int count = 0;
+        LinkedList<TreeNode> stack = new LinkedList<TreeNode>();
+        while (root != null || !stack.isEmpty()) {
+            while (root != null) {
+                stack.push(root);
+                root = root.left;
+            }
+            if (!stack.isEmpty()) {
+                root = stack.pop();
+                if (++count == k) {
+                    return root;
+                }
+                root = root.right;
+            }
+        }
+        return null;
+    }
+
+    public static void main(String[] args) {
+        TreeNode roo1 = new TreeNode(3);
+        TreeNode node1 = new TreeNode(2);
+        TreeNode node2 = new TreeNode(4);
+        TreeNode node4 = new TreeNode(1);
+        roo1.left = node1;
+        roo1.right = node2;
+        node1.left = node4;
+        TreeOperation.show(roo1);
+        System.out.println("---");
+        System.out.println(new KthNodeInBST().findKthNode(roo1, 2));
+        System.out.println(new KthNodeInBST().findKthNode(roo1, 6));
+    }
+}
+```
+
+
+
+### 面试题55-二叉树的深度
+
+#### 题目一
+
+>   ```
+>   输入一棵二叉树，求该树的深度。从根结点到叶结点依次经过的结点（含根、叶结点）形成树的一条路径，最长路径的长度为树的深度。
+>   ```
+
+![image](https://static.lovedata.net/21-03-05-853713c9b950acf03fa04764e3703062.png-wm)
+
+##### 递归版本
+
+很容易想到使用递归，根结点处的深度为1，既然要求树的最长路径，必然从根结点的左右子树中选出深度更大的那棵子树，也就是整棵树的深度为
+
+$$depth(root) = max[depth(root.left), depth(root.right)] + 1$$
+
+加1是因为要加上树的根结点。那么对于每棵子树，也要按照这样的规则——挑选出深度更大的子树并加上1，也就得到了以当前结点为根结点的二叉树的深度。这是个递归结构。
+
+
+
+##### 非递归版本
+
+求深度，其实就是求这棵二叉树有多少层。于是采用BFS的层序遍历。关键就是怎么知道什么时候处理完了二叉树的一层？我们来模拟一下：
+
+就假设这是棵满二叉树吧，根结点先入队列，此时队列中结点个数为1，接着会弹出这唯一的根结点，同时入列两个结点，此时第一层处理完毕；
+
+现在队列中结点个数为2，我们出列两次，4个结点又会入列，此时第二层处理完毕；
+
+现在队列中结点个数为4，我们出列4次，8个结点又会入列，此时第三层处理完毕....
+
+发现规律了吗？**每次要出列前，先得到队列中现有的结点个数，假设是m，那么就在循环内出列m次，随即跳出循环，这样就算处理完一行了。**跳出循环后只需要将深度自增，最后层序遍历完毕也就得到了二叉树的深度。
+
+
+
+```java
+package com.lovedata.interview.N55_01_TreeDepth;
+
+import utils.TreeNode;
+import utils.TreeOperation;
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+/**
+ * @author pengshuangbao
+ * @date 2021/3/5 9:59 AM
+ * 输入一棵二叉树，求该树的深度。从根结点到叶结点依次经过的结点（含根、叶结点）形成树的一条路径，最长路径的长度为树的深度。
+ */
+public class TreeDepth {
+
+
+    /**
+     * 很容易想到使用递归，出口就是根位null的时候就是0
+     * 然后求左边节点的深度和右边节点的深读
+     * 根节点就是等于两者最大的+1；
+     *
+     * @param root
+     * @return
+     */
+    public int getDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = getDepth(root.left);
+        int right = getDepth(root.right);
+        return left > right ? left + 1 : right + 1;
+    }
+
+    /**
+     * 非递归，层序遍历
+     */
+    public int depth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        int depth = 0;
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            int layerSize = queue.size();
+            for (int i = 0; i < layerSize; i++) {
+                TreeNode node = queue.poll();
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if ((node.right) != null) {
+                    queue.offer(node.right);
+                }
+            }
+            depth++;
+        }
+        return depth;
+    }
+
+
+    public static void main(String[] args) {
+        TreeNode roo1 = new TreeNode(3);
+        TreeNode node1 = new TreeNode(2);
+        TreeNode node2 = new TreeNode(4);
+        TreeNode node4 = new TreeNode(1);
+        roo1.left = node1;
+        roo1.right = node2;
+        node1.left = node4;
+        TreeOperation.show(roo1);
+        System.out.println(new TreeDepth().getDepth(roo1));
+        System.out.println(new TreeDepth().depth(roo1));
+    }
+
+}
+```
+
+
+
+#### 题目二 平衡二叉树
+
+>   ```
+>   输入一棵二叉树，判断该二叉树是否是平衡二叉树。
+>   ```
+
+本题应该是假定输入的已经是二叉搜索树，因为平衡二叉树首先是一颗二叉搜索树。平衡二叉树的定义是：对于任意结点，其左右子树的深度相差不超过1。
+
+### 
+
+```java
+package com.lovedata.interview.N55_02_BalancedBinaryTree;
+
+import utils.TreeNode;
+import utils.TreeOperation;
+
+/**
+ * @author pengshuangbao
+ * @date 2021/3/5 10:45 AM
+ */
+public class BalancedBinaryTree {
+
+
+    /**
+     * 方法1：递归地求每个结点的左右子树深度差，有重复计算
+     */
+    public boolean isBalanceTree(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        int left = getDepth(root.left);
+        int right = getDepth(root.right);
+        if (Math.abs(left - right) > 1) {
+            return false;
+        }
+        return isBalanceTree(root.left) && isBalanceTree(root.right);
+    }
+
+    public int getDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = getDepth(root.left);
+        int right = getDepth(root.right);
+        return left > right ? left + 1 : right + 1;
+    }
+
+
+    /**
+     * 方法2：后序遍历，为了传引用使用了对象数组
+     */
+
+    public boolean isBalanceTree2(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        //int类型不能传递，使用引用类型数组
+        int[] depth = new int[1];
+        return isBalanceTreeAfter(root, depth);
+    }
+
+    private boolean isBalanceTreeAfter(TreeNode root, int[] depth) {
+        if (root == null) {
+            depth[0] = 0;
+            return true;
+        }
+        //后续遍历，先遍历左边的；
+        boolean left = isBalanceTreeAfter(root.left, depth);
+        int leftDepth = depth[0];
+        //然后遍历右边的
+        boolean right = isBalanceTreeAfter(root.right, depth);
+        int rightDepth = depth[0];
+        //最后在判断中间的；
+        //当前节点的深度等于左边或者右边最大的加1
+        depth[0] = Math.max(leftDepth, rightDepth) + 1;
+        if (left && right && Math.abs(leftDepth - rightDepth) <= 1) {
+            return true;
+        }
+        return false;
+    }
+
+    public static void main(String[] args) {
+        TreeNode roo1 = new TreeNode(3);
+        TreeNode node1 = new TreeNode(2);
+        TreeNode node2 = new TreeNode(4);
+        TreeNode node4 = new TreeNode(1);
+        roo1.left = node1;
+        roo1.right = node2;
+        node1.left = node4;
+        TreeOperation.show(roo1);
+        System.out.println(new BalancedBinaryTree().isBalanceTree(roo1));
+        System.out.println(new BalancedBinaryTree().isBalanceTree2(roo1));
+
+        TreeNode node5 = new TreeNode(5);
+        node4.left = node5;
+        TreeOperation.show(roo1);
+        System.out.println(new BalancedBinaryTree().isBalanceTree(roo1));
+        System.out.println(new BalancedBinaryTree().isBalanceTree2(roo1));
+
+
+    }
+
+}
+```
+
+
+
+
+
+### 面试题57--和为s的数字
+
+#### 题目1
+
+>   ```
+>   输入一个递增排序的数组和一个数字S，在数组中查找两个数，使得他们的和正好是S；如果有多对数字的和等于S，输出两个数的乘积最小的。
+>   ```
+
+![image](https://static.lovedata.net/21-03-08-9605f56b6c3b58a67e37997de4cec7d9.png-wm)
+
+**设置两个指针，一个指向数组的第一个元素，另一个指向数组的最后一个元素。即一开始将较小值设为数组的最小值，较大值设置为数组的最大值。**
+
+接下来求按照上面的方法不断与s比较，找到第一组和为s的两个数就是乘积最小的。
+
+举个例子{1, 2, 4, 7, 11, 15}和数字15，刚开始1+15大于15，所以丢弃15；将1和11求和，小于15，所以丢弃1；将2和11求和，小于15，丢弃2；将4和11求和，刚好等于15，找到第一组和为15的两个数是4和11，它们乘积就是最小的。
+
+```java
+package com.lovedata.interview.N57_01_TwoNumbersWithSum;
+
+import java.util.ArrayList;
+
+/**
+ * @author pengshuangbao
+ * @date 2021/3/8 3:47 PM
+ * 输入一个递增排序的数组和一个数字S，在数组中查找两个数，使得他们的和正好是S；如果有多对数字的和等于S，输出两个数的乘积最小的。
+ */
+public class TwoNumbersWithSum {
+
+    public ArrayList<Integer> FindNumbersWithSum(int[] array, int sum) {
+        ArrayList<Integer> result = new ArrayList<Integer>();
+        if (array == null || array.length == 0) {
+            return result;
+        }
+        int low = 0;
+        int high = array.length - 1;
+        while (low < high) {
+            if (array[low] + array[high] == sum) {
+                result.add(array[low]);
+                result.add(array[high]);
+                break;
+            } else if (array[low] + array[high] < sum) {
+                low++;
+            } else {
+                high--;
+            }
+
+        }
+        return result;
+    }
+
+    public static void main(String[] args) {
+        int[] array = {1, 2, 4, 7, 11, 15};
+        System.out.println(new TwoNumbersWithSum().FindNumbersWithSum(array, 15));
+    }
+}
+```
+
+
+
+### 面试题58--反转字符串
+
+#### 题目1
+
+>   ```
+>   输入一个英文句子，翻转句子中单词的顺序，但单词内的顺序不变。为简单起见，标点符号和普通字母一样处理。
+>   例如输入"I am a student."则输出"student. a am I"
+>   ```
+
+比如字符串"I am a student."，整个翻转后得到".tneduts a ma I"，然后翻转每个单词即可，将单词分隔开的依然是空格。该字符串有4个单词，做四次局部反转后就得到了结果"student. a am I"。
+
+关键是要如何反转字符串的局部。可以设置两个指针，一个low指向局部字符串的头部，一个high指向局部字符串的尾部，一开始low和high都位于字符串的头部。当**low指向的不是空格且high指向的字符是空格**，此时就可以开始反转[low,high]内的字符串了....然后low和high继续向右移动，直到四个单词都被翻转。
+
+```java
+package com.lovedata.interview.N58_01_ReverseWordsInSentence;
+
+/**
+ * @author pengshuangbao
+ * @date 2021/3/9 11:07 AM
+ * 
+ * 输入一个英文句子，翻转句子中单词的顺序，但单词内的顺序不变。为简单起见，标点符号和普通字母一样处理。
+ * 例如输入"I am a student."则输出"student. a am I"
+ */
+public class ReverseWordsInSentence {
+
+
+    public String reverseWords(String str) {
+        if (str == null || str.length() == 0) {
+            return null;
+        }
+        char[] chars = str.toCharArray();
+        int len = chars.length;
+        // 先整体反转 I am a student."，整个翻转后得到".tneduts a ma I"
+        reverse(chars, 0, len - 1);
+        // 两个指针，都是指向头部
+        int low = 0;
+        int high = 0;
+        // low 必须小于长度
+        while (low < len) {
+            if (chars[low] == ' ') {
+                //如果low是空格，则low和high都得往后移动
+                ++low;
+                ++high;
+            } else if (high == len || chars[high] == ' ') {
+                // 否则，如果 high = len 并且 high 是空格的时候，则是一个单词，就得单独反转这个单词
+                // 因为high是空格，所以要 --high
+                reverse(chars, low, --high);
+                // 然后，将low置于当前high的下一个位置
+                low = ++high;
+            } else {
+                // low 和 high 都不是空格，则high往后加
+                high++;
+            }
+        }
+        return new String(chars);
+    }
+
+
+    public void reverse(char[] chars, int low, int high) {
+        while (low < high) {
+            char c = chars[low];
+            chars[low] = chars[high];
+            chars[high] = c;
+            low++;
+            high--;
+        }
+    }
+
+    public static void main(String[] args) {
+        String s = "hello";
+        char[] chars = s.toCharArray();
+        new ReverseWordsInSentence().reverse(chars, 0, s.length() - 1);
+        System.out.println(chars);
+        String s1 = "I am a student.";
+        System.out.println(new ReverseWordsInSentence().reverseWords(s1));
+    }
+
+}
+
+```
+
+
+
+#### 题目2
+
+>   ```
+>   字符串的左旋操作是把字符串前面的若干个字符转移到字符串的尾部。
+>   比如输入字符串"abcdefg"和一个数字2，则左旋转后得到字符串"cdefgab"
+>   ```
+
+##### 方法2：三次翻转——先局部翻转再整体翻转
+
+举个简单的例子"hello world"，按照上题的要求，会得到"world hello". 而在此题中，假如要求将前五个字符左旋转，会得到" worldhello"(注意w前哟一个空格)，是不是接近了。
+
+所以本题可以延续上题的思路，不过这次先局部翻转再整体反转。如字符串"abcdefg"要求左旋转前两个字符，先反转ab和cdefg得到bagfedc，然后反转这个字符串得到cdefgab即是正确答案。
+
+```java
+package com.lovedata.interview.N58_02_LeftRotateString;
+
+/**
+ * @author pengshuangbao
+ * @date 2021/3/9 11:45 AM
+ * 字符串的左旋操作是把字符串前面的若干个字符转移到字符串的尾部。
+ * 比如输入字符串"abcdefg"和一个数字2，则左旋转后得到字符串"cdefgab"
+ */
+public class LeftRotateString {
+
+    public String leftRotateString2(String str, int n) {
+        if (str == null || str.length() == 0) {
+            return null;
+        }
+        char[] chars = str.toCharArray();
+        reverse(chars, 0, n - 1);
+        reverse(chars, n, str.length() - 1);
+        reverse(chars, 0, str.length() - 1);
+        return new String(chars);
+    }
+
+
+    public void reverse(char[] chars, int low, int high) {
+        while (low < high) {
+            char c = chars[low];
+            chars[low] = chars[high];
+            chars[high] = c;
+            low++;
+            high--;
+        }
+    }
+
+    public static void main(String[] args) {
+        String a = "abcdefg";
+        System.out.println(new LeftRotateString().leftRotateString2(a, 2));
+    }
+
+}
+
+```
+
+
+
+### 面试题59--队列的最大值
+
+#### 滑动窗口的最大值
+
+> ```
+> 题目1：滑动窗口的最大值。
+> 给定一个数组和滑动窗口的大小，请找出所有滑动窗口里的最大值。例如，如果输入数组{2, 3, 4, 2, 6, 2, 5}以及滑动窗口的大小3，那么一共存在6个滑动窗口，他们的最大值分别为{4,4,6,6,6,5}
+> ```
+
+##### 方法1：基于最大堆的优先队列
+
+就以题目中的例子来模拟找出窗口中的最大值的过程。先存入3个元素，于是优先队列中有{2, 3, 4}，使用peek方法可以以O(1)的时间得到最大值，之后删除队列头的元素2，同时入列下一个元素，此时队列中有{3, 4, 2}，再调用peek方法得到最大值，然后删除队列头的3，下一个元素入列......不断重复进行此操作，直到最后队列中只有两个元素为止。
+
+```java
+package com.lovedata.interview.N59_01_MaxInSlidingWindow;
+
+import java.util.*;
+
+/**
+ * @author pengshuangbao
+ * @date 2021/3/9 2:39 PM
+ * 题目1：滑动窗口的最大值。
+ * 给定一个数组和滑动窗口的大小，请找出所有滑动窗口里的最大值。例如，如果输入数组{2, 3, 4, 2, 6, 2, 5}以及滑动窗口的大小3，
+ * 那么一共存在6个滑动窗口，他们的最大值分别为{4,4,6,6,6,5}
+ */
+public class MaxInSlidingWindow {
+
+    /**
+     * 方法1：使用优先队列
+     */
+    public ArrayList<Integer> maxInWindows(int[] num, int size) {
+        ArrayList<Integer> list = new ArrayList<>();
+        if (num == null || num.length < size || size <= 0) {
+            return list;
+        }
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Comparator.reverseOrder());
+        int j = 0;
+        for (int i = 0; i < num.length; i++) {
+            maxHeap.offer(num[i]);
+            if (maxHeap.size() >= size) {
+                list.add(maxHeap.peek());
+                maxHeap.remove(num[j++]);
+            }
+        }
+        return list;
+    }
+}
+
+```
+
+
+
+#### 队列的最大值
+
+> ```
+> 定义一个队列，实现max方法得到队列中的最大值。要求入列、出列以及邱最大值的方法时间复杂度都是O(1)
+> ```
+
+此题和面试题30“包含min的栈”同一个思路。
+
+一个dataQueue正常入列、出列元素，为了以O(1)的时间获取当前队列的最大值，需要使用一个maxQueue存放当前队列中最大值。具体来说就是，**如果即将要存入的元素比当前最大值还大，那么存入这个元素；否则再次存入当前最大值。**
+
+```java
+package com.lovedata.interview.N59_02_QueueWithMax;
+
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.Queue;
+
+/**
+ * @author pengshuangbao
+ * @date 2021/3/9 2:50 PM
+ * 定义一个队列，实现max方法得到队列中的最大值。要求入列、出列以及邱最大值的方法时间复杂度都是O(1)
+ */
+public class QueueWithMax {
+
+    private Deque<Integer> dataQueue = new LinkedList<>();
+    private Deque<Integer> maxQueue = new LinkedList<>();
+
+    public void offer(int number) {
+        dataQueue.offer(number);
+        // 如果 maxQueue 是空，证明还没数据进来，或者 maxQueue的最大值小于当前的值，则放入到队列投
+        if (maxQueue.isEmpty() || number > maxQueue.peek()) {
+            maxQueue.offerFirst(number);
+        } else {
+            maxQueue.offerFirst(maxQueue.peekFirst());
+        }
+    }
+
+    public void poll() {
+        if (dataQueue.isEmpty()) {
+            throw new RuntimeException("队列位空");
+        }
+        dataQueue.poll();
+        maxQueue.poll();
+    }
+
+    public int max() {
+        if (maxQueue.isEmpty()) {
+            throw new RuntimeException("队列已空");
+        }
+        return maxQueue.peekFirst();
+    }
+
+}
+
+```
+
+
+
+还是上面的例子{2, 3, 4, 2, 6, 2, 5}，分析随着各个元素入列dataQueue和maxQueue的情况。
+
+| 操作  | dataQueue           | maxQueue            | max  |
+| ----- | ------------------- | ------------------- | ---- |
+| 2入列 | 2                   | 2                   | 2    |
+| 3入列 | 2, 3                | 3, 2                | 3    |
+| 4入列 | 2, 3, 4             | 4, 3, 2             | 4    |
+| 2入列 | 2, 3, 4, 2          | 4, 4, 3, 2          | 4    |
+| 6入列 | 2, 3, 4, 2, 6       | 6, 4, 4, 3, 2       | 6    |
+| 2入列 | 2, 3, 4, 2, 6, 2    | 6, 6, 4, 4, 3, 2    | 6    |
+| 5入列 | 2, 3, 4, 2, 6, 2, 5 | 6, 6, 6, 4, 4, 3, 2 | 6    |
+
+出列的话两个队列同时出列一个元素，保证了maxQueue的队列头元素始终是dataQueue的当前最大值。
 

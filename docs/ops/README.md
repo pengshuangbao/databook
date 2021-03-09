@@ -93,6 +93,60 @@ ln -s source link
 
 
 
+### 代理隧道
+
+```shell
+# 如果以前有这个用户，删除
+userdel sshproxyuser
+rm -rf  /home/sshproxyuser
+
+# 添加用户
+useradd --create-home sshproxyuser
+
+# 转至用户
+su - sshproxyuser
+ssh-keygen 
+vim /home/sshproxyuser/.ssh/authorized_keys
+
+# 修改shell，改为不能登陆
+chsh -s /sbin/nologin sshproxyuser
+# 删除密码
+passwd --delete sshproxyuser
+
+```
+
+问题
+
+使用 下面命令登陆会提示输入密码
+
+```shell
+ssh -D 1078 -f -C -q -N sshproxyuser@120.77.38.170 -p 65022
+```
+
+查看authorized_keys权限，如果除了自己的其他人可以修改，那么ssh会跳过认证，还是要求输入密码，所以需要修改权限
+
+```shell
+-rw-rw-r-- 1 sshproxyuser sshproxyuser  398 Mar  4 15:46 authorized_keys
+```
+
+修改权限
+
+```shell
+chmod g-w /home/sshproxyuser/.ssh/authorized_keys
+#修改完成后
+-rw-r--r-- 1 sshproxyuser sshproxyuser  398 Mar  4 15:46 authorized_keys
+```
+
+
+
+
+
+
+
+
+
+
+
 ### find
 
 #### find 命令找到大于100M文件  
