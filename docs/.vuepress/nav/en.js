@@ -88,8 +88,12 @@ module.exports = [
             link:'/interview/tech.html'
           },
           {
-            text: '技术',
+            text: 'HR',
             link:'/interview/hr.html'
+          },
+          {
+            text: '剑指Offer',
+            link:'/interview/sword-to-offer.html'
           }
         ]
       }

@@ -108,7 +108,7 @@ function getBookSideBar(){
 }
 
 function getInterviewSideBar(){
-  return ['tech','hr']
+  return ['tech','hr','sword-to-offer']
 }
 
 function getArchitectureSidebar(){
@@ -271,7 +271,7 @@ function getBigdataSidebar () {
       children: [
         'redis/',
         'redis/Redis核心技术与实战',
-        'redis/Redis核心技术与实战-实践篇'
+        'redis/Redis核心技术与实战实践篇'
       ]
     },
     'hive',
