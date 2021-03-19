@@ -220,7 +220,8 @@ function getBigdataSidebar () {
       //sidebarDepth: 2,  
       children: [
         'kafka/',
-        'kafka/学习资源'
+        'kafka/学习资源',
+        'kafka/Kafka核心技术与实战'
       ]
     },{
       title: 'Hbase',
