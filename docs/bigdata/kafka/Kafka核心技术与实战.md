@@ -696,6 +696,316 @@ XFS强于EXT4
 
 
 
+## 09 | 生产者消息分区机制原理剖析
+
+
+
+### 为什么分区
+
+![image](https://static.lovedata.net/21-03-22-9c66506d6f93b46816fb2675d046046c.png-wm)
+
+
+
+分区的作用就是提供**负载均衡**的能力，或者说对数据进行分区的主要原因，就是为了实现系统的**高伸缩性（Scalability）**
+
+**Kafka** 中叫分区，在 MongoDB 和 Elasticsearch 中就叫分片 Shard，而在 HBase 中则叫 Region，在 Cassandra 中又被称作 vnode
+
+还可以实现业务界别的消息顺序的问题。
+
+### 分区策略
+
+所谓分区策略是决定生产者将消息发送到哪个分区的算法。
+
+partitioner.class   org.apache.kafka.clients.producer.Partitioner
+
+
+
+#### 轮询策略 Round-robin 顺序分配，默认的分区策略
+
+![image](https://static.lovedata.net/21-03-22-6511323409ecbcaf8a07615199530ffe.png-wm)
+
+
+
+**轮询策略有非常优秀的负载均衡表现，它总是能保证消息最大限度地被平均分配到所有分区上，故默认情况下它是最合理的分区策略，也是我们最常用的分区策略之一。**
+
+#### 随机策略 Randomness，
+
+![image](https://static.lovedata.net/21-03-22-93f48d1d0144070d3cc2b33a33dbafcd.png-wm)
+
+
+
+也是力求均匀，但是表现没有轮询策略好， **如果追求数据的均匀分布，还是使用轮询策略比较好**
+
+
+
+#### 按消息键保序策略  Key-ordering 策略
+
+消息都有key，有明确业务含义的字符串，客户代码、部门编号、业务ID等。 特别 kafka不支持时间戳的肩带，我经常将创建时间封装在key里面。 
+
+同一个key的消息都进入到相同的分区  **每个分区的消息处理都是有顺序的**，所以 被称为 **按照消息键保序策略**
+
+![image](https://static.lovedata.net/21-03-22-1ab0f3026b8c630a52619c24e8c8cb5e.png-wm)
+
+
+
+> Kafka 默认分区策略实际上同时实现了两种策略：如果指定了 Key，那么默认实现按消息键保序策略；如果没有指定 Key，则使用轮询策略。
+
+
+
+![image](https://static.lovedata.net/21-03-22-d186abb4f1a54f6120aecbbc72b6c200.png-wm)
+
+
+
+## 10 | 生产者压缩算法面面观
+
+压缩（compression） 时间换空间的经典 trade-off 思想 ，CPU时间换取 磁盘空间和网络I/O传输量， 
+
+### 怎么压缩
+
+Kafka 共有两大类消息格式，社区分别称之为 V1 版本和 V2 版本。V2 版本是 Kafka 0.11.0.0 中正式引入的。
+
+任何版本 Kafka 的消息层次都分为两层：**消息集合（message set）以及消息（message）**。一个消息集合中包含若干条日志项（record item），而日志项才是真正封装消息的地方
+
+kafka通常不会直接操作一条条消息，而是在消息集合上面操作
+
+
+
+#### v2和v1有什么区别？做了什么改进？
+
+消息的公共部分抽取出来放到外层消息集合里面，这样就不用每条消息都保存这些信息了。
+
+v1每条消息都需要CRC校验(CRC会变的)，而在v2中，消息的crc校验移到了**消息集合**这一层了
+
+#### 压缩方式的变化
+
+V1 版本中保存压缩消息的方法是把多条消息进行压缩然后保存到外层消息的消息体字段中
+
+V2 版本的做法是对整个消息集合进行压缩，显然压缩效果更好
+
+![image](https://static.lovedata.net/21-03-22-bd39fa706998854efece4c9162418199.png-wm)
+
+
+
+### 什么时候压缩
+
+生产者和消费者。 
+
+生产者配置 compression.type
+
+broker端的压缩
+
+大部分情况下 Broker 从 Producer 端接收到消息后仅仅是原封不动地保存而不会对其进行任何修改。 有两个李伟：
+
+1. Broker 端指定了和 Producer 端不同的压缩算法。
+   1. 可能会发生预料之外的压缩 / 解压缩操作，通常表现为 Broker 端 CPU 使用率飙升。
+2. Broker 端发生了消息格式转换。
+   1. 兼容老版本的消费者程序
+   2. 丧失了Zero copy特性
+
+
+
+### 何时解压缩？
+
+#### 消费者程序
+
+通常是在消费者程序中。通过消息体来的值压缩算法
+
+Producer 端压缩、Broker 端保持、Consumer 端解压缩。
+
+#### broker端解压缩
+
+和前面消息格式转换发生解压缩不同，  每个压缩过的消息集合在 Broker 端写入时都要发生解压缩操作，目的就是为了对消息执行各种验证 ，的确会影响性能。
+
+消息娇艳是非常重要的。
+
+
+
+### 压缩算法对比
+
+Kafka 支持 3 种压缩算法：GZIP、Snappy 和 LZ4。从 2.1.0 开始，Kafka 正式支持 Zstandard 算法（简写为 zstd），提供超高压缩比
+
+![image](https://static.lovedata.net/21-03-22-906bbfef5fabe89f6d5005ef3d200b44.png-wm)
+
+
+
+>  zstd 算法有着最高的压缩比，而在吞吐量上的表现只能说中规中矩。反观 LZ4 算法，它在吞吐量方面则是毫无疑问的执牛耳者
+
+
+
+### 最佳实践
+
+如果客户端机器 CPU 资源有很多富余，强烈建议你开启 **zstd** 压缩，这样能极大地节省网络资源消耗。
+
+![img](https://static001.geekbang.org/resource/image/ab/df/ab1578f5b970c08b9ec524c0304bbedf.jpg)
+
+
+
+### 消息结构的描述补充：
+
+消息（v1叫message，v2叫record）是分批次（batch）读写的，batch是kafka读写（网络传输和文件读写）的基本单位，不同版本，对相同（或者叫相似）的概念，叫法不一样。
+v1（kafka 0.11.0之前）:message set, message
+v2（kafka 0.11.0以后）:record batch,record
+其中record batch对英语message set，record对应于message。
+一个record batch（message set）可以包含多个record（message）。
+
+对于每个版本的消息结构的细节，可以参考kafka官方文档的5.3 Message Format 章，里面对消息结构列得非常清楚。
+
+
+
+
+
+### QA
+
+1. 假如一个消息集合里有10条消息，并且被压缩，但是消费端配置每次只poll 5条消息。这种情况下，消费端怎么解压缩？矛盾点是 如果只取5条消息，需要broker帮助解压缩；如果取整个消息集合10条消息，会有贷款等资源的浪费？
+
+   答：目前java consumer的设计是一次取出一批，缓存在客户端内存中，然后再过滤出max.poll.records条消息返给你，也不算太浪费吧，毕竟下次可以直接从缓存中取，不用再发请求了。
+
+2. broker在接收producer消息并落盘这块貌似没有用零拷贝啊！只有传输给consumer时用了，求解答
+
+   答： 就是你理解的那样。Kafka使用Zero Copy优化将页缓存中的数据直接传输到Socket——这的确是发生在broker到consumer的链路上。这种优化能成行的前提是consumer端能够识别磁盘上的消息格式。
+
+
+
+## 11 | 无消息丢失配置怎么实现？
+
+### 那 Kafka 到底在什么情况下才能保证消息不丢失呢？
+
+一句话概括，Kafka 只对“已提交”的消息（committed message）做有限度的持久化保证。
+
+#### 已提交的消息
+
+当 Kafka 的若干个 Broker 成功地接收到一条消息并写入到日志文件后，它们会告诉生产者程序这条消息已成功提交。此时，这条消息在 Kafka 看来就正式变为“已提交”消息了。
+
+> 若干个：
+>
+> 选择只要有一个 Broker 成功保存该消息就算是已提交，也可以是令所有 Broker 都成功保存该消息才算是已提交
+
+### 有限度的持久化
+
+Kafka 不可能保证在任何情况下都做到不丢失消息 ，地球不存在了了。
+
+是有前提条件的，如果消息存在N个broker上，前提是至少要有一个存活。 这个条件成立，就能保证永远不丢失。
+
+**kafka 是能做到不丢失消息的，只不过这些消息必须是已提交的消息，而且还要满足一定的条件**
+
+
+
+“丢失案例”
+
+### 案例 1：生产者程序丢失数据
+
+最常见。
+
+#### 原因
+
+kafka produer 是异步发送消息的。也就是 send(msg) 这个API，通常立即返回的。但是此时你不能认为发送成功了。
+
+“fire and forget”，翻译一下就是“发射后不管” 有很多情况导致发送失败
+
+1. 网络dousing
+2. 消息不合格，消息太大了。
+
+
+
+#### 解决
+
+Producer 永远要使用带有回调通知的发送 API，也就是说不要使用 producer.send(msg)，而要使用 producer.send(msg, callback)，能够得知是否提交成功。
+
+瞬间错误，重试就可以了，格式问题，调整格式。
+
+
+
+### 案例 2：消费者程序丢失数据
+
+Consumer 端要消费的消息不见了，位移的概念，表示要消费的位置。
+
+![image](https://static.lovedata.net/21-03-23-701edb755ce247f6482f1e857b8d3421.png-wm)
+
+应对这种情况的消息丢失
+
+**维持先消费消息（阅读），再更新位移（书签）的顺序**，可能会带来的问题是重复处理。
+
+另一种情况
+
+这就好比 Consumer 程序从 Kafka 获取到消息后开启了多个线程异步处理消息，而 Consumer 程序自动地向前更新位移。假如其中某个线程运行失败了，它负责的消息没有被成功处理，但位移已经被更新了，因此这条消息对于 Consumer 而言实际上是丢失了。
+
+解决办法：
+
+**如果是多线程异步处理消费消息，Consumer 程序不要开启自动提交位移，而是要应用程序手动提交位移**
+
+
+
+### 最佳实践
+
+
+
+1. 不要使用 producer.send(msg)，而要使用 producer.send(msg, callback)。记住，一定要使用带有回调通知的 send 方法。
+2. 设置 acks = all。acks 是 Producer 的一个参数，代表了你对“已提交”消息的定义。如果设置成 all，则表明所有副本 Broker 都要接收到消息，该消息才算是“已提交”。这是最高等级的“已提交”定义。
+3. 设置 retries 为一个较大的值。这里的 retries 同样是 Producer 的参数，对应前面提到的 Producer 自动重试。当出现网络的瞬时抖动时，消息发送可能会失败，此时配置了 retries > 0 的 Producer 能够自动重试消息发送，避免消息丢失。
+4. 设置 unclean.leader.election.enable = false。这是 Broker 端的参数，它控制的是哪些 Broker 有资格竞选分区的 Leader。如果一个 Broker 落后原先的 Leader 太多，那么它一旦成为新的 Leader，必然会造成消息的丢失。故一般都要将该参数设置成 false，即不允许这种情况的发生。
+5. 设置 replication.factor >= 3。这也是 Broker 端的参数。其实这里想表述的是，最好将消息多保存几份，毕竟目前防止消息丢失的主要机制就是冗余。
+6. 设置 min.insync.replicas > 1。这依然是 Broker 端参数，控制的是消息至少要被写入到多少个副本才算是“已提交”。设置成大于 1 可以提升消息持久性。在实际环境中千万不要使用默认值 1。
+7. 确保 replication.factor > min.insync.replicas。如果两者相等，那么只要有一个副本挂机，整个分区就无法正常工作了。我们不仅要改善消息的持久性，防止数据丢失，还要在不降低可用性的基础上完成。推荐设置成 replication.factor = min.insync.replicas + 1。
+8. 确保消息消费完成再提交。Consumer 端有个参数 enable.auto.commit，最好把它设置成 false，并采用手动提交位移的方式。就像前面说的，这对于单 Consumer 多线程处理的场景而言是至关重要的。
+
+![image](https://static.lovedata.net/21-03-23-a3d09751b3d4bd16c07b70b5042ea27e.png-wm)
+
+
+
+ISR : In-Sync Replicas，这是一个副本集合，里面的所有副本都是和Leader副本保持同步的
+
+
+
+
+
+### QA
+
+1. ack=1的时候，min.insync.replicas还会生效吗？或者说还有必要吗
+
+   不生效，min.insync.replicas只有在acks=-1时才生效
+
+   acks 指定了必须要多少个分区副本收到消息，生产者才会认为消息写入是成功的。
+
+   1. acks=0 不会等待任何来自服务器的响应，可能会丢消息，但是又更大的吞吐量
+   2. acks=1 只要首领leader收到消息，就会收到成功响应（如果leader节点异常了，一个没有收到消息的节点成为新leader，还是会丢失）
+   3. acks=all 只有参与复制的节点全部收到消息，才会收到成功响应 延迟较高
+
+2. 如果我有10个副本，isr=10，然后我配置ack=all，min.insync.replicas=5，这时候这两个参数以谁为准，生产一个消息，必须是全部副本都同步才算提交，还是只要5个副本才算提交？
+
+    min.insync.replicas是保证下限的。acks=all的含义是producer会等ISR中所有副本都写入成功才返回，但如果不设置min.insync.replicas = 5，默认是1，那么假设    ISR中只有1个副本，只要写入这个副本成功producer也算其正常写入，因此min.insync.replicas保证的写入副本的下限。
+
+​       acks=all表示消息要写入所有ISR副本，但没要求ISR副本有多少个。min.insync.replicas做了这样的保证
+
+3.   replication.factor 和 min.insync.replicas为什么不能相等呢，假如都是2，不可以吗，挂掉一个副本还有一个副本可用啊。
+
+​      没有说不可以相等。如果都是2，挂掉一个副本，producer也就无法写入了，因为不满足min.insync.replicas的要求了
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
