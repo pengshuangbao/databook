@@ -24,6 +24,8 @@
 
 [Hive：insert into table 与 insert overwrite table 区别 - cctext - 博客园](https://www.cnblogs.com/yy3b2007com/p/7054128.html)
 
+## Hive Join的区别
 
+[[一起学Hive]之十一-Hive中Join的类型和用法 – lxw的大数据田地](http://lxw1234.com/archives/2015/06/315.htm)
 
 

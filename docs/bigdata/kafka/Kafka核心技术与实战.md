@@ -1,5 +1,7 @@
 # Kafka核心技术与实战
 
+[toc]
+
 
 
 ## 开篇词 | 为什么要学习Kafka？
@@ -982,11 +984,700 @@ ISR : In-Sync Replicas，这是一个副本集合，里面的所有副本都是�
 
 
 
+## 12 | 客户端都有哪些不常见但是很高级的功能？
+
+### 什么是拦截器？
+
+基本思想就是允许应用程序在不修改逻辑的情况下，动态地实现一组可插拔的事件处理逻辑链路
+
+![image](https://static.lovedata.net/21-03-29-fc6a0d43c88e1bbb4ceebfba230a32d6.png-wm)
+
+
+
+### Kafka 拦截器
+
+Kafka 拦截器分为生产者拦截器和消费者拦截器
+
+生产者拦截器允许你在**发送消息前**以及**消息提交成功后**植入你的拦截器逻辑
+
+消费者拦截器支持在**消费消息前**以及**提交位移后**编写特定逻辑
+
+使用配置。interceptor.classes
+
+
+
+org.apache.kafka.clients.producer.ProducerInterceptor 发送拦截器实现
+
+1. onSend  发送之前被调用
+2. onAcknowledgement  消息成功提交或发送失败之后被调用  ，调用要早于 callback
+
+
+
+org.apache.kafka.clients.consumer.ConsumerInterceptor
+
+1. onConsume
+2. onCommit
+
+
+
+#### 应用场景
+
+客户端监控、端到端系统性能检测、消息审计等
+
+端到端的监控。   
+
+Kafka 默认提供的监控指标都是针对单个客户端或 Broker 的，你很难从具体的消息维度去追踪集群间消息的流转路径。同时，如何监控一条消息从生产到最后消费的端到端延时也是很多 Kafka 用户迫切需要解决的问题
+
+
+
+### 拦截器案例 - 消息端到端处理的延时
+
+业务消息从被生产出来到最后被消费的平均总时长是多少 ，需要有一个公共的地方保存，放在redis中
+
+消费者拦截器中，我们在真正消费一批消息前首先更新了它们的总延时，方法就是用当前的时钟时间减去封装在消息中的创建时间，然后累计得到这批消息总的端到端处理延时并更新到 Redis 中。之后的逻辑就很简单了，我们分别从 Redis 中读取更新过的总延时和总消息数，两者相除即得到端到端消息的平均处理延时。
+
+```java
+
+public class AvgLatencyProducerInterceptor implements ProducerInterceptor<String, String> {
+
+
+    private Jedis jedis; // 省略Jedis初始化
+
+
+    @Override
+    public ProducerRecord<String, String> onSend(ProducerRecord<String, String> record) {
+        jedis.incr("totalSentMessage");
+        return record;
+    }
+
+
+    @Override
+    public void onAcknowledgement(RecordMetadata metadata, Exception exception) {
+    }
+
+
+    @Override
+    public void close() {
+    }
+
+
+    @Override
+    public void configure(Map<java.lang.String, ?> configs) {
+    }
+```
+
+
+
+```java
+
+public class AvgLatencyConsumerInterceptor implements ConsumerInterceptor<String, String> {
+
+
+    private Jedis jedis; //省略Jedis初始化
+
+
+    @Override
+    public ConsumerRecords<String, String> onConsume(ConsumerRecords<String, String> records) {
+        long lantency = 0L;
+        for (ConsumerRecord<String, String> record : records) {
+            lantency += (System.currentTimeMillis() - record.timestamp());
+        }
+        jedis.incrBy("totalLatency", lantency);
+        long totalLatency = Long.parseLong(jedis.get("totalLatency"));
+        long totalSentMsgs = Long.parseLong(jedis.get("totalSentMessage"));
+        jedis.set("avgLatency", String.valueOf(totalLatency / totalSentMsgs));
+        return records;
+    }
+
+
+    @Override
+    public void onCommit(Map<TopicPartition, OffsetAndMetadata> offsets) {
+    }
+
+
+    @Override
+    public void close() {
+    }
+
+
+    @Override
+    public void configure(Map<String, ?> configs) {
+```
+
+![image](https://static.lovedata.net/21-03-29-de8af4eb4bacf84dad1151d700774f39.png-wm)
 
 
 
 
 
+
+
+## 13 | Java生产者是如何管理TCP连接的？
+
+
+
+Kafka 是基于 TCP 的，而不是基于 HTTP 或其他协议 生产者、消费者，还是 Broker 之间的通信都是如此
+
+```java
+
+Properties props = new Properties ();
+props.put(“参数1”, “参数1的值”)；
+props.put(“参数2”, “参数2的值”)；
+……
+try (Producer<String, String> producer = new KafkaProducer<>(props)) {
+            producer.send(new ProducerRecord<String, String>(……), callback);
+  ……
+}
+```
+
+
+
+### 何时创建 TCP 连接？
+
+在创建 KafkaProducer 实例时，生产者应用会在后台创建并启动一个名为 Sender 的线程，该 Sender 线程开始运行时首先会创建与 Broker 的连接
+
+Producer 会连接 bootstrap.servers 参数指定的所有 Broker
+
+如果为这个参数指定了 1000 个 Broker 连接信息，那么很遗憾，你的 Producer 启动时会首先创建与这 1000 个 Broker 的 TCP 连接。
+
+不建议把集群中所有的 Broker 信息都配置到 bootstrap.servers 中，通常你指定 3～4 台就足以了，知道一台broker就能拿到整个集群的broker信息。
+
+TCP 连接是在创建 KafkaProducer 实例时建立的
+
+TCP 连接还可能在两个地方被创建：一个是在更新元数据后，另一个是在消息发送时
+
+
+
+### 何时关闭 TCP 连接？
+
+一种是用户主动关闭；一种是 Kafka 自动关闭。
+
+这里的主动关闭实际上是广义的主动关闭
+
+第二种是 Kafka 帮你关闭，这与 Producer 端参数 connections.max.idle.ms 的值有关。默认情况下该参数值是 9 分钟，即如果在 9 分钟内没有任何请求“流过”某个 TCP 连接，那么 Kafka 会主动帮你把该 TCP 连接关闭。
+
+
+
+### 小结
+
+1. KafkaProducer 实例创建时启动 Sender 线程，从而创建与 bootstrap.servers 中所有 Broker 的 TCP 连接。
+2. KafkaProducer 实例首次更新元数据信息之后，还会再次创建与集群中所有 Broker 的 TCP 连接。
+3. 如果 Producer 端发送消息到某台 Broker 时发现没有与该 Broker 的 TCP 连接，那么也会立即创建连接。
+4. 如果设置 Producer 端 connections.max.idle.ms 参数大于 0，则步骤 1 中创建的 TCP 连接会被自动关闭；
+5. 如果设置该参数 =-1，那么步骤 1 中创建的 TCP 连接将无法被关闭，从而成为“僵尸”连接。
+
+![image](https://static.lovedata.net/21-03-30-5a57423e6d7620a9ae08ecab241bc5e8.png-wm)
+
+
+
+
+
+### QA
+
+1. Kafka的元数据信息是存储在zookeeper中的，而Producer是通过broker来获取元数据信息的，那么这个过程是否是这样的，Producer向Broker发送一个获取元数据的请求给Broker，之后Broker再向zookeeper请求这个信息返回给Producer?
+   1. 集群元数据持久化在ZooKeeper中，同时也缓存在每台Broker的内存中，因此不需要请求ZooKeeper
+2. 如果Producer在获取完元数据信息之后要和所有的Broker建立连接，那么假设一个Kafka集群中有1000台Broker，对于一个只需要与5台Broker交互的Producer，它连接池中的链接数量是不是从1000->5->1000->5?这样不是显得非常得浪费连接池资源？
+   1.  就我个人认为，的确有一些不高效。所以我说这里有优化的空间的。
+3. Kafka集群的元数据信息是保存在哪里的呢，以CDH集群为例
+   1.  最权威的数据保存在ZooKeeper中，Controller会从ZooKeeper中读取并保存在它自己的内存中，然后同步部分元数据给集群所有Broker
+
+
+
+
+
+## 14 | 幂等生产者和事务生产者是一回事吗？
+
+> Kafka 消息交付可靠性保障以及精确处理一次语义的实现。
+
+
+
+### 消息交付可靠性保障，是指 Kafka 对 Producer 和 Consumer 要处理的消息提供什么样的承诺
+
+常见三种
+
+
+
+1. 最多一次（at most once）：消息可能会丢失，但绝不会被重复发送。
+2. 至少一次（at least once）：消息不会丢失，但有可能被重复发送。
+3. 精确一次（exactly once）：消息不会丢失，也不会被重复发送。
+
+默认可靠性保证是第二种。“已经提交”的含义： 只有broker成功提交消息并且producer接收到 broker的应答才会认为消息成功发送。 如果 消息成功提交，但是produer没有收到应答（网络抖动），那么produer就无法确定消息是否真的提交了。因此只能充实。可能发送相同的消息。
+
+Kafka 是怎么做到精确一次的呢？简单来说，这是通过两种机制：幂等性（Idempotence）和事务（Transaction）
+
+
+
+### 什么是幂等性（Idempotence）？
+
+数学领域中的概念，指的是某些操作或函数能够被执行多次，但每次得到的结果都是不变的。
+
+幂等性有很多好处，其最大的优势在于我们可以安全地重试任何幂等性操作，反正它们也不会破坏我们的系统状态
+
+#### 幂等性 Producer
+
+Producer 默认不是幂等性的
+
+可以创建幂等性 Producer。它其实是 0.11.0.0 版本引入的新功能
+
+之前可能一条消息发送多次，导致消息重复的情况
+
+在 0.11 之后，指定  props.put(“enable.idempotence”, ture)
+
+然后producer自动升级成幂等性 Producer。其他逻辑代码都不需要改变，kafka自动帮你做消息的重复去重
+
+底层代码逻辑： 经典用空间换时间的优化思路，即在broker端多保存一些字段，档producer发送了相同字段值的消息后，brokder自动知晓消息重复，后台默默把她们丢弃掉。实际原理比较复杂。
+
+#### 幂等性 Producer作用范围
+
+1. 它只能保证单分区上的幂等性，即一个幂等性 Producer 能够保证某个主题的一个分区上不出现重复消息，它无法实现多个分区的幂等性
+2. 只能实现单会话的幂等性 ，不能实现多会话幂等性， 理解为党producer一次运行，重启了之后，这种幂等性 就小时了。
+
+如果我想实现**多分区以及多会话上的消息无重复**，？答案就是事务（transaction）或者依赖事务型 Producer。这也是幂等性 Producer 和事务型 Producer 的最大区别！
+
+
+
+### 事务
+
+Kafka 的事务概念类似于我们熟知的数据库提供的事务。在数据库领域，事务提供的安全性保障是经典的 ACID，即原子性（Atomicity）、一致性 (Consistency)、隔离性 (Isolation) 和持久性 (Durability)。
+
+Kafka 自 0.11 版本开始也提供了对事务的支持，目前主要是在 read committed 隔离级别上做事情。它能保证多条消息原子性地写入到目标分区，同时也能保证 Consumer 只能看到事务成功提交的消息。下面我们就来看看 Kafka 中的事务型 Producer。
+
+
+
+### 事务性Producer
+
+事务型 Producer 能够保证将消息原子性地写入到多个分区中。这批消息要么全部写入成功，要么全部失败。另外，事务型 Producer 也不惧进程的重启。Producer 重启回来后，Kafka 依然保证它们发送消息的精确一次处理。
+
+两个步骤
+
+1. 和幂等性 Producer 一样，开启 enable.idempotence = true。
+2. 设置 Producer 端参数 transactional. id。最好为其设置一个有意义的名字。
+
+```java
+
+producer.initTransactions();
+try {
+            producer.beginTransaction();
+            producer.send(record1);
+            producer.send(record2);
+            producer.commitTransaction();
+} catch (KafkaException e) {
+            producer.abortTransaction();
+}
+```
+
+
+
+消费端也要修改设置，比如上面 两个记录，即使失败，也会写入底层的日志中， 消费者短需要设置 isolation.level
+
+两个取值 
+
+1. read_uncommitted：默认值，表明 Consumer 能够读取到 Kafka 写入的任何消息，不论事务型 Producer 提交事务还是终止事务，其写入的消息都可以读取。很显然，如果你用了事务型 Producer，那么对应的 Consumer 就不要使用这个值。
+2. read_committed：表明 Consumer 只会读取事务型 Producer 成功提交事务写入的消息。当然了，它也能看到非事务型 Producer 写入的所有消息。
+
+
+
+### 小结
+
+幂等性 Producer 只能保证单分区、单会话上的消息幂等性；
+
+而事务能够保证跨分区、跨会话间的幂等性。从交付语义上来看，自然是事务型 Producer 能做的更多。
+
+![image](https://static.lovedata.net/21-03-30-12bd866140eec2fa3bddd78870f77efa.png-wm)
+
+
+
+### QA
+
+1. 幂等性为什么只保证单分区有效？是因为下一次消息重试指不定发送到哪个分区么。如果这样的话是不是可以采用按消息键保序的方式？这样重试消息还发送到同一个分区。
+   1. 重启之后标识producer的PID就变化了，broker就不认识了。要想认识就要让broker和producer做更多的事，也就是事务机制做的那些事。
+2. 事务型producer不会重复发送消息吗？如果发送的这一批到broker了，但是broker返回的确认消息producer没有收到，再次尝试，broker会去重吗？或者consumer端会去重啊？
+   1. 
+
+
+
+
+
+## 15 | 消费者组到底是什么？
+
+
+
+Consumer Group 是 Kafka 提供的可扩展且具有容错性的消费者机制
+
+Kafka 仅仅使用 Consumer Group 这一种机制，却同时实现了传统消息引擎系统的两大模型：如果所有实例都属于同一个 Group，那么它实现的就是消息队列模型；如果所有实例分别属于不同的 Group，那么它实现的就是发布 / 订阅模型。
+
+老版本的offset 放在zk中，zk不适合频繁读写，所以新版本就没放在zk中了
+
+新版本的会放在 __consumer_offsets  内部主题中
+
+
+
+### Rebalance
+
+Rebalance 本质上是一种协议，规定了一个 Consumer Group 下的所有 Consumer 如何达成一致，来分配订阅 Topic 的每个分区
+
+Rebalance 的触发条件有 3 个
+
+1. 组成员数发生变更 有新进，或者有 consumer 崩溃了。
+2. 订阅主题数发生变更。比如用正则订阅主题， 有新增的主题了。
+3. 订阅主题的分区数发生变更 只允许新增
+
+![image](https://static.lovedata.net/21-04-01-5da52290ed23628603a535eb6a313955.png-wm)
+
+#### Rebalance缺点
+
+万物静止，类似于JVM的STW，在Rebalance过程中，所有consumer都会停止消费，等待rebalcance完成
+
+目前是所有consumer共同参与，但是更新高效的应该是尽量减少变动，比如A消费1，2，3，分配后还是1，2，3，这样这些事分区所在broker的tcp链接就可以继续用，不用重新闯劲
+
+Rebalance比较满。
+
+![image](https://static.lovedata.net/21-04-01-4ac3c58587f49d53cced939b25cd0d31.png-wm)
+
+
+
+## 16 | 揭开神秘的“位移主题”面纱
+
+将 Consumer 的位移数据作为一条条普通的 Kafka 消息，提交到 __consumer_offsets 中。可以这么说，__consumer_offsets 的主要作用是保存 Kafka 消费者的位移信息。
+
+
+
+### 设计
+
+Key-value 键值对
+
+位移主题的 Key 中应该保存 3 部分内容：。<Group ID，主题名，分区号 >
+
+value就是存的offset信息，可以这么简单理解
+
+### 创建时机
+
+当 Kafka 集群中的第一个 Consumer 程序启动时，Kafka 会自动创建位移主题
+
+Broker 端参数 offsets.topic.num.partitions 的取值了。它的默认值是 50
+
+如果位移主题是 Kafka 自动创建的，那么该主题的分区数是 50，副本数是 3。
+
+
+### 怎么用
+Kafka Consumer 提交位移的方式有两种：自动提交位移和手动提交位移。
+
+consumer端参数 enable.auto.commit，如果是ture，consumer在后台默默提交位移，auto.commit.interval.ms 控制提交间隔
+
+自动提交的优点：
+省事，你不用操心位移提交的事情，就能保证消息消费不会丢失。
+缺点：
+太省事了，丧失灵活度 没法把控 Consumer 端的位移管理。
+
+手动提交位移，即设置 enable.auto.commit = false
+consumer.commitSync
+
+### Compact策略
+一直发消息，比如 没有消息了，consumer一直发送 位移为100的消息，如果不处理，会撑爆，所以kafka使用 compact策略，删除位移主题的过期消息
+
+> 对于同一个 Key 的两条消息 M1 和 M2，如果 M1 的发送时间早于 M2，那么 M1 就是过期消息
+
+![image](https://static.lovedata.net/21-04-01-9292fa523a38191d7916aaa0fe7aff31.png-wm)
+
+Kafka 提供了专门的后台线程定期地巡检待 Compact 的主题，看看是否存在满足条件的可删除数据。
+
+![image](https://static.lovedata.net/21-04-01-08158ce44581f271972be1df3e0a642f.png-wm)
+
+
+## 17 | 消费者组重平衡能避免吗？
+
+Rebalance 就是让一个 Consumer Group 下所有的 Consumer 实例就如何消费订阅主题的所有分区达成共识的过程 ,这个过程中，所有实例不能消费任何消息，对consumer的tps影响非常大。
+
+
+### 协调者
+
+协调者，在 Kafka 中对应的术语是 Coordinator，它专门为 Consumer Group 服务，负责为 Group 执行 Rebalance 以及提供位移管理和组成员管理等。
+
+Consumer 端应用程序在提交位移时，其实是向 Coordinator 所在的 Broker 提交位移。同样地，当 Consumer 应用启动时，也是向 Coordinator 所在的 Broker 发送各种请求，然后由 Coordinator 负责执行消费者组的注册、成员管理记录等元数据管理操作。
+
+
+broker 启动的时候，开启相应 coordinate组件 所有 Broker 都有各自的 Coordinator 组件
+
+### 如何确定 consumer group 为他服务的 协调者在哪个broker上呢？ 
+
+答案就在 __consumer_offsets 两个步骤
+
+1. 确定由位移主题的哪个分区来保存该 Group 数据：partitionId=Math.abs(groupId.hashCode() % offsetsTopicPartitionCount)
+2. 找出该分区 Leader 副本所在的 Broker，该 Broker 即为对应的 Coordinator。
+
+
+Consumer 应用程序，特别是 Java Consumer API，能够自动发现并连接正确的 Coordinator
+这个算法能够帮助我们定位问题，快速找到对应的broker
+
+
+### Rebalance 弊端
+
+1. Rebalance 影响 Consumer 端 TPS
+2. Rebalance 很慢。group 下成员很多的时候。
+3. Rebalance 效率不高。 每次 Rebalance 时，Group 下的所有成员都要参与进来，而且通常不会考虑局部性原理，但局部性原理对提升系统性能是特别重要的。
+	1. 就是有一个消费者退出，他消费的分区不能均匀分配给其他分区，而是必须重新分配，到之后 tcp链接的浪费。0.11.0.0 有一个 StickyAssigneor 粘性 分配，有一些bug
+
+
+### 如何避免
+
+#### 发生的时机
+
+1. 组成员变化
+2. 订阅主题数量发生变化
+3. 订阅主题分区数发生了变化
+
+
+后面两个无法避免
+
+### 组成员数量变化而引发的 Rebalance 该如何避免。
+
+新增消费者无可厚非，计划内的。  更在意的是 Group 下实例数减少这件事。
+如果你就是要停掉某些 Consumer 实例，那自不必说，
+关键是在某些情况下，Consumer 实例会被 Coordinator 错误地认为“已停止”从而被“踢出”Group。
+
+
+Coordinator 会在什么情况下认为某个 Consumer 实例已挂从而要退组呢？
+
+session.timeout.ms ，完成 rebalance后，consumer会定期向协调者发送 心跳，表明存活。 session.timeout.ms 超时时间，默认10s，如果10s内没有收到心跳，就会认为已经挂了。 
+
+heartbeat.interval.ms 控制发送频率。每隔多少ms发送一次。
+
+max.poll.interval.ms 限定了 Consumer 端应用程序两次调用 poll 方法的最大时间间隔，默认5分钟，如果在5分钟内，无法消费完poll的消息，那么consumer会主动发起离开组的请求。会开启新一轮的rebalance
+
+
+第一类非必要 Rebalance 是因为未能及时发送心跳，导致 Consumer 被“踢出”Group 而引发的  仔细设置  session.timeout.ms 和 heartbeat.interval.ms 的值
+
+- 设置 session.timeout.ms = 6s。
+- 设置 heartbeat.interval.ms = 2s。
+
+第二类非必要 Rebalance 是 Consumer 消费时间过长导致的  max.poll.interval.ms ，比如写mongo这种比较重的操作，设置大一些，比最长的消费时间要大一些
+
+
+![image](https://static.lovedata.net/21-04-06-03f8dd9da1b6e1df327528f25bf9806c.png-wm)
+
+
+
+## 18 | Kafka中位移提交那些事儿
+
+Consumer Offset  它记录了 Consumer 要消费的**下一条**消息的位移
+
+Consumer 需要向 Kafka 汇报自己的位移数据，这个汇报过程被称为提交位移（Committing Offsets）Consumer 需要为分配给它的每个分区提交各自的位移数据。
+位移提交的语义保障是由你来负责的，Kafka 只会“无脑”地接受你提交的位移。
+
+从用户的角度来说，位移提交分为自动提交和手动提交；从 Consumer 端的角度来说，位移提交分为同步提交和异步提交。
+
+enable.auto.commit  默认值是true，
+auto.commit.interval.ms 默认值是5s，自动模式下生效
+
+手动提交 KafkaConsumer#commitSync()，会提交poll返回回来的最新的位移，是一个 **同步操作**
+
+
+### 自动提交的问题
+
+设置自动提交，kafka会保证在开始调用poll方法的时候，提交上次poll返回的消息
+顺序是 ，poll 方法的逻辑是先提交上一批消息的位移，再处理下一批消息。
+因此保证不出现消息丢失的情况 
+
+问题是。他可能会出现 **重复消费**
+
+比如提交offset 3 秒之后，
+
+
+### 手动提交
+如果过早提交了offset，消息还没处理完成，则有可能丢失数据。
+好处是 **更加灵活，自己控制offset的提交时机和频率**
+缺陷是 调用 commitSync的时候，consumer会阻塞状态，知道broker返回结果。会影响应用的tps。
+如果降低提交频率，一旦consumer重启的时候，就有更多的消息被重新消费。
+
+有另外一个 commitAsync，异步提交，提供 callback回调，不能替代 commitSync ，因为出现问题不会自动充实， 因为如果重试，提交的offset可能是过期的或者不是最新的值了。
+
+
+需要将两者结合,在consumer退出的时候，执行 手动提交。
+
+```java
+
+   try {
+           while(true) {
+                        ConsumerRecords<String, String> records = 
+                                    consumer.poll(Duration.ofSeconds(1));
+                        process(records); // 处理消息
+                        commitAysnc(); // 使用异步提交规避阻塞
+            }
+} catch(Exception e) {
+            handle(e); // 处理异常
+} finally {
+            try {
+                        consumer.commitSync(); // 最后一次提交使用同步阻塞式提交
+  } finally {
+       consumer.close();
+}
+}
+```
+
+
+![image](https://static.lovedata.net/21-04-06-cd8052898b153d1349d0a6e3bd45fee7.png-wm)
+
+
+### QA
+
+1. auto.commit.interval.ms设置为5s，也就是说consumer每5秒才提交一次位移信息，那consumer如果每消费一条数据，但是没有达到自动提交的时间，这个位移信息该如何管理？consumer自己做维护吗？但是也需要跟broker端进行位移信息同步的吧？ 不然可能会造成数据的重复消费？还是每5s的提交和consumer自动提交的时候都会伴随位移信息的同步？是我的理解有问题吗？
+	>  如果没有达到提交时间就不会提交，自动提交完全由consumer自行维护，确实可能造成数据的重复消费。你的理解完全没有问题：）
+目前单纯依赖consumer是无法避免消息的重复消费的，Kafka默认提供的消息处理语义就是至少一次处理。
+
+
+## 20 | 多线程开发消费者实例
+
+
+### 多线程方案
+
+，KafkaConsumer 类不是线程安全的 (thread-safe) ，不能多个线程共享 ，否则ConcurrentModificationException
+
+#### 方案一
+
+.消费者程序启动多个线程，每个线程维护专属的 KafkaConsumer 实例，负责完整的消息获取、消息处理流程
+
+![image](https://static.lovedata.net/21-04-06-28059ce9dca34add4e7f380815337182.png-wm)
+
+优势：
+1. 实现简单。
+
+#### 方案二
+
+消费者程序使用单或多线程获取消息，同时创建多个消费线程执行消息处理逻辑。获取消息的线程可以是一个，也可以是多个，每个线程维护专属的 KafkaConsumer 实例，处理消息则交由特定的线程池来做，
+
+![image](https://static.lovedata.net/21-04-06-a13b724a6f4c9cf01a776fe17f48763d.png-wm)
+
+
+#### 对比 
+
+![image](https://static.lovedata.net/21-04-06-12a2adb25c1d7422659929663b6a3792.png-wm)
+
+
+
+![image](https://static.lovedata.net/21-04-06-ca450ccc72d7294cb4212339f9eb3794.png-wm)
+
+
+## 21 | Java 消费者是如何管理TCP连接的?
+
+
+### 何时创建 TCP 连接？
+
+。和生产者不同的是，构建 KafkaConsumer 实例时是不会创建任何 TCP 连接的，
+TCP 连接是在调用 KafkaConsumer.poll 方法时被创建的
+
+三个时机创建
+
+1. 发起 FindCoordinator 请求时。
+	 poll的时候，需要发起一个 FindCoordinator 告诉它哪个broker管理它的链接
+	 向负载最小的broker发送这个请求（这个是从待发送的请求的数量角度，单向的）
+	
+2. 连接协调者时。
+
+	 知道后，创建连向该 Broker 的 Socket 连接。只有成功连入协调者，协调者才能开启正常的组协调操作，比如加入组、等待组分配方案 心跳请求处理、位移获取、位移提交等。
+
+
+3. 消息消费的时候 
+	 与该分区的领导者副本所在broker创建tcp链接
+
+
+### 何时关闭 TCP 连接？
+
+主动关闭
+手动调用 KafkaConsumer.close() 方法，或者是执行 Kill 命令，不论是 Kill -2 还是 Kill -9
+
+Kafka 自动关闭
+
+消费者端参数 connection.max.idle.ms 控制的，默认九分钟，如果九分钟没有任何请求过境，消费者会强行杀掉 socket链接
+
+如果是循环调用poll方法消费，那么 会定期有请求， 因此这些socket 链接有请求，实现了场链接 
+
+![image](https://static.lovedata.net/21-04-06-83de5a56574a519deaab3b8cb6571827.png-wm)
+
+
+## 22 | 消费者组消费进度监控都怎么实现？
+
+### Kafka JMX 监控指标
+
+afka 消费者提供了一个名为 kafka.consumer:type=consumer-fetch-manager-metrics,client-id=“{client-id}”的 JMX 指标 ：records-lag-max 和 records-lead-min，它们分别表示此消费者在测试窗口时间内曾经达到的最大的 Lag 值和最小的 Lead 值。
+
+这里的 Lead 值是指消费者最新消费消息的位移与分区当前第一条消息位移的差值。很显然，Lag 和 Lead 是一体的两个方面：Lag 越大的话，Lead 就越小，反之也是同理。
+
+在实际生产环境中，请你一定要同时监控 Lag 值和 Lead 值
+
+![image](https://static.lovedata.net/21-04-07-e151de59807402774611888a0edb01da.png-wm)
+
+
+
+## 23 | Kafka副本机制详解
+### 副本机制的优点
+
+1. 提高数据冗余
+2. 提供高伸缩性
+3. 改善数据局部性
+
+kafka 只能提供第一种 
+
+
+
+
+### 副本定义
+
+所谓副本（Replica），本质就是一个只能追加写消息的提交日志，同分区所有副本保存相同的消息序列。
+![image](https://static.lovedata.net/21-04-07-6be2d81d14bf20346e95a6d321554904.png-wm)
+
+### 副本角色
+
+如何保证副本的所有数据是一致的呢？ 
+基于领导者的（leader-based）的副本机制
+
+![image](https://static.lovedata.net/21-04-07-197607c6f0ac280b4ac958d0695cfb5a.png-wm)
+
+1. 副本两类： 领导者和追随者副本(leader. follower)，每个分区一个领导者副本，其余自动是追随者副本
+2. 追随者副本不提供任何读写服务。追随者唯一任务就是从领导者副本 **异步拉取**消息，并存入到自己的提交日志中，从而实现同步
+	 这就是kafka不能提供读操作的横向扩展以及改善局部性，和mysql不同，有两个好处
+	 1. 方便实现 read-your-writers  写了就可以见到，如果副本堵，可能就看不到
+	 2. 方便实现单调读（Monotonic reads）对某一个消费着而言，在多次消费消息的时候，不会存在消息一会看得到，一会看不到。
+3. 当leader挂了，或者leader所在broker挂掉了， kafka依托于zk的监控功能能够实时感知，并开启新一轮领导者选举，从副本中选取一个新的领导者，老得leader回来后，只能作为追随者加入
+
+
+
+### In-sync replicas(ISR)
+
+追随者副本 拉取数据是 异步的，就存在着可能不与 Leader 实时同步的风险
+
+需要理解什么是同步，怎么才算于leader同步
+
+基于这个 kafka引入了 ISR, isr中的副本都是与leader同步的，反之亦然
+
+ISR 不只是追随者副本集合，它必然包括 Leader 副本。甚至在某些情况下，ISR 只有 Leader 这一个副本。
+
+![image](https://static.lovedata.net/21-04-07-feb3b44bffb825b33ce034295c31b6f6.png-wm)
+
+kafka判定follower 是否与leader同步的标准，不是看相差的条数
+
+这个标准就是 Broker 端参数 replica.lag.time.max.ms 参数值 含义是 Follower 副本能够落后 Leader 副本的最长时间间隔，当前默认值是 10 秒。 只要一个 Follower 副本落后 Leader 副本的时间不连续超过 10 秒，那么 Kafka 就认为该 Follower 副本与 Leader 是同步的，即使此时 Follower 副本中保存的消息明显少于 Leader 副本中的消息。
+
+**replica.lag.time.max.ms**
+这个配置项的意思是follower要同时满足以下两个条件才不会被踢出Isr，默认10000ms（10s）
+
+1. 距离上次发送fetch请求不超过这个时间
+2. 在这个时间follower要赶上主的LEO(log end offset )
+
+
+
+### Unclean 领导者选举（Unclean Leader Election）
+
+出现 ISR 为空，说明leader也挂掉了。需要重新选leader
+
+都为空了，怎么选 Kafka 把所有不在 ISR 中的存活副本都称为非同步副本
+
+选举这种副本的过程称为 Unclean 领导者选举。Broker 端参数 unclean.leader.election.enable 控制是否允许 Unclean 领导者选举。
+
+开启后 可能会数据丢失。 好处是： 使得leader副本一致存在，不至于停止对外提供服务 ，提升了高可用行，反之禁用 维护了数据一致性，避免消息丢失，但牺牲了高可用行
+
+墙裂建议不要开启它。 
+
+![image](https://static.lovedata.net/21-04-07-c16302146c37e45b16dc18c01f8f8ecc.png-wm)
 
 
 

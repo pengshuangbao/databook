@@ -265,6 +265,25 @@ lsof -d 2-3
 
 
 
+### crontab
+
+#### crontab批量修改替换
+
+比如之前有这些 ，每周五执行clearLog.sh
+
+```shell
+30 3 * * * /bin/find /var/log/kudu/ -mtime +60 -type f -name "*invalid-user.log*" -exec /bin/rm -f {} \;
+00 19 * * 5 sh /root/clearLog.sh
+```
+
+现在想修改一下，改为每天执行
+
+```shell
+(crontab -l | sed 's/5 sh/* sh/') | crontab
+```
+
+
+
 ## 磁盘
 
 ### du
@@ -611,6 +630,14 @@ docker rm `docker ps -a | grep 'xxx' | grep -v grep|awk '{print $1}'`
 
 
 
+### Docker杀死所有容器
+
+```shell
+ docker ps -a -q | xargs docker rm -f
+```
+
+
+
 ## Git
 
 ### 恢复修改
@@ -696,6 +723,26 @@ kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list 10.1.4.10:9092,10.1.
 > ```
 >
 > ​    -2表示去获取当前各个分区的最小位移。之后把运行第一条命令的结果与刚刚获取的位移之和相减就是集群中该topic的当前消息总数。
+
+
+
+### 监控消费进度
+
+```shell
+# 查看所有groupid
+kafka-consumer-groups  --bootstrap-server 172.28.19.115:9092,172.28.19.116:9092,172.28.19.117:9092 -list
+
+# 查看消费进度
+kafka-consumer-groups  --bootstrap-server 172.28.19.115:9092,172.28.19.116:9092,172.28.19.117:9092  --group  custom_events_test_25 --describe
+
+```
+
+
+
+```text
+TOPIC                   PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID     HOST            CLIENT-ID
+custom_event_topic_test 0          1442178         1442182         4               -               -               -
+```
 
 
 

@@ -242,12 +242,6 @@ tableEnv.getConfig().setSqlDialect(SqlDialect.DEFAULT);
 
 
 
-
-
-
-
-
-
 ## Flink启动与停止
 
 ### Flink流式人物何时停止?
@@ -261,4 +255,16 @@ tableEnv.getConfig().setSqlDialect(SqlDialect.DEFAULT);
    2. 所以 run方法运行完，这个流就停止了
 
    
+
+## Flink应用
+
+### 数据同步
+
+[Apache Flink 中文用户邮件列表 - flink mysql cdc + hive streaming疑问](http://apache-flink.147419.n8.nabble.com/flink-mysql-cdc-hive-streaming-td8223.html)
+
+
+
+### 数据去重
+
+[谈谈三种海量数据实时去重方案（w/ Flink） - 简书](https://www.jianshu.com/p/f6042288a6e3)
 
