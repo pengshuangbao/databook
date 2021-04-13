@@ -690,3 +690,24 @@ Consumer的消费方式主要分为两种：
 
 - 自动提交offset，Automatic Offset Committing
 - 手动提交offset，Manual Offset Control
+
+
+
+## HW 和 Leader Epoch
+
+epoch 时代\ [ˈiːpɒk]
+
+[深入分析Kafka高可用性 - 知乎](https://zhuanlan.zhihu.com/p/46658003)
+
+[Kafka水位(high watermark)与leader epoch的讨论 - huxihx - 博客园](https://www.cnblogs.com/huxi2b/p/7453543.html)
+
+水位或水印（watermark）一词，也可称为高水位(high watermark)，通常被用在流式处理领域（比如Apache Flink、Apache Spark等），以表征元素或事件在基于时间层面上的进度。一个比较经典的表述为：流式系统保证在水位t时刻，创建时间（event time） = t'且t' ≤ t的所有事件都已经到达或被观测到。
+
+
+
+
+
+
+
+
+

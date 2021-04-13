@@ -1677,7 +1677,308 @@ kafka判定follower 是否与leader同步的标准，不是看相差的条数
 
 墙裂建议不要开启它。 
 
-![image](https://static.lovedata.net/21-04-07-c16302146c37e45b16dc18c01f8f8ecc.png-wm)
+![image](https://static.lovedata.net/21-04-07-c16302146c37e45b16dc18c01f8f8ecc.png-wm
+
+
+
+## 24 | 请求是怎么被处理的？
+
+
+### Reactor模式
+
+http://gee.cs.oswego.edu/dl/cpjslides/nio.pdf
+
+
+
+Reactor 模式是事件驱动架构的一种实现方式，特别适合应用于处理多个客户端并发向服务器端发送请求的场景
+
+![image](https://static.lovedata.net/21-04-12-42ba38619079d69e2ffc9c0cd209833f.png-wm)
+
+![image](https://static.lovedata.net/21-04-12-0d7b5be09bf06e8c001387a42f9b2c61.png-wm)
+
+
+> Kafka 的 Broker 端有个 SocketServer 组件，类似于 Reactor 模式中的 Dispatcher，它也有对应的 Acceptor 线程和一个工作线程池，只不过在 Kafka 中，这个工作线程池有个专属的名字，叫网络线程池。Kafka 提供了 Broker 端参数 num.network.threads，用于调整该网络线程池的线程数。其默认值是 3，表示每台 Broker 启动时会创建 3 个网络线程，专门处理客户端发送的请求。
+
+
+![image](https://static.lovedata.net/21-04-12-387ff47380e1d3bb548916dccc16a436.png-wm)
+
+
+### Purgatory
+
+著名的“炼狱”组件。它是用来缓存延时请求（Delayed Request）的。所谓延时请求，就是那些一时未满足条件不能立刻处理的请求。
+
+比如 acks=all, 该请求必须等待ISR中所有副本都接受消息才能返回。此时请求的io线程必须等待其他broker写入结果。 当不能立即处理， 会暂存在Purgatory中，满足条件后，io线程会继续处理该请求，并将response放入到对应的网络线程响应队列中。
+
+
+## 25 | 消费者组重平衡全流程解析
+
+### 触发与通知
+
+1. 数量发生变化。
+2. 订阅主题数量发生变化。
+3. 订阅主题的分区数发生变化。
+
+
+
+
+### 如何通知
+
+重平衡过程是如何通知到其他消费者实例的？答案就是，靠消费者端的心跳线程（Heartbeat Thread）。
+
+重平衡的通知机制正是通过心跳线程来完成的
+
+当协调者决定开启新一轮重平衡后，它会将“REBALANCE_IN_PROGRESS”封装进心跳请求的响应中，发还给消费者实例  然后消费者就知道了。
+
+heartbeat.interval.ms 心跳时间。 但这个参数的真正作用是控制重平衡通知的频率
+
+
+### 消费者组状态机
+
+Kafka 设计了一套消费者组状态机（State Machine），来帮助协调者完成整个重平衡流程。
+
+它能够帮助你搞懂消费者组的设计原理，比如消费者组的过期位移（Expired Offsets）删除等。
+
+![image](https://static.lovedata.net/21-04-12-8702e6a755e7b1a20e76af3a044ecd28.png-wm)
+
+![image](https://static.lovedata.net/21-04-12-68522f708e72b42d00cf0619671c3171.png-wm)
+
+
+一个消费者组最开始是 Empty 状态，当重平衡过程开启后，它会被置于 PreparingRebalance 状态等待成员加入，之后变更到 CompletingRebalance 状态等待分配方案，最后流转到 Stable 状态完成重平衡。当有新成员加入或已有成员退出时，消费者组的状态从 Stable 直接跳到 PreparingRebalance 状态，此时，所有现存成员就必须重新申请加入组。当所有成员都退出组后，消费者组状态变更为 Empty。Kafka 定期自动删除过期位移的条件就是，组要处于 Empty 状态。因此，如果你的消费者组停掉了很长时间（超过 7 天），那么 Kafka 很可能就把该组的位移数据删除了。
+
+
+
+### 消费者端重平衡流程
+
+#### 消费者端
+
+分别是加入组和等待领导者消费者（Leader Consumer）分配方案。这两个步骤分别对应两类特定的请求：JoinGroup 请求和 SyncGroup 请求。
+
+组内成员加入组时，它会向协调者发送 JoinGroup 请求
+一旦收集了全部成员的 JoinGroup 请求后，协调者会从这些成员中选择一个担任这个消费者组的领导者。
+通常 第一个发送 JoinGroup 请求的成员自动成为领导者。
+领导者消费者的任务是收集所有成员的订阅信息，然后根据这些信息，制定具体的分区消费分配方案。
+
+选出领导者之后，协调者会把消费者组订阅信息封装进 JoinGroup 请求的响应体中，然后发给领导者，由领导者统一做出分配方案后，进入到下一步：发送 SyncGroup 请求
+
+
+领导者向协调者发送 SyncGroup 请求，将刚刚做出的分配方案发给协调者，其他组成员也会发送，只不过请求题是空的， 这一步是让协调者接受分配方案，然后以SyncGroup响应体的方式返回给所有成员
+
+![image](https://static.lovedata.net/21-04-12-5420970d7b970c89fe6c6c4b6d0cbce8.png-wm)
+
+![image](https://static.lovedata.net/21-04-12-9dd67f2e7b0d3aa8a3eae74f2cadfdee.png-wm)
+
+### Broker 端重平衡场景剖析
+
+#### 场景一：新成员入组。
+
+讨论的是，组稳定了之后有新成员加入的情形。
+
+协调者收到新的 JoinGroup 请求后，它会通过心跳请求响应的方式通知组内现有的所有成员，强制它们开启新一轮的重平衡
+
+![image](https://static.lovedata.net/21-04-12-9692516a34a97ef0ff6fbbc8e4002637.png-wm)
+
+
+
+#### 场景二：组成员主动离组。
+
+就是指消费者实例所在线程或进程调用 close() 方法主动通知协调者它要退出
+
+发送 LeaveGroup
+![image](https://static.lovedata.net/21-04-12-2f961cba0436a3b304dba41f0d0f4059.png-wm)
+
+
+#### 场景三：组成员崩溃离组。
+
+崩溃离组是指消费者实例出现严重故障，突然宕机导致的离组
+
+崩溃离组是被动的，协调者通常需要等待一段时间才能感知到，这段时间一般是由消费者端参数 session.timeout.ms 控制的
+
+![image](https://static.lovedata.net/21-04-12-4784b44fd6a1ab737194943a6159abd6.png-wm)
+
+
+#### 场景四：重平衡时协调者对组内成员提交位移的处理。
+
+每个组内成员都会定期汇报位移给协调者。当重平衡开启时，协调者会给予成员一段缓冲时间，要求每个成员必须在这段时间内快速地上报自己的位移信息，然后再开启正常的 JoinGroup/SyncGroup 请求发送
+
+![image](https://static.lovedata.net/21-04-12-3ea6e6300d56d0867ca1ee77eb9d1e20.png-wm)
+
+
+
+
+![image](https://static.lovedata.net/21-04-12-1ba0ab2ca7620c4481a5ef42dcfc8635.png-wm)
+
+
+## 27 | 关于高水位和Leader Epoch的讨论
+
+
+Leader Epoch 是社区在 0.11 版本中新推出的，主要是为了弥补高水位机制的一些缺陷。
+
+
+### 什么是高水位？
+
+“Streaming System”一书则是这样表述水位的：水位是一个单调增加且表征最早未完成工作（oldest work not yet completed）的时间戳。
+
+
+![image](https://static.lovedata.net/21-04-13-19f6a3e58986f6d703893b2dffe4b46a.png-wm)
+
+
+### 高水位作用
+
+1. 定义消息可见性，即用来标识分区下的哪些消息是可以被消费者消费的。
+2. 帮助 Kafka 完成副本同步。
+
+![image](https://static.lovedata.net/21-04-13-8582fdaaa3eb10d0d3dd78876598de60.png-wm)
+
+在分区高水位以下的消息被认为是已提交消息，反之就是未提交消息。消费者只能消费已提交消息，即图中位移小于 8 的所有消息。注意 （没涉及到kafka实物，实物影响消费者看到消息的范围，不仅仅简单以来高水位来判断，以来一个LSO(log stable offset) 来判断事物的可见性）
+
+位移值等于高水位的消息也属于未提交消息。也就是说，高水位上的消息是不能被消费者消费的。
+
+
+ Log End Offset，简写是 LEO。它表示副本写入下一条消息的位移值
+ 
+ 同一个副本对象，其高水位值不会大于 LEO 值。
+ 
+ kafka 所有副本都有对应的高水位和 LEO 值，而不仅仅是 Leader 副本。 kafka使用leader副本的高水位来定义所在分区的 **高水位**   分区的高水位就是其 Leader 副本的高水位。
+
+### 高水位的更新机制
+
+在 Leader 副本所在的 Broker 上，还保存了其他 Follower 副本的 LEO 值。
+
+![image](https://static.lovedata.net/21-04-13-c7dad78669048359df370a75f36a5e2c.png-wm)
+
+Kafka 把 Broker 0 上保存的这些 Follower 副本又称为远程副本（Remote Replica）
+
+kafka 副本机制在运行过程中，会更新 Broker 1 上 Follower 副本的高水位和 LEO 值，同时也会更新 Broker 0 上 Leader 副本的高水位和 LEO 以及所有远程副本的 LEO，但它不会更新远程副本的高水位值（灰色部分）
+
+作用： 帮助 Leader 副本确定其高水位，也就是分区高水位。
+
+![image](https://static.lovedata.net/21-04-13-72e1fdf726c0c18dfce616163177c711.png-wm)
+
+Broker 0.上远程副本L EO Follower副本从eader副本拉取消息时，会告诉L eader副本从哪个位
+移处开始拉取。L eader副本会使用这个位移值来更新远程副本的LEO。因为follower副本已经明确从这里拉取了，肯定副本的LEO是确定是这个值了。
+
+什么叫与 Leader 副本保持同步，有两个条件
+1. 该远程 Follower 副本在 ISR 中。
+2. 该远程 Follower 副本 LEO 值落后于 Leader 副本 LEO 值的时间，不超过 Broker 端参数 replica.lag.time.max.ms 的值。如果使用默认值的话，就是不超过 10 秒。
+
+
+### HW和LEO的更新机制
+
+#### Leader副本
+
+1. 写入消息到本地磁盘。
+2. 更新分区高水位值。
+ 1. i. 获取 Leader 副本所在 Broker 端保存的所有远程副本 LEO 值（LEO-1，LEO-2，……，LEO-n）。
+ 2.ii. 获取 Leader 副本高水位值：currentHW。
+ 3.iii. 更新 currentHW = max{currentHW, min（LEO-1, LEO-2, ……，LEO-n）}。
+
+处理 Follower 副本拉取消息的逻辑如下：
+1. 读取磁盘（或页缓存）中的消息数据。
+2. 使用 Follower 副本发送请求中的位移值更新远程副本 LEO 值。
+3. 更新分区高水位值（具体步骤与处理生产者请求的步骤相同）。
+
+
+#### Follower 副本
+
+1. 从 Leader 拉取消息的处理逻辑如下：写入消息到本地磁盘。
+2. 更新 LEO 值。
+3. 更新高水位值。
+	1. i. 获取 Leader 发送的高水位值：currentHW。
+	2. ii. 获取步骤 2 中更新过的 LEO 值：currentLEO。
+	3. iii. 更新高水位为 min(currentHW, currentLEO)。
+
+### 副本同步机制解析
+
+![image](https://static.lovedata.net/21-04-13-c4cf04bedcee0a9ffe7dac2bd8130847.png-wm)
+
+![image](https://static.lovedata.net/21-04-13-de8fd48948f480d00ce1f0d9788c8cda.png-wm)
+
+![image](https://static.lovedata.net/21-04-13-befea41afa06d46f9cf6d15970eeb10a.png-wm)
+
+> Follower 副本也成功地更新 LEO 为 1。此时，Leader 和 Follower 副本的 LEO 都是 1，但各自的高水位依然是 0，还没有被更新。它们需要在下一轮的拉取中被更新，如下图所示：
+
+![image](https://static.lovedata.net/21-04-13-080cbeee61019b3c1123bb3eeca6ff26.png-wm)
+
+> 在新一轮的拉取请求中，由于位移值是 0 的消息已经拉取成功，因此 Follower 副本这次请求拉取的是位移值 =1 的消息。Leader 副本接收到此请求后，更新远程副本 LEO 为 1，然后更新 Leader 高水位为 1。做完这些之后，它会将当前已更新过的高水位值 1 发送给 Follower 副本。Follower 副本接收到以后，也将自己的高水位值更新成 1
+
+
+
+### Leader Epoch
+
+Leader Epoch，我们大致可以认为是 Leader 版本。它由两部分数据组成。
+1. Epoch。一个单调增加的版本号。每当副本领导权发生变更时，都会增加该版本号。小版本号的 Leader 被认为是过期 Leader，不能再行使 Leader 权力。
+2. 起始位移（Start Offset）。Leader 副本在该 Epoch 值上写入的首条消息的位移。
+
+
+
+#### 单纯依赖HW 数据丢失场景
+
+![image](https://static.lovedata.net/21-04-13-785ea11a7d69f63825870d73697253be.png-wm)
+
+
+倘若此时副本 B 所在的 Broker 宕机，当它重启回来后，副本 B 会执行日志截断操作，将 LEO 值调整为之前的高水位值，也就是 1。这就是说，位移值为 1 的那条消息被副本 B 从磁盘中删除，此时副本 B 的底层磁盘文件中只保存有 1 条消息，即位移值为 0 的那条消息。
+
+执行完截断操作后，副本 B 开始从 A 拉取消息，执行正常的消息同步。如果就在这个节骨眼上，副本 A 所在的 Broker 宕机了，那么 Kafka 就别无选择，只能让副本 B 成为新的 Leader，此时，当 A 回来后，需要执行相同的日志截断操作，即将高水位调整为与 B 相同的值，也就是 1。这样操作之后，位移值为 1 的那条消息就从这两个副本中被永远地抹掉了
+
+
+
+#### Leader Epoch 规避
+
+![image](https://static.lovedata.net/21-04-13-4983d7f651b643af2cdc21c5de5870e2.png-wm)
+
+只不过引用 Leader Epoch 机制后，Follower 副本 B 重启回来后，需要向 A 发送一个特殊的请求去获取 Leader 的 LEO 值  B 发现该 LEO 值不比它自己的 LEO 值小，而且缓存中也没有保存任何起始位移值 > 2 的 Epoch 条目，因此 B 无需执行任何日志截断操作   
+
+
+A宕机后，B成为leader 当 A 重启回来后，执行与 B 相同的逻辑判断，发现也不用执行日志截断
+后面当生产者程序向 B 写入新消息时，副本 B 所在的 Broker 缓存中，会生成新的 Leader Epoch 条目：[Epoch=1, Offset=2]。
+
+
+![image](https://static.lovedata.net/21-04-13-d62c6c5073960a4cc21b1e07f9df994c.png-wm)
+
+[Kafka水位(high watermark)与leader epoch的讨论 - huxihx - 博客园](https://www.cnblogs.com/huxi2b/p/7453543.html)
+
+[深入分析Kafka高可用性 - 知乎](https://zhuanlan.zhihu.com/p/46658003)
+
+
+
+![image](https://static.lovedata.net/21-04-13-c71d499b8919e692df97f137b96dc576.png-wm)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
