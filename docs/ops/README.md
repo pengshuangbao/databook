@@ -10,6 +10,26 @@
 
 ## 基本
 
+### 查看系统信息
+
+```shell
+# 方法1
+cat /proc/version
+
+# 方法2
+uname -a
+```
+
+
+
+###  查看系统版本信息
+
+```shell
+lsb_release -a
+```
+
+
+
 ### 查看CPU配置
 
 ```shelll
@@ -63,10 +83,6 @@ Swap:          127G        2.0G        126G
 Mem:           125G         71G        6.3G        4.0G         48G         49G
 Swap:          127G        2.0G        126G
 ```
-
-
-
-
 
 ### 硬盘大小
 
@@ -137,16 +153,6 @@ chmod g-w /home/sshproxyuser/.ssh/authorized_keys
 -rw-r--r-- 1 sshproxyuser sshproxyuser  398 Mar  4 15:46 authorized_keys
 ```
 
-
-
-
-
-
-
-
-
-
-
 ### find
 
 #### find 命令找到大于100M文件  
@@ -180,8 +186,6 @@ rsync -av --exclude=theme-default/README.md --exclude=theme-default/__tests__  -
 ```shell
 dmesg -T | less
 ```
-
-
 
 ### lsof
 
@@ -675,6 +679,52 @@ git reset --hard  commitid
 
 ## Kafka
 
+### 测试生产者性能
+
+```shell
+
+$ bin/kafka-producer-perf-test.sh --topic test-topic --num-records 10000000 --throughput -1 --record-size 1024 --producer-props bootstrap.servers=kafka-host:port acks=-1 linger.ms=2000 compression.type=lz4
+
+2175479 records sent, 435095.8 records/sec (424.90 MB/sec), 131.1 ms avg latency, 681.0 ms max latency.
+4190124 records sent, 838024.8 records/sec (818.38 MB/sec), 4.4 ms avg latency, 73.0 ms max latency.
+10000000 records sent, 737463.126844 records/sec (720.18 MB/sec), 31.81 ms avg latency, 681.00 ms max latency, 4 ms 50th, 126 ms 95th, 604 ms 99th, 672 ms 99.9th.
+```
+
+### 测试消费者性能
+
+```shell
+$ bin/kafka-consumer-perf-test.sh --broker-list kafka-host:port --messages 10000000 --topic test-topic
+start.time, end.time, data.consumed.in.MB, MB.sec, data.consumed.in.nMsg, nMsg.sec, rebalance.time.ms, fetch.time.ms, fetch.MB.sec, fetch.nMsg.sec
+2019-06-26 15:24:18:138, 2019-06-26 15:24:23:805, 9765.6202, 1723.2434, 10000000, 1764602.0822, 16, 5651, 1728.1225, 1769598.3012
+```
+
+
+
+### 查看消息总数
+
+```shell
+
+$ bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list kafka-host:port --time -2 --topic test-topic
+
+test-topic:0:0
+test-topic:1:0
+
+$ bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list kafka-host:port --time -1 --topic test-topic
+
+test-topic:0:5500000
+test-topic:1:5500000
+```
+
+
+
+### MirrorMaker镜像
+
+```shell
+$ bin/kafka-mirror-maker.sh --consumer.config ./config/consumer.properties --producer.config ./config/producer.properties --num.streams 8 --whitelist ".*"
+```
+
+
+
 ### 查看指定消息
 
 #### 旧版本查看指定Offset消息
@@ -755,8 +805,6 @@ custom_event_topic_test 0          1442178         1442182         4            
 ```shell
 sudo -u hdfs hadoop fs  -du -h /
 ```
-
-
 
 ### Hive
 
