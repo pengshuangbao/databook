@@ -101,7 +101,7 @@ function getAlgorithmSidebar(){
   return ['','算法基础','数据结构','算法']
 }
 function getProgrammingSidebar(){
-  return ['python','scala','card']
+  return ['python','scala']
 }
 function getBookSideBar(){
   return ['tech','growth','geek']
@@ -203,7 +203,62 @@ function getBigdataSidebar () {
         'flink/',
         'flink/通关手册',
         'flink/学习资源',
-        'flink/开源动态'
+        'flink/开源动态',
+        {
+          title: 'Flink实战与性能优化',
+          collapsable: true,
+          children: [
+            'flink/Flink实战与性能优化/公司到底需不需要引入实时计算引擎？',
+            'flink/Flink实战与性能优化/彻底了解大数据实时计算框架Flink',
+            'flink/Flink实战与性能优化/大数据框架Flink、Blink、SparkStreaming、StructuredStreaming和Storm之间的区别',
+            'flink/Flink实战与性能优化/Flink环境准备',
+            'flink/Flink实战与性能优化/Flink环境搭建',
+            'flink/Flink实战与性能优化/FlinkWordCount应用程序',
+            'flink/Flink实战与性能优化/Flink实时处理Socket数据',
+            'flink/Flink实战与性能优化/Flink多种时间语义对比',
+            'flink/Flink实战与性能优化/FlinkWindow基础概念与实现原理',
+            'flink/Flink实战与性能优化/数据转换必须熟悉的算子（Operator）',
+            'flink/Flink实战与性能优化/如何使用DataStreamAPI来处理数据？',
+            'flink/Flink实战与性能优化/FlinkWaterMark详解及结合WaterMark处理延迟数据',
+            'flink/Flink实战与性能优化/Flink常用的Source和SinkConnectors介绍',
+            'flink/Flink实战与性能优化/FlinkConnectorKafka使用和剖析',
+            'flink/Flink实战与性能优化/如何自定义FlinkConnectors（Source和Sink）？',
+            'flink/Flink实战与性能优化/如何使用FlinkConnectors——ElasticSearch？',
+            'flink/Flink实战与性能优化/如何使用FlinkConnectors——HBase？',
+            'flink/Flink实战与性能优化/如何使用FlinkConnectors——Redis？',
+            'flink/Flink实战与性能优化/如何使用SideOutput来分流',
+            'flink/Flink实战与性能优化/FlinkState深度讲解',
+            'flink/Flink实战与性能优化/如何选择Flink状态后端存储',
+            'flink/Flink实战与性能优化/FlinkCheckpoint和Savepoint区别及其如何配置使用？',
+            'flink/Flink实战与性能优化/FlinkTable&SQL概念与通用API',
+            'flink/Flink实战与性能优化/FlinkTableAPI&SQL功能',
+            'flink/Flink实战与性能优化/FlinkCEP介绍及其使用场景',
+            'flink/Flink实战与性能优化/FlinkCEP如何处理复杂事件？',
+            'flink/Flink实战与性能优化/Flink扩展库——StateProcessorAPI',
+            'flink/Flink实战与性能优化/Flink扩展库——MachineLearning',
+            'flink/Flink实战与性能优化/Flink扩展库——Gelly',
+            'flink/Flink实战与性能优化/Flink配置详解及如何配置高可用？',
+            'flink/Flink实战与性能优化/FlinkJob如何在Standalone、YARN、Mesos、K8S上部署运行？',
+            'flink/Flink实战与性能优化/如何实时监控Flink和你的Job？',
+            'flink/Flink实战与性能优化/如何搭建一套完整的Flink监控系统',
+            'flink/Flink实战与性能优化/如何处理FlinkJobBackPressure（反压）问题？',
+            'flink/Flink实战与性能优化/如何查看FlinkJob执行计划？',
+            'flink/Flink实战与性能优化/FlinkParallelism和Slot深度理解',
+            'flink/Flink实战与性能优化/如何合理的设置FlinkJob并行度？',
+            'flink/Flink实战与性能优化/Flink中如何保证ExactlyOnce？（上）',
+            'flink/Flink实战与性能优化/Flink中如何保证ExactlyOnce？（下）',
+            'flink/Flink实战与性能优化/如何处理Flink中数据倾斜问题？',
+            'flink/Flink实战与性能优化/如何设置FlinkJobRestartStrategy（重启策略）？',
+            'flink/Flink实战与性能优化/如何使用FlinkParameterTool读取配置？',
+            'flink/Flink实战与性能优化/如何统计网站各页面一天内的PV和UV？',
+            'flink/Flink实战与性能优化/如何使用FlinkProcessFunction处理宕机告警',
+            'flink/Flink实战与性能优化/如何利用AsyncIO读取告警规则？',
+            'flink/Flink实战与性能优化/如何利用广播变量动态更新告警规则？',
+            'flink/Flink实战与性能优化/如何实时将应用Error日志告警？',
+            'flink/Flink实战与性能优化/基于Flink的海量日志实时处理系统的实践',
+            'flink/Flink实战与性能优化/基于Flink的百亿数据去重实践'
+          ]
+        }
       ],
     },{
       title: 'Kylin',
