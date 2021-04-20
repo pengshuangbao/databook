@@ -75,7 +75,7 @@ Standalone、YARN、Kubernetes、Mesos 等形式部署的。
 
   * YARN：YARN 是 Hadoop 集群的资源管理系统，它可以在群集上运行各种分布式应用程序，Flink 可与其他应用并行于 YARN 中，Flink on YARN 的架构如下：
 
-![images](https://static.lovedata.net/zs/2019-05-19-062400.jpg-wm)
+![image](https://static.lovedata.net/21-04-20-0c46a406dfc4541245c061fbaeedfe0c.png-wm)
   * Kubernetes：Kubernetes 是 Google 开源的容器集群管理系统，在 Docker 技术的基础上，为容器化的应用提供部署运行、资源调度、服务发现和动态伸缩等一系列完整功能，提高了大规模容器集群管理的便捷性，Flink 也支持部署在 Kubernetes 上，在 [GitHub](https://github.com/Aleksandr-Filichkin/flink-k8s/blob/master/flow.jpg) 看到有下面这种运行架构的。
 
 ![images](https://static.lovedata.net/zs/2019-05-19-071249.jpg-wm)
