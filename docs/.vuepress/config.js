@@ -25,7 +25,7 @@ module.exports = ctx => ({
     '/': {
       lang: 'zh-CN',
       title: '编程手册',
-      description: '编程-手册'
+      description: '苍穹浩渺,取之须臾'
     }
   },
   head: [

@@ -1,6 +1,6 @@
 ---
 home: true
-heroImage: /hero.png
+heroImage: /universe_mid.gif
 actionText: Get Started →
 actionLink: /bigdata/
 footer: 奔跑的蜗牛
