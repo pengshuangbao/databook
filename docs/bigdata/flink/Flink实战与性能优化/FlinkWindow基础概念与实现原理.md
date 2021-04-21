@@ -61,12 +61,12 @@ TimeCharacteristic 类型的话，则默认使用的是 ProcessingTime，如果�
 还不了解的话，可以看前一篇文章 [Flink 中 Processing Time、Event Time、Ingestion Time
 对比及其使用场景分析]() 如下：
 
-    
-    
+
+​    
     dataStream.keyBy(1)
         .timeWindow(Time.minutes(1)) //time Window 每分钟统计一次数量和
         .sum(1);
-    
+
 
 时间窗口的数据窗口聚合流程如下图所示：
 
@@ -76,8 +76,8 @@ TimeCharacteristic 类型的话，则默认使用的是 ProcessingTime，如果�
 
 该 timeWindow 方法在 KeyedStream 中对应的源码如下：
 
-    
-    
+
+​    
     //时间窗口
     public WindowedStream<T, KEY, TimeWindow> timeWindow(Time size) {
         if (environment.getStreamTimeCharacteristic() == TimeCharacteristic.ProcessingTime) {
@@ -86,17 +86,17 @@ TimeCharacteristic 类型的话，则默认使用的是 ProcessingTime，如果�
             return window(TumblingEventTimeWindows.of(size));
         }
     }
-    
+
 
 另外在 Time Window 中还支持滑动的时间窗口，比如定义了一个每 30s 滑动一次的 1 分钟时间窗口，它会每隔 30s
 去统计过去一分钟窗口内的数据，同样使用也很简单，输入两个时间参数，如下：
 
-    
-    
+
+​    
     dataStream.keyBy(1)
         .timeWindow(Time.minutes(1), Time.seconds(30)) //sliding time Window 每隔 30s 统计过去一分钟的数量和
         .sum(1);
-    
+
 
 滑动时间窗口的数据聚合流程如下图所示：
 
@@ -107,8 +107,8 @@ TimeCharacteristic 类型的话，则默认使用的是 ProcessingTime，如果�
 
 该 timeWindow 方法在 KeyedStream 中对应的源码如下：
 
-    
-    
+
+​    
     //滑动时间窗口
     public WindowedStream<T, KEY, TimeWindow> timeWindow(Time size, Time slide) {
         if (environment.getStreamTimeCharacteristic() == TimeCharacteristic.ProcessingTime) {
@@ -117,7 +117,7 @@ TimeCharacteristic 类型的话，则默认使用的是 ProcessingTime，如果�
             return window(SlidingEventTimeWindows.of(size, slide));
         }
     }
-    
+
 
 ### Count Window 使用及源码分析
 
@@ -126,48 +126,48 @@ Apache Flink 还提供计数窗口功能，如果计数窗口的值设置的为 
 
 在 Flink 中使用 Count Window 非常简单，输入一个 long 类型的参数，这个参数代表窗口中事件的数量，使用如下：
 
-    
-    
+
+​    
     dataStream.keyBy(1)
         .countWindow(3) //统计每 3 个元素的数量之和
         .sum(1);
-    
+
 
 计数窗口的数据窗口聚合流程如下图所示：
 
 ![images](https://static.lovedata.net/zs/2019-05-16-045758.jpg-wm)
 该 countWindow 方法在 KeyedStream 中对应的源码如下：
 
-    
-    
+
+​    
     //计数窗口
     public WindowedStream<T, KEY, GlobalWindow> countWindow(long size) {
         return window(GlobalWindows.create()).trigger(PurgingTrigger.of(CountTrigger.of(size)));
     }
-    
+
 
 另外在 Count Window 中还支持滑动的计数窗口，比如定义了一个每 3 个事件滑动一次的 4 个事件的计数窗口，它会每隔 3 个事件去统计过去 4
 个事件计数窗口内的数据，使用也很简单，输入两个 long 类型的参数，如下：
 
-    
-    
+
+​    
     dataStream.keyBy(1) 
         .countWindow(4, 3) //每隔 3 个元素统计过去 4 个元素的数量之和
         .sum(1);
-    
+
 
 滑动计数窗口的数据窗口聚合流程如下图所示：
 
 ![images](https://static.lovedata.net/zs/2019-05-16-065833.jpg-wm)
 该 countWindow 方法在 KeyedStream 中对应的源码如下：
 
-    
-    
+
+​    
     //滑动计数窗口
     public WindowedStream<T, KEY, GlobalWindow> countWindow(long size, long slide) {
         return window(GlobalWindows.create()).evictor(CountEvictor.of(size)).trigger(CountTrigger.of(slide));
     }
-    
+
 
 ### Session Window 使用及源码分析
 
@@ -177,25 +177,25 @@ Apache Flink
 在 Flink 中使用 Session Window 非常简单，你该使用 Flink KeyedStream 中的 window 方法，然后使用
 ProcessingTimeSessionWindows.withGap()（不一定就是只使用这个），在该方法里面你需要做的是传入一个时间参数，如下：
 
-    
-    
+
+​    
     dataStream.keyBy(1)
         .window(ProcessingTimeSessionWindows.withGap(Time.seconds(5)))//表示如果 5s 内没出现数据则认为超出会话时长，然后计算这个窗口的和
         .sum(1);
-    
+
 
 会话窗口的数据窗口聚合流程如下图所示：
 
 ![images](https://static.lovedata.net/zs/2019-05-16-150258.jpg-wm)
 该 Window 方法在 KeyedStream 中对应的源码如下：
 
-    
-    
+
+​    
     //提供自定义 Window
     public <W extends Window> WindowedStream<T, KEY, W> window(WindowAssigner<? super T, W> assigner) {
         return new WindowedStream<>(this, assigner);
     }
-    
+
 
 ### 如何自定义 Window？
 
@@ -209,33 +209,33 @@ Window。
 
 上面说了 Flink 中自带的 Window，主要利用了 KeyedStream 的 API 来实现，我们这里来看下 Window 的源码定义如下：
 
-    
-    
+
+​    
     public abstract class Window {
         //获取属于此窗口的最大时间戳
         public abstract long maxTimestamp();
     }
-    
+
 
 查看源码可以看见 Window 这个抽象类有如下实现类：
 
 ![images](https://static.lovedata.net/zs/2019-10-17-163050.png-wm)
 **TimeWindow** 源码定义如下:
 
-    
-    
+
+​    
     public class TimeWindow extends Window {
         //窗口开始时间
         private final long start;
         //窗口结束时间
         private final long end;
     }
-    
+
 
 **GlobalWindow** 源码定义如下：
 
-    
-    
+
+​    
     public class GlobalWindow extends Window {
     
         private static final GlobalWindow INSTANCE = new GlobalWindow();
@@ -246,7 +246,7 @@ Window。
             return INSTANCE;
         }
     }
-    
+
 
 ### Window 组件之 WindowAssigner 使用及源码分析
 
@@ -255,24 +255,24 @@ Window。
 窗口本身只是元素列表的标识符，它可能提供一些可选的元信息，例如 TimeWindow
 中的开始和结束时间。注意，元素可以被添加到多个窗口，这也意味着一个元素可以同时在多个窗口存在。我们来看下 WindowAssigner 的代码的定义吧：
 
-    
-    
+
+​    
     public abstract class WindowAssigner<T, W extends Window> implements Serializable {
         //分配数据到窗口并返回窗口集合
         public abstract Collection<W> assignWindows(T element, long timestamp, WindowAssignerContext context);
     }
-    
+
 
 查看源码可以看见 WindowAssigner 这个抽象类有如下实现类：
 
 ![images](https://static.lovedata.net/zs/2019-10-17-163413.png-wm)
 这些 WindowAssigner 实现类的作用介绍：
 
-![images](https://static.lovedata.net/zs/2019-05-16-155715.jpg-wm)
+![image](https://static.lovedata.net/21-04-20-d5f3266f7f77a082d83385c1aec74336.png-wm)
 如果你细看了上面图中某个类的具体实现的话，你会发现一个规律，比如我拿 TumblingEventTimeWindows 的源码来分析，如下：
 
-    
-    
+
+​    
     public class TumblingEventTimeWindows extends WindowAssigner<Object, TimeWindow> {
         //定义属性
         private final long size;
@@ -295,7 +295,7 @@ Window。
     
         //其他方法，对外提供静态方法，供其他类调用
     }
-    
+
 
 从上面你就会发现 **套路** ：
 
@@ -314,8 +314,8 @@ Trigger 表示触发器，每个窗口都拥有一个 Trigger（触发器），�
 
 说了这么一大段，我们还是来看看 Trigger 的源码，定义如下：
 
-    
-    
+
+​    
     public abstract class Trigger<T, W extends Window> implements Serializable {
         //当有数据进入到 Window 运算符就会触发该方法
         public abstract TriggerResult onElement(T element, long timestamp, W window, TriggerContext ctx) throws Exception;
@@ -324,13 +324,13 @@ Trigger 表示触发器，每个窗口都拥有一个 Trigger（触发器），�
         //当使用触发器上下文设置的事件时间计时器触发时调用该方法
         public abstract TriggerResult onEventTime(long time, W window, TriggerContext ctx) throws Exception;
     }
-    
+
 
 当有数据流入 Window 运算符时就会触发 onElement 方法、当处理时间和事件时间生效时会触发 onProcessingTime 和
 onEventTime 方法。每个触发动作的返回结果用 TriggerResult 定义。继续来看下 TriggerResult 的源码定义：
 
-    
-    
+
+​    
     public enum TriggerResult {
     
         //不做任何操作
@@ -345,7 +345,7 @@ onEventTime 方法。每个触发动作的返回结果用 TriggerResult 定义�
         //清除窗口中的所有元素，并且在不计算窗口函数或不发出任何元素的情况下丢弃窗口
         PURGE(false, true);
     }
-    
+
 
 查看源码可以看见 Trigger 这个抽象类有如下实现类：
 
@@ -355,8 +355,8 @@ onEventTime 方法。每个触发动作的返回结果用 TriggerResult 定义�
 ![images](https://static.lovedata.net/zs/2019-05-17-145735.jpg-wm)
 如果你细看了上面图中某个类的具体实现的话，你会发现一个规律，拿 CountTrigger 的源码来分析，如下：
 
-    
-    
+
+​    
     public class CountTrigger<W extends Window> extends Trigger<Object, W> {
         //定义属性
         private final long maxCount;
@@ -383,7 +383,7 @@ onEventTime 方法。每个触发动作的返回结果用 TriggerResult 定义�
             return TriggerResult.CONTINUE;
         }
     }
-    
+
 
 **套路** ：
 
@@ -402,15 +402,15 @@ Evictor，触发器直接将所有窗口元素交给计算函数。
 
 我们来看看 Evictor 的源码定义如下：
 
-    
-    
+
+​    
     public interface Evictor<T, W extends Window> extends Serializable {
         //在窗口函数之前调用该方法选择性地清除元素
         void evictBefore(Iterable<TimestampedValue<T>> elements, int size, W window, EvictorContext evictorContext);
         //在窗口函数之后调用该方法选择性地清除元素
         void evictAfter(Iterable<TimestampedValue<T>> elements, int size, W window, EvictorContext evictorContext);
     }
-    
+
 
 查看源码可以看见 Evictor 这个接口有如下实现类：
 
@@ -420,8 +420,8 @@ Evictor，触发器直接将所有窗口元素交给计算函数。
 ![images](https://static.lovedata.net/zs/2019-05-17-153505.jpg-wm)
 如果你细看了上面三种中某个类的实现的话，你会发现一个规律，比如我就拿 CountEvictor 的源码来分析，如下：
 
-    
-    
+
+​    
     public class CountEvictor<W extends Window> implements Evictor<Object, W> {
         private static final long serialVersionUID = 1L;
     
@@ -464,7 +464,7 @@ Evictor，触发器直接将所有窗口元素交给计算函数。
     
         //其他的方法
     }
-    
+
 
 发现 **套路** ：
 
@@ -483,8 +483,8 @@ Evictor，触发器直接将所有窗口元素交给计算函数。
 上文讲解了 Flink 自带的 Window（Time Window、Count Window、Session
 Window），然后还分析了他们的源码实现，通过这几个源码，我们可以发现，它最后调用的都有一个方法，那就是 Window 方法，如下：
 
-    
-    
+
+​    
     //提供自定义 Window
     public <W extends Window> WindowedStream<T, KEY, W> window(WindowAssigner<? super T, W> assigner) {
         return new WindowedStream<>(this, assigner);
@@ -498,7 +498,7 @@ Window），然后还分析了他们的源码实现，通过这几个源码，�
         //获取一个默认的 Trigger
         this.trigger = windowAssigner.getDefaultTrigger(input.getExecutionEnvironment());
     }
-    
+
 
 可以看到这个 Window 方法传入的参数是一个 WindowAssigner 对象（你可以利用 Flink 现有的
 WindowAssigner，也可以根据上面的方法来自定义自己的 WindowAssigner），然后再通过构造一个 WindowedStream
@@ -507,8 +507,8 @@ WindowAssigner，也可以根据上面的方法来自定义自己的 WindowAssig
 另外你可以看到滑动计数窗口，在调用 window 方法之后，还调用了 WindowedStream 的 evictor 和 trigger
 方法，trigger 方法会覆盖掉你之前调用 Window 方法中默认的 trigger，如下：
 
-    
-    
+
+​    
     //滑动计数窗口
     public WindowedStream<T, KEY, GlobalWindow> countWindow(long size, long slide) {
         return window(GlobalWindows.create()).evictor(CountEvictor.of(size)).trigger(CountTrigger.of(slide));
@@ -527,7 +527,7 @@ WindowAssigner，也可以根据上面的方法来自定义自己的 WindowAssig
         this.trigger = trigger;
         return this;
     }
-    
+
 
 从上面的各种窗口实现，你就会发现了：Evictor 是可选的，但是 WindowAssigner 和 Trigger 是必须会有的，这种创建 Window
 的方法充分利用了 KeyedStream 和 WindowedStream 的 API，再加上现有的

@@ -640,6 +640,51 @@ docker rm `docker ps -a | grep 'xxx' | grep -v grep|awk '{print $1}'`
  docker ps -a -q | xargs docker rm -f
 ```
 
+### Docker定时清理日志
+
+```shell
+#!/bin/sh
+
+DockerLogPath='/var/lib/docker/containers/'
+if test -e $DockerLogPath && test -d $DockerLogPath; 
+then
+    dockerList=`ls $DockerLogPath`
+    for fileName in $dockerList;
+    do
+    wholeFolderPath=$DockerLogPath$fileName
+    #if test -f $fileName; then
+    if test -f $wholeFolderPath; 
+    then
+        echo $wholeFolderPath;
+    elif test -d $wholeFolderPath; 
+    then
+        cd $wholeFolderPath;
+        jsonFile=$wholeFolderPath'/'$fileName-json.log
+        if test -e  $jsonFile && test -f $jsonFile;
+        then
+            echo 'Clean '$jsonFile
+            cat /dev/null > $jsonFile;
+        else
+            echo $jsonFile' not exists!'
+        fi
+    else
+        echo  "$DockerLogPath is a invalid path";
+    fi 
+    done
+
+    echo "Done"
+else
+   echo  "$DockerLogPath is a invalid path";
+fi
+```
+
+```shell
+crontab -e
+00 19 * * * sh /root/clean_docker_log.sh
+```
+
+
+
 
 
 ## Git
