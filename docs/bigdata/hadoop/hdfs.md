@@ -46,11 +46,11 @@ Hadoop **对于压缩格式的是自动识别** 。如果我们压缩的文件�
 ## 文件大小默认为 64M,改为 128M 有啥影响,bloack大小为什么增大默认为128M
 
 1. 减轻了namenode的压力
-  原因是hadoop集群在启动的时候，datanode会上报自己的block的信息给namenode。namenode把这些信息放到内存中。那么如果块变大了，那么namenode的记录的信息相对减少，所以namenode就有更多的内存去做的别的事情，使得整个集群的性能增强。
+    原因是hadoop集群在启动的时候，datanode会上报自己的block的信息给namenode。namenode把这些信息放到内存中。那么如果块变大了，那么namenode的记录的信息相对减少，所以namenode就有更多的内存去做的别的事情，使得整个集群的性能增强。
 2. 增大会不会带来负面相应。
-  因为这个可以灵活设置，所以这里不是问题。关键是什么时候，该如何设置。
-  如果对于数两级别为PB的话，建议可以block设置的大一些。
-  如果数据量相对较少，可以设置的小一些64M也未尝不可。
+    因为这个可以灵活设置，所以这里不是问题。关键是什么时候，该如何设置。
+    如果对于数两级别为PB的话，建议可以block设置的大一些。
+    如果数据量相对较少，可以设置的小一些64M也未尝不可。
 3. 参考
    1. [Hadoop-2.X中HDFS文件块bloack大小为什么增大默认为128M-Hadoop|YARN-about云开发-活到老 学到老](http://www.aboutyun.com/thread-7514-1-1.html)
 
@@ -171,7 +171,7 @@ HDFS适合存储半结构化和非结构化数据，若有严格的结构化数�
 QJM  群体日志管理器（qurom journal manager） 专用HDFS实现，推荐适用，以一组日志节点（journal node）形式运行，每次编辑必须写入多数日志节点，没有适用ZK HDFS namenode 选举时候用到ZK
 
 系统中有一个故障转移i控制器（failover controller） 新尸体，管理活动nn转移为备用nn过程，多种控制器，默认适用ZK，确保只有一个nn，每个nn运行一个轻量级 控制器，见识宿主nn是否失效，并在nn失效的时候故障切换
- 
+
 ## 为什么HDFS 块为64MB或者128MB
 
 为了最小化寻址爱笑，hdfs寻址包括磁盘寻到开销，数据块定位开销 ，设计较大的块，可以把上述寻址开销分摊到较多的数据中，降低开销 
@@ -181,7 +181,7 @@ QJM  群体日志管理器（qurom journal manager） 专用HDFS实现，推荐�
 2. 简化系统设计  方便元数据管理
 3. 适合数据备份
 
-## 名称节点 数据节点 和 SecondaryNameNOde
+## 名称节点 数据节点 和 SecondaryNameNode
 
 名称节点
 
@@ -193,3 +193,85 @@ SecondaryNameNOde
 1. Fsimage Editlog 合并操作  请求NN 停止Editlog文件，添加一个新的文件Edtlog.new ，然后将Fsimage和editlog拉回到本地，加载到内存，执行合并，然后发送到NN，NN收到后使用新的替换旧的FSimage，用Editlog.nwe替换editlog文件
 2. 名称节点的检查点  SN成为NN的检查点， 在拉回数据之后的一段时间内，如果NN丢失了，会导致一部分数据丢失，并不是热备份。
 
+
+
+## HDFS SecondaryNameNode和HA（高可用）区别
+
+[Hadoop的SecondaryNameNode和HA（高可用）区别_andyguan01_2的博客-CSDN博客_hadoop secondarynamenode](https://blog.csdn.net/andyguan01_2/article/details/88696239)
+
+在Hadoop2.0之前，NameNode只有一个，存在单点问题（虽然Hadoop1.0有SecondaryNameNode) 在2.0之后引入HA机制
+
+官方介绍2种方式，一种NFS(Network File System),另一种QJM(Quorum Journal Manager)
+
+> quorum  
+>  英  [ˈkwɔːrəm]   美  [ˈkwɔːrəm]
+>
+>  n. 法定人数
+>
+> journal  
+>  英  [ˈdʒɜːnl]   美  [ˈdʒɜːrnl] 
+>
+>  n. 日报，杂志；日记；分类账
+> 复数 journals
+
+### NameNode
+
+保存HDFS元数据，比如命名空间信息、块。运行时，这些存在内存，也可以吃就到磁盘山
+
+![image](https://static.lovedata.net/21-04-22-3af78a159b5556724a3e8b01822aaeda.png-wm)
+
+#### fsimage
+
+在NN启动的时候，对整个文件系统的快找
+
+#### Edits logs
+
+在NN启动后，对文件系统的改动序列
+
+只有在nn重启的时候，edit logs 才会合并到fs image种，从而得到最新的快找。 但是一般nn很少重启nn运行很长后，edit logs 变得很大，
+
+
+
+### Secondary NameNode
+
+sn就是帮助解决上面问题，指责就是合并nn的edit logs 到 fsimage种
+
+![image](https://static.lovedata.net/21-04-22-f3c640ffe936099e68d838b48f378a3a.png-wm)
+
+
+
+### HA（高可用）介绍
+
+Hadoop2.0的HA 机制有两个NameNode，一个是Active状态，另一个是Standby状态。两者的状态可以切换，但同时最多只有1个是Active状态
+
+Active NameNode和Standby NameNode之间通过NFS或者JN（JournalNode，QJM方式）来同步数据。
+
+
+
+Active NameNode会把最近的操作记录写到本地的一个edits文件中（edits file），并传输到NFS或者JN种，SNN定期检查，从JN把最近的edit文件度过来，合并成一个新的fsimage，合并完成后会通知ANN获取这个新的fsimage。ANN会替换旧的fsimage
+
+
+
+### 数据同步方式 NFS 和 QJM
+
+#### NFS
+
+![image](https://static.lovedata.net/21-04-22-7a69ca735e8f5682e003fc5a52dd59da.png-wm)
+
+缺点： 如果 ANN 或者 SNN又一个与NFS有网络问题，会造成数据同步出问题
+
+
+
+#### QJM
+
+![image](https://static.lovedata.net/21-04-22-ab19b734ef040815820532df86c2ec45.png-wm)
+
+
+
+QJM的方式可以解决上述NFS容错机制不足的问题。Active NameNode和Standby NameNode之间是通过一组JournalNode（数量是奇数，可以是3,5,7…,2n+1）来共享数据。Active NameNode把最近的edits文件写到2n+1个JournalNode上，只要有n+1个写入成功就认为这次写入操作成功了，然后Standby NameNode就可以从JournalNode上读取了。可以看到，QJM方式有容错机制，可以容忍n个JournalNode的失败。
+
+
+
+### 主备切换
+
+![image](https://static.lovedata.net/21-04-22-2dfdfb7ab264c6ed82d8598403c15ea2.png-wm)
