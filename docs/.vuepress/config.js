@@ -63,7 +63,8 @@ module.exports = ctx => ({
           '/ops/': getOpsSidebar(),
           '/programming/': getProgrammingSidebar(),
           '/book/':getBookSideBar(),
-          '/interview/':getInterviewSideBar()
+          '/interview/':getInterviewSideBar(),
+          '/guide/':['']
         },
         sidebarDepth: 3,
       }
@@ -310,7 +311,8 @@ function getBigdataSidebar () {
       //sidebarDepth: 2,  
       children: [
         'kudu/',
-        'kudu/学习资源'
+        'kudu/学习资源',
+        'kudu/Guide to Using Apache Kudu and Performance Comparison with HDFS'
       ]
     },{
       title: 'CDH',
@@ -335,6 +337,8 @@ function getBigdataSidebar () {
     'data-mining',
     'solution',
     'design',
-    'other'
+    'other',
+    'calcite',
+    'antlr'
   ]
 }

@@ -1,5 +1,9 @@
 module.exports = [
   {
+    text: '导航',
+    link: '/guide/'
+  },
+  {
     text: 'Java',
     link: '/java/'
   },{
@@ -42,15 +46,6 @@ module.exports = [
             link:'/programming/scala.html'
           }
         ]
-      },
-        {
-          text: '工具',
-          items:[
-            {
-              text:'Snippt',
-              link:'/programming/card.html'
-            }
-          ]
       }
     ]
   },

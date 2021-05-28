@@ -195,6 +195,10 @@ SecondaryNameNOde
 
 
 
+---
+
+
+
 ## HDFS SecondaryNameNode和HA（高可用）区别
 
 [Hadoop的SecondaryNameNode和HA（高可用）区别_andyguan01_2的博客-CSDN博客_hadoop secondarynamenode](https://blog.csdn.net/andyguan01_2/article/details/88696239)
@@ -222,13 +226,13 @@ SecondaryNameNOde
 
 #### fsimage
 
-在NN启动的时候，对整个文件系统的快找
+在NN启动的时候，对整个文件系统的快照
 
 #### Edits logs
 
 在NN启动后，对文件系统的改动序列
 
-只有在nn重启的时候，edit logs 才会合并到fs image种，从而得到最新的快找。 但是一般nn很少重启nn运行很长后，edit logs 变得很大，
+只有在nn重启的时候，edit logs 才会合并到fs image中，从而得到最新的快照。 但是一般nn很少重启nn运行很长后，edit logs 变得很大
 
 
 
@@ -242,13 +246,11 @@ sn就是帮助解决上面问题，指责就是合并nn的edit logs 到 fsimage�
 
 ### HA（高可用）介绍
 
-Hadoop2.0的HA 机制有两个NameNode，一个是Active状态，另一个是Standby状态。两者的状态可以切换，但同时最多只有1个是Active状态
+Hadoop2.0的HA 机制有两个NameNode，一个是**Active**状态，另一个是Standby状态。两者的状态可以切换，但同时最多只有1个是Active状态
 
-Active NameNode和Standby NameNode之间通过NFS或者JN（JournalNode，QJM方式）来同步数据。
+Active NameNode和Standby NameNode之间通过NFS或者JN（JournalNode，QJM方式）来**同步数据**。
 
-
-
-Active NameNode会把最近的操作记录写到本地的一个edits文件中（edits file），并传输到NFS或者JN种，SNN定期检查，从JN把最近的edit文件度过来，合并成一个新的fsimage，合并完成后会通知ANN获取这个新的fsimage。ANN会替换旧的fsimage
+Active NameNode会把最近的操作记录写到本地的一个**edits**文件中（edits file），并传输到NFS或者JN种，SNN定期检查，从JN把最近的**edit**文件读过来，合并成一个新的fsimage，合并完成后会通知ANN获取这个新的fsimage。ANN会替换旧的fsimage
 
 
 
@@ -275,3 +277,4 @@ QJM的方式可以解决上述NFS容错机制不足的问题。Active NameNode�
 ### 主备切换
 
 ![image](https://static.lovedata.net/21-04-22-2dfdfb7ab264c6ed82d8598403c15ea2.png-wm)
+
