@@ -72,6 +72,10 @@ module.exports = [
           {
             text: '专栏',
             link:'/book/geek.html'
+          },
+          {
+            text: '视频',
+            link:'/book/video.html'
           }
         ]
       },

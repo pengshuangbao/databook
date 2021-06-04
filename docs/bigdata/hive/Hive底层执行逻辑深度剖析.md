@@ -1,36 +1,8 @@
-# Hive
+# Hive底层执行逻辑深度剖析
 
 [toc]
 
-## Hive 的 sort by 和 order by 的区别
 
-## hive 如何调优
-
-[hql 调优](https://www.cnblogs.com/sandbank/p/6408762.html)
-
-## Hive UADF 聚合函数  
-
-## Hive UDF 自定义函数  他们作用的数据范围是什么?
-
-[Hive自定义函数(UDF、UDAF) - CSDN博客](https://blog.csdn.net/scgaliguodong123_/article/details/46993005)
-
-## hive 动态分区是怎么回事?
-
-[hive动态分区插入实验 - CSDN博客](https://blog.csdn.net/wzy0623/article/details/50817883)
-[Hive动态分区 - 简书](https://www.jianshu.com/p/e7debf0980e3)
-[[一起学Hive]之六-Hive的动态分区 – lxw的大数据田地](http://lxw1234.com/archives/2015/06/286.htm)
-
-## Hive：insert into table 与 insert overwrite table 区别 
-
-[Hive：insert into table 与 insert overwrite table 区别 - cctext - 博客园](https://www.cnblogs.com/yy3b2007com/p/7054128.html)
-
-## Hive Join的区别
-
-[[一起学Hive]之十一-Hive中Join的类型和用法 – lxw的大数据田地](http://lxw1234.com/archives/2015/06/315.htm)
-
-## 
-
-## Hive底层执行逻辑深度剖析
 
 FaceBook的工程师早期在使用开源Hadoop进行海量数据分析的时候，发现直接编写MapReduce比较低效,遂研发了一个Hadoop的SQL客户端来管理存储在Hadoop中的结构化数据，从而提高开发效率,而且也降低了入
 门大数据开发和分析的门]槛。
@@ -43,7 +15,7 @@ FaceBook的工程师早期在使用开源Hadoop进行海量数据分析的时候
 
 
 
-### Hive定义
+## Hive定义
 
 Hive依赖于HDFS存储数据I Hive将HQL转换成MapReduce执行，所以说Hive是基于Hadoop的一个数据仓 库工具，实质就是一款基于HDFS的MapReduce计算框架， 对存储在HDFS中的数据进行分析和管理。
 
@@ -58,13 +30,13 @@ Hive依赖于HDFS存储数据I Hive将HQL转换成MapReduce执行，所以说Hiv
 
 
 
-### 架构
+## 架构
 
 ![image](https://static.lovedata.net/21-05-26-7a17e2e96617198524ca6ad9430b40bc.png-wm)
 
 
 
-### 语法支持
+## 语法支持
 
 [Hive SQL的编译过程 - 美团技术团队](https://tech.meituan.com/2014/02/12/hive-sql-to-mapreduce.html)
 
@@ -149,7 +121,7 @@ select dealid, count(distinct uid) num from order group by dealid;
 
 
 
-### 怎么转换成MR的
+## 怎么转换成MR的
 
 了解了MapReduce实现SQL基本操作之后,我们来看看Hive是如何将SQL转化为MapReduce任务的,整个编译过
 程分为六个阶段:
@@ -168,31 +140,7 @@ select dealid, count(distinct uid) num from order group by dealid;
 
 ### 原理
 
-![image](https://static.lovedata.net/21-05-27-e5eb3f36dbc08214f7a545d0b705a18a.png-wm)
-
-
-
-![image](https://static.lovedata.net/21-05-27-9b1e8996f5a937cf051c4459e330ee4f.png-wm)
-
-
-
-![image](https://static.lovedata.net/21-05-27-7929cf8d7154189ba21b87af74a416f1.png-wm)
-
-
-
-![image](https://static.lovedata.net/21-05-27-32c71d82b671d99d33db2c94c9003305.png-wm)
-
-
-
-
-
-
-
-
-
-
-
-
+![image](https://static.lovedata.net/21-05-28-a31deb261cb35ec910455f0dfd794a4d.png-wm)
 
 
 

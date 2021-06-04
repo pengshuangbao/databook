@@ -4549,7 +4549,7 @@ public class TreeDepth {
 
 本题应该是假定输入的已经是二叉搜索树，因为平衡二叉树首先是一颗二叉搜索树。平衡二叉树的定义是：对于任意结点，其左右子树的深度相差不超过1。
 
-### 
+
 
 ```java
 package com.lovedata.interview.N55_02_BalancedBinaryTree;

@@ -64,7 +64,7 @@ module.exports = ctx => ({
           '/programming/': getProgrammingSidebar(),
           '/book/':getBookSideBar(),
           '/interview/':getInterviewSideBar(),
-          '/guide/':['']
+          '/guide/':['','nav']
         },
         sidebarDepth: 3,
       }
@@ -99,13 +99,13 @@ module.exports = ctx => ({
 })
 
 function getAlgorithmSidebar(){
-  return ['','算法基础','数据结构','算法']
+  return ['','数据结构','算法']
 }
 function getProgrammingSidebar(){
   return ['python','scala']
 }
 function getBookSideBar(){
-  return ['tech','growth','geek']
+  return ['tech','growth','geek','video']
 }
 
 function getInterviewSideBar(){
@@ -113,7 +113,22 @@ function getInterviewSideBar(){
 }
 
 function getArchitectureSidebar(){
-  return ['','architecture']
+  return [
+    '',
+    'architecture',
+  {
+    title: '测试',
+    collapsable: true,
+    children: [
+      '测试/benchmark'
+    ]
+  },{
+    title: '数据中台',
+    collapsable: true,
+    children: [
+      '数据中台/DT时代转型中的数据中台建设'
+    ]
+  }]
 }
 
 function getComputerSidebar(){
@@ -137,6 +152,7 @@ function getJavaSidebar(){
     '多线程',
     'java',
     '学习资源',
+    'java核心技术',
     {
       title: 'jvm内存与垃圾回收',
       collapsable: true,
@@ -168,6 +184,19 @@ function getJavaSidebar(){
         'jvm字节码与类/02字节码指令集与解析举例',
         'jvm字节码与类/03类的加载过程详解',
         'jvm字节码与类/04再谈类的加载器'
+      ]
+    },
+    {
+      title: 'jvm性能监控与调优',
+      collapsable: true,
+      children: [
+        'jvm性能监控与调优/01概述篇',
+        'jvm性能监控与调优/02JVM监控及诊断工具-命令行篇',
+        'jvm性能监控与调优/03JVM监控及诊断工具-GUI篇',
+        'jvm性能监控与调优/04JVM运行时参数',
+        'jvm性能监控与调优/05分析GC日志',
+        'jvm性能监控与调优/补充-使用OQL语言查询对象信息',
+        'jvm性能监控与调优/补充-浅堆深堆与内存泄露'
       ]
     }
   ]
@@ -205,6 +234,13 @@ function getBigdataSidebar () {
         'flink/通关手册',
         'flink/学习资源',
         'flink/开源动态',
+        {
+          title: '学习笔记',
+          collapsable: true,
+          children: [
+            'flink/学习笔记/Flink State最佳实践'
+          ]
+        },
         {
           title: 'Flink实战与性能优化',
           collapsable: true,
@@ -277,7 +313,8 @@ function getBigdataSidebar () {
       children: [
         'kafka/',
         'kafka/学习资源',
-        'kafka/Kafka核心技术与实战'
+        'kafka/Kafka核心技术与实战',
+        'kafka/大数据集群资源评估'
       ]
     },{
       title: 'Hbase',
@@ -311,8 +348,7 @@ function getBigdataSidebar () {
       //sidebarDepth: 2,  
       children: [
         'kudu/',
-        'kudu/学习资源',
-        'kudu/Guide to Using Apache Kudu and Performance Comparison with HDFS'
+        'kudu/学习资源'
       ]
     },{
       title: 'CDH',
@@ -332,7 +368,16 @@ function getBigdataSidebar () {
         'redis/Redis核心技术与实战实践篇'
       ]
     },
-    'hive',
+    {
+      title: 'hive',
+      collapsable: true,
+      //sidebarDepth: 2,  
+      children: [
+        'hive/',
+        'hive/面试题',
+        'hive/全宇宙最强的25条Hive性能调优实战'
+      ]
+    },
     'zookeeper',
     'data-mining',
     'solution',
