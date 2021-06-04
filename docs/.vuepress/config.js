@@ -140,7 +140,7 @@ function getDatabaseSidebar(){
 }
 
 function getOpsSidebar(){
-  return ['','java']
+  return ['','java','bigdata']
 }
 
 
