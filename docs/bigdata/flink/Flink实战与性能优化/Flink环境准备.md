@@ -1,5 +1,9 @@
 # Flink环境准备
 
+[toc]
+
+
+
 通过前面几篇文章，相信你已经对 Flink 的基础概念等知识已经有一定了解，现在是不是迫切的想把 Flink
 给用起来？先别急，我们先把电脑的准备环境给安装好，这样后面才能更愉快地玩耍。
 
@@ -22,24 +26,24 @@ Mac 系统的是 jdk-8u211-macosx-x64.dmg 格式、Linux 系统的是 jdk-8u211-
 Mac 系统安装的话直接双击然后一直按照提示就行了，最后 JDK 的安装目录在 `/Library/Java/JavaVirtualMachines/`
 ，然后在 `/etc/hosts` 中配置好环境变量（注意：替换你自己电脑本地的路径）。
 
-    
-    
+
+​    
     export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_152.jdk/Contents/Home
     export CLASSPATH=$JAVA_HOME/lib/tools.jar:$JAVA_HOME/lib/dt.jar:
     export PATH=$PATH:$JAVA_HOME/bin
-    
+
 
 Linux 系统的话就是在某个目录下直接解压就行了，然后在 `/etc/profile` 添加一下上面的环境变量（注意：替换你自己电脑的路径）。
 
 然后执行 `java -version` 命令可以查看是否安装成功！
 
-    
-    
+
+​    
      zhisheng@zhisheng ~  java -version
     java version "1.8.0_152"
     Java(TM) SE Runtime Environment (build 1.8.0_152-b16)
     Java HotSpot(TM) 64-Bit Server VM (build 25.152-b16, mixed mode)
-    
+
 
 ### Maven 安装与配置
 
@@ -48,16 +52,16 @@ Linux 系统的话就是在某个目录下直接解压就行了，然后在 `/et
 
 接下来你需要配置一下环境变量：
 
-    
-    
+
+​    
     export M2_HOME=/Users/zhisheng/Documents/maven-3.5.2
     export PATH=$PATH:$M2_HOME/bin
-    
+
 
 然后执行命令 `mvn -v` 可以验证是否安装成功，结果如下：
 
-    
-    
+
+​    
     zhisheng@zhisheng ~ /Users  mvn -v
     Apache Maven 3.5.2 (138edd61fd100ec658bfa2d307c43b76940a5d7d; 2017-10-18T15:58:13+08:00)
     Maven home: /Users/zhisheng/Documents/maven-3.5.2
@@ -65,7 +69,7 @@ Linux 系统的话就是在某个目录下直接解压就行了，然后在 `/et
     Java home: /Library/Java/JavaVirtualMachines/jdk1.8.0_152.jdk/Contents/Home/jre
     Default locale: zh_CN, platform encoding: UTF-8
     OS name: "mac os x", version: "10.13.5", arch: "x86_64", family: "mac"
-    
+
 
 ### IDE 安装与配置
 
@@ -123,10 +127,10 @@ Elasticsearch，都还挺方便的，包括你还可以通过 Docker 的方式�
 下载好了 Elasticsearch 的压缩包，在你的安装目录下解压就行了，然后进入 Elasticsearch 的安装目录执行下面命令就可以启动
 Elasticsearch 了：
 
-    
-    
+
+​    
     ./bin/elasticsearch
-    
+
 
 执行命令后的结果：
 

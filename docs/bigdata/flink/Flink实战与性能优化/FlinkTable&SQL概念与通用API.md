@@ -1,5 +1,7 @@
 # FlinkTable&SQL概念与通用API
 
+[toc]
+
 前面的内容都是讲解 DataStream 和 DataSet API 相关的，在 1.2.5 节中讲解 Flink API 时提及到 Flink 的高级
 API——Table API&SQL，本节将开始 Table&SQL 之旅。
 
@@ -99,36 +101,36 @@ Table API&SQL 是一种关系型 API，用户可以像操作数据库一样直�
 因为在 Flink 1.9 版本中有两个 planner，所以得根据你使用的 planner 来选择对应的依赖，假设你选择的是最新的 Blink
 版本，那么添加下面的依赖：
 
-    
-    
+
+​    
     <dependency>
         <groupId>org.apache.flink</groupId>
         <artifactId>flink-table-planner-blink_${scala.binary.version}</artifactId>
         <version>${flink.version}</version>
     </dependency>
-    
+
 
 如果是以前的 planner，则使用下面这个依赖：
 
-    
-    
+
+​    
     <dependency>
         <groupId>org.apache.flink</groupId>
         <artifactId>flink-table-planner_${scala.binary.version}</artifactId>
         <version>${flink.version}</version>
     </dependency>
-    
+
 
 如果要自定义 format 格式或者自定义 function，则需要添加 flink-table-common 依赖：
 
-    
-    
+
+​    
     <dependency>
       <groupId>org.apache.flink</groupId>
       <artifactId>flink-table-common</artifactId>
       <version>${flink.version}</version>
     </dependency>
-    
+
 
 ### 创建一个 TableEnvironment
 
@@ -144,69 +146,72 @@ TableEnvironment 是 Table API 和 SQL 的统称，它负责的内容有：
 Table 总是会绑定在一个指定的 TableEnvironment，不能在同一个查询中组合不同 TableEnvironment 的 Table，比如
 join 或 union 操作。你可以使用下面的几种静态方法创建 TableEnvironment。
 
-    
-    
-    //创建 StreamTableEnvironment
-    static StreamTableEnvironment create(StreamExecutionEnvironment executionEnvironment) {
-        return create(executionEnvironment, EnvironmentSettings.newInstance().build());
-    }
-    
-    static StreamTableEnvironment create(StreamExecutionEnvironment executionEnvironment, EnvironmentSettings settings) {
-        return StreamTableEnvironmentImpl.create(executionEnvironment, settings, new TableConfig());
-    }
-    
-    /** @deprecated */
-    @Deprecated
-    static StreamTableEnvironment create(StreamExecutionEnvironment executionEnvironment, TableConfig tableConfig) {
-        return StreamTableEnvironmentImpl.create(executionEnvironment, EnvironmentSettings.newInstance().build(), tableConfig);
-    }
-    
-    //创建 BatchTableEnvironment
-    static BatchTableEnvironment create(ExecutionEnvironment executionEnvironment) {
-        return create(executionEnvironment, new TableConfig());
-    }
-    
-    static BatchTableEnvironment create(ExecutionEnvironment executionEnvironment, TableConfig tableConfig) {
-        //
-    }
-    
+
+​    
+```java
+//创建 StreamTableEnvironment
+static StreamTableEnvironment create(StreamExecutionEnvironment executionEnvironment) {
+    return create(executionEnvironment, EnvironmentSettings.newInstance().build());
+}
+
+static StreamTableEnvironment create(StreamExecutionEnvironment executionEnvironment, EnvironmentSettings settings) {
+    return StreamTableEnvironmentImpl.create(executionEnvironment, settings, new TableConfig());
+}
+
+/** @deprecated */
+@Deprecated
+static StreamTableEnvironment create(StreamExecutionEnvironment executionEnvironment, TableConfig tableConfig) {
+    return StreamTableEnvironmentImpl.create(executionEnvironment, EnvironmentSettings.newInstance().build(), tableConfig);
+}
+
+//创建 BatchTableEnvironment
+static BatchTableEnvironment create(ExecutionEnvironment executionEnvironment) {
+    return create(executionEnvironment, new TableConfig());
+}
+
+static BatchTableEnvironment create(ExecutionEnvironment executionEnvironment, TableConfig tableConfig) {
+    //
+}
+```
 
 你需要根据你的程序来使用对应的 TableEnvironment，是 BatchTableEnvironment 还是
 StreamTableEnvironment。默认两个 planner 都是在 Flink 的安装目录下 lib
 文件夹中存在的，所以应该在你的程序中指定使用哪种 planner。
 
-    
-    
-    // Flink Streaming query
-    import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-    import org.apache.flink.table.api.EnvironmentSettings;
-    import org.apache.flink.table.api.java.StreamTableEnvironment;
-    EnvironmentSettings fsSettings = EnvironmentSettings.newInstance().useOldPlanner().inStreamingMode().build();
-    StreamExecutionEnvironment fsEnv = StreamExecutionEnvironment.getExecutionEnvironment();
-    StreamTableEnvironment fsTableEnv = StreamTableEnvironment.create(fsEnv, fsSettings);
-    //或者 TableEnvironment fsTableEnv = TableEnvironment.create(fsSettings);
-    
-    // Flink Batch query
-    import org.apache.flink.api.java.ExecutionEnvironment;
-    import org.apache.flink.table.api.java.BatchTableEnvironment;
-    ExecutionEnvironment fbEnv = ExecutionEnvironment.getExecutionEnvironment();
-    BatchTableEnvironment fbTableEnv = BatchTableEnvironment.create(fbEnv);
-    
-    // Blink Streaming query
-    import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-    import org.apache.flink.table.api.EnvironmentSettings;
-    import org.apache.flink.table.api.java.StreamTableEnvironment;
-    StreamExecutionEnvironment bsEnv = StreamExecutionEnvironment.getExecutionEnvironment();
-    EnvironmentSettings bsSettings = EnvironmentSettings.newInstance().useBlinkPlanner().inStreamingMode().build();
-    StreamTableEnvironment bsTableEnv = StreamTableEnvironment.create(bsEnv, bsSettings);
-    //或者 TableEnvironment bsTableEnv = TableEnvironment.create(bsSettings);
-    
-    // Blink Batch query
-    import org.apache.flink.table.api.EnvironmentSettings;
-    import org.apache.flink.table.api.TableEnvironment;
-    EnvironmentSettings bbSettings = EnvironmentSettings.newInstance().useBlinkPlanner().inBatchMode().build();
-    TableEnvironment bbTableEnv = TableEnvironment.create(bbSettings);
-    
+
+​    
+```java
+// Flink Streaming query
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.table.api.EnvironmentSettings;
+import org.apache.flink.table.api.java.StreamTableEnvironment;
+EnvironmentSettings fsSettings = EnvironmentSettings.newInstance().useOldPlanner().inStreamingMode().build();
+StreamExecutionEnvironment fsEnv = StreamExecutionEnvironment.getExecutionEnvironment();
+StreamTableEnvironment fsTableEnv = StreamTableEnvironment.create(fsEnv, fsSettings);
+//或者 TableEnvironment fsTableEnv = TableEnvironment.create(fsSettings);
+
+// Flink Batch query
+import org.apache.flink.api.java.ExecutionEnvironment;
+import org.apache.flink.table.api.java.BatchTableEnvironment;
+ExecutionEnvironment fbEnv = ExecutionEnvironment.getExecutionEnvironment();
+BatchTableEnvironment fbTableEnv = BatchTableEnvironment.create(fbEnv);
+
+// Blink Streaming query
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.table.api.EnvironmentSettings;
+import org.apache.flink.table.api.java.StreamTableEnvironment;
+StreamExecutionEnvironment bsEnv = StreamExecutionEnvironment.getExecutionEnvironment();
+EnvironmentSettings bsSettings = EnvironmentSettings.newInstance().useBlinkPlanner().inStreamingMode().build();
+StreamTableEnvironment bsTableEnv = StreamTableEnvironment.create(bsEnv, bsSettings);
+//或者 TableEnvironment bsTableEnv = TableEnvironment.create(bsSettings);
+
+// Blink Batch query
+import org.apache.flink.table.api.EnvironmentSettings;
+import org.apache.flink.table.api.TableEnvironment;
+EnvironmentSettings bbSettings = EnvironmentSettings.newInstance().useBlinkPlanner().inBatchMode().build();
+TableEnvironment bbTableEnv = TableEnvironment.create(bbSettings);
+```
+
 
 如果在 lib 目录下只存在一个 planner，则可以使用 useAnyPlanner 来创建指定的 EnvironmentSettings。
 
@@ -214,30 +219,32 @@ StreamTableEnvironment。默认两个 planner 都是在 Flink 的安装目录下
 
 批处理和流处理的 Table API&SQL 作业都有相同的模式，它们的代码结构如下：
 
-    
-    
-    //根据前面内容创建一个 TableEnvironment，指定是批作业还是流作业
-    TableEnvironment tableEnv = ...; 
-    
-    //用下面的其中一种方式注册一个 Table
-    tableEnv.registerTable("table1", ...)          
-    tableEnv.registerTableSource("table2", ...); 
-    tableEnv.registerExternalCatalog("extCat", ...);
-    
-    //注册一个 TableSink
-    tableEnv.registerTableSink("outputTable", ...);
-    
-    //根据一个 Table API 查询创建一个 Table
-    Table tapiResult = tableEnv.scan("table1").select(...);
-    //根据一个 SQL 查询创建一个 Table
-    Table sqlResult  = tableEnv.sqlQuery("SELECT ... FROM table2 ... ");
-    
-    //将 Table API 或者 SQL 的结果发送给 TableSink
-    tapiResult.insertInto("outputTable");
-    
-    //运行
-    tableEnv.execute("java_job");
-    
+
+​    
+```java
+//根据前面内容创建一个 TableEnvironment，指定是批作业还是流作业
+TableEnvironment tableEnv = ...; 
+
+//用下面的其中一种方式注册一个 Table
+tableEnv.registerTable("table1", ...)          
+tableEnv.registerTableSource("table2", ...); 
+tableEnv.registerExternalCatalog("extCat", ...);
+
+//注册一个 TableSink
+tableEnv.registerTableSink("outputTable", ...);
+
+//根据一个 Table API 查询创建一个 Table
+Table tapiResult = tableEnv.scan("table1").select(...);
+//根据一个 SQL 查询创建一个 Table
+Table sqlResult  = tableEnv.sqlQuery("SELECT ... FROM table2 ... ");
+
+//将 Table API 或者 SQL 的结果发送给 TableSink
+tapiResult.insertInto("outputTable");
+
+//运行
+tableEnv.execute("java_job");
+```
+
 
 ### Catalog 中注册 Table
 
@@ -252,17 +259,19 @@ Table 有两种类型，输入表和输出表，可以在 Table API&SQL 查询�
 
 在 TableEnvironment 中可以像下面这样注册一个 Table：
 
-    
-    
-    //创建一个 TableEnvironment
-    TableEnvironment tableEnv = ...; // see "Create a TableEnvironment" section
-    
-    //projTable 是一个简单查询的结果
-    Table projTable = tableEnv.scan("X").select(...);
-    
-    //将 projTable 表注册为 projectedTable 表
-    tableEnv.registerTable("projectedTable", projTable);
-    
+
+​    
+```java
+//创建一个 TableEnvironment
+TableEnvironment tableEnv = ...; // see "Create a TableEnvironment" section
+
+//projTable 是一个简单查询的结果
+Table projTable = tableEnv.scan("X").select(...);
+
+//将 projTable 表注册为 projectedTable 表
+tableEnv.registerTable("projectedTable", projTable);
+```
+
 
 #### 注册 TableSource
 
@@ -270,16 +279,18 @@ TableSource 让你可以访问存储系统（数据库 MySQL、HBase 等）、�
 MQ（Kafka、RabbitMQ） 中的数据。Flink 为常用组件都提供了 TableSource，另外还提供自定义 TableSource。在
 TableEnvironment 中可以像下面这样注册 TableSource：
 
-    
-    
-    TableEnvironment tableEnv = ...;
-    
-    //创建 TableSource
-    TableSource csvSource = new CsvTableSource("/Users/zhisheng/file", ...);
-    
-    //将 csvSource 注册为表
-    tableEnv.registerTableSource("CsvTable", csvSource);
-    
+
+​    
+```java
+TableEnvironment tableEnv = ...;
+
+//创建 TableSource
+TableSource csvSource = new CsvTableSource("/Users/zhisheng/file", ...);
+
+//将 csvSource 注册为表
+tableEnv.registerTableSource("CsvTable", csvSource);
+```
+
 
 注意：用于 Blink planner 的 TableEnvironment 只能接受
 StreamTableSource、LookupableTableSource 和 InputFormatTableSource，用于 Blink
@@ -291,39 +302,42 @@ TableSink 可以将 Table API&SQL 查询的结果发送到外部的存储系统�
 等。Flink 为常用等数据存储系统和文件格式都提供了 TableSink，另外还支持自定义 TableSink。在 TableEnvironment
 中可以像下面这样注册 TableSink：
 
-    
-    
-    TableEnvironment tableEnv = ...;
-    
-    //创建 TableSink
-    TableSink csvSink = new CsvTableSink("/Users/zhisheng/file", ...);
-    
-    //定义属性名和类型
-    String[] fieldNames = {"a", "b", "c"};
-    TypeInformation[] fieldTypes = {Types.INT, Types.STRING, Types.LONG};
-    
-    //将 csvSink 注册为表 CsvSinkTable
-    tableEnv.registerTableSink("CsvSinkTable", fieldNames, fieldTypes, csvSink);
-    
+
+​    
+```java
+TableEnvironment tableEnv = ...;
+
+//创建 TableSink
+TableSink csvSink = new CsvTableSink("/Users/zhisheng/file", ...);
+
+//定义属性名和类型
+String[] fieldNames = {"a", "b", "c"};
+TypeInformation[] fieldTypes = {Types.INT, Types.STRING, Types.LONG};
+
+//将 csvSink 注册为表 CsvSinkTable
+tableEnv.registerTableSink("CsvSinkTable", fieldNames, fieldTypes, csvSink);
+```
+
 
 ### 注册外部的 Catalog
 
 外部的 Catalog 可以提供外部的数据库和表的信息，例如它们的名称、schema、统计信息以及如何访问存储在外部数据库、表、文件中的数据。可以通过实现
 ExternalCatalog 接口来创建外部的 Catalog，并像下面这样注册外部的 Catalog：
 
-    
-    
-    TableEnvironment tableEnv = ...;
-    
-    //创建外部的 catalog
-    ExternalCatalog catalog = new InMemoryExternalCatalog();
-    //注册 ExternalCatalog
-    tableEnv.registerExternalCatalog("InMemCatalog", catalog);//该方法已经标记过期，可以使用 Catalog
-    
-    //使用下面这种
-    Catalog catalog = new GenericInMemoryCatalog("zhisheng");
-    tableEnv.registerCatalog("InMemCatalog", catalog);
-    
+
+​    
+```java
+TableEnvironment tableEnv = ...;
+
+//创建外部的 catalog
+ExternalCatalog catalog = new InMemoryExternalCatalog();
+//注册 ExternalCatalog
+tableEnv.registerExternalCatalog("InMemCatalog", catalog);//该方法已经标记过期，可以使用 Catalog
+
+//使用下面这种
+Catalog catalog = new GenericInMemoryCatalog("zhisheng");
+tableEnv.registerCatalog("InMemCatalog", catalog);
+```
 
 在注册后，ExternalCatalog 中的表数据信息可以通过 Table API&SQL 查询获取到。Flink 提供了 Catalog 的一种实现类
 GenericInMemoryCatalog 用于样例和测试。
@@ -334,23 +348,25 @@ GenericInMemoryCatalog 用于样例和测试。
 
 先来演示使用 Table API 来完成一个简单聚合查询：
 
-    
-    
-    TableEnvironment tableEnv = ...;
-    
-    //注册 Orders 表
-    
-    //查询注册的 Orders 表
-    Table orders = tableEnv.scan("Orders");
-    //计算来自中国的顾客的收入
-    Table revenue = orders
-      .filter("cCountry === 'China'")
-      .groupBy("cID, cName")
-      .select("cID, cName, revenue.sum AS revSum");
-    
-    //转换或者提交该结果表
-    //运行该查询语句
-    
+
+​    
+```java
+TableEnvironment tableEnv = ...;
+
+//注册 Orders 表
+
+//查询注册的 Orders 表
+Table orders = tableEnv.scan("Orders");
+//计算来自中国的顾客的收入
+Table revenue = orders
+  .filter("cCountry === 'China'")
+  .groupBy("cID, cName")
+  .select("cID, cName, revenue.sum AS revSum");
+
+//转换或者提交该结果表
+//运行该查询语句
+```
+
 
 你可以使用 Java 或者 Scala 语言来利用 Table API 开发，而 SQL 却不是这样的。
 
@@ -358,37 +374,41 @@ GenericInMemoryCatalog 用于样例和测试。
 
 上面使用 Table API 的聚合查询样例使用 SQL 来完成就如下面这样：
 
-    
-    
-    TableEnvironment tableEnv = ...;
-    
-    //注册 Orders 表
-    
-    //计算来自中国的顾客的收入
-    Table revenue = tableEnv.sqlQuery(
-        "SELECT cID, cName, SUM(revenue) AS revSum " +
-        "FROM Orders " +
-        "WHERE cCountry = 'FRANCE' " +
-        "GROUP BY cID, cName"
-      );
-    
-    //转换或者提交该结果表
-    //运行该查询语句
-    
+
+​    
+```java
+TableEnvironment tableEnv = ...;
+
+//注册 Orders 表
+
+//计算来自中国的顾客的收入
+Table revenue = tableEnv.sqlQuery(
+    "SELECT cID, cName, SUM(revenue) AS revSum " +
+    "FROM Orders " +
+    "WHERE cCountry = 'FRANCE' " +
+    "GROUP BY cID, cName"
+  );
+
+//转换或者提交该结果表
+//运行该查询语句
+```
+
 
 Flink 的 SQL 是基于实现 SQL 标准的 Apache Calcite，SQL 的查询语句就是全部为字符串，上面这条 SQL
 就说明了该如何指定查询并返回结果表，下面演示如何更新。
 
-    
-    
-    tableEnv.sqlUpdate(
-        "INSERT INTO RevenueFrance " +
-        "SELECT cID, cName, SUM(revenue) AS revSum " +
-        "FROM Orders " +
-        "WHERE cCountry = 'FRANCE' " +
-        "GROUP BY cID, cName"
-      );
-    
+
+​    
+```java
+tableEnv.sqlUpdate(
+    "INSERT INTO RevenueFrance " +
+    "SELECT cID, cName, SUM(revenue) AS revSum " +
+    "FROM Orders " +
+    "WHERE cCountry = 'FRANCE' " +
+    "GROUP BY cID, cName"
+  );
+```
+
 
 #### Table API&SQL
 

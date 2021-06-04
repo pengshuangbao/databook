@@ -79,16 +79,18 @@ Flink 支持通过 WaterMark 机制来处理这种延迟的数据。关于 Water
 
 在创建完流运行环境的时候，然后就可以通过 `env.setStreamTimeCharacteristic` 设置时间策略：
 
-    
-    
-    final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-    
-    env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
-    
-    // 其他两种:
-    // env.setStreamTimeCharacteristic(TimeCharacteristic.IngestionTime);
-    // env.setStreamTimeCharacteristic(TimeCharacteristic.ProcessingTime);
-    
+
+​    
+```java
+final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+
+env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
+
+// 其他两种:
+// env.setStreamTimeCharacteristic(TimeCharacteristic.IngestionTime);
+// env.setStreamTimeCharacteristic(TimeCharacteristic.ProcessingTime);
+```
+
 
 ### 小结与反思
 

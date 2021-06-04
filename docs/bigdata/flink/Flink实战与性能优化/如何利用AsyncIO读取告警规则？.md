@@ -1,5 +1,7 @@
 # 如何利用AsyncIO读取告警规则？
 
+[toc]
+
 ### 为什么需要 Async I/O？
 
 在大多数情况下，IO 操作都是一个耗时的过程，尤其在流计算中，如果在具体的算子里面还有和第三方外部系统（比如数据库、Redis、HBase
@@ -27,51 +29,53 @@ Async I/O API，是非常简单的，需要通过下面三个步骤来执行对�
 
 官网也给出案例如下：
 
-    
-    
-    class AsyncDatabaseRequest extends RichAsyncFunction<String, Tuple2<String, String>> {
-    
-        //数据库的客户端，它可以发出带有 callback 的并发请求
-        private transient DatabaseClient client;
-    
-        @Override
-        public void open(Configuration parameters) throws Exception {
-            client = new DatabaseClient(host, post, credentials);
-        }
-    
-        @Override
-        public void close() throws Exception {
-            client.close();
-        }
-    
-        @Override
-        public void asyncInvoke(String key, final ResultFuture<Tuple2<String, String>> resultFuture) throws Exception{
-            //发出异步请求，接收 future 的结果
-            final Future<String> result = client.query(key);
-    
-            //设置客户端请求完成后执行的 callback，callback 只是将结果转发给 ResultFuture
-            CompletableFuture.supplyAsync(new Supplier<String>() {
-                @Override
-                public String get() {
-                    try {
-                        return result.get();
-                    } catch (InterruptedException | ExecutionException e) {
-                        return null;
-                    }
-                }
-            }).thenAccept( (String dbResult) -> {
-                resultFuture.complete(Collections.singleton(new Tuple2<>(key, dbResult)));
-            });
-        }
+
+​    
+```java
+class AsyncDatabaseRequest extends RichAsyncFunction<String, Tuple2<String, String>> {
+
+    //数据库的客户端，它可以发出带有 callback 的并发请求
+    private transient DatabaseClient client;
+
+    @Override
+    public void open(Configuration parameters) throws Exception {
+        client = new DatabaseClient(host, post, credentials);
     }
-    
-    //原始数据
-    DataStream<String> stream = ...;
-    
-    //应用异步 I/O 转换
-    DataStream<Tuple2<String, String>> resultStream =
-        AsyncDataStream.unorderedWait(stream, new AsyncDatabaseRequest(), 1000, TimeUnit.MILLISECONDS, 100);
-    
+
+    @Override
+    public void close() throws Exception {
+        client.close();
+    }
+
+    @Override
+    public void asyncInvoke(String key, final ResultFuture<Tuple2<String, String>> resultFuture) throws Exception{
+        //发出异步请求，接收 future 的结果
+        final Future<String> result = client.query(key);
+
+        //设置客户端请求完成后执行的 callback，callback 只是将结果转发给 ResultFuture
+        CompletableFuture.supplyAsync(new Supplier<String>() {
+            @Override
+            public String get() {
+                try {
+                    return result.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    return null;
+                }
+            }
+        }).thenAccept( (String dbResult) -> {
+            resultFuture.complete(Collections.singleton(new Tuple2<>(key, dbResult)));
+        });
+    }
+}
+
+//原始数据
+DataStream<String> stream = ...;
+
+//应用异步 I/O 转换
+DataStream<Tuple2<String, String>> resultStream =
+    AsyncDataStream.unorderedWait(stream, new AsyncDatabaseRequest(), 1000, TimeUnit.MILLISECONDS, 100);
+```
+
 
 注意：ResultFuture 在第一次调用 resultFuture.complete 时就已经完成了，后面所有
 resultFuture.complete 的调用都会被忽略。
@@ -134,22 +138,23 @@ I/O 实现该需求。
 
 采集上来的监控数据的类型是 MetricEvent，假设采集上来的数据如下：
 
-    
-    
-    {
-        "name": "load",
-        "timestamp": 1571214922826,
-        "fields": {
-            "load5": 42,
-            "load1": 77,
-            "load15": 23
-        },
-        "tags": {
-            "cluster_name": "zhisheng",
-            "host_ip": "127.0.0.1"
-        }
+
+​    
+```java
+{
+    "name": "load",
+    "timestamp": 1571214922826,
+    "fields": {
+        "load5": 42,
+        "load1": 77,
+        "load15": 23
+    },
+    "tags": {
+        "cluster_name": "zhisheng",
+        "host_ip": "127.0.0.1"
     }
-    
+}
+```
 
 上面表示的是某个集群某台机器在某个时间点的负载情况，load1 表示 1 分钟内的平均负载，load5 表示 5 分钟内的平均负载，load15 表示 15
 分钟内的平均负载。当 Flink 中处理到这么一条数据后，需要去找数据库中的告警规则是否有配置 load
@@ -160,23 +165,25 @@ I/O 实现该需求。
 
 因为上面分析的内容毕竟简单，所以告警规则的表这里设计的话也是从简为好，生产环境中会有更多其他的字段来表示其他要处理的内容，在这里笔者不做过多的讲解。建表语句如下：
 
-    
-    
-    CREATE TABLE `alert_rule` (
-      `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-      `name` varchar(10) COLLATE utf8_bin DEFAULT NULL,
-      `measurement` varchar(30) COLLATE utf8_bin DEFAULT NULL,
-      `thresholds` varchar(10) COLLATE utf8_bin DEFAULT NULL,
-      PRIMARY KEY (`id`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-    
+
+​    
+```java
+CREATE TABLE `alert_rule` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(10) COLLATE utf8_bin DEFAULT NULL,
+  `measurement` varchar(30) COLLATE utf8_bin DEFAULT NULL,
+  `thresholds` varchar(10) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+```
+
 
 这里插入一条数据如下：
 
-    
-    
+
+​    
     INSERT INTO `alert_rule` (`id`, `name`, `measurement`, `thresholds`,) VALUES(1, 'load', 'load5', '20');
-    
+
 
 插入的这条规则表示：机器 5 分钟的平均负载超过 20 则告警。
 
@@ -184,71 +191,75 @@ I/O 实现该需求。
 
 告警规则对应的实体类如下：
 
-    
-    
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public class AlertRule {
-        private Integer id;
-        private String name;
-        private String measurement;
-        private String thresholds;
-    }
-    
+
+​    
+```java
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class AlertRule {
+    private Integer id;
+    private String name;
+    private String measurement;
+    private String thresholds;
+}
+```
+
 
 ### 如何使用 Async I/O 读取告警规则数据
 
 先读取到监控数据，然后通过 AsyncDataStream.unorderedWait 处理监控数据，设置超时时间是 10 秒，容量为 100。
 
-    
-    
+
+​    
     AsyncDataStream.unorderedWait(machineData, new AlertRuleAsyncIOFunction(), 10000, TimeUnit.MICROSECONDS, 100)
-    
+
 
 异步查询告警规则的代码如下：
 
-    
-    
-    public class AlertRuleAsyncIOFunction extends RichAsyncFunction<MetricEvent, MetricEvent> {
-    
-        PreparedStatement ps;
-        private Connection connection;
-    
-        @Override
-        public void open(Configuration parameters) throws Exception {
-            connection = getConnection();
-            String sql = "select * from alert_rule where name = ?;";
-            if (connection != null) {
-                ps = this.connection.prepareStatement(sql);
-            }
-        }
-    
-        @Override
-        public void timeout(MetricEvent metricEvent, ResultFuture<MetricEvent> resultFuture) throws Exception {
-            log.info("=================timeout======{} ", metricEvent);
-        }
-    
-        @Override
-        public void asyncInvoke(MetricEvent metricEvent, ResultFuture<MetricEvent> resultFuture) throws Exception {
-            ps.setString(1, metricEvent.getName());
-            ResultSet resultSet = ps.executeQuery();
-            Map<String, Object> fields = metricEvent.getFields();
-            if (resultSet.next()) {
-                String thresholds = resultSet.getString("thresholds");
-                String measurement = resultSet.getString("measurement");
-                if (fields.get(measurement) != null && (double) fields.get(measurement) > Double.valueOf(thresholds)) {
-                    resultFuture.complete(Collections.singletonList(metricEvent));
-                }
-            }
-        }
-    
-        private static Connection getConnection() {
-            //获取数据库连接
+
+​    
+```java
+public class AlertRuleAsyncIOFunction extends RichAsyncFunction<MetricEvent, MetricEvent> {
+
+    PreparedStatement ps;
+    private Connection connection;
+
+    @Override
+    public void open(Configuration parameters) throws Exception {
+        connection = getConnection();
+        String sql = "select * from alert_rule where name = ?;";
+        if (connection != null) {
+            ps = this.connection.prepareStatement(sql);
         }
     }
-    
+
+    @Override
+    public void timeout(MetricEvent metricEvent, ResultFuture<MetricEvent> resultFuture) throws Exception {
+        log.info("=================timeout======{} ", metricEvent);
+    }
+
+    @Override
+    public void asyncInvoke(MetricEvent metricEvent, ResultFuture<MetricEvent> resultFuture) throws Exception {
+        ps.setString(1, metricEvent.getName());
+        ResultSet resultSet = ps.executeQuery();
+        Map<String, Object> fields = metricEvent.getFields();
+        if (resultSet.next()) {
+            String thresholds = resultSet.getString("thresholds");
+            String measurement = resultSet.getString("measurement");
+            if (fields.get(measurement) != null && (double) fields.get(measurement) > Double.valueOf(thresholds)) {
+                resultFuture.complete(Collections.singletonList(metricEvent));
+            }
+        }
+    }
+
+    private static Connection getConnection() {
+        //获取数据库连接
+    }
+}
+```
+
 
 在 asyncInvoke 方法中异步的处理数据，注意最后需要通过 ResultFuture.complete 将结果设置到
 ResultFuture，如果异常则通过 ResultFuture.completeExceptionally(Throwable) 来传递到

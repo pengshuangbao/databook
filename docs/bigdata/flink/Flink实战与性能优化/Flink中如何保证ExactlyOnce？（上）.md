@@ -1,5 +1,7 @@
 # Flink中如何保证ExactlyOnce？（上）
 
+[toc]
+
 
 
 在分布式场景下，我们的应用程序随时可能出现任何形式的故障，例如：机器硬件故障、程序 OOM 等。当应用程序出现故障时，Flink 为了保证数据消费的
@@ -514,16 +516,16 @@ TwoPhaseCommitSinkFunction定义了如下 5 个抽象方法：
 
 
 ​    
-    // 处理每一条数据
-    protected abstract void invoke(TXN transaction, IN value, Context context) throws Exception;
-    // 开始一个事务，返回事务信息的句柄
-    protected abstract TXN beginTransaction() throws Exception;
-    // 预提交（即提交请求）阶段的逻辑
-    protected abstract void preCommit(TXN transaction) throws Exception;
-    // 正式提交阶段的逻辑
-    protected abstract void commit(TXN transaction);
-    // 取消事务，Rollback 相关的逻辑
-    protected abstract void abort(TXN transaction);
+​    // 处理每一条数据
+​    protected abstract void invoke(TXN transaction, IN value, Context context) throws Exception;
+​    // 开始一个事务，返回事务信息的句柄
+​    protected abstract TXN beginTransaction() throws Exception;
+​    // 预提交（即提交请求）阶段的逻辑
+​    protected abstract void preCommit(TXN transaction) throws Exception;
+​    // 正式提交阶段的逻辑
+​    protected abstract void commit(TXN transaction);
+​    // 取消事务，Rollback 相关的逻辑
+​    protected abstract void abort(TXN transaction);
 
 TwoPhaseCommitSinkFunction 里这些方法什么时候会被执行呢？如下图所示，在状态初始化的 initializeState
 方法内或者每次 Checkpoint 的 snapshotState 方法内都会调用 beginTransaction

@@ -41,63 +41,67 @@ Flink-ML 的基础模块，相信社区在后面的稳定版本一定会带来�
 虽然在 Flink 1.9 中已经移除了 Flink-ML 模块，但是在之前的版本还是支持的，如果你们公司使用的是低于 1.9
 的版本，那么还是可以使用的，在使用之前引入依赖（假设使用的是 Flink 1.8 版本）：
 
-    
-    
+
+​    
     <dependency>
       <groupId>org.apache.flink</groupId>
       <artifactId>flink-ml_2.11</artifactId>
       <version>1.8.0</version>
     </dependency>
-    
+
 
 另外如果是要运行的话还是要将 opt 目录下的 flink-ml_2.11-1.8.0.jar 移到 lib 目录下。下面演示下如何训练多元线性回归模型：
 
-    
-    
-    //带标签的特征向量
-    val trainingData: DataSet[LabeledVector] = ...
-    val testingData: DataSet[Vector] = ...
-    
-    val dataSet: DataSet[LabeledVector] = ...
-    //使用 Splitter 将数据集拆分成训练数据和测试数据
-    val trainTestData: DataSet[TrainTestDataSet] = Splitter.trainTestSplit(dataSet)
-    val trainingData: DataSet[LabeledVector] = trainTestData.training
-    val testingData: DataSet[Vector] = trainTestData.testing.map(lv => lv.vector)
-    
-    val mlr = MultipleLinearRegression()
-      .setStepsize(1.0)
-      .setIterations(100)
-      .setConvergenceThreshold(0.001)
-    
-    mlr.fit(trainingData)
-    
-    //已经形成的模型可以用来预测数据了
-    val predictions: DataSet[LabeledVector] = mlr.predict(testingData)
-    
+
+​    
+```java
+//带标签的特征向量
+val trainingData: DataSet[LabeledVector] = ...
+val testingData: DataSet[Vector] = ...
+
+val dataSet: DataSet[LabeledVector] = ...
+//使用 Splitter 将数据集拆分成训练数据和测试数据
+val trainTestData: DataSet[TrainTestDataSet] = Splitter.trainTestSplit(dataSet)
+val trainingData: DataSet[LabeledVector] = trainTestData.training
+val testingData: DataSet[Vector] = trainTestData.testing.map(lv => lv.vector)
+
+val mlr = MultipleLinearRegression()
+  .setStepsize(1.0)
+  .setIterations(100)
+  .setConvergenceThreshold(0.001)
+
+mlr.fit(trainingData)
+
+//已经形成的模型可以用来预测数据了
+val predictions: DataSet[LabeledVector] = mlr.predict(testingData)
+```
+
 
 ### Flink-ML Pipeline 使用
 
 之前前面也讲解了 Pipeline 在 Flink-ML 的含义，那么下面演示一下如何通过 Flink-ML 构建一个 Pipeline 作业：
 
-    
-    
-    val trainingData: DataSet[LabeledVector] = ...
-    val testingData: DataSet[Vector] = ...
-    
-    val scaler = StandardScaler()
-    val polyFeatures = PolynomialFeatures().setDegree(3)
-    val mlr = MultipleLinearRegression()
-    
-    // Construct pipeline of standard scaler, polynomial features and multiple linear regression
-    //构建标准定标器、多项式特征和多元线性回归的流水线
-    val pipeline = scaler.chainTransformer(polyFeatures).chainPredictor(mlr)
-    
-    // Train pipeline
-    pipeline.fit(trainingData)
-    
-    // Calculate predictions
-    val predictions: DataSet[LabeledVector] = pipeline.predict(testingData)
-    
+
+​    
+```java
+val trainingData: DataSet[LabeledVector] = ...
+val testingData: DataSet[Vector] = ...
+
+val scaler = StandardScaler()
+val polyFeatures = PolynomialFeatures().setDegree(3)
+val mlr = MultipleLinearRegression()
+
+// Construct pipeline of standard scaler, polynomial features and multiple linear regression
+//构建标准定标器、多项式特征和多元线性回归的流水线
+val pipeline = scaler.chainTransformer(polyFeatures).chainPredictor(mlr)
+
+// Train pipeline
+pipeline.fit(trainingData)
+
+// Calculate predictions
+val predictions: DataSet[LabeledVector] = pipeline.predict(testingData)
+```
+
 
 ### 小结与反思
 

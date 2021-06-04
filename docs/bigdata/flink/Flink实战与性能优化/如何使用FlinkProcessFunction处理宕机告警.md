@@ -1,5 +1,7 @@
 # 如何使用FlinkProcessFunction处理宕机告警
 
+[toc]
+
 ### ProcessFunction 介绍
 
 在 1.2.5 节中讲了 Flink 的 API 分层，其中可以看见 Flink 的底层 API 就是
@@ -14,31 +16,35 @@ RuntimeContext 访问 KeyedState。
 key，允许定时器操作 KeyedState。如果要访问 KeyedState 和定时器，那必须在 KeyedStream 上使用
 KeyedProcessFunction，比如在 keyBy 算子之后使用：
 
-    
-    
-    dataStream.keyBy(...).process(new KeyedProcessFunction<>(){
-    
-    })
-    
+
+​    
+```java
+dataStream.keyBy(...).process(new KeyedProcessFunction<>(){
+
+})
+```
+
 
 KeyedProcessFunction 是 ProcessFunction 函数的一个扩展，它可以在 onTimer 和 processElement
 方法中获取到分区的 Key 值，这对于数据传递是很有帮助的，因为经常有这样的需求，经过 keyBy 算子之后可能还需要这个 key
 字段，那么在这里直接构建成一个新的对象（新增一个 key 字段），然后下游的算子直接使用这个新对象中的 key 就好了，而不在需要重复的拼一个唯一的
 key。
 
-    
-    
-    public void processElement(String value, Context ctx, Collector<String> out) throws Exception {
-        System.out.println(ctx.getCurrentKey());
-        out.collect(value);
-    }
-    
-    @Override
-    public void onTimer(long timestamp, OnTimerContext ctx, Collector<String> out) throws Exception {
-        System.out.println(ctx.getCurrentKey());
-        super.onTimer(timestamp, ctx, out);
-    }
-    
+
+​    
+```java
+public void processElement(String value, Context ctx, Collector<String> out) throws Exception {
+    System.out.println(ctx.getCurrentKey());
+    out.collect(value);
+}
+
+@Override
+public void onTimer(long timestamp, OnTimerContext ctx, Collector<String> out) throws Exception {
+    System.out.println(ctx.getCurrentKey());
+    super.onTimer(timestamp, ctx, out);
+}
+```
+
 
 ### CoProcessFunction 介绍
 
@@ -81,32 +87,38 @@ Checkpoint 时会写入快照中，所以如果有大量的定时器，则无非
 秒的定时器（基于事件时间或处理时间），可以将目标时间向下舍入为整秒数，则定时器最多提前 1
 秒触发，但不会迟于我们的要求，精确到毫秒。因此，每个键每秒最多有一个定时器。
 
-    
-    
-    long coalescedTime = ((ctx.timestamp() + timeout) / 1000) * 1000;
-    ctx.timerService().registerProcessingTimeTimer(coalescedTime);
-    
+
+​    
+```java
+long coalescedTime = ((ctx.timestamp() + timeout) / 1000) * 1000;
+ctx.timerService().registerProcessingTimeTimer(coalescedTime);
+```
+
 
 由于事件时间计时器仅在 Watermark 到达时才触发，因此可以将当前 Watermark 与下一个 Watermark 的定时器一起调度和合并：
 
-    
-    
-    long coalescedTime = ctx.timerService().currentWatermark() + 1;
-    ctx.timerService().registerEventTimeTimer(coalescedTime);
-    
+
+​    
+```java
+long coalescedTime = ctx.timerService().currentWatermark() + 1;
+ctx.timerService().registerEventTimeTimer(coalescedTime);
+```
+
 
 定时器也可以类似下面这样移除：
 
-    
-    
-    //删除处理时间定时器
-    long timestampOfTimerToStop = ...
-    ctx.timerService().deleteProcessingTimeTimer(timestampOfTimerToStop);
-    
-    //删除事件时间定时器
-    long timestampOfTimerToStop = ...
-    ctx.timerService().deleteEventTimeTimer(timestampOfTimerToStop);
-    
+
+​    
+```java
+//删除处理时间定时器
+long timestampOfTimerToStop = ...
+ctx.timerService().deleteProcessingTimeTimer(timestampOfTimerToStop);
+
+//删除事件时间定时器
+long timestampOfTimerToStop = ...
+ctx.timerService().deleteEventTimeTimer(timestampOfTimerToStop);
+```
+
 
 如果没有该时间戳的定时器，则删除定时器无效。
 
@@ -130,284 +142,267 @@ Agent
 
 机器监控数据有很多的指标，这里列几种比较常见的比如 Mem、CPU、Load、Swap 等，那么这几种数据采集上来的结构都是 MetricEvent 类型。
 
-    
-    
-    public class MetricEvent {
-    
-        //指标名
-        private String name;
-    
-        //数据时间
-        private Long timestamp;
-    
-        //指标具体字段
-        private Map<String, Object> fields;
-    
-        //指标的标识
-        private Map<String, String> tags;
-    }
-    
+
+​    
+```java
+public class MetricEvent {
+
+    //指标名
+    private String name;
+
+    //数据时间
+    private Long timestamp;
+
+    //指标具体字段
+    private Map<String, Object> fields;
+
+    //指标的标识
+    private Map<String, String> tags;
+}
+```
+
 
 就拿 CPU 来举个例子，它发上来的数据是下面这种的：
 
-    
-    
-    {
-        "name": "cpu",
-        "timestamp": 1571108814142,
-        "fields": {
-            "usedPercent": 93.896484375,
-            "max": 2048,
-            "used": 1923
-        },
-        "tags": {
-            "cluster_name": "zhisheng",
-            "host_ip": "121.12.17.11"
-        }
+
+​    
+```json
+{
+    "name": "cpu",
+    "timestamp": 1571108814142,
+    "fields": {
+        "usedPercent": 93.896484375,
+        "max": 2048,
+        "used": 1923
+    },
+    "tags": {
+        "cluster_name": "zhisheng",
+        "host_ip": "121.12.17.11"
     }
-    
+}
+```
+
 
 这里笔者写了个模拟 Mem、CPU、Load、Swap 监控数据的工具类：
 
-    
-    
-    public class BuildMachineMetricDataUtil {
-        public static final String BROKER_LIST = "localhost:9092";
-        public static final String METRICS_TOPIC = "zhisheng_metrics";
-        public static Random random = new Random();
-    
-        public static List<String> hostIps = Arrays.asList("121.12.17.10", "121.12.17.11", "121.12.17.12", "121.12.17.13");
-    
-        public static void writeDataToKafka() throws InterruptedException {
-            Properties props = new Properties();
-            props.put("bootstrap.servers", BROKER_LIST);
-            props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-            props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-            KafkaProducer producer = new KafkaProducer<String, String>(props);
-    
-            while (true) {
-                long timestamp = System.currentTimeMillis();
-                for (int i = 0; i < hostIps.size(); i++) {
-                    MetricEvent cpuData = buildCpuData(hostIps.get(i), timestamp);
-                    MetricEvent loadData = buildLoadData(hostIps.get(i), timestamp);
-                    MetricEvent memData = buildMemData(hostIps.get(i), timestamp);
-                    MetricEvent swapData = buildSwapData(hostIps.get(i), timestamp);
-                    ProducerRecord cpuRecord = new ProducerRecord<String, String>(METRICS_TOPIC, null, null, GsonUtil.toJson(cpuData));
-                    ProducerRecord loadRecord = new ProducerRecord<String, String>(METRICS_TOPIC, null, null, GsonUtil.toJson(loadData));
-                    ProducerRecord memRecord = new ProducerRecord<String, String>(METRICS_TOPIC, null, null, GsonUtil.toJson(memData));
-                    ProducerRecord swapRecord = new ProducerRecord<String, String>(METRICS_TOPIC, null, null, GsonUtil.toJson(swapData));
-                    producer.send(cpuRecord);
-                    producer.send(loadRecord);
-                    producer.send(memRecord);
-                    producer.send(swapRecord);
-                }
-                producer.flush();
-                Thread.sleep(10000);
+
+​    
+```java
+public class BuildMachineMetricDataUtil {
+    public static final String BROKER_LIST = "localhost:9092";
+    public static final String METRICS_TOPIC = "zhisheng_metrics";
+    public static Random random = new Random();
+
+    public static List<String> hostIps = Arrays.asList("121.12.17.10", "121.12.17.11", "121.12.17.12", "121.12.17.13");
+
+    public static void writeDataToKafka() throws InterruptedException {
+        Properties props = new Properties();
+        props.put("bootstrap.servers", BROKER_LIST);
+        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        KafkaProducer producer = new KafkaProducer<String, String>(props);
+
+        while (true) {
+            long timestamp = System.currentTimeMillis();
+            for (int i = 0; i < hostIps.size(); i++) {
+                MetricEvent cpuData = buildCpuData(hostIps.get(i), timestamp);
+                MetricEvent loadData = buildLoadData(hostIps.get(i), timestamp);
+                MetricEvent memData = buildMemData(hostIps.get(i), timestamp);
+                MetricEvent swapData = buildSwapData(hostIps.get(i), timestamp);
+                ProducerRecord cpuRecord = new ProducerRecord<String, String>(METRICS_TOPIC, null, null, GsonUtil.toJson(cpuData));
+                ProducerRecord loadRecord = new ProducerRecord<String, String>(METRICS_TOPIC, null, null, GsonUtil.toJson(loadData));
+                ProducerRecord memRecord = new ProducerRecord<String, String>(METRICS_TOPIC, null, null, GsonUtil.toJson(memData));
+                ProducerRecord swapRecord = new ProducerRecord<String, String>(METRICS_TOPIC, null, null, GsonUtil.toJson(swapData));
+                producer.send(cpuRecord);
+                producer.send(loadRecord);
+                producer.send(memRecord);
+                producer.send(swapRecord);
             }
-        }
-    
-        public static void main(String[] args) throws InterruptedException {
-            writeDataToKafka();
-        }
-    
-        public static MetricEvent buildCpuData(String hostIp, Long timestamp) {
-            MetricEvent metricEvent = new MetricEvent();
-            Map<String, String> tags = new HashMap<>();
-            Map<String, Object> fields = new HashMap<>();
-            int used = random.nextInt(2048);
-            int max = 2048;
-            metricEvent.setName("cpu");
-            metricEvent.setTimestamp(timestamp);
-            tags.put("cluster_name", "zhisheng");
-            tags.put("host_ip", hostIp);
-            fields.put("usedPercent", (double) used / max * 100);
-            fields.put("used", used);
-            fields.put("max", max);
-            metricEvent.setFields(fields);
-            metricEvent.setTags(tags);
-            return metricEvent;
-        }
-    
-        public static MetricEvent buildLoadData(String hostIp, Long timestamp) {
-            //构建 load 数据，和构建 CPU 数据类似
-        }
-    
-        public static MetricEvent buildSwapData(String hostIp, Long timestamp) {
-            //构建swap数据，和构建 CPU 数据类似
-        }
-    
-        public static MetricEvent buildMemData(String hostIp, Long timestamp) {
-            //构建内存的数据，和构建 CPU 数据类似
+            producer.flush();
+            Thread.sleep(10000);
         }
     }
-    
+
+    public static void main(String[] args) throws InterruptedException {
+        writeDataToKafka();
+    }
+
+    public static MetricEvent buildCpuData(String hostIp, Long timestamp) {
+        MetricEvent metricEvent = new MetricEvent();
+        Map<String, String> tags = new HashMap<>();
+        Map<String, Object> fields = new HashMap<>();
+        int used = random.nextInt(2048);
+        int max = 2048;
+        metricEvent.setName("cpu");
+        metricEvent.setTimestamp(timestamp);
+        tags.put("cluster_name", "zhisheng");
+        tags.put("host_ip", hostIp);
+        fields.put("usedPercent", (double) used / max * 100);
+        fields.put("used", used);
+        fields.put("max", max);
+        metricEvent.setFields(fields);
+        metricEvent.setTags(tags);
+        return metricEvent;
+    }
+
+    public static MetricEvent buildLoadData(String hostIp, Long timestamp) {
+        //构建 load 数据，和构建 CPU 数据类似
+    }
+
+    public static MetricEvent buildSwapData(String hostIp, Long timestamp) {
+        //构建swap数据，和构建 CPU 数据类似
+    }
+
+    public static MetricEvent buildMemData(String hostIp, Long timestamp) {
+        //构建内存的数据，和构建 CPU 数据类似
+    }
+}
+```
+
 
 然后 Flink 应用程序实时的去消费 Kafka 中的机器监控数据，先判断数据能够正常消费到。
 
-    
-    
-    final ParameterTool parameterTool = ExecutionEnvUtil.createParameterTool(args);
-    StreamExecutionEnvironment env = ExecutionEnvUtil.prepare(parameterTool);
-    
-    Properties properties = KafkaConfigUtil.buildKafkaProps(parameterTool);
-    FlinkKafkaConsumer011<MetricEvent> consumer = new FlinkKafkaConsumer011<>(
-            parameterTool.get("metrics.topic"),
-            new MetricSchema(),
-            properties);
-    env.addSource(consumer)
-            .assignTimestampsAndWatermarks(new MetricWatermark())
-            .print();
-    
+
+​    
+```java
+final ParameterTool parameterTool = ExecutionEnvUtil.createParameterTool(args);
+StreamExecutionEnvironment env = ExecutionEnvUtil.prepare(parameterTool);
+
+Properties properties = KafkaConfigUtil.buildKafkaProps(parameterTool);
+FlinkKafkaConsumer011<MetricEvent> consumer = new FlinkKafkaConsumer011<>(
+        parameterTool.get("metrics.topic"),
+        new MetricSchema(),
+        properties);
+env.addSource(consumer)
+        .assignTimestampsAndWatermarks(new MetricWatermark())
+        .print();
+```
+
 
 再确定能够消费到机器监控数据之后，接下来需要对数据进行构造成 OutageMetricEvent 对象：
 
-    
-    
-    public class OutageMetricEvent {
-        //机器集群名
-        private String clusterName;
-        //机器 host ip
-        private String hostIp;
-        //事件时间
-        private Long timestamp;
-        //机器告警是否恢复
-        private Boolean recover;
-        //机器告警恢复时间
-        private Long recoverTime;
-        //系统时间
-        private Long systemTimestamp;
-        //机器 CPU 使用率
-        private Double cpuUsePercent;
-        //机器内存使用率
-        private Double memUsedPercent;
-        //机器 SWAP 使用率
-        private Double swapUsedPercent;
-        //机器 load5
-        private Double load5;
-        //告警数量
-        private int counter = 0;
-    }
-    
+
+​    
+```java
+public class OutageMetricEvent {
+    //机器集群名
+    private String clusterName;
+    //机器 host ip
+    private String hostIp;
+    //事件时间
+    private Long timestamp;
+    //机器告警是否恢复
+    private Boolean recover;
+    //机器告警恢复时间
+    private Long recoverTime;
+    //系统时间
+    private Long systemTimestamp;
+    //机器 CPU 使用率
+    private Double cpuUsePercent;
+    //机器内存使用率
+    private Double memUsedPercent;
+    //机器 SWAP 使用率
+    private Double swapUsedPercent;
+    //机器 load5
+    private Double load5;
+    //告警数量
+    private int counter = 0;
+}
+```
+
 
 通过 FlatMap 算子转换：
 
-    
-    
-    new FlatMapFunction<MetricEvent, OutageMetricEvent>() {
-        @Override
-        public void flatMap(MetricEvent metricEvent, Collector<OutageMetricEvent> collector) throws Exception {
-            Map<String, String> tags = metricEvent.getTags();
-            if (tags.containsKey(CLUSTER_NAME) && tags.containsKey(HOST_IP)) {
-                OutageMetricEvent outageMetricEvent = OutageMetricEvent.buildFromEvent(metricEvent);
-                if (outageMetricEvent != null) {
-                    collector.collect(outageMetricEvent);
-                }
+
+​    
+```java
+new FlatMapFunction<MetricEvent, OutageMetricEvent>() {
+    @Override
+    public void flatMap(MetricEvent metricEvent, Collector<OutageMetricEvent> collector) throws Exception {
+        Map<String, String> tags = metricEvent.getTags();
+        if (tags.containsKey(CLUSTER_NAME) && tags.containsKey(HOST_IP)) {
+            OutageMetricEvent outageMetricEvent = OutageMetricEvent.buildFromEvent(metricEvent);
+            if (outageMetricEvent != null) {
+                collector.collect(outageMetricEvent);
             }
         }
     }
-    
+}
+```
+
 
 将数据转换后，需要将监控数据按照机器的 IP 进行 KeyBy，因为每台机器可能都会出现错误，所以都要将不同机器的状态都保存着，然后使用 process
 算子，在该算子中，使用 ValueState 保存 OutageMetricEvent 和机器告警状态信息，另外还有一个 delay
 字段定义的是持续多久没有收到监控数据的时间，alertCountLimit 表示的是告警的次数，如果超多一定的告警次数则会静默。
 
-    
-    
-    public class OutageProcessFunction extends KeyedProcessFunction<String, OutageMetricEvent, OutageMetricEvent> {
-    
-        private ValueState<OutageMetricEvent> outageMetricState;
-        private ValueState<Boolean> recover;
-    
-        private int delay;
-        private int alertCountLimit;
-    
-        public OutageProcessFunction(int delay, int alertCountLimit) {
-            this.delay = delay;
-            this.alertCountLimit = alertCountLimit;
-        }
-    
-        @Override
-        public void open(Configuration parameters) throws Exception {
-            TypeInformation<OutageMetricEvent> outageInfo = TypeInformation.of(new TypeHint<OutageMetricEvent>() {
-            });
-            TypeInformation<Boolean> recoverInfo = TypeInformation.of(new TypeHint<Boolean>() {
-            });
-            outageMetricState = getRuntimeContext().getState(new ValueStateDescriptor<>("outage_zhisheng", outageInfo));
-            recover = getRuntimeContext().getState(new ValueStateDescriptor<>("recover_zhisheng", recoverInfo));
-        }
-    
-        @Override
-        public void processElement(OutageMetricEvent outageMetricEvent, Context ctx, Collector<OutageMetricEvent> collector) throws Exception {
-            OutageMetricEvent current = outageMetricState.value();
-            if (current == null) {
-                current = new OutageMetricEvent(outageMetricEvent.getClusterName(), outageMetricEvent.getHostIp(),
-                        outageMetricEvent.getTimestamp(), outageMetricEvent.getRecover(), System.currentTimeMillis());
-            } else {
-                if (outageMetricEvent.getLoad5() != null) {
-                    current.setLoad5(outageMetricEvent.getLoad5());
-                }
-                if (outageMetricEvent.getCpuUsePercent() != null) {
-                    current.setCpuUsePercent(outageMetricEvent.getCpuUsePercent());
-                }
-                if (outageMetricEvent.getMemUsedPercent() != null) {
-                    current.setMemUsedPercent(outageMetricEvent.getMemUsedPercent());
-                }
-                if (outageMetricEvent.getSwapUsedPercent() != null) {
-                    current.setSwapUsedPercent(outageMetricEvent.getSwapUsedPercent());
-                }
-                current.setSystemTimestamp(System.currentTimeMillis());
-            }
-    
-            if (recover.value() != null && !recover.value() && outageMetricEvent.getTimestamp() > current.getTimestamp()) {
-                OutageMetricEvent recoverEvent = new OutageMetricEvent(outageMetricEvent.getClusterName(), outageMetricEvent.getHostIp(),
-                        current.getTimestamp(), true, System.currentTimeMillis());
-                recoverEvent.setRecoverTime(ctx.timestamp());
-                log.info("触发宕机恢复事件:{}", recoverEvent);
-                collector.collect(recoverEvent);
-                current.setCounter(0);
-                outageMetricState.update(current);
-                recover.update(true);
-            }
-    
-            current.setTimestamp(outageMetricEvent.getTimestamp());
-            outageMetricState.update(current);
-            ctx.timerService().registerEventTimeTimer(current.getSystemTimestamp() + delay);
-        }
-    
-        @Override
-        public void onTimer(long timestamp, OnTimerContext ctx, Collector<OutageMetricEvent> out) throws Exception {
-            OutageMetricEvent result = outageMetricState.value();
-    
-            if (result != null && timestamp >= result.getSystemTimestamp() + delay && System.currentTimeMillis() - result.getTimestamp() >= delay) {
-                if (result.getCounter() > alertCountLimit) {
-                    log.info("宕机告警次数大于:{} :{}", alertCountLimit, result);
-                    return;
-                }
-                log.info("触发宕机告警事件:timestamp = {}, result = {}", System.currentTimeMillis(), result);
-                result.setRecover(false);
-                out.collect(result);
-                ctx.timerService().registerEventTimeTimer(timestamp + delay);
-                result.setCounter(result.getCounter() + 1);
-                result.setSystemTimestamp(timestamp);
-                outageMetricState.update(result);
-                recover.update(false);
-            }
-        }
+
+​    
+```java
+public class OutageProcessFunction extends KeyedProcessFunction<String, OutageMetricEvent, OutageMetricEvent> {
+
+    private ValueState<OutageMetricEvent> outageMetricState;
+    private ValueState<Boolean> recover;
+
+    private int delay;
+    private int alertCountLimit;
+
+    public OutageProcessFunction(int delay, int alertCountLimit) {
+        this.delay = delay;
+        this.alertCountLimit = alertCountLimit;
     }
-    
 
-在 processElement 方法中不断的处理数据，在处理的时候会从状态中获取看之前状态是否存在数据，在该方法内部最后通过
-`ctx.timerService().registerEventTimeTimer(current.getSystemTimestamp() +
-delay);` 去注册一个事件时间的定时器，时间戳是当前的系统时间加上 delay 的时间。
+    @Override
+    public void open(Configuration parameters) throws Exception {
+        TypeInformation<OutageMetricEvent> outageInfo = TypeInformation.of(new TypeHint<OutageMetricEvent>() {
+        });
+        TypeInformation<Boolean> recoverInfo = TypeInformation.of(new TypeHint<Boolean>() {
+        });
+        outageMetricState = getRuntimeContext().getState(new ValueStateDescriptor<>("outage_zhisheng", outageInfo));
+        recover = getRuntimeContext().getState(new ValueStateDescriptor<>("recover_zhisheng", recoverInfo));
+    }
 
-在 onTimer 方法中就是具体的定时器，在定时器中获取到状态值，然后将状态值中的时间与 delay
-的时间差是否满足，如果满足则表示一直没有数据过来，接着对比目前告警的数量与定义的限制数量，如果大于则不告警了，如果小于则表示触发了宕机告警并且打印相关的日志，然后更新状态中的值。
+    @Override
+    public void processElement(OutageMetricEvent outageMetricEvent, Context ctx, Collector<OutageMetricEvent> collector) throws Exception {
+        OutageMetricEvent current = outageMetricState.value();
+        if (current == null) {
+            current = new OutageMetricEvent(outageMetricEvent.getClusterName(), outageMetricEvent.getHostIp(),
+                    outageMetricEvent.getTimestamp(), outageMetricEvent.getRecover(), System.currentTimeMillis());
+        } else {
+            if (outageMetricEvent.getLoad5() != null) {
+                current.setLoad5(outageMetricEvent.getLoad5());
+            }
+            if (outageMetricEvent.getCpuUsePercent() != null) {
+                current.setCpuUsePercent(outageMetricEvent.getCpuUsePercent());
+            }
+            if (outageMetricEvent.getMemUsedPercent() != null) {
+                current.setMemUsedPercent(outageMetricEvent.getMemUsedPercent());
+            }
+            if (outageMetricEvent.getSwapUsedPercent() != null) {
+                current.setSwapUsedPercent(outageMetricEvent.getSwapUsedPercent());
+            }
+            current.setSystemTimestamp(System.currentTimeMillis());
+        }
 
-    
-    
+        if (recover.value() != null && !recover.value() && outageMetricEvent.getTimestamp() > current.getTimestamp()) {
+            OutageMetricEvent recoverEvent = new OutageMetricEvent(outageMetricEvent.getClusterName(), outageMetricEvent.getHostIp(),
+                    current.getTimestamp(), true, System.currentTimeMillis());
+            recoverEvent.setRecoverTime(ctx.timestamp());
+            log.info("触发宕机恢复事件:{}", recoverEvent);
+            collector.collect(recoverEvent);
+            current.setCounter(0);
+            outageMetricState.update(current);
+            recover.update(true);
+        }
+
+        current.setTimestamp(outageMetricEvent.getTimestamp());
+        outageMetricState.update(current);
+        ctx.timerService().registerEventTimeTimer(current.getSystemTimestamp() + delay);
+    }
+
+    @Override
     public void onTimer(long timestamp, OnTimerContext ctx, Collector<OutageMetricEvent> out) throws Exception {
         OutageMetricEvent result = outageMetricState.value();
-    
+
         if (result != null && timestamp >= result.getSystemTimestamp() + delay && System.currentTimeMillis() - result.getTimestamp() >= delay) {
             if (result.getCounter() > alertCountLimit) {
                 log.info("宕机告警次数大于:{} :{}", alertCountLimit, result);
@@ -423,7 +418,40 @@ delay);` 去注册一个事件时间的定时器，时间戳是当前的系统�
             recover.update(false);
         }
     }
-    
+}
+```
+
+
+在 processElement 方法中不断的处理数据，在处理的时候会从状态中获取看之前状态是否存在数据，在该方法内部最后通过
+`ctx.timerService().registerEventTimeTimer(current.getSystemTimestamp() +
+delay);` 去注册一个事件时间的定时器，时间戳是当前的系统时间加上 delay 的时间。
+
+在 onTimer 方法中就是具体的定时器，在定时器中获取到状态值，然后将状态值中的时间与 delay
+的时间差是否满足，如果满足则表示一直没有数据过来，接着对比目前告警的数量与定义的限制数量，如果大于则不告警了，如果小于则表示触发了宕机告警并且打印相关的日志，然后更新状态中的值。
+
+
+​    
+```java
+public void onTimer(long timestamp, OnTimerContext ctx, Collector<OutageMetricEvent> out) throws Exception {
+    OutageMetricEvent result = outageMetricState.value();
+
+    if (result != null && timestamp >= result.getSystemTimestamp() + delay && System.currentTimeMillis() - result.getTimestamp() >= delay) {
+        if (result.getCounter() > alertCountLimit) {
+            log.info("宕机告警次数大于:{} :{}", alertCountLimit, result);
+            return;
+        }
+        log.info("触发宕机告警事件:timestamp = {}, result = {}", System.currentTimeMillis(), result);
+        result.setRecover(false);
+        out.collect(result);
+        ctx.timerService().registerEventTimeTimer(timestamp + delay);
+        result.setCounter(result.getCounter() + 1);
+        result.setSystemTimestamp(timestamp);
+        outageMetricState.update(result);
+        recover.update(false);
+    }
+}
+```
+
 
 这样就完成了告警事件的判断了，接下来的算子就可以将告警事件转换成告警消息，然后将告警消息发送到下游去通知。那么就这样可以完成一个机器宕机告警的需求。
 

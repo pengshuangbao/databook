@@ -1,5 +1,7 @@
 # 如何查看FlinkJob执行计划？
 
+[toc]
+
 当一个应用程序需求比较简单的情况下，数据转换涉及的 operator（算子）可能不多，但是当应用的需求变得越来越复杂时，可能在一个 Job
 里面算子的个数会达到几十个、甚至上百个，在如此多算子的情况下，整个应用程序就会变得非常复杂，所以在编写 Flink Job 的时候要是能够随时知道 Job
 的执行计划那就很方便了。
@@ -13,17 +15,19 @@
 既然知道了将执行计划 JSON 绘制出可查看的执行图的工具，那么该如何获取执行计划 JSON 呢？方法很简单，你只需要在你的 Flink Job 的
 Main 方法 里面加上这么一行代码：
 
-    
-    
-    System.out.println(env.getExecutionPlan());
-    
+
+​    
+```java
+System.out.println(env.getExecutionPlan());
+```
+
 
 然后就可以在 IDEA 中右键 Run 一下你的 Flink Job，从打印的日志里面可以查看到执行计划的 JSON 串，例如下面这种：
 
-    
-    
+
+​    
     {"nodes":[{"id":1,"type":"Source: Custom Source","pact":"Data Source","contents":"Source: Custom Source","parallelism":5},{"id":2,"type":"Sink: flink-connectors-kafka","pact":"Data Sink","contents":"Sink: flink-connectors-kafka","parallelism":5,"predecessors":[{"id":1,"ship_strategy":"FORWARD","side":"second"}]}]}
-    
+
 
 ![images](https://static.lovedata.net/zs/2019-10-23-154219.png-wm)
 ### 生成执行计划图
@@ -62,20 +66,22 @@ HASH。但是大家可能会好奇的说：为什么我平时从 Flink UI 上查
 UI 上面的 “执行计划图” 变得更加简洁了，有些算子合在一起了，所以整体看起来就没这么复杂了。其实，这是 Flink 内部做的一个优化。我们先来看下
 env.getExecutionPlan() 这段代码它背后的逻辑：
 
-    
-    
-    /**
-     * Creates the plan with which the system will execute the program, and
-     * returns it as a String using a JSON representation of the execution data
-     * flow graph. Note that this needs to be called, before the plan is
-     * executed.
-     *
-     * @return The execution plan of the program, as a JSON String.
-     */
-    public String getExecutionPlan() {
-        return getStreamGraph().getStreamingPlanAsJSON();
-    }
-    
+
+​    
+```java
+/**
+ * Creates the plan with which the system will execute the program, and
+ * returns it as a String using a JSON representation of the execution data
+ * flow graph. Note that this needs to be called, before the plan is
+ * executed.
+ *
+ * @return The execution plan of the program, as a JSON String.
+ */
+public String getExecutionPlan() {
+    return getStreamGraph().getStreamingPlanAsJSON();
+}
+```
+
 
 代码注释的大概意思是：
 
@@ -90,101 +96,107 @@ StreamGraph？](https://t.zsxq.com/qRFIm6I) 。
 
 2、将 StreamGraph 转换成 JSON
 
-    
-    
-    public String getStreamingPlanAsJSON() {
-        try {
-            return new JSONGenerator(this).getJSON();
-        }
-        catch (Exception e) {
-            throw new RuntimeException("JSON plan creation failed", e);
-        }
+
+​    
+```java
+public String getStreamingPlanAsJSON() {
+    try {
+        return new JSONGenerator(this).getJSON();
     }
-    
+    catch (Exception e) {
+        throw new RuntimeException("JSON plan creation failed", e);
+    }
+}
+```
+
 
 跟进 getStreamingPlanAsJSON 方法看见它构造了一个 JSONGenerator 对象（含参 StreamGraph），然后调用
 getJSON 方法，我们来看下这个方法：
 
-    
-    
-    public String getJSON() {
-        ObjectNode json = mapper.createObjectNode();
-        ArrayNode nodes = mapper.createArrayNode();
-        json.put("nodes", nodes);
-        List<Integer> operatorIDs = new ArrayList<Integer>(streamGraph.getVertexIDs());
-        Collections.sort(operatorIDs, new Comparator<Integer>() {
-            @Override
-            public int compare(Integer idOne, Integer idTwo) {
-                boolean isIdOneSinkId = streamGraph.getSinkIDs().contains(idOne);
-                boolean isIdTwoSinkId = streamGraph.getSinkIDs().contains(idTwo);
-                // put sinks at the back
-                ...
-            }
-        });
-        visit(nodes, operatorIDs, new HashMap<Integer, Integer>());
-        return json.toString();
-    }
-    
+
+​    
+```java
+public String getJSON() {
+    ObjectNode json = mapper.createObjectNode();
+    ArrayNode nodes = mapper.createArrayNode();
+    json.put("nodes", nodes);
+    List<Integer> operatorIDs = new ArrayList<Integer>(streamGraph.getVertexIDs());
+    Collections.sort(operatorIDs, new Comparator<Integer>() {
+        @Override
+        public int compare(Integer idOne, Integer idTwo) {
+            boolean isIdOneSinkId = streamGraph.getSinkIDs().contains(idOne);
+            boolean isIdTwoSinkId = streamGraph.getSinkIDs().contains(idTwo);
+            // put sinks at the back
+            ...
+        }
+    });
+    visit(nodes, operatorIDs, new HashMap<Integer, Integer>());
+    return json.toString();
+}
+```
+
 
 一开始构造外部的对象，然后调用 visit 方法继续构造内部的对象，visit 方法如下：
 
-    
-    
-    private void visit(ArrayNode jsonArray, List<Integer> toVisit,
-            Map<Integer, Integer> edgeRemapings) {
-    
-        Integer vertexID = toVisit.get(0);
-        StreamNode vertex = streamGraph.getStreamNode(vertexID);
-    
-        if (streamGraph.getSourceIDs().contains(vertexID)
-                || Collections.disjoint(vertex.getInEdges(), toVisit)) {
-    
-            ObjectNode node = mapper.createObjectNode();
-            decorateNode(vertexID, node);
-    
-            if (!streamGraph.getSourceIDs().contains(vertexID)) {
-                ArrayNode inputs = mapper.createArrayNode();
-                node.put(PREDECESSORS, inputs);
-    
-                for (StreamEdge inEdge : vertex.getInEdges()) {
-                    int inputID = inEdge.getSourceId();
-    
-                    Integer mappedID = (edgeRemapings.keySet().contains(inputID)) ? edgeRemapings
-                            .get(inputID) : inputID;
-                    decorateEdge(inputs, inEdge, mappedID);
-                }
-            }
-            jsonArray.add(node);
-            toVisit.remove(vertexID);
-        } else {
-            Integer iterationHead = -1;
+
+​    
+```java
+private void visit(ArrayNode jsonArray, List<Integer> toVisit,
+        Map<Integer, Integer> edgeRemapings) {
+
+    Integer vertexID = toVisit.get(0);
+    StreamNode vertex = streamGraph.getStreamNode(vertexID);
+
+    if (streamGraph.getSourceIDs().contains(vertexID)
+            || Collections.disjoint(vertex.getInEdges(), toVisit)) {
+
+        ObjectNode node = mapper.createObjectNode();
+        decorateNode(vertexID, node);
+
+        if (!streamGraph.getSourceIDs().contains(vertexID)) {
+            ArrayNode inputs = mapper.createArrayNode();
+            node.put(PREDECESSORS, inputs);
+
             for (StreamEdge inEdge : vertex.getInEdges()) {
-                int operator = inEdge.getSourceId();
-    
-                if (streamGraph.vertexIDtoLoopTimeout.containsKey(operator)) {
-                    iterationHead = operator;
-                }
+                int inputID = inEdge.getSourceId();
+
+                Integer mappedID = (edgeRemapings.keySet().contains(inputID)) ? edgeRemapings
+                        .get(inputID) : inputID;
+                decorateEdge(inputs, inEdge, mappedID);
             }
-    
-            ObjectNode obj = mapper.createObjectNode();
-            ArrayNode iterationSteps = mapper.createArrayNode();
-            obj.put(STEPS, iterationSteps);
-            obj.put(ID, iterationHead);
-            obj.put(PACT, "IterativeDataStream");
-            obj.put(PARALLELISM, streamGraph.getStreamNode(iterationHead).getParallelism());
-            obj.put(CONTENTS, "Stream Iteration");
-            ArrayNode iterationInputs = mapper.createArrayNode();
-            obj.put(PREDECESSORS, iterationInputs);
-            toVisit.remove(iterationHead);
-            visitIteration(iterationSteps, toVisit, iterationHead, edgeRemapings, iterationInputs);
-            jsonArray.add(obj);
         }
-    
-        if (!toVisit.isEmpty()) {
-            visit(jsonArray, toVisit, edgeRemapings);
+        jsonArray.add(node);
+        toVisit.remove(vertexID);
+    } else {
+        Integer iterationHead = -1;
+        for (StreamEdge inEdge : vertex.getInEdges()) {
+            int operator = inEdge.getSourceId();
+
+            if (streamGraph.vertexIDtoLoopTimeout.containsKey(operator)) {
+                iterationHead = operator;
+            }
         }
+
+        ObjectNode obj = mapper.createObjectNode();
+        ArrayNode iterationSteps = mapper.createArrayNode();
+        obj.put(STEPS, iterationSteps);
+        obj.put(ID, iterationHead);
+        obj.put(PACT, "IterativeDataStream");
+        obj.put(PARALLELISM, streamGraph.getStreamNode(iterationHead).getParallelism());
+        obj.put(CONTENTS, "Stream Iteration");
+        ArrayNode iterationInputs = mapper.createArrayNode();
+        obj.put(PREDECESSORS, iterationInputs);
+        toVisit.remove(iterationHead);
+        visitIteration(iterationSteps, toVisit, iterationHead, edgeRemapings, iterationInputs);
+        jsonArray.add(obj);
     }
-    
+
+    if (!toVisit.isEmpty()) {
+        visit(jsonArray, toVisit, edgeRemapings);
+    }
+}
+```
+
 
 最后就将这个 StreamGraph 构造成一个 JSON 串返回出去，所以其实这里返回的执行计划图就是 Flink Job 的
 StreamGraph，然而我们在 Flink UI 上面看到的 "执行计划图" 是对应 Flink 中的
@@ -212,29 +224,31 @@ Flink 在内部会将多个算子串在一起作为一个 operator chain（执�
 神奇不，它变成了 2 个了，将 filter 和 sink
 算子串在一起了执行了。经过简单的测试，我们可以发现其实如果想要把两个不一样的算子串在一起执行确实还不是那么简单的，的确，它背后的条件可是比较复杂的，这里笔者给出源码出来，感兴趣的可以独自阅读下源码。
 
-    
-    
-    public static boolean isChainable(StreamEdge edge, StreamGraph streamGraph) {
-        //获取StreamEdge的源和目标StreamNode
-        StreamNode upStreamVertex = edge.getSourceVertex();
-        StreamNode downStreamVertex = edge.getTargetVertex();
-    
-        //获取源和目标StreamNode中的StreamOperator
-        StreamOperator<?> headOperator = upStreamVertex.getOperator();
-        StreamOperator<?> outOperator = downStreamVertex.getOperator();
-    
-        return downStreamVertex.getInEdges().size() == 1
-                && outOperator != null
-                && headOperator != null
-                && upStreamVertex.isSameSlotSharingGroup(downStreamVertex)
-                && outOperator.getChainingStrategy() == ChainingStrategy.ALWAYS
-                && (headOperator.getChainingStrategy() == ChainingStrategy.HEAD ||
-                    headOperator.getChainingStrategy() == ChainingStrategy.ALWAYS)
-                && (edge.getPartitioner() instanceof ForwardPartitioner)
-                && upStreamVertex.getParallelism() == downStreamVertex.getParallelism()
-                && streamGraph.isChainingEnabled();
-    }
-    
+
+​    
+```java
+public static boolean isChainable(StreamEdge edge, StreamGraph streamGraph) {
+    //获取StreamEdge的源和目标StreamNode
+    StreamNode upStreamVertex = edge.getSourceVertex();
+    StreamNode downStreamVertex = edge.getTargetVertex();
+
+    //获取源和目标StreamNode中的StreamOperator
+    StreamOperator<?> headOperator = upStreamVertex.getOperator();
+    StreamOperator<?> outOperator = downStreamVertex.getOperator();
+
+    return downStreamVertex.getInEdges().size() == 1
+            && outOperator != null
+            && headOperator != null
+            && upStreamVertex.isSameSlotSharingGroup(downStreamVertex)
+            && outOperator.getChainingStrategy() == ChainingStrategy.ALWAYS
+            && (headOperator.getChainingStrategy() == ChainingStrategy.HEAD ||
+                headOperator.getChainingStrategy() == ChainingStrategy.ALWAYS)
+            && (edge.getPartitioner() instanceof ForwardPartitioner)
+            && upStreamVertex.getParallelism() == downStreamVertex.getParallelism()
+            && streamGraph.isChainingEnabled();
+}
+```
+
 
 从源码最后的 return 可以看出它有九个条件：
 
@@ -254,10 +268,10 @@ Flink 在内部会将多个算子串在一起作为一个 operator chain（执�
 
 将算子 chain 起来可以获得不少性能的提高，如果可以的话，Flink 也会默认进行算子的 chain，那么如果要禁止算子的 chain 你该怎么做呢？
 
-    
-    
+
+​    
     env.disableOperatorChaining()
-    
+
 
 如下图是 word count 程序默认的执行图：
 
@@ -272,28 +286,33 @@ Flink 在内部会将多个算子串在一起作为一个 operator chain（执�
 除了设置全局的算子不可以 chain 在一起，也可以单独设置某个算子不能 chain 在一起，如下设置后 flatMap 算子则不会和前面和后面的算子
 chain 在一起。
 
-    
-    
-    dataStream.flatMap(...).disableChaining();
-    
+
+​    
+```java
+dataStream.flatMap(...).disableChaining();
+```
+
 
 另外还可以设置开启新的 chain，如下这种情况会将 flatMap 和 map 算子进行 chain 在一起，但是 filter 算子不会 chain
 在一起。
 
-    
-    
-    dataStream.filter(...).flatMap(...).startNewChain().map(...);
-    
+
+​    
+```java
+dataStream.filter(...).flatMap(...).startNewChain().map(...);
+```
 
 除了上面这几种，还可以设置共享的 Slot 组，比如将两个相隔的算子设置相同的 Slot 共享组，那么它会将该两个算子 chain 在一起，这样可以用来进行
 Slot 隔离，如下这种情况 filter 算子会和 flatMap 算子 chain 在同一个 Slot 里面，而 map 算子则会在另一个 Slot
 里面。注意：这种情况下要两个相邻的算子设置同一个 Slot 共享组才会进行算子 chain，如果是隔开的算子即使设置相同的 Slot
 共享组也是不会将两个算子进行 Chain 在一起。
 
-    
-    
-    dataStream.filter(...).slotSharingGroup("zhisheng").flatMap(...).slotSharingGroup("zhisheng").map(...).slotSharingGroup("zhisheng01");
-    
+
+​    
+```java
+dataStream.filter(...).slotSharingGroup("zhisheng").flatMap(...).slotSharingGroup("zhisheng").map(...).slotSharingGroup("zhisheng01");
+```
+
 
 ### 小结与反思
 

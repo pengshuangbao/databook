@@ -1,5 +1,9 @@
 # 如何选择Flink状态后端存储
 
+[toc]
+
+
+
 ### State Backends
 
 当需要对具体的某一种 State 做 Checkpoint 时，此时就需要具体的状态后端存储，刚好 Flink
@@ -29,8 +33,8 @@ flink-conf.yaml 配置文件中也有状态后端存储相关的配置，为此�
 
 
 ​    
-    StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-    
+​    StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+​    
     env.setStateBackend(new MemoryStateBackend());  //设置堆内存存储
     
     //env.setStateBackend(new FsStateBackend(checkpointDir, asyncCheckpoints));   //设置文件存储
@@ -48,7 +52,7 @@ flink-conf.yaml 配置文件中也有状态后端存储相关的配置，为此�
 
 
 ​    
-    2019-04-28 00:16:41.892 [Sink: zhisheng (1/4)] INFO  org.apache.flink.streaming.runtime.tasks.StreamTask  - No state backend has been configured, using default (Memory / Job Manager) MemoryStateBackend (data in heap memory / checkpoints to Job Manager) (checkpoints: 'null', savepoints: 'null', asynchronous: TRUE, maxStateSize: 5242880)
+​    2019-04-28 00:16:41.892 [Sink: zhisheng (1/4)] INFO  org.apache.flink.streaming.runtime.tasks.StreamTask  - No state backend has been configured, using default (Memory / Job Manager) MemoryStateBackend (data in heap memory / checkpoints to Job Manager) (checkpoints: 'null', savepoints: 'null', asynchronous: TRUE, maxStateSize: 5242880)
 
 
 上面日志的意思就是说如果没有配置任何状态存储，使用默认的 MemoryStateBackend 策略，这种状态后端存储把数据以内部对象的形式保存在 Task
@@ -74,9 +78,9 @@ Managers 的内存（JVM 堆）中，当应用程序触发 checkpoint 时，会�
 
 
 ​    
-    public MemoryStateBackend() {
-        this(null, null, DEFAULT_MAX_STATE_SIZE, TernaryBoolean.UNDEFINED);//使用的是 UNDEFINED
-    }
+​    public MemoryStateBackend() {
+​        this(null, null, DEFAULT_MAX_STATE_SIZE, TernaryBoolean.UNDEFINED);//使用的是 UNDEFINED
+​    }
 
 
 网上有人说默认是异步的，这里给大家解释清楚一下，从上面的那条日志打印的确实也是表示异步，但是前提是你对 State
@@ -89,28 +93,30 @@ MemoryStateBackendFactory 来创建的 state 的。
 
 
 ​    
-    //MemoryStateBackendFactory 类
-    public MemoryStateBackend createFromConfig(Configuration config, ClassLoader classLoader) {
-        return new MemoryStateBackend().configure(config, classLoader);
-    }
-    
-    //MemoryStateBackend 类中的 config 方法
-    public MemoryStateBackend configure(Configuration config, ClassLoader classLoader) {
-        return new MemoryStateBackend(this, config, classLoader);
-    }
-    
-    //私有的构造方法
-    private MemoryStateBackend(MemoryStateBackend original, Configuration configuration, ClassLoader classLoader) {
-        ...
-        this.asynchronousSnapshots = original.asynchronousSnapshots.resolveUndefined(
-                configuration.getBoolean(CheckpointingOptions.ASYNC_SNAPSHOTS));
-    }
-    
-    //根据 CheckpointingOptions 类中的 ASYNC_SNAPSHOTS 参数进行设置的
-    public static final ConfigOption<Boolean> ASYNC_SNAPSHOTS = ConfigOptions
-            .key("state.backend.async")
-            .defaultValue(true) //默认值就是 true，代表异步
-            .withDescription(...)
+​    //MemoryStateBackendFactory 类
+​    public MemoryStateBackend createFromConfig(Configuration config, ClassLoader classLoader) {
+​        return new MemoryStateBackend().configure(config, classLoader);
+​    }
+​    
+```java
+//MemoryStateBackend 类中的 config 方法
+public MemoryStateBackend configure(Configuration config, ClassLoader classLoader) {
+    return new MemoryStateBackend(this, config, classLoader);
+}
+
+//私有的构造方法
+private MemoryStateBackend(MemoryStateBackend original, Configuration configuration, ClassLoader classLoader) {
+    ...
+    this.asynchronousSnapshots = original.asynchronousSnapshots.resolveUndefined(
+            configuration.getBoolean(CheckpointingOptions.ASYNC_SNAPSHOTS));
+}
+
+//根据 CheckpointingOptions 类中的 ASYNC_SNAPSHOTS 参数进行设置的
+public static final ConfigOption<Boolean> ASYNC_SNAPSHOTS = ConfigOptions
+        .key("state.backend.async")
+        .defaultValue(true) //默认值就是 true，代表异步
+        .withDescription(...)
+```
 
 
 可以发现最终是通过读取 `state.backend.async` 参数的默认值（true）来配置是否要异步的进行快照，但是如果你手动配置
@@ -119,18 +125,18 @@ boolean 值，true 代表异步，false 代表同步）：
 
 
 ​    
-    public MemoryStateBackend(boolean asynchronousSnapshots) {
-        this(null, null, DEFAULT_MAX_STATE_SIZE, TernaryBoolean.fromBoolean(asynchronousSnapshots));
-    }
+​    public MemoryStateBackend(boolean asynchronousSnapshots) {
+​        this(null, null, DEFAULT_MAX_STATE_SIZE, TernaryBoolean.fromBoolean(asynchronousSnapshots));
+​    }
 
 
 如果你再细看了这个 MemoryStateBackend 类的话，那么你可能会发现这个构造函数：
 
 
 ​    
-    public MemoryStateBackend(@Nullable String checkpointPath, @Nullable String savepointPath) {
-        this(checkpointPath, savepointPath, DEFAULT_MAX_STATE_SIZE, TernaryBoolean.UNDEFINED);//需要你传入 checkpointPath 和 savepointPath
-    }
+​    public MemoryStateBackend(@Nullable String checkpointPath, @Nullable String savepointPath) {
+​        this(checkpointPath, savepointPath, DEFAULT_MAX_STATE_SIZE, TernaryBoolean.UNDEFINED);//需要你传入 checkpointPath 和 savepointPath
+​    }
 
 
 这个也是用来创建一个 MemoryStateBackend 的，它需要传入的参数是两个路径（checkpointPath、savepointPath），其中
@@ -219,7 +225,7 @@ backends 下面，在后面的版本中可能还会加上 flink-statebackend-hea
 
 
 ​    
-    //env.setStateBackend(new RocksDBStateBackend(checkpointDir, incrementalCheckpoints));  //设置 RocksDB 存储
+​    //env.setStateBackend(new RocksDBStateBackend(checkpointDir, incrementalCheckpoints));  //设置 RocksDB 存储
 
 
 那么在使用 RocksDBStateBackend 时该注意什么呢：

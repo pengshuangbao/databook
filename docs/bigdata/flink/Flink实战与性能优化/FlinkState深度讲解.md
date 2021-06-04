@@ -1,5 +1,7 @@
 # FlinkState深度讲解
 
+[toc]
+
 在基础篇中的 1.2 节中介绍了 Flink 是一款有状态的流处理框架。那么大家可能有点疑问，这个状态是什么意思？拿 Flink 最简单的 Word
 Count 程序来说，它需要不断的对 word 出现的个数进行结果统计，那么后一个结果就需要利用前一个的结果然后再做 +1 的操作，这样前一个计算就需要将
 word 出现的次数 count 进行存着（这个 count 那么就是一个状态）然后后面才可以进行累加。
@@ -111,53 +113,55 @@ RuntimeContext 用下述方法获取状态：
 
 上面讲了这么多概念，那么来一个例子来看看如何使用状态：
 
-    
-    
-    public class CountWindowAverage extends RichFlatMapFunction<Tuple2<Long, Long>, Tuple2<Long, Long>> {
-    
-        //ValueState 使用方式，第一个字段是 count，第二个字段是运行的和 
-        private transient ValueState<Tuple2<Long, Long>> sum;
-    
-        @Override
-        public void flatMap(Tuple2<Long, Long> input, Collector<Tuple2<Long, Long>> out) throws Exception {
-    
-            //访问状态的 value 值
-            Tuple2<Long, Long> currentSum = sum.value();
-    
-            //更新 count
-            currentSum.f0 += 1;
-    
-            //更新 sum
-            currentSum.f1 += input.f1;
-    
-            //更新状态
-            sum.update(currentSum);
-    
-            //如果 count 等于 2, 发出平均值并清除状态
-            if (currentSum.f0 >= 2) {
-                out.collect(new Tuple2<>(input.f0, currentSum.f1 / currentSum.f0));
-                sum.clear();
-            }
-        }
-    
-        @Override
-        public void open(Configuration config) {
-            ValueStateDescriptor<Tuple2<Long, Long>> descriptor =
-                    new ValueStateDescriptor<>(
-                            "average", //状态名称
-                            TypeInformation.of(new TypeHint<Tuple2<Long, Long>>() {}), //类型信息
-                            Tuple2.of(0L, 0L)); //状态的默认值
-            sum = getRuntimeContext().getState(descriptor);//获取状态
+
+​    
+```java
+public class CountWindowAverage extends RichFlatMapFunction<Tuple2<Long, Long>, Tuple2<Long, Long>> {
+
+    //ValueState 使用方式，第一个字段是 count，第二个字段是运行的和 
+    private transient ValueState<Tuple2<Long, Long>> sum;
+
+    @Override
+    public void flatMap(Tuple2<Long, Long> input, Collector<Tuple2<Long, Long>> out) throws Exception {
+
+        //访问状态的 value 值
+        Tuple2<Long, Long> currentSum = sum.value();
+
+        //更新 count
+        currentSum.f0 += 1;
+
+        //更新 sum
+        currentSum.f1 += input.f1;
+
+        //更新状态
+        sum.update(currentSum);
+
+        //如果 count 等于 2, 发出平均值并清除状态
+        if (currentSum.f0 >= 2) {
+            out.collect(new Tuple2<>(input.f0, currentSum.f1 / currentSum.f0));
+            sum.clear();
         }
     }
-    
-    env.fromElements(Tuple2.of(1L, 3L), Tuple2.of(1L, 5L), Tuple2.of(1L, 7L), Tuple2.of(1L, 4L), Tuple2.of(1L, 2L))
-            .keyBy(0)
-            .flatMap(new CountWindowAverage())
-            .print();
-    
-    //结果会打印出 (1,4) 和 (1,5)
-    
+
+    @Override
+    public void open(Configuration config) {
+        ValueStateDescriptor<Tuple2<Long, Long>> descriptor =
+                new ValueStateDescriptor<>(
+                        "average", //状态名称
+                        TypeInformation.of(new TypeHint<Tuple2<Long, Long>>() {}), //类型信息
+                        Tuple2.of(0L, 0L)); //状态的默认值
+        sum = getRuntimeContext().getState(descriptor);//获取状态
+    }
+}
+
+env.fromElements(Tuple2.of(1L, 3L), Tuple2.of(1L, 5L), Tuple2.of(1L, 7L), Tuple2.of(1L, 4L), Tuple2.of(1L, 2L))
+        .keyBy(0)
+        .flatMap(new CountWindowAverage())
+        .print();
+
+//结果会打印出 (1,4) 和 (1,5)
+```
+
 
 这个例子实现了一个简单的计数器，我们使用元组的第一个字段来进行分组(这个例子中，所有的 key 都是 1)，这个 CountWindowAverage
 函数将计数和运行时总和保存在一个 ValueState 中，一旦计数等于 2，就会发出平均值并清理 state，因此又从 0
@@ -172,21 +176,23 @@ TTL，那么当状态过期时，那么之前存储的状态值会被清除。�
 集合都支持独立到期。为了使用状态 TTL，首先必须要构建 StateTtlConfig 配置对象，然后可以通过传递配置在 State descriptor
 中启用 TTL 功能：
 
-    
-    
-    import org.apache.flink.api.common.state.StateTtlConfig;
-    import org.apache.flink.api.common.state.ValueStateDescriptor;
-    import org.apache.flink.api.common.time.Time;
-    
-    StateTtlConfig ttlConfig = StateTtlConfig
-        .newBuilder(Time.seconds(1))
-        .setUpdateType(StateTtlConfig.UpdateType.OnCreateAndWrite)
-        .setStateVisibility(StateTtlConfig.StateVisibility.NeverReturnExpired)
-        .build();
-    
-    ValueStateDescriptor<String> stateDescriptor = new ValueStateDescriptor<>("zhisheng", String.class);
-    stateDescriptor.enableTimeToLive(ttlConfig);    //开启 ttl
-    
+
+​    
+```java
+import org.apache.flink.api.common.state.StateTtlConfig;
+import org.apache.flink.api.common.state.ValueStateDescriptor;
+import org.apache.flink.api.common.time.Time;
+
+StateTtlConfig ttlConfig = StateTtlConfig
+    .newBuilder(Time.seconds(1))
+    .setUpdateType(StateTtlConfig.UpdateType.OnCreateAndWrite)
+    .setStateVisibility(StateTtlConfig.StateVisibility.NeverReturnExpired)
+    .build();
+
+ValueStateDescriptor<String> stateDescriptor = new ValueStateDescriptor<>("zhisheng", String.class);
+stateDescriptor.enableTimeToLive(ttlConfig);    //开启 ttl
+```
+
 
 上面配置中有几个选项需要注意：
 
@@ -230,30 +236,34 @@ TTL，那么当状态过期时，那么之前存储的状态值会被清除。�
 此外，你可以在获取完整状态快照时激活清理状态，这样就可以减少状态的大小。在当前实现下不清除本地状态，但是在从上一个快照恢复的情况下，它不会包括已删除的过期状态，你可以在
 StateTtlConfig 中这样配置：
 
-    
-    
-    import org.apache.flink.api.common.state.StateTtlConfig;
-    import org.apache.flink.api.common.time.Time;
-    
-    StateTtlConfig ttlConfig = StateTtlConfig
-        .newBuilder(Time.seconds(1))
-        .cleanupFullSnapshot()
-        .build();
-    
+
+​    
+```java
+import org.apache.flink.api.common.state.StateTtlConfig;
+import org.apache.flink.api.common.time.Time;
+
+StateTtlConfig ttlConfig = StateTtlConfig
+    .newBuilder(Time.seconds(1))
+    .cleanupFullSnapshot()
+    .build();
+```
+
 
 此配置不适用于 RocksDB 状态后端中的增量 checkpoint。对于现有的 Job，可以在 StateTtlConfig
 中随时激活或停用此清理策略，例如，从保存点重启后。
 
 除了在完整快照中清理外，你还可以在后台激活清理。如果使用的后端支持以下选项，则会激活 StateTtlConfig 中的默认后台清理：
 
-    
-    
-    import org.apache.flink.api.common.state.StateTtlConfig;
-    StateTtlConfig ttlConfig = StateTtlConfig
-        .newBuilder(Time.seconds(1))
-        .cleanupInBackground()
-        .build();
-    
+
+​    
+```java
+import org.apache.flink.api.common.state.StateTtlConfig;
+StateTtlConfig ttlConfig = StateTtlConfig
+    .newBuilder(Time.seconds(1))
+    .cleanupInBackground()
+    .build();
+```
+
 
 要在后台对某些特殊清理进行更精细的控制，可以按照下面的说明单独配置它。目前，堆状态后端依赖于增量清理，RocksDB 后端使用压缩过滤器进行后台清理。
 
@@ -289,14 +299,16 @@ ListCheckpointed 接口。
 
 如果是实现 CheckpointedFunction 接口的话，那么我们先来看下这个接口里面有什么方法呢：
 
-    
-    
-    //当请求 checkpoint 快照时，将调用此方法
-    void snapshotState(FunctionSnapshotContext context) throws Exception;
-    
-    //在分布式执行期间创建并行功能实例时，将调用此方法。 函数通常在此方法中设置其状态存储数据结构
-    void initializeState(FunctionInitializationContext context) throws Exception;
-    
+
+​    
+```java
+//当请求 checkpoint 快照时，将调用此方法
+void snapshotState(FunctionSnapshotContext context) throws Exception;
+
+//在分布式执行期间创建并行功能实例时，将调用此方法。 函数通常在此方法中设置其状态存储数据结构
+void initializeState(FunctionInitializationContext context) throws Exception;
+```
+
 
 当有请求执行 checkpoint 的时候，snapshotState() 方法就会被调用，initializeState()
 方法会在每次初始化用户定义的函数时或者从更早的 checkpoint 恢复的时候被调用，因此 initializeState()
@@ -314,70 +326,74 @@ keyed state 的最小粒度，根据状态的访问方法，定义了重新分�
 下面是一个有状态的 SinkFunction 的示例，它使用 CheckpointedFunction 来缓存数据，然后再将这些数据发送到外部系统，使用了
 Even-split 策略：
 
-    
-    
-    public class BufferingSink implements SinkFunction<Tuple2<String, Integer>>, CheckpointedFunction {
-    
-        private final int threshold;
-    
-        private transient ListState<Tuple2<String, Integer>> checkpointedState;
-    
-        private List<Tuple2<String, Integer>> bufferedElements;
-    
-        public BufferingSink(int threshold) {
-            this.threshold = threshold;
-            this.bufferedElements = new ArrayList<>();
-        }
-    
-        @Override
-        public void invoke(Tuple2<String, Integer> value, Context contex) throws Exception {
-            bufferedElements.add(value);
-            if (bufferedElements.size() == threshold) {
-                for (Tuple2<String, Integer> element: bufferedElements) {
-                    //将数据发到外部系统
-                }
-                bufferedElements.clear();
+
+​    
+```java
+public class BufferingSink implements SinkFunction<Tuple2<String, Integer>>, CheckpointedFunction {
+
+    private final int threshold;
+
+    private transient ListState<Tuple2<String, Integer>> checkpointedState;
+
+    private List<Tuple2<String, Integer>> bufferedElements;
+
+    public BufferingSink(int threshold) {
+        this.threshold = threshold;
+        this.bufferedElements = new ArrayList<>();
+    }
+
+    @Override
+    public void invoke(Tuple2<String, Integer> value, Context contex) throws Exception {
+        bufferedElements.add(value);
+        if (bufferedElements.size() == threshold) {
+            for (Tuple2<String, Integer> element: bufferedElements) {
+                //将数据发到外部系统
             }
+            bufferedElements.clear();
         }
-    
-        @Override
-        public void snapshotState(FunctionSnapshotContext context) throws Exception {
-            checkpointedState.clear();
-            for (Tuple2<String, Integer> element : bufferedElements) {
-                checkpointedState.add(element);
-            }
+    }
+
+    @Override
+    public void snapshotState(FunctionSnapshotContext context) throws Exception {
+        checkpointedState.clear();
+        for (Tuple2<String, Integer> element : bufferedElements) {
+            checkpointedState.add(element);
         }
-    
-        @Override
-        public void initializeState(FunctionInitializationContext context) throws Exception {
-            ListStateDescriptor<Tuple2<String, Integer>> descriptor =
-                new ListStateDescriptor<>(
-                    "buffered-elements",
-                    TypeInformation.of(new TypeHint<Tuple2<String, Integer>>() {}));
-    
-            checkpointedState = context.getOperatorStateStore().getListState(descriptor);
-    
-            if (context.isRestored()) {
-                for (Tuple2<String, Integer> element : checkpointedState.get()) {
-                    bufferedElements.add(element);
-                }
+    }
+
+    @Override
+    public void initializeState(FunctionInitializationContext context) throws Exception {
+        ListStateDescriptor<Tuple2<String, Integer>> descriptor =
+            new ListStateDescriptor<>(
+                "buffered-elements",
+                TypeInformation.of(new TypeHint<Tuple2<String, Integer>>() {}));
+
+        checkpointedState = context.getOperatorStateStore().getListState(descriptor);
+
+        if (context.isRestored()) {
+            for (Tuple2<String, Integer> element : checkpointedState.get()) {
+                bufferedElements.add(element);
             }
         }
     }
-    
+}
+```
+
 
 initializeState 方法将 FunctionInitializationContext 作为参数，它用来初始化 non-keyed
 状态。注意状态是如何初始化的，类似于 Keyed state，StateDescriptor 包含状态名称和有关状态值的类型的信息：
 
-    
-    
-    ListStateDescriptor<Tuple2<String, Integer>> descriptor =
-        new ListStateDescriptor<>(
-            "buffered-elements",
-            TypeInformation.of(new TypeHint<Tuple2<Long, Long>>() {}));
-    
-    checkpointedState = context.getOperatorStateStore().getListState(descriptor);
-    
+
+​    
+```java
+ListStateDescriptor<Tuple2<String, Integer>> descriptor =
+    new ListStateDescriptor<>(
+        "buffered-elements",
+        TypeInformation.of(new TypeHint<Tuple2<Long, Long>>() {}));
+
+checkpointedState = context.getOperatorStateStore().getListState(descriptor);
+```
+
 
 #### ListCheckpointed
 
@@ -393,46 +409,48 @@ initializeState 方法将 FunctionInitializationContext 作为参数，它用来
 与其他算子相比，有状态的 source 函数需要注意的地方更多，比如为了保证状态的更新和结果的输出原子性，用户必须在 source 的 context
 上加锁。
 
-    
-    
-    public static class CounterSource extends RichParallelSourceFunction<Long> implements ListCheckpointed<Long> {
-    
-        //一次语义的当前偏移量
-        private Long offset = 0L;
-    
-        //作业取消标志
-        private volatile boolean isRunning = true;
-    
-        @Override
-        public void run(SourceContext<Long> ctx) {
-            final Object lock = ctx.getCheckpointLock();
-    
-            while (isRunning) {
-                //输出和状态更新是原子性的
-                synchronized (lock) {
-                    ctx.collect(offset);
-                    offset += 1;
-                }
+
+​    
+```java
+public static class CounterSource extends RichParallelSourceFunction<Long> implements ListCheckpointed<Long> {
+
+    //一次语义的当前偏移量
+    private Long offset = 0L;
+
+    //作业取消标志
+    private volatile boolean isRunning = true;
+
+    @Override
+    public void run(SourceContext<Long> ctx) {
+        final Object lock = ctx.getCheckpointLock();
+
+        while (isRunning) {
+            //输出和状态更新是原子性的
+            synchronized (lock) {
+                ctx.collect(offset);
+                offset += 1;
             }
         }
-    
-        @Override
-        public void cancel() {
-            isRunning = false;
-        }
-    
-        @Override
-        public List<Long> snapshotState(long checkpointId, long checkpointTimestamp) {
-            return Collections.singletonList(offset);
-        }
-    
-        @Override
-        public void restoreState(List<Long> state) {
-            for (Long s : state)
-                offset = s;
-        }
     }
-    
+
+    @Override
+    public void cancel() {
+        isRunning = false;
+    }
+
+    @Override
+    public List<Long> snapshotState(long checkpointId, long checkpointTimestamp) {
+        return Collections.singletonList(offset);
+    }
+
+    @Override
+    public void restoreState(List<Long> state) {
+        for (Long s : state)
+            offset = s;
+    }
+}
+```
+
 
 或许有些算子想知道什么时候 checkpoint 全部做完了，可以参考使用
 org.apache.flink.runtime.state.CheckpointListener 接口来实现，在该接口里面有
@@ -461,41 +479,47 @@ Broadcast state 的特点是：
 第一个数据流是要处理的数据源，流中的对象具有告警或者恢复的事件，其中用一个 type
 字段来标识哪个事件是告警，哪个事件是恢复，然后还有其他的字段标明是哪个集群的或者哪个项目的，简单代码如下：
 
-    
-    
-    DataStreamSource<AlertEvent> alertData = env.addSource(new FlinkKafkaConsumer011<>("alert",
-            new AlertEventSchema(),
-            parameterTool.getProperties()));
-    
+
+​    
+```java
+DataStreamSource<AlertEvent> alertData = env.addSource(new FlinkKafkaConsumer011<>("alert",
+        new AlertEventSchema(),
+        parameterTool.getProperties()));
+```
+
 
 然后第二个数据流是要广播的数据流，它是告警通知策略数据（定时从 MySQL 中读取的规则表），简单代码如下：
 
-    
-    
-    DataStreamSource<Rule> alarmdata = env.addSource(new GetAlarmNotifyData());
-    
-    // MapState 中保存 (RuleName, Rule) ，在描述类中指定 State name
-    MapStateDescriptor<String, Rule> ruleStateDescriptor = new MapStateDescriptor<>(
-                "RulesBroadcastState",
-                BasicTypeInfo.STRING_TYPE_INFO,
-                TypeInformation.of(new TypeHint<Rule>() {}));
-    
-    // alarmdata 使用 MapStateDescriptor 作为参数广播，得到广播流
-    BroadcastStream<Rule> ruleBroadcastStream = alarmdata.broadcast(ruleStateDescriptor);
-    
+
+​    
+```java
+DataStreamSource<Rule> alarmdata = env.addSource(new GetAlarmNotifyData());
+
+// MapState 中保存 (RuleName, Rule) ，在描述类中指定 State name
+MapStateDescriptor<String, Rule> ruleStateDescriptor = new MapStateDescriptor<>(
+            "RulesBroadcastState",
+            BasicTypeInfo.STRING_TYPE_INFO,
+            TypeInformation.of(new TypeHint<Rule>() {}));
+
+// alarmdata 使用 MapStateDescriptor 作为参数广播，得到广播流
+BroadcastStream<Rule> ruleBroadcastStream = alarmdata.broadcast(ruleStateDescriptor);
+```
+
 
 然后你要做的是将两个数据流进行连接，连接后再根据告警规则数据流的规则数据进行处理（这个告警的逻辑很复杂，我们这里就不再深入讲），伪代码大概如下：
 
-    
-    
-    alertData.connect(ruleBroadcastStream)
-        .process(
-            new KeyedBroadcastProcessFunction<AlertEvent, Rule>() {
-                //根据告警规则的数据进行处理告警事件
-            }
-        )
-        //可能还有更多的操作
-    
+
+​    
+```java
+alertData.connect(ruleBroadcastStream)
+    .process(
+        new KeyedBroadcastProcessFunction<AlertEvent, Rule>() {
+            //根据告警规则的数据进行处理告警事件
+        }
+    )
+    //可能还有更多的操作
+```
+
 
 `alertData.connect(ruleBroadcastStream)` 该 connect 方法将两个流连接起来后返回一个
 BroadcastConnectedStream 对象，如果对 BroadcastConnectedStream 不太清楚的可以回看下文章 [4如何使用
@@ -508,10 +532,10 @@ DataStream API 来处理数据？]() 再次复习一下。BroadcastConnectedStre
 
 那么该怎么获取这个 Broadcast state 呢，它需要通过上下文来获取:
 
-    
-    
+
+​    
     ctx.getBroadcastState(ruleStateDescriptor)
-    
+
 
 #### BroadcastProcessFunction 和 KeyedBroadcastProcessFunction
 
@@ -523,29 +547,31 @@ DataStream API 来处理数据？]() 再次复习一下。BroadcastConnectedStre
 
 用于处理非广播流是 non-keyed stream 的情况:
 
-    
-    
+
+​    
     public abstract class BroadcastProcessFunction<IN1, IN2, OUT> extends BaseBroadcastProcessFunction {
     
         public abstract void processElement(IN1 value, ReadOnlyContext ctx, Collector<OUT> out) throws Exception;
     
         public abstract void processBroadcastElement(IN2 value, Context ctx, Collector<OUT> out) throws Exception;
     }
-    
+
 
 用于处理非广播流是 keyed stream 的情况
 
-    
-    
-    public abstract class KeyedBroadcastProcessFunction<KS, IN1, IN2, OUT> {
-    
-        public abstract void processElement(IN1 value, ReadOnlyContext ctx, Collector<OUT> out) throws Exception;
-    
-        public abstract void processBroadcastElement(IN2 value, Context ctx, Collector<OUT> out) throws Exception;
-    
-        public void onTimer(long timestamp, OnTimerContext ctx, Collector<OUT> out) throws Exception;
-    }
-    
+
+​    
+```java
+public abstract class KeyedBroadcastProcessFunction<KS, IN1, IN2, OUT> {
+
+    public abstract void processElement(IN1 value, ReadOnlyContext ctx, Collector<OUT> out) throws Exception;
+
+    public abstract void processBroadcastElement(IN2 value, Context ctx, Collector<OUT> out) throws Exception;
+
+    public void onTimer(long timestamp, OnTimerContext ctx, Collector<OUT> out) throws Exception;
+}
+```
+
 
 可以看到这两个接口提供的上下文对象有所不同。非广播方（processElement）使用
 ReadOnlyContext，而广播方（processBroadcastElement）使用 Context。这两个上下文对象（简称
@@ -617,25 +643,27 @@ queryable-state-runtime_2.11-1.9.0.jar` 复制到 lib 目录下，默认 lib 目
 ![images](https://static.lovedata.net/zs/2019-10-23-144825.png-wm)
 然后你可以像下面这样操作让状态可查询：
 
-    
-    
-    // Reducing state
-    ReducingStateDescriptor<Tuple2<Integer, Long>> reducingState = new ReducingStateDescriptor<>(
-            "zhisheng",
-            new SumReduce(),
-            source.getType());
-    
-    final String queryName = "zhisheng";
-    
-    final QueryableStateStream<Integer, Tuple2<Integer, Long>> queryableState =
-            dataStream.keyBy(new KeySelector<Tuple2<Integer, Long>, Integer>() {
-                private static final long serialVersionUID = -4126824763829132959L;
-                @Override
-                public Integer getKey(Tuple2<Integer, Long> value) {
-                    return value.f0;
-                }
-            }).asQueryableState(queryName, reducingState);
-    
+
+​    
+```java
+// Reducing state
+ReducingStateDescriptor<Tuple2<Integer, Long>> reducingState = new ReducingStateDescriptor<>(
+        "zhisheng",
+        new SumReduce(),
+        source.getType());
+
+final String queryName = "zhisheng";
+
+final QueryableStateStream<Integer, Tuple2<Integer, Long>> queryableState =
+        dataStream.keyBy(new KeySelector<Tuple2<Integer, Long>, Integer>() {
+            private static final long serialVersionUID = -4126824763829132959L;
+            @Override
+            public Integer getKey(Tuple2<Integer, Long> value) {
+                return value.f0;
+            }
+        }).asQueryableState(queryName, reducingState);
+```
+
 
 除了上面的 Reducing，你还可以使用
 ValueState、FoldingState，还可以直接通过asQueryableState(queryName），注意不支持 ListState，调用
@@ -647,36 +675,40 @@ asQueryableState 方法后会返回 QueryableStateStream，接着无需再做其
 简单来说，当用户在 Job 中定义了 queryable state 之后，就可以在外部通过QueryableStateClient
 来查询对应的状态实时值，你可以创建如下方法：
 
-    
-    
-    //创建 Queryable State Client
-    QueryableStateClient client = new QueryableStateClient(host, port);
-    
-    public QueryableStateClient(final InetAddress remoteAddress, final int remotePort) {
-        ...
-        this.client = new Client<>(
-                "Queryable State Client", 1,
-                messageSerializer, new DisabledKvStateRequestStats());
-    }
-    
+
+​    
+```java
+//创建 Queryable State Client
+QueryableStateClient client = new QueryableStateClient(host, port);
+
+public QueryableStateClient(final InetAddress remoteAddress, final int remotePort) {
+    ...
+    this.client = new Client<>(
+            "Queryable State Client", 1,
+            messageSerializer, new DisabledKvStateRequestStats());
+}
+```
+
 
 在 QueryableStateClient 中有几个不同参数的 getKvState 方法，参数可有
 JobID、queryableStateName、key、namespace、keyTypeInfo、namespaceTypeInfo、StateDescriptor，其实内部最后调用的是一个私有的
 getKvState 方法：
 
-    
-    
-    private CompletableFuture<KvStateResponse> getKvState(
-            final JobID jobId, final String queryableStateName,
-            final int keyHashCode, final byte[] serializedKeyAndNamespace) {
-        ...
-        //构造 KV state 查询的请求
-        KvStateRequest request = new KvStateRequest(jobId, queryableStateName, keyHashCode, serializedKeyAndNamespace);
-        //这个 client 是在构造 QueryableStateClient 中赋值的，这个 client 是 Client<KvStateRequest, KvStateResponse>，发送请求后会返回 CompletableFuture<KvStateResponse>
-        return client.sendRequest(remoteAddress, request);
-        ...
-    }
-    
+
+​    
+```java
+private CompletableFuture<KvStateResponse> getKvState(
+        final JobID jobId, final String queryableStateName,
+        final int keyHashCode, final byte[] serializedKeyAndNamespace) {
+    ...
+    //构造 KV state 查询的请求
+    KvStateRequest request = new KvStateRequest(jobId, queryableStateName, keyHashCode, serializedKeyAndNamespace);
+    //这个 client 是在构造 QueryableStateClient 中赋值的，这个 client 是 Client<KvStateRequest, KvStateResponse>，发送请求后会返回 CompletableFuture<KvStateResponse>
+    return client.sendRequest(remoteAddress, request);
+    ...
+}
+```
+
 
 在 Flink 源码中专门有一个 QueryableStateOptions 类来设置可查询状态相关的配置，有如下这些配置。
 

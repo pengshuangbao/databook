@@ -1,5 +1,9 @@
 # 如何统计网站各页面一天内的PV和UV？
 
+[toc]
+
+
+
 大数据开发最常统计的需求可能就是 PV、UV。PV 全拼
 PageView，即页面访问量，用户每次对网站的访问均被记录，按照访问量进行累计，假如用户对同一页面访问了 5 次，那该页面的 PV 就应该加 5。UV
 全拼为 UniqueVisitor，即独立访问用户数，访问该页面的一台电脑客户端为一个访客，假如用户对同一页面访问了 5 次，那么该页面的 UV 只应该加
@@ -47,98 +51,103 @@ set 中存放着今天访问过该页面所有用户的 user_id。
 
 用户访问网站页面的日志实体类：
 
-    
-    
-    public class UserVisitWebEvent {
-        // 日志的唯一 id
-        private String id;
-        // 日期，如：20191025
-        private String date;
-        // 页面 id
-        private Integer pageId;
-        // 用户的唯一标识，用户 id
-        private String userId;
-        // 页面的 url
-        private String url;
-    }
-    
+
+​    
+```java
+public class UserVisitWebEvent {
+    // 日志的唯一 id
+    private String id;
+    // 日期，如：20191025
+    private String date;
+    // 页面 id
+    private Integer pageId;
+    // 用户的唯一标识，用户 id
+    private String userId;
+    // 页面的 url
+    private String url;
+}
+```
+
 
 生成测试数据的核心代码如下:
 
-    
-    
-    String yyyyMMdd = new DateTime(System.currentTimeMillis()).toString("yyyyMMdd");
-    int pageId = random.nextInt(10);    // 随机生成页面 id
-    int userId = random.nextInt(100);   // 随机生成用户 id
-    
-    UserVisitWebEvent userVisitWebEvent = UserVisitWebEvent.builder()
-            .id(UUID.randomUUID().toString())   // 日志的唯一 id
-            .date(yyyyMMdd)                     // 日期
-            .pageId(pageId)                     // 页面 id
-            .userId(Integer.toString(userId))   // 用户 id
-            .url("url/" + pageId)               // 页面的 url
-            .build();
-    // 对象序列化为 JSON 发送到 Kafka
-    ProducerRecord record = new ProducerRecord<String, String>(topic,
-            null, null, GsonUtil.toJson(userVisitWebEvent));
-    producer.send(record);
-    
+
+​    
+```java
+String yyyyMMdd = new DateTime(System.currentTimeMillis()).toString("yyyyMMdd");
+int pageId = random.nextInt(10);    // 随机生成页面 id
+int userId = random.nextInt(100);   // 随机生成用户 id
+
+UserVisitWebEvent userVisitWebEvent = UserVisitWebEvent.builder()
+        .id(UUID.randomUUID().toString())   // 日志的唯一 id
+        .date(yyyyMMdd)                     // 日期
+        .pageId(pageId)                     // 页面 id
+        .userId(Integer.toString(userId))   // 用户 id
+        .url("url/" + pageId)               // 页面的 url
+        .build();
+// 对象序列化为 JSON 发送到 Kafka
+ProducerRecord record = new ProducerRecord<String, String>(topic,
+        null, null, GsonUtil.toJson(userVisitWebEvent));
+producer.send(record);
+```
+
 
 统计 UV 的核心代码如下，对 Redis Connector 不熟悉的请参阅 3.11 节如何使用 Flink Connectors —— Redis：
 
-    
-    
-    public class RedisSetUvExample {
-        public static void main(String[] args) throws Exception {
-            //  省略了 env初始化及 checkpoint 相关配置
-            Properties props = new Properties();
-            props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, UvExampleUtil.broker_list);
-            props.put(ConsumerConfig.GROUP_ID_CONFIG, "app-uv-stat");
-    
-            FlinkKafkaConsumerBase<String> kafkaConsumer = new FlinkKafkaConsumer011<>(
-                    UvExampleUtil.topic, new SimpleStringSchema(), props)
-                    .setStartFromLatest();
-    
-            FlinkJedisPoolConfig conf = new FlinkJedisPoolConfig
-                    .Builder().setHost("192.168.30.244").build();
-    
-            env.addSource(kafkaConsumer)
-                    .map(string -> {
-                        // 反序列化 JSON
-                        UserVisitWebEvent userVisitWebEvent = GsonUtil.fromJson(
-                                string, UserVisitWebEvent.class);
-                        // 生成 Redis key，格式为 日期_pageId，如: 20191026_0
-                        String redisKey = userVisitWebEvent.getDate() + "_"
-                                + userVisitWebEvent.getPageId();
-                        return Tuple2.of(redisKey, userVisitWebEvent.getUserId());
-                    })
-                    .returns(new TypeHint<Tuple2<String, String>>(){})
-                    .addSink(new RedisSink<>(conf, new RedisSaddSinkMapper()));
-    
-            env.execute("Redis Set UV Stat");
+
+​    
+```java
+public class RedisSetUvExample {
+    public static void main(String[] args) throws Exception {
+        //  省略了 env初始化及 checkpoint 相关配置
+        Properties props = new Properties();
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, UvExampleUtil.broker_list);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "app-uv-stat");
+
+        FlinkKafkaConsumerBase<String> kafkaConsumer = new FlinkKafkaConsumer011<>(
+                UvExampleUtil.topic, new SimpleStringSchema(), props)
+                .setStartFromLatest();
+
+        FlinkJedisPoolConfig conf = new FlinkJedisPoolConfig
+                .Builder().setHost("192.168.30.244").build();
+
+        env.addSource(kafkaConsumer)
+                .map(string -> {
+                    // 反序列化 JSON
+                    UserVisitWebEvent userVisitWebEvent = GsonUtil.fromJson(
+                            string, UserVisitWebEvent.class);
+                    // 生成 Redis key，格式为 日期_pageId，如: 20191026_0
+                    String redisKey = userVisitWebEvent.getDate() + "_"
+                            + userVisitWebEvent.getPageId();
+                    return Tuple2.of(redisKey, userVisitWebEvent.getUserId());
+                })
+                .returns(new TypeHint<Tuple2<String, String>>(){})
+                .addSink(new RedisSink<>(conf, new RedisSaddSinkMapper()));
+
+        env.execute("Redis Set UV Stat");
+    }
+
+    // 数据与 Redis key 的映射关系
+    public static class RedisSaddSinkMapper 
+            implements RedisMapper<Tuple2<String, String>> {
+        @Override
+        public RedisCommandDescription getCommandDescription() {
+            //  这里必须是 sadd 操作
+            return new RedisCommandDescription(RedisCommand.SADD);
         }
-    
-        // 数据与 Redis key 的映射关系
-        public static class RedisSaddSinkMapper 
-                implements RedisMapper<Tuple2<String, String>> {
-            @Override
-            public RedisCommandDescription getCommandDescription() {
-                //  这里必须是 sadd 操作
-                return new RedisCommandDescription(RedisCommand.SADD);
-            }
-    
-            @Override
-            public String getKeyFromData(Tuple2<String, String> data) {
-                return data.f0;
-            }
-    
-            @Override
-            public String getValueFromData(Tuple2<String, String> data) {
-                return data.f1;
-            }
+
+        @Override
+        public String getKeyFromData(Tuple2<String, String> data) {
+            return data.f0;
+        }
+
+        @Override
+        public String getValueFromData(Tuple2<String, String> data) {
+            return data.f1;
         }
     }
-    
+}
+```
 
 Redis 中统计结果如下图所示，左侧展示的 Redis key，20191026_1 表示 2019 年 10 月 26 日浏览过 pageId 为 1
 的页面对应的 key，右侧展示 key 对应的 set 集合，表示 userId 为 [0,6,27,30,66,67,79,88] 的用户在 2019 年
@@ -147,11 +156,11 @@ Redis 中统计结果如下图所示，左侧展示的 Redis key，20191026_1 �
 ![images](https://static.lovedata.net/zs/2019-10-31-174242.jpg-wm)
 要想获取 20191026_1 对应的 UV 值，可通过 scard 命令获取 set 中 user_id 的数量，具体操作如下所示：
 
-    
-    
+
+​    
     redis> scard 20191026_1
     8
-    
+
 
 通过上述代码即可通过 Redis 的 set 数据结构来统计网站各页面的 UV。具体代码实现请参阅：
 
@@ -178,91 +187,93 @@ ValueState，MapState 中用来存储 userId 的集合、ValueState 中存储 Ma
 是日期和页面的组合，格式为 日期_pageId，如: 20191026_0，Redis 的 value 为 key 对应的 UV 结果，如：100。
 具体代码如下所示：
 
-    
-    
-    public class MapStateUvExample {
-        public static void main(String[] args) throws Exception {
-            //  省略了 env初始化及 checkpoint 相关配置
-            Properties props = new Properties();
-            props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, UvExampleUtil.broker_list);
-            props.put(ConsumerConfig.GROUP_ID_CONFIG, "app-uv-stat");
-    
-            FlinkKafkaConsumerBase<String> kafkaConsumer = new FlinkKafkaConsumer011<>(
-                    UvExampleUtil.topic, new SimpleStringSchema(), props)
-                    .setStartFromGroupOffsets();
-    
-            FlinkJedisPoolConfig conf = new FlinkJedisPoolConfig
-                    .Builder().setHost("192.168.30.244").build();
-    
-            env.addSource(kafkaConsumer)
-                .map(str -> GsonUtil.fromJson(str, UserVisitWebEvent.class)) // 反序列化JSON
-                .keyBy("date","pageId") // 按照 日期和页面 进行 keyBy
-                .map(new RichMapFunction<UserVisitWebEvent, Tuple2<String, Long>>() {
-                    // 存储当前 key 对应的 userId 集合
-                    private MapState<String,Boolean> userIdState;
-                    // 存储当前 key 对应的 UV 值
-                    private ValueState<Long> uvState;
-    
-                    @Override
-                    public Tuple2<String, Long> map(UserVisitWebEvent userVisitWebEvent) {
-                        // 初始化 uvState
-                        if(null == uvState.value()){
-                            uvState.update(0L);
-                        }
-                        // userIdState 中不包含当前访问的 userId，说明该用户今天还未访问过该页面
-                        // 则将该 userId put 到 userIdState 中，并把 UV 值 +1
-                        if(!userIdState.contains(userVisitWebEvent.getUserId())){
-                            userIdState.put(userVisitWebEvent.getUserId(),null);
-                            uvState.update(uvState.value() + 1);
-                        }
-                        // 生成 Redis key，格式为 日期_pageId，如: 20191026_0
-                        String redisKey = userVisitWebEvent.getDate() + "_"
-                                + userVisitWebEvent.getPageId();
-                        System.out.println(redisKey + "   :::   " + uvState.value());
-                        return Tuple2.of(redisKey, uvState.value());
+
+​    
+```java
+public class MapStateUvExample {
+    public static void main(String[] args) throws Exception {
+        //  省略了 env初始化及 checkpoint 相关配置
+        Properties props = new Properties();
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, UvExampleUtil.broker_list);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "app-uv-stat");
+
+        FlinkKafkaConsumerBase<String> kafkaConsumer = new FlinkKafkaConsumer011<>(
+                UvExampleUtil.topic, new SimpleStringSchema(), props)
+                .setStartFromGroupOffsets();
+
+        FlinkJedisPoolConfig conf = new FlinkJedisPoolConfig
+                .Builder().setHost("192.168.30.244").build();
+
+        env.addSource(kafkaConsumer)
+            .map(str -> GsonUtil.fromJson(str, UserVisitWebEvent.class)) // 反序列化JSON
+            .keyBy("date","pageId") // 按照 日期和页面 进行 keyBy
+            .map(new RichMapFunction<UserVisitWebEvent, Tuple2<String, Long>>() {
+                // 存储当前 key 对应的 userId 集合
+                private MapState<String,Boolean> userIdState;
+                // 存储当前 key 对应的 UV 值
+                private ValueState<Long> uvState;
+
+                @Override
+                public Tuple2<String, Long> map(UserVisitWebEvent userVisitWebEvent) {
+                    // 初始化 uvState
+                    if(null == uvState.value()){
+                        uvState.update(0L);
                     }
-    
-                    @Override
-                    public void open(Configuration parameters) throws Exception {
-                        super.open(parameters);
-                        // 从状态中恢复 userIdState
-                        userIdState = getRuntimeContext().getMapState(
-                                new MapStateDescriptor<>("userIdState",
-                                        TypeInformation.of(new TypeHint<String>() {}),
-                                        TypeInformation.of(new TypeHint<Boolean>() {})));
-                        // 从状态中恢复 uvState
-                        uvState = getRuntimeContext().getState(
-                                new ValueStateDescriptor<>("uvState",
-                                        TypeInformation.of(new TypeHint<Long>() {})));
+                    // userIdState 中不包含当前访问的 userId，说明该用户今天还未访问过该页面
+                    // 则将该 userId put 到 userIdState 中，并把 UV 值 +1
+                    if(!userIdState.contains(userVisitWebEvent.getUserId())){
+                        userIdState.put(userVisitWebEvent.getUserId(),null);
+                        uvState.update(uvState.value() + 1);
                     }
-                })
-                .addSink(new RedisSink<>(conf, new RedisSetSinkMapper()));
-    
-            env.execute("Redis Set UV Stat");
+                    // 生成 Redis key，格式为 日期_pageId，如: 20191026_0
+                    String redisKey = userVisitWebEvent.getDate() + "_"
+                            + userVisitWebEvent.getPageId();
+                    System.out.println(redisKey + "   :::   " + uvState.value());
+                    return Tuple2.of(redisKey, uvState.value());
+                }
+
+                @Override
+                public void open(Configuration parameters) throws Exception {
+                    super.open(parameters);
+                    // 从状态中恢复 userIdState
+                    userIdState = getRuntimeContext().getMapState(
+                            new MapStateDescriptor<>("userIdState",
+                                    TypeInformation.of(new TypeHint<String>() {}),
+                                    TypeInformation.of(new TypeHint<Boolean>() {})));
+                    // 从状态中恢复 uvState
+                    uvState = getRuntimeContext().getState(
+                            new ValueStateDescriptor<>("uvState",
+                                    TypeInformation.of(new TypeHint<Long>() {})));
+                }
+            })
+            .addSink(new RedisSink<>(conf, new RedisSetSinkMapper()));
+
+        env.execute("Redis Set UV Stat");
+    }
+
+    // 数据与 Redis key 的映射关系，并指定将数据 set 到 Redis
+    public static class RedisSetSinkMapper
+            implements RedisMapper<Tuple2<String, Long>> {
+        @Override
+        public RedisCommandDescription getCommandDescription() {
+            // 这里必须是 set 操作，通过 MapState 来维护用户集合，
+            // 输出到 Redis 仅仅是为了展示结果供其他系统查询统计结果
+            return new RedisCommandDescription(RedisCommand.SET);
         }
-    
-        // 数据与 Redis key 的映射关系，并指定将数据 set 到 Redis
-        public static class RedisSetSinkMapper
-                implements RedisMapper<Tuple2<String, Long>> {
-            @Override
-            public RedisCommandDescription getCommandDescription() {
-                // 这里必须是 set 操作，通过 MapState 来维护用户集合，
-                // 输出到 Redis 仅仅是为了展示结果供其他系统查询统计结果
-                return new RedisCommandDescription(RedisCommand.SET);
-            }
-    
-            @Override
-            public String getKeyFromData(Tuple2<String, Long> data) {
-                return data.f0;
-            }
-    
-            @Override
-            public String getValueFromData(Tuple2<String, Long> data) {
-                return data.f1.toString();
-            }
+
+        @Override
+        public String getKeyFromData(Tuple2<String, Long> data) {
+            return data.f0;
+        }
+
+        @Override
+        public String getValueFromData(Tuple2<String, Long> data) {
+            return data.f1.toString();
         }
     }
-    
+}
+```
+
 
 该设计方案中，Redis 承担的功能仅仅是为了外部系统查询网站各页面对应的 UV 结果，当然也可以将 Redis 替换成其他存储系统，例如
 HBase、MySQL 等。UV 的统计依赖的是 Flink 的 MapState 和 ValueState，所以对 Redis 的使用都是 set
@@ -351,28 +362,30 @@ userId 根据 hash 策略分到各个桶中，每个桶内根据 userId 计算�
 userId 占用 80MB 内存的方案已经优化成仅占用 12KB 内存。使用 HyperLogLog 统计 UV 的方案与 Redis set 统计 UV
 的方案相比，代码实现改动很小，只是把 Redis 的 sadd 命令替换为 pfadd 命令即可。改动代码如下所示：
 
-    
-    
-    // 数据与 Redis key 的映射关系，并指定将数据 pfadd 到 Redis
-    public static class RedisPfaddSinkMapper
-            implements RedisMapper<Tuple2<String, String>> {
-        @Override
-        public RedisCommandDescription getCommandDescription() {
-            //  这里是 pfadd 操作
-            return new RedisCommandDescription(RedisCommand.PFADD);
-        }
-    
-        @Override
-        public String getKeyFromData(Tuple2<String, String> data) {
-            return data.f0;
-        }
-    
-        @Override
-        public String getValueFromData(Tuple2<String, String> data) {
-            return data.f1;
-        }
+
+​    
+```java
+// 数据与 Redis key 的映射关系，并指定将数据 pfadd 到 Redis
+public static class RedisPfaddSinkMapper
+        implements RedisMapper<Tuple2<String, String>> {
+    @Override
+    public RedisCommandDescription getCommandDescription() {
+        //  这里是 pfadd 操作
+        return new RedisCommandDescription(RedisCommand.PFADD);
     }
-    
+
+    @Override
+    public String getKeyFromData(Tuple2<String, String> data) {
+        return data.f0;
+    }
+
+    @Override
+    public String getValueFromData(Tuple2<String, String> data) {
+        return data.f1;
+    }
+}
+```
+
 
 Redis 中存储的统计结果如下图所示，Redis 中 key 20191027_5 对应的 value 为 乱码，是按照 HyperLogLog
 的格式进行存储。
@@ -380,15 +393,15 @@ Redis 中存储的统计结果如下图所示，Redis 中 key 20191027_5 对应�
 ![images](https://static.lovedata.net/zs/2019-10-31-174240.jpg-wm)
 如下所示，可以通过 Redis 的 pfcount 命令查询各页面每天对应的 UV 值：
 
-    
-    
+
+​    
     redis> pfcount 20191027_5
     16
     redis> pfcount 20191027_0
     11
     redis> pfcount 20191027_1
     17
-    
+
 
 HyperLogLog 适用场景：将数据插入到 HyperLogLog 中，HyperLogLog 可以对数据去重后，返回 HyperLogLog
 中插入了多少个不重复的元素，但是 HyperLogLog 并不能告诉我们某条数据有没有插入到 HyperLogLog 中。例如，往 HyperLogLog

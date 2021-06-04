@@ -1,5 +1,7 @@
 # 如何实时监控Flink和你的Job？
 
+[toc]
+
 当将 Flink Job Manager、Task Manager 都运行起来了，并且也部署了不少 Flink
 Job，那么它到底是否还在运行、运行的状态如何、资源 Task Manager 和 Slot 的个数是否足够、Job
 内部是否出现异常、计算速度是否跟得上数据生产的速度 等这些问题其实对我们来说是比较关注的，所以就很迫切的需要一个监控系统帮我们把整个 Flink
@@ -38,7 +40,6 @@ Job Manager 出现问题的话，就会导致作业 UI 信息查看不了，Task
     jobmanager_Status_JVM_Memory_NonHeap_Max
     jobmanager_Status_JVM_Memory_NonHeap_Used
     
-
   * CPU：Job Manager 分配的 CPU 使用情况，如果使用类似 K8S 等资源调度系统，则需要对每个容器进行设置资源，比如 CPU 限制不能超过多少，在 Flink Job Manager 中自带的 CPU 指标有：
 
     
@@ -46,7 +47,6 @@ Job Manager 出现问题的话，就会导致作业 UI 信息查看不了，Task
     jobmanager_Status_JVM_CPU_Load
     jobmanager_Status_JVM_CPU_Time
     
-
   * GC：GC 信息对于 Java 应用来说是避免不了的，每种 GC 都有时间和次数的指标可以供参考，提供的指标有：
 
     
@@ -55,7 +55,6 @@ Job Manager 出现问题的话，就会导致作业 UI 信息查看不了，Task
     jobmanager_Status_JVM_GarbageCollector_PS_MarkSweep_Time
     jobmanager_Status_JVM_GarbageCollector_PS_Scavenge_Count
     jobmanager_Status_JVM_GarbageCollector_PS_Scavenge_Time
-    
 
 #### Checkpoint 指标
 
@@ -63,8 +62,8 @@ Job Manager 出现问题的话，就会导致作业 UI 信息查看不了，Task
 执行的时间、Checkpoint 的时间长短、完成的 Checkpoint 的次数、Checkpoint 失败的次数、Checkpoint 正在执行
 Checkpoint 的个数等，其对应的指标如下：
 
-    
-    
+
+​    
     jobmanager_job_lastCheckpointAlignmentBuffered
     jobmanager_job_lastCheckpointDuration
     jobmanager_job_lastCheckpointExternalPath
@@ -74,7 +73,7 @@ Checkpoint 的个数等，其对应的指标如下：
     jobmanager_job_numberOfFailedCheckpoints
     jobmanager_job_numberOfInProgressCheckpoints
     jobmanager_job_totalNumberOfCheckpoints
-    
+
 
 #### 重要的指标
 
@@ -82,8 +81,8 @@ Checkpoint 的个数等，其对应的指标如下：
 的个数（通过查看该值可以知道是否有 Task Manager
 发生异常重启）、正在运行的作业数量、作业运行的时间和完成的时间、作业的重启次数，对应的指标如下：
 
-    
-    
+
+​    
     jobmanager_job_uptime
     jobmanager_numRegisteredTaskManagers
     jobmanager_numRunningJobs
@@ -92,7 +91,7 @@ Checkpoint 的个数等，其对应的指标如下：
     jobmanager_job_downtime
     jobmanager_job_fullRestarts
     jobmanager_job_restartingTime
-    
+
 
 ### 监控 Task Manager
 
@@ -118,8 +117,8 @@ Manager OOM 前老年代和新生代的 GC 次数比较、时间比较长。
 ![images](https://static.lovedata.net/zs/2019-10-19-030954.png-wm)
 在 Flink Reporter 中提供的 Task Manager Metrics 指标如下：
 
-    
-    
+
+​    
     taskmanager_Status_JVM_CPU_Load
     taskmanager_Status_JVM_CPU_Time
     taskmanager_Status_JVM_ClassLoader_ClassesLoaded
@@ -145,7 +144,7 @@ Manager OOM 前老年代和新生代的 GC 次数比较、时间比较长。
     taskmanager_Status_Network_TotalMemorySegments
     taskmanager_Status_Shuffle_Netty_AvailableMemorySegments
     taskmanager_Status_Shuffle_Netty_TotalMemorySegments
-    
+
 
 ### 监控 Flink Job
 
@@ -182,8 +181,8 @@ Metrics Reporter 将埋点的 Metrics 信息上传，这样最终就可以获取
 ![images](https://static.lovedata.net/zs/2019-10-19-064123.png-wm)
 在 Flink Metrics Reporter 上传的指标中大概有下面这些：
 
-    
-    
+
+​    
     taskmanager_job_task_Shuffle_Netty_Input_Buffers_outPoolUsage
     taskmanager_job_task_Shuffle_Netty_Input_Buffers_outputQueueLength
     taskmanager_job_task_Shuffle_Netty_Output_Buffers_inPoolUsage
@@ -231,7 +230,7 @@ Metrics Reporter 将埋点的 Metrics 信息上传，这样最终就可以获取
     taskmanager_job_task_operator_numRecordsInPerSecond
     taskmanager_job_task_operator_numRecordsOut
     taskmanager_job_task_operator_numRecordsOutPerSecond
-    
+
 
 ### 最关心的监控指标有哪些
 

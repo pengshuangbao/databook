@@ -1,13 +1,15 @@
 # FlinkParallelism和Slot深度理解
 
+[toc]
+
 相信使用过 Flink 的你或多或少遇到过下面这个问题（笔者自己的项目曾经也出现过这样的问题），错误信息如下：
 
-    
-    
+
+​    
     Caused by: akka.pattern.AskTimeoutException: 
     Ask timed out on [Actor[akka://flink/user/taskmanager_0#15608456]] after [10000 ms]. 
     Sender[null] sent message of type "org.apache.flink.runtime.rpc.messages.LocalRpcInvocation".
-    
+
 
 ![images](https://static.lovedata.net/zs/FkaM6A.jpg-wm)
 跟着这问题在 Flink 的 Issue
@@ -30,40 +32,43 @@ Job 消费 Kafka 数据过慢，适当调大可能就消费正常了。
 ![images](https://static.lovedata.net/zs/2019-10-06-055925.png-wm)
 如上图，在 Flink 配置文件中可以看到默认并行度是 1。
 
-    
-    
+
+​    
     cat flink-conf.yaml | grep parallelism
     
     # The parallelism used for programs that did not specify and other parallelism.
     parallelism.default: 1
-    
+
 
 所以如果在你的 Flink Job 里面不设置任何 parallelism 的话，那么它也会有一个默认的 parallelism（默认为
 1），那也意味着可以修改这个配置文件的默认并行度来提高 Job 的执行效率。如果是使用命令行启动你的 Flink Job，那么你也可以这样设置并行度(使用
 -p n 参数)：
 
-    
-    
+
+​    
     ./bin/flink run -p 10 /Users/zhisheng/word-count.jar
-    
+
 
 你也可以通过 `env.setParallelism(n)` 来设置整个程序的并行度：
 
-    
-    
-    StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-    env.setParallelism(10);
-    
+
+​    
+```java
+StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+env.setParallelism(10);
+```
+
 
 注意：这样设置的并行度是整个程序的并行度，那么后面如果每个算子不单独设置并行度覆盖的话，那么后面每个算子的并行度就都是以这里设置的并行度为准了。如何给每个算子单独设置并行度呢？
 
-    
-    
-    data.keyBy(new xxxKey())
-        .flatMap(new XxxFlatMapFunction()).setParallelism(5)
-        .map(new XxxMapFunction).setParallelism(5)
-        .addSink(new XxxSink()).setParallelism(1)
-    
+
+​    
+```java
+data.keyBy(new xxxKey())
+    .flatMap(new XxxFlatMapFunction()).setParallelism(5)
+    .map(new XxxMapFunction).setParallelism(5)
+    .addSink(new XxxSink()).setParallelism(1)
+```
 
 如上就是给每个算子单独设置并行度，这样的话，就算程序设置了 `env.setParallelism(10)`
 也是会被覆盖的。这也说明优先级是：算子设置并行度 > env 设置并行度 > 配置文件默认并行度。

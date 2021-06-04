@@ -1,5 +1,7 @@
 # Flink扩展库——StateProcessorAPI
 
+[toc]
+
 ### State Processor API 介绍
 
 能够从外部访问 Flink 作业的状态一直用户迫切需要的功能之一，在 Apache Flink 1.9.0 中新引入了 State Processor
@@ -41,83 +43,91 @@ State Processor API 现在提供了读取、新增和修改 Savepoint 数据的�
 
 读取状态首先需要指定一个 Savepoint（或者 Checkpoint） 的路径和状态后端存储的类型。
 
-    
-    
-    ExecutionEnvironment bEnv   = ExecutionEnvironment.getExecutionEnvironment();
-    ExistingSavepoint savepoint = Savepoint.load(bEnv, "hdfs://path/", new RocksDBStateBackend());
-    
+
+​    
+```java
+ExecutionEnvironment bEnv   = ExecutionEnvironment.getExecutionEnvironment();
+ExistingSavepoint savepoint = Savepoint.load(bEnv, "hdfs://path/", new RocksDBStateBackend());
+```
+
 
 读取 Operator State 时，只需指定算子的 uid、状态名称和类型信息。
 
-    
-    
-    DataSet<Integer> listState  = savepoint.readListState("zhisheng-uid", "list-state", Types.INT);
-    
-    DataSet<Integer> unionState = savepoint.readUnionState("zhisheng-uid", "union-state", Types.INT);
-    
-    DataSet<Tuple2<Integer, Integer>> broadcastState = savepoint.readBroadcastState("zhisheng-uid", "broadcast-state", Types.INT, Types.INT);
-    
+
+​    
+```java
+DataSet<Integer> listState  = savepoint.readListState("zhisheng-uid", "list-state", Types.INT);
+
+DataSet<Integer> unionState = savepoint.readUnionState("zhisheng-uid", "union-state", Types.INT);
+
+DataSet<Tuple2<Integer, Integer>> broadcastState = savepoint.readBroadcastState("zhisheng-uid", "broadcast-state", Types.INT, Types.INT);
+```
+
 
 如果在状态描述符（StateDescriptor）中使用了自定义类型序列化器 TypeSerializer，也可以指定它：
 
-    
-    
+
+​    
     DataSet<Integer> listState = savepoint.readListState(
         "zhisheng-uid", "list-state", 
         Types.INT, new MyCustomIntSerializer());
-    
+
 
 当读取 Keyed State 时，用户可以指定 KeyedStateReaderFunction 来读取任意列和复杂的状态类型，例如
 ListState，MapState 和 AggregatingState。这意味着如果算子包含了有状态的处理函数，例如：
 
-    
-    
-    public class StatefulFunctionWithTime extends KeyedProcessFunction<Integer, Integer, Void> {
-    
-       ValueState<Integer> state;
-    
-       @Override
-       public void open(Configuration parameters) {
-          ValueStateDescriptor<Integer> stateDescriptor = new ValueStateDescriptor<>("state", Types.INT);
-          state = getRuntimeContext().getState(stateDescriptor);
-       }
-    
-       @Override
-       public void processElement(Integer value, Context ctx, Collector<Void> out) throws Exception {
-          state.update(value + 1);
-       }
-    }
-    
+
+​    
+```java
+public class StatefulFunctionWithTime extends KeyedProcessFunction<Integer, Integer, Void> {
+
+   ValueState<Integer> state;
+
+   @Override
+   public void open(Configuration parameters) {
+      ValueStateDescriptor<Integer> stateDescriptor = new ValueStateDescriptor<>("state", Types.INT);
+      state = getRuntimeContext().getState(stateDescriptor);
+   }
+
+   @Override
+   public void processElement(Integer value, Context ctx, Collector<Void> out) throws Exception {
+      state.update(value + 1);
+   }
+}
+```
+
 
 然后可以通过定义输出类型和相应的 KeyedStateReaderFunction 进行读取上面的状态。
 
-    
-    
-    class KeyedState {
-      Integer key;
-      Integer value;
-    }
-    
-    class ReaderFunction extends KeyedStateReaderFunction<Integer, KeyedState> {
-      ValueState<Integer> state;
-    
-      @Override
-      public void open(Configuration parameters) {
-         ValueStateDescriptor<Integer> stateDescriptor = new ValueStateDescriptor<>("state", Types.INT);
-         state = getRuntimeContext().getState(stateDescriptor);
-      }
-    
-      @Override
-      public void readKey(Integer key, Context ctx, Collector<KeyedState> out) throws Exception {
-         KeyedState data = new KeyedState();
-         data.key    = key;
-         data.value  = state.value();
-         out.collect(data);
-      }
-    }
-    
-    DataSet<KeyedState> keyedState = savepoint.readKeyedState("zhisheng-uid", new ReaderFunction());
-    
+
+​    
+```
+class KeyedState {
+  Integer key;
+  Integer value;
+}
+
+class ReaderFunction extends KeyedStateReaderFunction<Integer, KeyedState> {
+  ValueState<Integer> state;
+
+  @Override
+  public void open(Configuration parameters) {
+     ValueStateDescriptor<Integer> stateDescriptor = new ValueStateDescriptor<>("state", Types.INT);
+     state = getRuntimeContext().getState(stateDescriptor);
+  }
+
+  @Override
+  public void readKey(Integer key, Context ctx, Collector<KeyedState> out) throws Exception {
+     KeyedState data = new KeyedState();
+     data.key    = key;
+     data.value  = state.value();
+     out.collect(data);
+  }
+}
+
+DataSet<KeyedState> keyedState = savepoint.readKeyedState("zhisheng-uid", new ReaderFunction());
+```
+
 
 注意：使用 KeyedStateReaderFunction 时，状态描述器（StateDescriptor）必须在 open 方法中注册，否则
 RuntimeContext#getState，RuntimeContext#getListState 或
@@ -164,42 +174,43 @@ RuntimeContext#getMapState 将导致 RuntimeException。
         .bootstrapWith(accountDataSet)
         .keyBy(acc -> acc.id)
         .transform(new AccountBootstrapper());
-‘’‘
+
+```
 
 该 KeyedStateBootstrapFunction 函数支持设置事件时间和处理时间的定时器，定时器不会在该函数中触发，只有在 DataStream
 作业中还原后才会激活，如果设置了处理时间的定时器，但是该处理时间已经过期了，那么在恢复作业的时候会立即触发。一旦创建了一个或者多个算子，可以将它们合并为一个
 Savepoint。
 
-    
-    
+
+​    
     Savepoint
         .create(backend, 128)
         .withOperator("uid1", transformation1)
         .withOperator("uid2", transformation2)
         .write(savepointPath);
-    
+
 
 #### 修改现有的 Savepoint
 
 除了可以从头开始创建 Savepoint 之外，还可以基于现有的 Savepoint，例如在为现有作业添加新的算子。
 
-    
-    
+
+​    
     Savepoint
         .load(backend, oldPath)
         .withOperator("uid", transformation)
         .write(newPath);
-    
+
 
 删除或者覆盖现有 Savepoint 中的算子状态，并将其写入。
 
-    
-    
+
+​    
     Savepoint
         .removeOperator(oldOperatorUid)
         .withOperator(oldOperatorUid, transformation)
         .write(path)
-    
+
 
 ### 为什么要使用 DataSet API？
 
@@ -213,4 +224,3 @@ Processor API 功能，但是尽可能的降低了对 DataSet API 的依赖性�
 本节讲了 Flink 1.9 中的 State Processor API 的概念和如何使用，以及该功能的设计背景及需求。有关更多详细信息，请参见
 [FLIP-43](https://cwiki.apache.org/confluence/display/FLINK/FLIP-43%3A+State+Processor+API)。对于使用
 DataSet API 来完成该功能，你有什么更好的解决方案吗？
-

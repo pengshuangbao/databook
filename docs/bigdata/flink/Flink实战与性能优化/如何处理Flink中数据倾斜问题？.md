@@ -1,5 +1,7 @@
 # 如何处理Flink中数据倾斜问题？
 
+[toc]
+
 在大数据计算场景，无论使用 MapReduce、Spark 还是 Flink
 计算框架，无论是批处理还是流处理都存在数据倾斜的问题，通过本节学习产生数据倾斜的原因及如何在生产环境解决数据倾斜。
 
@@ -80,39 +82,42 @@ PV 的 Subtask 接收到 5 和 6，只需要将 5+6 即可计算出圆圈总 PV 
 
 
 ​    
-    class LocalKeyByFlatMap extends FlatMapFunction<String, Tuple2<String, Long>> {
-    
-        //本地 buffer，存放 local 端缓存的 app 的 pv 信息
-        private HashMap<String, Long> localPvStat;
-    
-        //缓存的数据量大小，即：缓存多少数据再向下游发送
-        private int batchSize;
-    
-        //计数器，获取当前批次接收的数据量
-        private AtomicInteger currentSize = new AtomicInteger(0);;
-    
-        LocalKeyByFlatMap(int batchSize){
-            this.batchSize = batchSize;
-        }
-    
-        @Override
-        public void flatMap(String in, Collector collector) throws Exception {
-            //  将新来的数据添加到 buffer 中
-            Long pv = localPvStat.getOrDefault(in, 0L);
-            localPvStat.put(in, pv + 1);
-    
-            // 如果到达设定的批次，则将 buffer 中的数据发送到下游
-            if(currentSize.incrementAndGet() >= batchSize){
-                // 遍历 Buffer 中数据，发送到下游
-                for(Map.Entry<String, Long> appIdPv: localPvStat.entrySet()) {
-                    collector.collect(Tuple2.of(appIdPv.getKey(), appIdPv.getValue()));
-                }
-                // buffer 清空，计数器清零
-                localPvStat.clear();
-                currentSize.set(0);
+
+​    
+```java
+ class LocalKeyByFlatMap extends FlatMapFunction<String, Tuple2<String, Long>> {  
+  //本地 buffer，存放 local 端缓存的 app 的 pv 信息
+    private HashMap<String, Long> localPvStat;
+
+    //缓存的数据量大小，即：缓存多少数据再向下游发送
+    private int batchSize;
+
+    //计数器，获取当前批次接收的数据量
+    private AtomicInteger currentSize = new AtomicInteger(0);;
+
+    LocalKeyByFlatMap(int batchSize){
+        this.batchSize = batchSize;
+    }
+
+    @Override
+    public void flatMap(String in, Collector collector) throws Exception {
+        //  将新来的数据添加到 buffer 中
+        Long pv = localPvStat.getOrDefault(in, 0L);
+        localPvStat.put(in, pv + 1);
+
+        // 如果到达设定的批次，则将 buffer 中的数据发送到下游
+        if(currentSize.incrementAndGet() >= batchSize){
+            // 遍历 Buffer 中数据，发送到下游
+            for(Map.Entry<String, Long> appIdPv: localPvStat.entrySet()) {
+                collector.collect(Tuple2.of(appIdPv.getKey(), appIdPv.getValue()));
             }
+            // buffer 清空，计数器清零
+            localPvStat.clear();
+            currentSize.set(0);
         }
     }
+}
+```
 
 
 代码逻辑比较简单，使用了 FlatMap 算子来做缓冲，每来一条数据都需要检索，为了提高检索效率，所以这里使用 HashMap 类型的
@@ -175,72 +180,73 @@ ListState，状态中需要保存 KV 类型的数据，key 是 appId、value 是
 中。代码具体实现如下所示：
 
 
-​    
-    class LocalKeyByFlatMap extends RichFlatMapFunction<String, Tuple2<String, Long>> implements CheckpointedFunction {
-    
-        //Checkpoint 时为了保证 Exactly Once，将 buffer 中的数据保存到该 ListState 中
-        private ListState<Tuple2<String, Long>> localPvStatListState;
-    
-        //本地 buffer，存放 local 端缓存的 app 的 pv 信息
-        private HashMap<String, Long> localPvStat;
-    
-        //缓存的数据量大小，即：缓存多少数据再向下游发送
-        private int batchSize;
-    
-        //计数器，获取当前批次接收的数据量
-        private AtomicInteger currentSize;
-    
-        LocalKeyByFlatMap(int batchSize){
-            this.batchSize = batchSize;
-        }
-    
-        @Override
-        public void flatMap(String in, Collector collector) throws Exception {
-            //  将新来的数据添加到 buffer 中
-            Long pv = localPvStat.getOrDefault(in, 0L);
-            localPvStat.put(in, pv + 1);
-    
-            // 如果到达设定的批次，则将 buffer 中的数据发送到下游
-            if(currentSize.incrementAndGet() >= batchSize){
-                // 遍历 Buffer 中数据，发送到下游
-                for(Map.Entry<String, Long> appIdPv: localPvStat.entrySet()) {
-                    collector.collect(Tuple2.of(appIdPv.getKey(), appIdPv.getValue()));
-                }
-                // Buffer 清空，计数器清零
-                localPvStat.clear();
-                currentSize.set(0);
-            }
-        }
-    
-        @Override
-        public void snapshotState(FunctionSnapshotContext functionSnapshotContext) {
-            // 将 buffer 中的数据保存到状态中，来保证 Exactly Once
-            localPvStatListState.clear();
+
+```java
+class LocalKeyByFlatMap extends RichFlatMapFunction<String, Tuple2<String, Long>> implements CheckpointedFunction {
+   //Checkpoint 时为了保证 Exactly Once，将 buffer 中的数据保存到该 ListState 中
+    private ListState<Tuple2<String, Long>> localPvStatListState;
+
+    //本地 buffer，存放 local 端缓存的 app 的 pv 信息
+    private HashMap<String, Long> localPvStat;
+
+    //缓存的数据量大小，即：缓存多少数据再向下游发送
+    private int batchSize;
+
+    //计数器，获取当前批次接收的数据量
+    private AtomicInteger currentSize;
+
+    LocalKeyByFlatMap(int batchSize){
+        this.batchSize = batchSize;
+    }
+
+    @Override
+    public void flatMap(String in, Collector collector) throws Exception {
+        //  将新来的数据添加到 buffer 中
+        Long pv = localPvStat.getOrDefault(in, 0L);
+        localPvStat.put(in, pv + 1);
+
+        // 如果到达设定的批次，则将 buffer 中的数据发送到下游
+        if(currentSize.incrementAndGet() >= batchSize){
+            // 遍历 Buffer 中数据，发送到下游
             for(Map.Entry<String, Long> appIdPv: localPvStat.entrySet()) {
-                localPvStatListState.add(Tuple2.of(appIdPv.getKey(), appIdPv.getValue()));
+                collector.collect(Tuple2.of(appIdPv.getKey(), appIdPv.getValue()));
             }
-        }
-    
-        @Override
-        public void initializeState(FunctionInitializationContext context) {
-            // 从状态中恢复 buffer 中的数据
-            localPvStatListState = context.getOperatorStateStore().getListState(
-                    new ListStateDescriptor<>("localPvStat",
-                            TypeInformation.of(new TypeHint<Tuple2<String, Long>>() {
-                            })));
-            localPvStat = new HashMap();
-            if(context.isRestored()) {
-                // 从状态中恢复数据到 localPvStat 中
-                for(Tuple2<String, Long> appIdPv: localPvStatListState.get()){
-                    localPvStat.put(appIdPv.f0, appIdPv.f1);
-                }
-                //  从状态恢复时，默认认为 buffer 中数据量达到了 batchSize，需要向下游发送数据了
-                currentSize = new AtomicInteger(batchSize);
-            } else {
-                currentSize = new AtomicInteger(0);
-            }
+            // Buffer 清空，计数器清零
+            localPvStat.clear();
+            currentSize.set(0);
         }
     }
+
+    @Override
+    public void snapshotState(FunctionSnapshotContext functionSnapshotContext) {
+        // 将 buffer 中的数据保存到状态中，来保证 Exactly Once
+        localPvStatListState.clear();
+        for(Map.Entry<String, Long> appIdPv: localPvStat.entrySet()) {
+            localPvStatListState.add(Tuple2.of(appIdPv.getKey(), appIdPv.getValue()));
+        }
+    }
+
+    @Override
+    public void initializeState(FunctionInitializationContext context) {
+        // 从状态中恢复 buffer 中的数据
+        localPvStatListState = context.getOperatorStateStore().getListState(
+                new ListStateDescriptor<>("localPvStat",
+                        TypeInformation.of(new TypeHint<Tuple2<String, Long>>() {
+                        })));
+        localPvStat = new HashMap();
+        if(context.isRestored()) {
+            // 从状态中恢复数据到 localPvStat 中
+            for(Tuple2<String, Long> appIdPv: localPvStatListState.get()){
+                localPvStat.put(appIdPv.f0, appIdPv.f1);
+            }
+            //  从状态恢复时，默认认为 buffer 中数据量达到了 batchSize，需要向下游发送数据了
+            currentSize = new AtomicInteger(batchSize);
+        } else {
+            currentSize = new AtomicInteger(0);
+        }
+    }
+}
+```
 
 
 上述改进方案后的 LocalKeyByFlatMap 相比之前方案仅仅增加了一个属性，即：`ListState<Tuple2<String, Long>>`
@@ -258,12 +264,14 @@ Exactly Once，但是一旦修改并行度，还能保证 Exactly Once
 信息恢复也没有问题。关键在于 LocalKeyBy 算子中 PV 信息恢复时会丢数据吗？状态恢复时，从状态中将 PV 信息恢复到 buffer
 中的核心代码如下所示：
 
+  ```java
+      // 从状态中恢复数据到 localPvStat 中
+      for(Tuple2<String, Long> appIdPv: localPvStatListState.get()){
+          localPvStat.put(appIdPv.f0, appIdPv.f1);
+      }
+  ```
 
-​    
-    // 从状态中恢复数据到 localPvStat 中
-    for(Tuple2<String, Long> appIdPv: localPvStatListState.get()){
-        localPvStat.put(appIdPv.f0, appIdPv.f1);
-    }
+
 
 
 从状态中会恢复 4 个 Tuple2，分别是 <圆圈,4>、<方块,2>、<圆圈,4>、<方块,1>，这里有两个圆圈、两个方块，恢复到 HashMap
@@ -276,9 +284,8 @@ buffer 恢复完数据后，buffer 中保存的 PV 信息为 <圆圈,4>、<方�
 在使用状态来保证 Exactly Once 时，必须考虑修改并行度后，状态如何正常恢复的情况。优化后的代码如下所示，仅仅修改 initializeState
 方法中恢复状态的逻辑：
 
-
-​    
-    // 从状态中恢复 buffer 中的数据
+```java
+  // 从状态中恢复 buffer 中的数据
     for(Tuple2<String, Long> appIdPv: localPvStatListState.get()){
         long pv = localPvStat.getOrDefault(appIdPv.f0, 0L);
         // 如果出现 pv != 0，说明改变了并行度，
@@ -286,6 +293,9 @@ buffer 恢复完数据后，buffer 中保存的 PV 信息为 <圆圈,4>、<方�
         // 所以单个 subtask 恢复的状态中可能包含两个相同的 app 的数据
         localPvStat.put(appIdPv.f0, pv + appIdPv.f1);
     }
+```
+
+  
 
 
 代码中，首先从 buffer 中获取当前 app 的 PV 数据，如果 buffer 中不包含当前 app 则 PV 值返回 0，如果 buffer
@@ -309,12 +319,10 @@ shuffle。如何强制 shuffle 呢？了解一下 DataStream 的物理分区策�
 分区策略 | 描述  
 ---|---  
 dataStream.partitionCustom(partitioner, "someKey");
-dataStream.partitionCustom(partitioner, 0); | 根据指定的字段进行分区，指定字段值相同的数据发送到同一个
-Operator 实例处理  
+dataStream.partitionCustom(partitioner, 0); | 根据指定的字段进行分区，指定字段值相同的数据发送到同一个Operator 实例处理  
 dataStream.shuffle(); | 将数据随机地分配到下游 Operator 实例  
 dataStream.rebalance(); | 使用轮循的策略将数据发送到下游 Operator 实例  
-dataStream.rescale(); | 基于 rebalance 优化的策略，依然使用轮循策略，但仅仅是 TaskManager 内的轮循，只会在
-TaskManager 本地进行 shuffle 操作，减少了网络传输  
+dataStream.rescale(); | 基于 rebalance 优化的策略，依然使用轮循策略，但仅仅是 TaskManager 内的轮循，只会在TaskManager 本地进行 shuffle 操作，减少了网络传输  
 dataStream.broadcast(); | 将数据广播到下游所有的 Operator 实例  
 
 在这里需要解决数据倾斜，只需要使用 shuffle、rebalance 或 rescale 即可将数据均匀分配，从而解决数据倾斜的问题。

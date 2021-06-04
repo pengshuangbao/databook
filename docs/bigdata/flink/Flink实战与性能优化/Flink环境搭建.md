@@ -1,5 +1,9 @@
 # Flink环境搭建
 
+[toc]
+
+
+
 在 2.1 节中已经将 Flink 的准备环境已经讲完了，本篇文章将带大家正式开始接触 Flink，那么我们得先安装一下 Flink。Flink
 是可以在多个平台（Windows、Linux、Mac）上安装的。在开始写本书的时候最新版本是 1.8 版本，但是写到一半后更新到 1.9 了（合并了大量
 Blink 的新特性），所以笔者又全部更新版本到 1.9，书籍后面也都是基于最新的版本讲解与演示。
@@ -20,58 +24,58 @@ Flink 的官网地址是：<https://flink.apache.org/>
 
 接下来我们可以启动一下 Flink，我们进入到 Flink 的安装目录下执行命令 `./bin/start-cluster.sh` 即可，产生的日志如下：
 
-    
-    
+
+​    
     zhisheng@zhisheng /usr/local/flink-1.9.0  ./bin/start-cluster.sh
     Starting cluster.
     Starting standalonesession daemon on host zhisheng.
     Starting taskexecutor daemon on host zhisheng.
-    
+
 
 如果你的电脑是 Mac 的话，那么你也可以通过 Homebrew 命令进行安装。先通过命令 `brew search flink` 查找一下包：
 
-    
-    
+
+​    
      zhisheng@zhisheng  ~  brew search flink
     ==> Formulae
     apache-flink ✔       homebrew/linuxbrew-core/apache-flink
-    
+
 
 可以发现找得到 Flink 的安装包，但是这样安装的版本可能不是最新的，如果你要安装的话，则使用命令：
 
-    
-    
+
+​    
     brew install apache-flink
-    
+
 
 那么它就会开始进行下载并安装好，安装后的目录应该是在 `/usr/local/Cellar/apache-flink` 下。
 
 ![images](https://static.lovedata.net/zs/2019-10-23-030606.png-wm)
 你可以通过下面命令检查安装的 Flink 到底是什么版本的：
 
-    
-    
+
+​    
     flink --version
-    
+
 
 结果：
 
-    
-    
+
+​    
     Version: 1.9.0, Commit ID: ff472b4
-    
+
 
 这种的话运行是得进入 `/usr/local/Cellar/apache-flink/1.9.0/libexec/bin` 目录下执行命令
 `./start-cluster.sh` 才可以启动 Flink 的。
 
 启动后产生的日志：
 
-    
-    
+
+​    
     Starting cluster.
     Starting standalonesession daemon on host zhisheng.
     Starting taskexecutor daemon on host zhisheng.
-    
+
 
 #### Windows 安装
 
@@ -85,34 +89,36 @@ Flink 的官网地址是：<https://flink.apache.org/>
 ![images](https://static.lovedata.net/zs/2019-10-23-021138.png-wm)
 你在通过 jps 命令可以查看到运行的进程有：
 
-    
-    
+
+​    
     zhisheng@zhisheng  /usr/local/flink-1.9.0  jps
     73937 StandaloneSessionClusterEntrypoint
     74391 Jps
     520
     74362 TaskManagerRunner
-    
+
 
 ### Flink 目录配置文件解读
 
 Flink 安装好后，我们也运行启动看了效果了，接下来我们来看下它的目录结构吧：
 
-    
-    
-     ✘ zhisheng@zhisheng  /usr/local/flink-1.9.0  ll
-    total 1200
-    -rw-r--r--@  1 zhisheng  staff    11K  3  5 16:32 LICENSE
-    -rw-r--r--@  1 zhisheng  staff   582K  4  4 00:01 NOTICE
-    -rw-r--r--@  1 zhisheng  staff   1.3K  3  5 16:32 README.txt
-    drwxr-xr-x@ 26 zhisheng  staff   832B  3  5 16:32 bin
-    drwxr-xr-x@ 14 zhisheng  staff   448B  4  4 14:06 conf
-    drwxr-xr-x@  6 zhisheng  staff   192B  4  4 14:06 examples
-    drwxr-xr-x@  5 zhisheng  staff   160B  4  4 14:06 lib
-    drwxr-xr-x@ 47 zhisheng  staff   1.5K  3  6 23:21 licenses
-    drwxr-xr-x@  2 zhisheng  staff    64B  3  5 19:50 log
-    drwxr-xr-x@ 22 zhisheng  staff   704B  4  4 14:06 opt
-    
+
+​    
+```bash
+ ✘ zhisheng@zhisheng  /usr/local/flink-1.9.0  ll
+total 1200
+-rw-r--r--@  1 zhisheng  staff    11K  3  5 16:32 LICENSE
+-rw-r--r--@  1 zhisheng  staff   582K  4  4 00:01 NOTICE
+-rw-r--r--@  1 zhisheng  staff   1.3K  3  5 16:32 README.txt
+drwxr-xr-x@ 26 zhisheng  staff   832B  3  5 16:32 bin
+drwxr-xr-x@ 14 zhisheng  staff   448B  4  4 14:06 conf
+drwxr-xr-x@  6 zhisheng  staff   192B  4  4 14:06 examples
+drwxr-xr-x@  5 zhisheng  staff   160B  4  4 14:06 lib
+drwxr-xr-x@ 47 zhisheng  staff   1.5K  3  6 23:21 licenses
+drwxr-xr-x@  2 zhisheng  staff    64B  3  5 19:50 log
+drwxr-xr-x@ 22 zhisheng  staff   704B  4  4 14:06 opt
+```
+
 
 上面目录：
 
@@ -125,8 +131,8 @@ Flink 安装好后，我们也运行启动看了效果了，接下来我们来�
 
 在 bin 目录里面有如下这些脚本：
 
-    
-    
+
+​    
     zhisheng@zhisheng  /usr/local/flink-1.9.0  ll bin
     total 256
     -rwxr-xr-x@ 1 zhisheng  staff    28K  3  5 16:32 config.sh
@@ -153,14 +159,14 @@ Flink 安装好后，我们也运行启动看了效果了，接下来我们来�
     -rwxr-xr-x@ 1 zhisheng  staff   3.8K  3  5 16:32 taskmanager.sh
     -rwxr-xr-x@ 1 zhisheng  staff   1.6K  3  5 16:32 yarn-session.sh
     -rwxr-xr-x@ 1 zhisheng  staff   2.2K  3  5 16:32 zookeeper.sh
-    
+
 
 脚本包括了配置启动脚本、historyserver、Job Manager、Task Manager、启动集群和停止集群等脚本。
 
 在 conf 目录下面有如下这些配置文件：
 
-    
-    
+
+​    
     zhisheng@zhisheng  /usr/local/flink-1.9.0  ll conf
     total 112
     -rw-r--r--@ 1 zhisheng  staff   9.8K  4  4 00:01 flink-conf.yaml
@@ -175,35 +181,35 @@ Flink 安装好后，我们也运行启动看了效果了，接下来我们来�
     -rw-r--r--@ 1 zhisheng  staff    10B  3  5 16:32 slaves
     -rw-r--r--@ 1 zhisheng  staff   3.8K  3  5 16:32 sql-client-defaults.yaml
     -rw-r--r--@ 1 zhisheng  staff   1.4K  3  5 16:32 zoo.cfg
-    
+
 
 配置包含了 Flink 的自身配置、日志配置、masters、slaves、sql-client、zoo 等配置。
 
 在 examples 目录里面可以看到有如下这些案例的目录：
 
-    
-    
+
+​    
     zhisheng@zhisheng  /usr/local/flink-1.9.0  ll examples
     total 0
     drwxr-xr-x@ 10 zhisheng  staff   320B  4  4 14:06 batch
     drwxr-xr-x@  3 zhisheng  staff    96B  4  4 14:06 gelly
     drwxr-xr-x@  4 zhisheng  staff   128B  4  4 14:06 python
     drwxr-xr-x@ 11 zhisheng  staff   352B  4  4 14:06 streaming
-    
+
 
 这个目录下面有批、gelly、python、流的 demo，后面我们可以直接用上面的案例做些简单的测试。
 
 在 log 目录里面存着 Task Manager & Job manager 的日志：
 
-    
-    
+
+​    
     zhisheng@zhisheng  /usr/local/flink-1.9.0  ll log
     total 144
     -rw-r--r--  1 zhisheng  staff    11K  4 25 20:10 flink-zhisheng-standalonesession-0-zhisheng.log
     -rw-r--r--  1 zhisheng  staff     0B  4 25 20:10 flink-zhisheng-standalonesession-0-zhisheng.out
     -rw-r--r--  1 zhisheng  staff    11K  4 25 20:10 flink-zhisheng-taskexecutor-0-zhisheng.log
     -rw-r--r--  1 zhisheng  staff     0B  4 25 20:10 flink-zhisheng-taskexecutor-0-zhisheng.out
-    
+
 
 一般我们如果要深入了解一个知识点，最根本的方法就是看其源码实现，源码下面无秘密，所以我这里也讲一下如何将源码下载编译并运行，然后将代码工程导入到 IDEA
 中去，方便自己查阅和 debug 代码。
@@ -214,35 +220,35 @@ Flink GitHub 仓库地址：<https://github.com/apache/flink>
 
 执行下面命令将源码下载到本地：
 
-    
-    
+
+​    
     git clone git@github.com:apache/flink.git
-    
+
 
 拉取的时候找个网络好点的地方，这样速度可能会更快点。
 
 然后你可以切换到项目的不同分支，比如 release-1.9、blink（阿里巴巴开源贡献的） ，执行下面命令将代码切换到 release-1.9 分支：
 
-    
-    
+
+​    
     git checkout release-1.9
-    
+
 
 或者你也想去看看 Blink 的代码实现，你也可以执行下面命令切换到 blink 分支来：
 
-    
-    
+
+​    
     git checkout blink
-    
+
 
 ### Flink 源码编译
 
 编译源码的话，你需要执行如下命令：
 
-    
-    
+
+​    
     mvn clean install -Dmaven.test.skip=true -Dmaven.javadoc.skip=true -Dcheckstyle.skip=true
-    
+
 
   * -Dmaven.test.skip：跳过测试代码
   * -Dmaven.javadoc.skip：跳过 javadoc 检查
@@ -252,8 +258,8 @@ maven 编译的时候跳过这些检查，这样可以减少很多时间，还�
 
 注意：你的 maven 的 settings.xml 文件的 mirror 添加下面这个(这样才能下载到某些下载不了的依赖)。
 
-    
-    
+
+​    
     <mirror>
       <id>nexus-aliyun</id>
       <mirrorOf>*,!jeecg,!jeecg-snapshots,!mapr-releases</mirrorOf>
@@ -267,7 +273,7 @@ maven 编译的时候跳过这些检查，这样可以减少很多时间，还�
       <name>mapr-releases</name>
       <url>https://maven.aliyun.com/repository/mapr-public</url>
     </mirror>
-    
+
 
 如果还遇到什么其他的问题的话，可以去看看我之前在我博客分享的一篇源码编译的文章（附视频）：[Flink 源码解析 ——
 源码编译运行](http://www.54tianzhisheng.cn/2019/01/30/Flink-code-compile/)。

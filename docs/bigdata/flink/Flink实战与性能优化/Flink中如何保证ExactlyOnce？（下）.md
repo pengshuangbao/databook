@@ -1,5 +1,7 @@
 # Flink中如何保证ExactlyOnce？（下）
 
+[toc]
+
 ### 分析 FlinkKafkaConsumer 的设计思想
 
 FlinkKafkaConsumer 做为 Source，从 Kafka 读取数据到 Flink 中，首先想一下设计
@@ -200,7 +202,7 @@ FlinkKafkaConsumer 初始化时，恢复 offset 相关的源码如下：
 
 
 
-   
+
 对 offset 信息快照相关的源码如下：
 
 ```java

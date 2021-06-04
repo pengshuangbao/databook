@@ -1,5 +1,7 @@
 # FlinkJob如何在Standalone、YARN、Mesos、K8S上部署运行？
 
+[toc]
+
 前面内容已经有很多学习案列带大家正式使用了 Flink，其中不仅有讲将 Flink 应用程序在 IDEA 中运行，也有讲将 Flink Job
 编译打包上传到 Flink UI 上运行，在这 UI 背后可能是 YARN、Mesos、Kubernetes。那么这节就系统讲下如何部署和运行我们的
 Flink Job，大家可以根据自己公司的场景进行选择！
@@ -11,34 +13,34 @@ Flink Job，大家可以根据自己公司的场景进行选择！
 第一种方式就是 Standalone 模式，这种模式笔者在前面 2.2 节里面演示的就是这种，我们通过执行命令：`./bin/start-
 cluster.sh` 启动一个 Flink Standalone 集群。
 
-    
-    
+
+​    
     zhisheng@zhisheng  /usr/local/flink-1.9.0  ./bin/start-cluster.sh
     Starting cluster.
     Starting standalonesession daemon on host zhisheng.
     Starting taskexecutor daemon on host zhisheng.
-    
+
 
 默认的话是启动一个 Job Manager 和一个 Task Manager，我们可以通过 `jps` 查看进程有：
 
-    
-    
+
+​    
     65425 Jps
     51572 TaskManagerRunner
     51142 StandaloneSessionClusterEntrypoint
-    
+
 
 其中上面的 TaskManagerRunner 代表的是 Task Manager
 进程，StandaloneSessionClusterEntrypoint 代表的是 Job Manager 进程。上面运行产生的只有一个 Job
 Manager 和一个 Task Manager，如果是生产环境的话，这样的配置肯定是不够运行多个 Job 的，那么我们该如何在生产环境中配置
 standalone 模式的集群呢？我们就需要修改 Flink 安装目录下面的 conf 文件夹里面配置：
 
-    
-    
+
+​    
     flink-conf.yaml
     masters
     slaves
-    
+
 
 将 slaves 中再添加一个 `localhost`，这样就可以启动两个 Task Manager 了。接着启动脚本 `start-
 cluster.sh`，启动日志显示如下：
@@ -51,19 +53,19 @@ cluster.sh`，启动日志显示如下：
 
 **增加一个 Job Manager** ：
 
-    
-    
+
+​    
     bin/jobmanager.sh ((start|start-foreground) [host] [webui-port])|stop|stop-all
-    
+
 
 但是注意 Standalone 下最多只能运行一个 Job Manager。
 
 **增加一个 Task Manager** ：
 
-    
-    
+
+​    
     bin/taskmanager.sh start|start-foreground|stop|stop-all
-    
+
 
 比如我执行了 `./bin/taskmanager.sh start` 命令后：
 
@@ -100,10 +102,10 @@ docs-release-1.9/ops/deployment/mesos.html)也有介绍，主要是讲 Flink 运
 DC/OS（它是具有复杂应用程序管理层的 Mesos 分支，预装了Marathon），如果安装好了 DC/OS 的话，那么你可以使用它的 CLI 工具来安装
 Flink，比如：
 
-    
-    
+
+​    
     dcos package install flink
-    
+
 
 在 Mesos 上运行 Flink 有两种方式：Flink 会话集群（session cluster）和作业集群（job cluster）。
 
@@ -133,32 +135,36 @@ path=...` 传入进程。
 
 你可以这样获取到 JobGraph：
 
-    
-    
-    final JobGraph jobGraph = env.getStreamGraph().getJobGraph();
-    jobGraph.setAllowQueuedScheduling(true);
-    final String jobGraphFilename = "job.graph";
-    File jobGraphFile = new File(jobGraphFilename);
-    try (FileOutputStream output = new FileOutputStream(jobGraphFile);
-        ObjectOutputStream obOutput = new ObjectOutputStream(output)){
-        obOutput.writeObject(jobGraph);
-    }
-    
+
+​    
+```java
+final JobGraph jobGraph = env.getStreamGraph().getJobGraph();
+jobGraph.setAllowQueuedScheduling(true);
+final String jobGraphFilename = "job.graph";
+File jobGraphFile = new File(jobGraphFilename);
+try (FileOutputStream output = new FileOutputStream(jobGraphFile);
+    ObjectOutputStream obOutput = new ObjectOutputStream(output)){
+    obOutput.writeObject(jobGraph);
+}
+```
+
 
 通常你可以像下面这样全部通过启动参数来传入配置：
 
-    
-    
-    bin/mesos-appmaster.sh \
-        -Dmesos.master=master.foobar.org:5050 \
-        -Djobmanager.heap.mb=1024 \
-        -Djobmanager.rpc.port=6123 \
-        -Drest.port=8081 \
-        -Dmesos.resourcemanager.tasks.mem=4096 \
-        -Dtaskmanager.heap.mb=3500 \
-        -Dtaskmanager.numberOfTaskSlots=2 \
-        -Dparallelism.default=10
-    
+
+​    
+```java
+bin/mesos-appmaster.sh \
+    -Dmesos.master=master.foobar.org:5050 \
+    -Djobmanager.heap.mb=1024 \
+    -Djobmanager.rpc.port=6123 \
+    -Drest.port=8081 \
+    -Dmesos.resourcemanager.tasks.mem=4096 \
+    -Dtaskmanager.heap.mb=3500 \
+    -Dtaskmanager.numberOfTaskSlots=2 \
+    -Dparallelism.default=10
+```
+
 
 更多关于 Flink On Mesos 的安装以及配置可以访问
 [官网](https://ci.apache.org/projects/flink/flink-docs-
@@ -192,6 +198,7 @@ service、jobmanager-deployment、taskmanager-deployment，在利用 kubectl
       name: flink-jobmanager
     spec:
       ports:
+    
       - name: rpc
         port: 6123
       - name: blob
@@ -200,10 +207,9 @@ service、jobmanager-deployment、taskmanager-deployment，在利用 kubectl
         port: 6125
       - name: ui
         port: 8081
-      selector:
+        selector:
         app: flink
         component: jobmanager
-    
 
   * jobmanager-deployment.yaml
 
@@ -239,7 +245,6 @@ service、jobmanager-deployment、taskmanager-deployment，在利用 kubectl
             - name: JOB_MANAGER_RPC_ADDRESS
               value: flink-jobmanager
     
-
   * taskmanager-deployment.yaml
 
     
@@ -271,18 +276,17 @@ service、jobmanager-deployment、taskmanager-deployment，在利用 kubectl
             env:
             - name: JOB_MANAGER_RPC_ADDRESS
               value: flink-jobmanager
-    
 
 创建好这三个文件后，分别执行下面三个命令：
 
-    
-    
+
+​    
     kubectl create -f jobmanager-service.yaml
     
     kubectl create -f jobmanager-deployment.yaml
     
     kubectl create -f taskmanager-deployment.yaml
-    
+
 
 ![images](https://static.lovedata.net/zs/2019-05-31-070748.jpg-wm)
 然后去 K8s 的 Dashboard 上面查看 Flink 的情况：
@@ -290,10 +294,10 @@ service、jobmanager-deployment、taskmanager-deployment，在利用 kubectl
 ![images](https://static.lovedata.net/zs/2019-05-31-071343.jpg-wm)
 我们如果要看 Flink 自带的 UI 的话需要将端口映射一下，使用如下命令：
 
-    
-    
+
+​    
     kubectl port-forward service/flink-jobmanager 8081:8081
-    
+
 
 ![images](https://static.lovedata.net/zs/2019-05-31-071954.jpg-wm)
 然后访问 <http://localhost:8081> 就可以看到 Flink 自带的 UI 了：
@@ -301,10 +305,10 @@ service、jobmanager-deployment、taskmanager-deployment，在利用 kubectl
 ![images](https://static.lovedata.net/zs/2019-05-31-072103.jpg-wm)
 如果我们要提交 Job 的话，我们先用命令行来操作一下：
 
-    
-    
+
+​    
     ./bin/flink run -d -m localhost:8081 ~/word-count.jar
-    
+
 
 ![images](https://static.lovedata.net/zs/2019-10-23-162109.png-wm)
 执行完命令后的话，就可以去页面看到刚才提交的 Job 了：
@@ -317,14 +321,14 @@ service、jobmanager-deployment、taskmanager-deployment，在利用 kubectl
 ![images](https://static.lovedata.net/zs/2019-05-31-073434.jpg-wm)
 启动完了之后的话，如果你想删除就需要使用下面命令：
 
-    
-    
+
+​    
     kubectl delete -f jobmanager-deployment.yaml
     
     kubectl delete -f taskmanager-deployment.yaml
     
     kubectl delete -f jobmanager-service.yaml
-    
+
 
 ![images](https://static.lovedata.net/zs/2019-05-31-075628.jpg-wm)
 ### 小结与反思

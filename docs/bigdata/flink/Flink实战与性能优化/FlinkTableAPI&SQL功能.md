@@ -1,5 +1,7 @@
 # FlinkTableAPI&SQL功能
 
+[toc]
+
 在 5.1 节中对 Flink Table API & SQL 的概述和常见 API 都做了介绍，这篇文章先来看下其与 DataStream 和
 DataSet API 的集成。
 
@@ -164,8 +166,8 @@ Table API 提供了一种机制来解释计算 Table 的逻辑和优化查询计
 
 通过 explain(table) 方法返回的结果：
 
-    
-    
+
+​    
     == Abstract Syntax Tree ==
     LogicalUnion(all=[true])
       LogicalFilter(condition=[LIKE($1, _UTF-16LE'F%')])
@@ -418,10 +420,10 @@ Elasticsearch Connector、CSV 和 JSON 等的使用说明。
 ![images](https://static.lovedata.net/zs/2019-11-04-075132.png-wm)
 你可以运行下面的命令就可以知道名字和其出现的次数的结果。
 
-    
-    
+
+​    
     SELECT name, COUNT(*) AS cnt FROM (VALUES ('Bob'), ('Alice'), ('Greg'), ('Bob')) AS NameTable(name) GROUP BY name;
-    
+
 
 另外它还支持传入 YAML 文件，你可以在 YAML 文件中如前面内容一样定义的 Kafka Connector 等信息，关于 SQL Client
 的更多功能可以查阅官网。
@@ -436,8 +438,8 @@ Flink 支持读取和写入 Hive 表。支持的 Hive 2.3.4 和 1.2.1 版本，�
 
 你可以通过 Java、Scala、YAML 连接 Hive，比如使用 Java 代码如下：
 
-    
-    
+
+​    
     String name            = "myhive";
     String defaultDatabase = "mydatabase";
     String hiveConfDir     = "/opt/hive-conf";
@@ -445,7 +447,7 @@ Flink 支持读取和写入 Hive 表。支持的 Hive 2.3.4 和 1.2.1 版本，�
     
     HiveCatalog hive = new HiveCatalog(name, defaultDatabase, hiveConfDir, version);
     tableEnv.registerCatalog("myhive", hive);
-    
+
 
 ### 小结与反思
 

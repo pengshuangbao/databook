@@ -1,5 +1,7 @@
 # 如何搭建一套完整的Flink监控系统
 
+[toc]
+
 8.1 节中讲解了 Job Manager、Task Manager 和 Flink Job
 的监控，以及需要关注的监控指标有哪些。本节带大家讲解一下如何搭建一套完整的 Flink
 监控系统，如果你所在的公司没有专门的监控平台，那么可以根据本节的内容来为公司搭建一套属于自己公司的 Flink 监控系统。
@@ -13,9 +15,7 @@
 
 这里通过 Chrome 浏览器的控制台来查看一下有哪些 REST API 是用来提供监控数据的。
 
-1.在Chrome 浏览器中打开 `http://localhost:8081/overview` 页面，可以获取到整个 Flink
-集群的资源信息：TaskManager 个数（Task Managers）、Slot 总个数（Total Task Slots）、可用 Slot
-个数（Available Task Slots）、Job 运行个数（Running Jobs）、Job 运行状态（Finished 0 Canceled 0
+1.在Chrome 浏览器中打开 `http://localhost:8081/overview` 页面，可以获取到整个 Flink集群的资源信息：TaskManager 个数（Task Managers）、Slot 总个数（Total Task Slots）、可用 Slot个数（Available Task Slots）、Job 运行个数（Running Jobs）、Job 运行状态（Finished 0 Canceled 0
 Failed 0）等，如下图所示。
 
 ![images](https://static.lovedata.net/zs/2019-10-03-161007.png-wm)
@@ -67,113 +67,121 @@ stable/monitoring/metrics.html#rest-api-integration
 Counter 用于计数，当前值可以使用 `inc()/inc(long n)` 递增和 `dec()/dec(long n)` 递减，在实现
 RichFunction 中的函数的 open 方法注册 Counter。
 
-    
-    
-    private transient Counter counter;
-    
-    @Override
-    public void open(Configuration config) {
-    this.counter = getRuntimeContext()
-      .getMetricGroup()
-      .counter("zhisheng_counter");
-    }
-    
-    //或者自定义 Counter
-    @Override
-    public void open(Configuration config) {
-    this.counter = getRuntimeContext()
-      .getMetricGroup()
-      .counter("zhisheng_counter", new CustomCounter());
-    }
-    
-    @Override
-    public String map(String value) throws Exception {
-    this.counter.inc();
-    return value;
-    }
-    
+
+​    
+```java
+private transient Counter counter;
+
+@Override
+public void open(Configuration config) {
+this.counter = getRuntimeContext()
+  .getMetricGroup()
+  .counter("zhisheng_counter");
+}
+
+//或者自定义 Counter
+@Override
+public void open(Configuration config) {
+this.counter = getRuntimeContext()
+  .getMetricGroup()
+  .counter("zhisheng_counter", new CustomCounter());
+}
+
+@Override
+public String map(String value) throws Exception {
+this.counter.inc();
+return value;
+}
+```
+
 
 #### Gauge
 
 Gauge 根据需要提供任何类型的值，要使用 Gauge 的话，需要实现 Gauge 接口，返回值没有规定类型。
 
-    
-    
-    private transient int valueToExpose = 0;
-    
+
+​    
+```java
+private transient int valueToExpose = 0;
+
+@Override
+public void open(Configuration config) {
+getRuntimeContext()
+  .getMetricGroup()
+  .gauge("zhisheng_gauge", new Gauge<Integer>() {
     @Override
-    public void open(Configuration config) {
-    getRuntimeContext()
-      .getMetricGroup()
-      .gauge("zhisheng_gauge", new Gauge<Integer>() {
-        @Override
-        public Integer getValue() {
-          return valueToExpose;
-        }
-      });
+    public Integer getValue() {
+      return valueToExpose;
     }
-    
-    @Override
-    public String map(String value) throws Exception {
-    valueToExpose++;
-    return value;
-    }
-    
+  });
+}
+
+@Override
+public String map(String value) throws Exception {
+valueToExpose++;
+return value;
+}
+```
+
 
 #### Histogram
 
 Histogram 统计数据的分布情况，比如最小值，最大值，中间值，还有分位数等。使用情况如下：
 
-    
-    
-    private transient Histogram histogram;
-    
-    @Override
-    public void open(Configuration config) {
-        this.histogram = getRuntimeContext()
-      .getMetricGroup()
-      .histogram("zhisheng_histogram", new MyHistogram());
-    }
-    
-    @Override
-    public Long map(Long value) throws Exception {
-        this.histogram.update(value);
-    return value;
-    }
-    
+
+​    
+```java
+private transient Histogram histogram;
+
+@Override
+public void open(Configuration config) {
+    this.histogram = getRuntimeContext()
+  .getMetricGroup()
+  .histogram("zhisheng_histogram", new MyHistogram());
+}
+
+@Override
+public Long map(Long value) throws Exception {
+    this.histogram.update(value);
+return value;
+}
+```
+
 
 #### Meter
 
 Meter 代表平均吞吐量，使用情况如下：
 
-    
-    
-    private transient Meter meter;
-    
-    @Override
-    public void open(Configuration config) {
-    this.meter = getRuntimeContext()
-      .getMetricGroup()
-      .meter("myMeter", new MyMeter());
-    }
-    
-    @Override
-    public Long map(Long value) throws Exception {
-    this.meter.markEvent();
-    return value;
-    }
-    
+
+​    
+```java
+private transient Meter meter;
+
+@Override
+public void open(Configuration config) {
+this.meter = getRuntimeContext()
+  .getMetricGroup()
+  .meter("myMeter", new MyMeter());
+}
+
+@Override
+public Long map(Long value) throws Exception {
+this.meter.markEvent();
+return value;
+}
+```
+
 
 ### 利用 JMXReporter 获取监控数据
 
 JMX 对于大家来说应该不太陌生，在 Flink 中默认提供了 JMXReporter 获取到监控数据，不需要额外添加依赖项，但是需要在 flink-
 conf.yaml 配置文件中加入如下配置即可开启 JMX：
 
-    
-    
-    metrics.reporter.jmx.factory.class: org.apache.flink.metrics.jmx.JMXReporterFactory
-    metrics.reporter.jmx.port: 8789
-    
+
+​    
+​    metrics.reporter.jmx.factory.class: org.apache.flink.metrics.jmx.JMXReporterFactory
+​    metrics.reporter.jmx.port: 8789
+
 
 然后利用 JDK 自带的 jconsole 可以查看 MBean 信息。
 
@@ -186,12 +194,12 @@ conf.yaml 配置文件中加入如下配置即可开启 JMX：
 Manager，又运行了 Task
 Manager，那么只开启一个端口号那么是只能够监听到一个的数据，如果你要监听多个数据，那么就需要在端口设置里填写一个范围（这里需要特别注意一下），具体配置如下：
 
-    
-    
-    # jmx reporter
-    metrics.reporter.jmx.factory.class: org.apache.flink.metrics.jmx.JMXReporterFactory
-    metrics.reporter.jmx.port: 8789-8799
-    
+
+​    
+​    # jmx reporter
+​    metrics.reporter.jmx.factory.class: org.apache.flink.metrics.jmx.JMXReporterFactory
+​    metrics.reporter.jmx.port: 8789-8799
+
 
 这样就表示监听了多个端口（从 8789 ～ 8799），那么再通过 jconsole 连接 8790 端口就会出现 Task Manager
 的监控指标数据了。
@@ -199,13 +207,13 @@ Manager，那么只开启一个端口号那么是只能够监听到一个的数�
 ![出现 Task Manager 监控数据](https://static.lovedata.net/zs/2019-10-03-155939.png-wm)
 查看日志也可以看到开启 JMX 成功的日志，如下所示。
 
-    
-    
-    2019-10-07 10:52:51,839 INFO  org.apache.flink.metrics.jmx.JMXReporter                      - Started JMX server on port 8789.
-    2019-10-07 10:52:51,839 INFO  org.apache.flink.metrics.jmx.JMXReporter                      - Configured JMXReporter with {port:8789-8799}
-    2019-10-07 10:52:51,840 INFO  org.apache.flink.runtime.metrics.ReporterSetup                - Configuring jmx with {factory.class=org.apache.flink.metrics.jmx.JMXReporterFactory, port=8789-8799}.
-    2019-10-07 10:52:51,841 INFO  org.apache.flink.runtime.metrics.MetricRegistryImpl           - Reporting metrics for reporter jmx of type org.apache.flink.metrics.jmx.JMXReporter.
-    
+
+​    
+​    2019-10-07 10:52:51,839 INFO  org.apache.flink.metrics.jmx.JMXReporter                      - Started JMX server on port 8789.
+​    2019-10-07 10:52:51,839 INFO  org.apache.flink.metrics.jmx.JMXReporter                      - Configured JMXReporter with {port:8789-8799}
+​    2019-10-07 10:52:51,840 INFO  org.apache.flink.runtime.metrics.ReporterSetup                - Configuring jmx with {factory.class=org.apache.flink.metrics.jmx.JMXReporterFactory, port=8789-8799}.
+​    2019-10-07 10:52:51,841 INFO  org.apache.flink.runtime.metrics.MetricRegistryImpl           - Reporting metrics for reporter jmx of type org.apache.flink.metrics.jmx.JMXReporter.
+
 
 ### 利用 PrometheusReporter 获取监控数据
 
@@ -218,10 +226,10 @@ Manager，那么只开启一个端口号那么是只能够监听到一个的数�
 除了上面两个可选参数，另外一个参数是必须要在 `flink-conf.yaml` 中配置的，那就是 metrics reporter
 class。比如像下面这样配置：
 
-    
-    
-    metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
-    
+
+​    
+​    metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
+
 
 Flink 中的 metrics 类型和 Prometheus 中 metrics 类型对比如下：
 
@@ -247,15 +255,15 @@ prometheus-1.9.0.jar` 依赖放到 lib 目录下的，可配置的参数有：
 
 在 flink-conf.yaml 中配置的样例如下：
 
-    
-    
-    metrics.reporter.promgateway.class: org.apache.flink.metrics.prometheus.PrometheusPushGatewayReporter
-    metrics.reporter.promgateway.host: localhost
-    metrics.reporter.promgateway.port: 9091
-    metrics.reporter.promgateway.jobName: zhisheng
-    metrics.reporter.promgateway.randomJobNameSuffix: true
-    metrics.reporter.promgateway.deleteOnShutdown: false
-    
+
+​    
+​    metrics.reporter.promgateway.class: org.apache.flink.metrics.prometheus.PrometheusPushGatewayReporter
+​    metrics.reporter.promgateway.host: localhost
+​    metrics.reporter.promgateway.port: 9091
+​    metrics.reporter.promgateway.jobName: zhisheng
+​    metrics.reporter.promgateway.randomJobNameSuffix: true
+​    metrics.reporter.promgateway.deleteOnShutdown: false
+
 
 ### 利用 InfluxDBReporter 获取监控数据
 
@@ -264,83 +272,92 @@ MetricMapper 类将 MeasurementInfo（这个类是 metric 的数据结构，里�
 Gauge、Counter、Histogram、Meter 组装成 InfluxDB 中的 Point 数据，Point 结构如下（主要就是构造
 metric name、fields、tags 和 timestamp）：
 
-    
-    
-    private String measurement;
-    private Map<String, String> tags;
-    private Long time;
-    private TimeUnit precision;
-    private Map<String, Object> fields;
-    
+
+​    
+```java
+private String measurement;
+private Map<String, String> tags;
+private Long time;
+private TimeUnit precision;
+private Map<String, Object> fields;
+```
 
 然后在 InfluxdbReporter 类中将 metric 数据导入 InfluxDB，该类继承自 AbstractReporter 抽象类，实现了
 Scheduled 接口，有下面 3 个属性：
 
-    
-    
-    private String database;
-    private String retentionPolicy;
-    private InfluxDB influxDB;
-    
+
+​    
+```java
+private String database;
+private String retentionPolicy;
+private InfluxDB influxDB;
+```
+
 
 在 open 方法中获取配置文件中的 InfluxDB 设置，然后初始化 InfluxDB 相关的配置，构造 InfluxDB 客户端：
 
-    
-    
-    public void open(MetricConfig config) {
-        //获取到 host 和 port
-        String host = getString(config, HOST);
-        int port = getInteger(config, PORT);
-        //判断 host 和 port 是否合法
-        if (!isValidHost(host) || !isValidPort(port)) {
-            throw new IllegalArgumentException("Invalid host/port configuration. Host: " + host + " Port: " + port);
-        }
-        //获取到 InfluxDB database
-        String database = getString(config, DB);
-        if (database == null) {
-            throw new IllegalArgumentException("'" + DB.key() + "' configuration option is not set");
-        }
-        String url = String.format("http://%s:%d", host, port);
-        //获取到 InfluxDB username 和 password
-        String username = getString(config, USERNAME);
-        String password = getString(config, PASSWORD);
-    
-        this.database = database;
-        //InfluxDB 保留政策
-        this.retentionPolicy = getString(config, RETENTION_POLICY);
-        if (username != null && password != null) {
-            //如果有用户名和密码，根据 url 和 用户名密码来创建连接
-            influxDB = InfluxDBFactory.connect(url, username, password);
-        } else {
-            //否则就根据 url 连接
-            influxDB = InfluxDBFactory.connect(url);
-        }
-    
-        log.info("Configured InfluxDBReporter with {host:{}, port:{}, db:{}, and retentionPolicy:{}}", host, port, database, retentionPolicy);
+
+​    
+```java
+public void open(MetricConfig config) {
+    //获取到 host 和 port
+    String host = getString(config, HOST);
+    int port = getInteger(config, PORT);
+    //判断 host 和 port 是否合法
+    if (!isValidHost(host) || !isValidPort(port)) {
+        throw new IllegalArgumentException("Invalid host/port configuration. Host: " + host + " Port: " + port);
     }
-    
+    //获取到 InfluxDB database
+    String database = getString(config, DB);
+    if (database == null) {
+        throw new IllegalArgumentException("'" + DB.key() + "' configuration option is not set");
+    }
+    String url = String.format("http://%s:%d", host, port);
+    //获取到 InfluxDB username 和 password
+    String username = getString(config, USERNAME);
+    String password = getString(config, PASSWORD);
+
+    this.database = database;
+    //InfluxDB 保留政策
+    this.retentionPolicy = getString(config, RETENTION_POLICY);
+    if (username != null && password != null) {
+        //如果有用户名和密码，根据 url 和 用户名密码来创建连接
+        influxDB = InfluxDBFactory.connect(url, username, password);
+    } else {
+        //否则就根据 url 连接
+        influxDB = InfluxDBFactory.connect(url);
+    }
+
+    log.info("Configured InfluxDBReporter with {host:{}, port:{}, db:{}, and retentionPolicy:{}}", host, port, database, retentionPolicy);
+}
+```
+
 
 然后在 report 方法中调用一个内部 buildReport 方法来构造 BatchPoints，将一批 Point
 放在该对象中，BatchPoints 对象的属性如下：
 
-    
-    
-    private String database;
-    private String retentionPolicy;
-    private Map<String, String> tags;
-    private List<Point> points;
-    private ConsistencyLevel consistency;
-    private TimeUnit precision;
-    
+
+​    
+```java
+private String database;
+private String retentionPolicy;
+private Map<String, String> tags;
+private List<Point> points;
+private ConsistencyLevel consistency;
+private TimeUnit precision;
+```
+
 
 通过 buildReport 方法返回的 BatchPoints 如果不为空，则会通过 write 方法将 BatchPoints 写入 InfluxDB：
 
-    
-    
-    if (report != null) {
-        influxDB.write(report);
-    }
-    
+
+​    
+```java
+if (report != null) {
+    influxDB.write(report);
+}
+```
+
 
 在使用 InfluxDBReporter 时需要注意：
 
@@ -350,16 +367,16 @@ Scheduled 接口，有下面 3 个属性：
 ![images](https://static.lovedata.net/zs/2019-09-30-173806.png-wm)
 2.如下所示，在 flink-conf.yaml 中添加 InfluxDB 相关的配置。
 
-    
-    
-    metrics.reporter.influxdb.class：org.apache.flink.metrics.influxdb.InfluxdbReporter
-    metrics.reporter.influxdb.host：localhost  # InfluxDB服务器主机
-    metrics.reporter.influxdb.port: 8086   # 可选）InfluxDB 服务器端口，默认为 8086
-    metrics.reporter.influxdb.db：zhisheng # 用于存储指标的 InfluxDB 数据库  
-    metrics.reporter.influxdb.username：zhisheng # （可选）用于身份验证的 InfluxDB 用户名
-    metrics.reporter.influxdb.password：123456 # （可选）InfluxDB 用户名用于身份验证的密码
-    metrics.reporter.influxdb.retentionPolicy: one_hour #（可选）InfluxDB 数据保留策略，默认为服务器上数据库定义的保留策略
-    
+
+​    
+​    metrics.reporter.influxdb.class：org.apache.flink.metrics.influxdb.InfluxdbReporter
+​    metrics.reporter.influxdb.host：localhost  # InfluxDB服务器主机
+​    metrics.reporter.influxdb.port: 8086   # 可选）InfluxDB 服务器端口，默认为 8086
+​    metrics.reporter.influxdb.db：zhisheng # 用于存储指标的 InfluxDB 数据库  
+​    metrics.reporter.influxdb.username：zhisheng # （可选）用于身份验证的 InfluxDB 用户名
+​    metrics.reporter.influxdb.password：123456 # （可选）InfluxDB 用户名用于身份验证的密码
+​    metrics.reporter.influxdb.retentionPolicy: one_hour #（可选）InfluxDB 数据保留策略，默认为服务器上数据库定义的保留策略
+
 
 如果填错了密码会报鉴权失败的错误：
 
@@ -374,38 +391,38 @@ InfluxDB 是一款时序数据库，使用它作为监控数据存储的公司�
 
 1、配置 InfluxDB 下载源。
 
-    
-    
-    cat <<EOF | sudo tee /etc/yum.repos.d/influxdb.repo
-    [influxdb]
-    name = InfluxDB Repository - RHEL \$releasever
-    baseurl = https://repos.influxdata.com/rhel/\$releasever/\$basearch/stable
-    enabled = 1
-    gpgcheck = 1
-    gpgkey = https://repos.influxdata.com/influxdb.key
-    EOF
-    
+
+​    
+​    cat <<EOF | sudo tee /etc/yum.repos.d/influxdb.repo
+​    [influxdb]
+​    name = InfluxDB Repository - RHEL \$releasever
+​    baseurl = https://repos.influxdata.com/rhel/\$releasever/\$basearch/stable
+​    enabled = 1
+​    gpgcheck = 1
+​    gpgkey = https://repos.influxdata.com/influxdb.key
+​    EOF
+
 
 2、根据 yum 安装命令操作。
 
-    
-    
-    yum install influxdb 
-    
+
+​    
+​    yum install influxdb 
+
 
 3、启停 InfluxDB。
 
-    
-    
-    //启动 influxdb 命令
-    systemctl start influxdb
-    //重启 influxdb 命令
-    systemctl restart influxd
-    //停止 influxdb 命令
-    systemctl stop influxd
-    //设置开机自启动
-    systemctl enable influxdb
-    
+
+​    
+​    //启动 influxdb 命令
+​    systemctl start influxdb
+​    //重启 influxdb 命令
+​    systemctl restart influxd
+​    //停止 influxdb 命令
+​    systemctl stop influxd
+​    //设置开机自启动
+​    systemctl enable influxdb
+
 
 4、InfluxDB 相关的命令操作。
 
@@ -423,10 +440,10 @@ enabled` 设置为 `true`。然后重启 InfluxDB，再次使用 influx
 ![images](https://static.lovedata.net/zs/2019-09-30-170055.jpg-wm)
 这时需要使用下面命令的命令才能够登录：
 
-    
-    
-    influx -username  zhisheng -password 123456
-    
+
+​    
+​    influx -username  zhisheng -password 123456
+
 
 重新登录就能查询到用户和数据了。
 
@@ -440,32 +457,32 @@ Grafana 是一款优秀的图表可视化组件，它拥有超多酷炫的图表
 
 1、下载
 
-    
-    
-    wget https://dl.grafana.com/oss/release/grafana-6.3.6-1.x86_64.rpm
-    
+
+​    
+​    wget https://dl.grafana.com/oss/release/grafana-6.3.6-1.x86_64.rpm
+
 
 2、安装
 
-    
-    
-    yum localinstall grafana-6.3.6-1.x86_64.rpm
-    
+
+​    
+​    yum localinstall grafana-6.3.6-1.x86_64.rpm
+
 
 ![images](https://static.lovedata.net/zs/2019-09-30-171436.jpg-wm)
 3、启停 Grafana
 
-    
-    
-    //启动 Grafana
-    systemctl start grafana-server
-    //停止 Grafana
-    systemctl stop grafana-server
-    //重启 Grafana
-    systemctl restart grafana-server
-    //设置开机自启动
-    systemctl enable grafana-server
-    
+
+​    
+​    //启动 Grafana
+​    systemctl start grafana-server
+​    //停止 Grafana
+​    systemctl stop grafana-server
+​    //重启 Grafana
+​    systemctl restart grafana-server
+​    //设置开机自启动
+​    systemctl enable grafana-server
+
 
 然后访问 `http://54tianzhisheng.cn:3000` 就可以登录了。第一次登录的默认账号密码是
 `admin／admin`，会提示修改密码。

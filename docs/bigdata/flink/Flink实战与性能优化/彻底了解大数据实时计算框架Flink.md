@@ -1,7 +1,8 @@
 # 彻底了解大数据实时计算框架Flink
 
-在 1.1
-节中讲解了日常开发常见的实时需求，然后分析了这些需求的实现方式，接着对比了实时计算和离线计算。随着这些年大数据的飞速发展，也出现了不少计算的框架（Hadoop、Storm、Spark、Flink）。在网上有人将大数据计算引擎的发展分为四个阶段。
+[toc]
+
+在 1.1节中讲解了日常开发常见的实时需求，然后分析了这些需求的实现方式，接着对比了实时计算和离线计算。随着这些年大数据的飞速发展，也出现了不少计算的框架（Hadoop、Storm、Spark、Flink）。在网上有人将大数据计算引擎的发展分为四个阶段。
 
   * 第一代：Hadoop 承载的 MapReduce
 
@@ -13,8 +14,7 @@
 
 或许会有人不同意以上的分类，笔者觉得其实这并不重要的，重要的是体会各个框架的差异，以及更适合的场景。并进行理解，没有哪一个框架可以完美的支持所有的场景，也就不可能有任何一个框架能完全取代另一个。
 
-本文将对 Flink 的整体架构和 Flink 的多种特性做个详细的介绍！在讲 Flink 之前的话，我们先来看看 **数据集类型** 和
-**数据运算模型** 的种类。
+本文将对 Flink 的整体架构和 Flink 的多种特性做个详细的介绍！在讲 Flink 之前的话，我们先来看看 **数据集类型** 和**数据运算模型** 的种类。
 
 #### 数据集类型
 
@@ -42,13 +42,11 @@
 ### Flink 是什么？
 
 ![images](https://static.lovedata.net/zs/pRMhfm.jpg-wm)
-Flink 是一个针对流数据和批数据的分布式处理引擎，代码主要是由 Java 实现，部分代码是
-Scala。它可以处理有界的批量数据集、也可以处理无界的实时数据集。对 Flink
-而言，其所要处理的主要场景就是流数据，批数据只是流数据的一个极限特例而已，所以 Flink 也是一款真正的流批统一的计算引擎。
+Flink 是一个针对流数据和批数据的分布式处理引擎，代码主要是由 Java 实现，部分代码是Scala。它可以处理有界的批量数据集、也可以处理无界的实时数据集。对 Flink而言，其所要处理的主要场景就是流数据，批数据只是流数据的一个极限特例而已，所以 Flink 也是一款真正的流批统一的计算引擎。
 
 ![images](https://static.lovedata.net/zs/vY6T3M.jpg-wm)
-Flink 提供了 State、Checkpoint、Time、Window 等，它们为 Flink
-提供了基石，本篇文章下面会稍作讲解，具体深度分析后面会有专门的文章来讲解。
+
+Flink 提供了 State、Checkpoint、Time、Window 等，它们为 Flink提供了基石，本篇文章下面会稍作讲解，具体深度分析后面会有专门的文章来讲解。
 
 ### Flink 整体架构
 
@@ -66,8 +64,8 @@ Flink 提供了 State、Checkpoint、Time、Window 等，它们为 Flink
 ### Flink 支持多种方式部署
 
 ![images](https://static.lovedata.net/zs/2019-05-19-061658.jpg-wm)
-作为一个计算引擎，如果要做的足够完善，除了它自身的各种特点要包含，还得支持各种生态圈，比如部署的情况，Flink 是支持以
-Standalone、YARN、Kubernetes、Mesos 等形式部署的。
+
+作为一个计算引擎，如果要做的足够完善，除了它自身的各种特点要包含，还得支持各种生态圈，比如部署的情况，Flink 是支持以Standalone、YARN、Kubernetes、Mesos 等形式部署的。
 
   * Local：直接在 IDE 中运行 Flink Job 时则会在本地启动一个 mini Flink 集群
 
@@ -88,26 +86,19 @@ Flink 作业提交架构流程可见下图：
 ![images](https://static.lovedata.net/zs/p92UrK.jpg-wm)
 1、Program Code：我们编写的 Flink 应用程序代码
 
-2、Job Client：Job Client 不是 Flink 程序执行的内部部分，但它是任务执行的起点。 Job Client
-负责接受用户的程序代码，然后创建数据流，将数据流提交给 Job Manager 以便进一步执行。 执行完成后，Job Client 将结果返回给用户
+2、Job Client：Job Client 不是 Flink 程序执行的内部部分，但它是任务执行的起点。 Job Client负责接受用户的程序代码，然后创建数据流，将数据流提交给 Job Manager 以便进一步执行。 执行完成后，Job Client 将结果返回给用户
 
-3、Job Manager：主进程（也称为作业管理器）协调和管理程序的执行。 它的主要职责包括安排任务，管理 checkpoint
-，故障恢复等。机器集群中至少要有一个 master，master 负责调度 task，协调 checkpoints 和容灾，高可用设置的话可以有多个
-master，但要保证一个是 leader, 其他是 standby; Job Manager 包含 Actor
+3、Job Manager：主进程（也称为作业管理器）协调和管理程序的执行。 它的主要职责包括安排任务，管理 checkpoint，故障恢复等。机器集群中至少要有一个 master，master 负责调度 task，协调 checkpoints 和容灾，高可用设置的话可以有多个master，但要保证一个是 leader, 其他是 standby; Job Manager 包含 Actor
 system、Scheduler、Check pointing 三个重要的组件
 
-4、Task Manager：从 Job Manager 处接收需要部署的 Task。Task Manager 是在 JVM
-中的一个或多个线程中执行任务的工作节点。 任务执行的并行性由每个 Task Manager 上可用的任务槽（Slot 个数）决定。
-每个任务代表分配给任务槽的一组资源。 例如，如果 Task Manager 有四个插槽，那么它将为每个插槽分配 25％ 的内存。
-可以在任务槽中运行一个或多个线程。 同一插槽中的线程共享相同的 JVM。
+4、Task Manager：从 Job Manager 处接收需要部署的 Task。Task Manager 是在 JVM中的一个或多个线程中执行任务的工作节点。 任务执行的并行性由每个 Task Manager 上可用的任务槽（Slot 个数）决定。每个任务代表分配给任务槽的一组资源。 例如，如果 Task Manager 有四个插槽，那么它将为每个插槽分配 25％ 的内存。可以在任务槽中运行一个或多个线程。 同一插槽中的线程共享相同的 JVM。
 
-同一 JVM 中的任务共享 TCP 连接和心跳消息。Task Manager 的一个 Slot 代表一个可用线程，该线程具有固定的内存，注意 Slot
-只对内存隔离，没有对 CPU 隔离。默认情况下，Flink 允许子任务共享 Slot，即使它们是不同 task 的 subtask，只要它们来自相同的
-job。这种共享可以有更好的资源利用率。
+同一 JVM 中的任务共享 TCP 连接和心跳消息。Task Manager 的一个 Slot 代表一个可用线程，该线程具有固定的内存，注意 Slot只对内存隔离，没有对 CPU 隔离。默认情况下，Flink 允许子任务共享 Slot，即使它们是不同 task 的 subtask，只要它们来自相同的job。这种共享可以有更好的资源利用率。
 
 ### Flink API
 
 ![images](https://static.lovedata.net/zs/ozmU46.jpg-wm)
+
 Flink 提供了不同的抽象级别的 API 以开发流式或批处理应用。
 
   * 最底层提供了有状态流。它将通过 Process Function 嵌入到 DataStream API 中。它允许用户可以自由地处理来自一个或多个流数据的事件，并使用一致性、容错的状态。除此之外，用户可以注册事件时间和处理事件回调，从而使程序可以实现复杂的计算。
@@ -118,44 +109,30 @@ Flink 提供了不同的抽象级别的 API 以开发流式或批处理应用。
 
   * Flink 提供的最高层级的抽象是 SQL 。这一层抽象在语法与表达能力上与 Table API 类似，但是是以 SQL查询表达式的形式表现程序。SQL 抽象与 Table API 交互密切，同时 SQL 查询可以直接在 Table API 定义的表上执行。
 
-Flink 除了 DataStream 和 DataSet API，它还支持 Table/SQL API，Flink 也将通过 SQL API
-来构建统一的大数据流批处理引擎，因为在公司中通常会有那种每天定时生成报表的需求（批处理的场景，每晚定时跑一遍昨天的数据生成一个结果报表），但是也是会有流处理的场景（比如采用
-Flink
-来做实时性要求很高的需求），于是慢慢的整个公司的技术选型就变得越来越多了，这样开发人员也就要面临着学习两套不一样的技术框架，运维人员也需要对两种不一样的框架进行环境搭建和作业部署，平时还要维护作业的稳定性。
+Flink 除了 DataStream 和 DataSet API，它还支持 Table/SQL API，Flink 也将通过 SQL API来构建统一的大数据流批处理引擎，因为在公司中通常会有那种每天定时生成报表的需求（批处理的场景，每晚定时跑一遍昨天的数据生成一个结果报表），但是也是会有流处理的场景（比如采用Flink来做实时性要求很高的需求），于是慢慢的整个公司的技术选型就变得越来越多了，这样开发人员也就要面临着学习两套不一样的技术框架，运维人员也需要对两种不一样的框架进行环境搭建和作业部署，平时还要维护作业的稳定性。
 
-当我们的系统变得越来越复杂了，作业越来越多了，这对于开发人员和运维来说简直就是噩梦，没准哪天凌晨晚上就被生产环境的告警电话给叫醒。所以 Flink
-系统能通过 SQL API 来解决批流统一的痛点，这样不管是开发还是运维，他们只需要关注一个计算框架就行，从而减少企业的用人成本和后期开发运维成本。
+当我们的系统变得越来越复杂了，作业越来越多了，这对于开发人员和运维来说简直就是噩梦，没准哪天凌晨晚上就被生产环境的告警电话给叫醒。所以 Flink系统能通过 SQL API 来解决批流统一的痛点，这样不管是开发还是运维，他们只需要关注一个计算框架就行，从而减少企业的用人成本和后期开发运维成本。
 
 ### Flink 程序与数据流结构
 
 ![images](https://static.lovedata.net/zs/u3RagR.jpg-wm)
 ![images](https://static.lovedata.net/zs/2019-05-19-070817.jpg-wm)
+
 一个完整的 Flink 应用程序结构就是如上两图所示：
 
-1、Source：数据输入，Flink 在流处理和批处理上的 source 大概有 4 类：基于本地集合的 source、基于文件的
-source、基于网络套接字的 source、自定义的 source。自定义的 source 常见的有 Apache kafka、Amazon
-Kinesis Streams、RabbitMQ、Twitter Streaming API、Apache NiFi 等，当然你也可以定义自己的
+1、Source：数据输入，Flink 在流处理和批处理上的 source 大概有 4 类：基于本地集合的 source、基于文件的source、基于网络套接字的 source、自定义的 source。自定义的 source 常见的有 Apache kafka、AmazonKinesis Streams、RabbitMQ、Twitter Streaming API、Apache NiFi 等，当然你也可以定义自己的
 source。
 
-2、Transformation：数据转换的各种操作，有 Map / FlatMap / Filter / KeyBy / Reduce / Fold /
-Aggregations / Window / WindowAll / Union / Window join / Split / Select /
-Project 等，操作很多，可以将数据转换计算成你想要的数据。
+2、Transformation：数据转换的各种操作，有 Map / FlatMap / Filter / KeyBy / Reduce / Fold /Aggregations / Window / WindowAll / Union / Window join / Split / Select /Project 等，操作很多，可以将数据转换计算成你想要的数据。
 
-3、Sink：数据输出，Flink 将转换计算后的数据发送的地点 ，你可能需要存储下来，Flink 常见的 Sink
-大概有如下几类：写入文件、打印出来、写入 socket 、自定义的 sink 。自定义的 sink 常见的有 Apache
-kafka、RabbitMQ、MySQL、ElasticSearch、Apache Cassandra、Hadoop FileSystem
-等，同理你也可以定义自己的 sink。
+3、Sink：数据输出，Flink 将转换计算后的数据发送的地点 ，你可能需要存储下来，Flink 常见的 Sink大概有如下几类：写入文件、打印出来、写入 socket 、自定义的 sink 。自定义的 sink 常见的有 Apachekafka、RabbitMQ、MySQL、ElasticSearch、Apache Cassandra、Hadoop FileSystem等，同理你也可以定义自己的 sink。
 
 ### Flink 支持丰富的 Connector
 
 ![images](https://static.lovedata.net/zs/2019-10-10-101956.png-wm)
-通过源码可以发现不同版本的 Kafka、不同版本的 ElasticSearch、Cassandra、HBase、Hive、HDFS、RabbitMQ
-都是支持的，除了流应用的 Connector 是支持的，另外还支持 SQL。
 
-再就是要考虑计算的数据来源和数据最终存储，因为 Flink 在大数据领域的的定位就是实时计算，它不做存储（虽然 Flink 中也有 State
-去存储状态数据，这里说的存储类似于 MySQL、ElasticSearch
-等存储），所以在计算的时候其实你需要考虑的是数据源来自哪里，计算后的结果又存储到哪里去。庆幸的是 Flink 目前已经支持大部分常用的组件了，比如在
-Flink 中已经支持了如下这些 Connector：
+通过源码可以发现不同版本的 Kafka、不同版本的 ElasticSearch、Cassandra、HBase、Hive、HDFS、RabbitMQ都是支持的，除了流应用的 Connector 是支持的，另外还支持 SQL。再就是要考虑计算的数据来源和数据最终存储，因为 Flink 在大数据领域的的定位就是实时计算，它不做存储（虽然 Flink 中也有 State
+去存储状态数据，这里说的存储类似于 MySQL、ElasticSearch等存储），所以在计算的时候其实你需要考虑的是数据源来自哪里，计算后的结果又存储到哪里去。庆幸的是 Flink 目前已经支持大部分常用的组件了，比如在Flink 中已经支持了如下这些 Connector：
 
   * 不同版本的 Kafka
 
@@ -175,35 +152,26 @@ Flink 中已经支持了如下这些 Connector：
 
   * ...
 
-这些 Connector 除了支持流作业外，目前还有还有支持 SQL 作业的，除了这些自带的 Connector 外，还可以通过 Flink
-提供的接口做自定义 Source 和 Sink（在 3.8 节中）。
+这些 Connector 除了支持流作业外，目前还有还有支持 SQL 作业的，除了这些自带的 Connector 外，还可以通过 Flink提供的接口做自定义 Source 和 Sink（在 3.8 节中）。
 
 ### Flink 提供事件时间&处理时间语义
 
-Flink 支持多种 Time，比如 Event time、Ingestion Time、Processing Time，后面的文章 [Flink 中
-Processing Time、Event Time、Ingestion Time 对比及其使用场景分析]() 中会很详细的讲解 Flink 中 Time
-的概念。
+Flink 支持多种 Time，比如 Event time、Ingestion Time、Processing Time，后面的文章 [Flink 中Processing Time、Event Time、Ingestion Time 对比及其使用场景分析]() 中会很详细的讲解 Flink 中 Time的概念。
 
 ![images](https://static.lovedata.net/zs/jvnREW.jpg-wm)
 ### Flink 提供灵活的窗口机制
 
-Flink 支持多种 Window，比如 Time Window、Count Window、Session Window，还支持自定义
-Window。后面的文章 [如何使用 Flink Window 及 Window 基本概念与实现原理]() 中会很详细的讲解 Flink 中 Window
-的概念。
+Flink 支持多种 Window，比如 Time Window、Count Window、Session Window，还支持自定义Window。后面的文章 [如何使用 Flink Window 及 Window 基本概念与实现原理]() 中会很详细的讲解 Flink 中 Window的概念。
 
 ![images](https://static.lovedata.net/zs/2019-05-19-074304.jpg-wm)
 ### Flink 并行的执行任务
 
-Flink 的程序内在是并行和分布式的，数据流可以被分区成 stream partitions，operators 被划分为 operator
-subtasks; 这些 subtasks 在不同的机器或容器中分不同的线程独立运行； operator subtasks 的数量在具体的 operator
-就是并行计算数，程序不同的 operator 阶段可能有不同的并行数；如下图所示，source operator 的并行数为 2，但最后的 sink
-operator 为 1：
+Flink 的程序内在是并行和分布式的，数据流可以被分区成 stream partitions，operators 被划分为 operatorsubtasks; 这些 subtasks 在不同的机器或容器中分不同的线程独立运行； operator subtasks 的数量在具体的 operator就是并行计算数，程序不同的 operator 阶段可能有不同的并行数；如下图所示，source operator 的并行数为 2，但最后的 sinkoperator 为 1：
 
 ![images](https://static.lovedata.net/zs/ggMHCK.jpg-wm)
 ### Flink 支持状态存储和容错
 
-Flink 是一款有状态的流处理框架，它提供了丰富的状态访问接口，按照数据的划分方式，可以分为 Keyed State 和 Operator State，在
-Keyed State 中又提供了多种数据结构：
+Flink 是一款有状态的流处理框架，它提供了丰富的状态访问接口，按照数据的划分方式，可以分为 Keyed State 和 Operator State，在Keyed State 中又提供了多种数据结构：
 
   * ValueState
 
@@ -223,9 +191,7 @@ Keyed State 中又提供了多种数据结构：
 
   * RocksDBStateBackend：存储在 RocksDB 中
 
-Flink 中支持使用 Checkpoint 来提高程序的可靠性，开启了 Checkpoint 之后，Flink
-会按照一定的时间间隔对程序的运行状态进行备份，当发生故障时，Flink 会将所有任务的状态恢复至最后一次发生 Checkpoint
-中的状态，并从那里开始重新开始执行。
+Flink 中支持使用 Checkpoint 来提高程序的可靠性，开启了 Checkpoint 之后，Flink会按照一定的时间间隔对程序的运行状态进行备份，当发生故障时，Flink 会将所有任务的状态恢复至最后一次发生 Checkpoint中的状态，并从那里开始重新开始执行。
 
 另外 Flink 还支持根据 Savepoint 从已停止作业的运行状态进行恢复，这种方式需要通过命令进行触发。
 

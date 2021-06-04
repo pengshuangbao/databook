@@ -1,5 +1,7 @@
 # FlinkCheckpoint和Savepoint区别及其如何配置使用？
 
+[toc]
+
 Checkpoint 在 Flink 中是一个非常重要的 Feature，Checkpoint 使 Flink 的状态具有良好的容错性，通过
 Checkpoint 机制，Flink 可以对作业的状态和计算位置进行恢复。本节主要讲述在 Flink 中 Checkpoint 和 Savepoint
 的使用方式及它们之间的区别。
@@ -21,37 +23,39 @@ Checkpoint 具体如何使用。
 首先调用 StreamExecutionEnvironment 的方法 enableCheckpointing(n) 来开启 Checkpoint，参数 n
 以毫秒为单位表示 Checkpoint 的时间间隔。Checkpoint 配置相关的 Java 代码如下所示：
 
-    
-    
-    StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-    
-    // 开启 Checkpoint，每 1000毫秒进行一次 Checkpoint
-    env.enableCheckpointing(1000);
-    
-    // Checkpoint 语义设置为 EXACTLY_ONCE
-    env.getCheckpointConfig().setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE);
-    
-    // CheckPoint 的超时时间
-    env.getCheckpointConfig().setCheckpointTimeout(60000);
-    
-    // 同一时间，只允许 有 1 个 Checkpoint 在发生
-    env.getCheckpointConfig().setMaxConcurrentCheckpoints(1);
-    
-    // 两次 Checkpoint 之间的最小时间间隔为 500 毫秒
-    env.getCheckpointConfig().setMinPauseBetweenCheckpoints(500);
-    
-    // 当 Flink 任务取消时，保留外部保存的 CheckPoint 信息
-    env.getCheckpointConfig().enableExternalizedCheckpoints(ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION);
-    
-    // 当有较新的 Savepoint 时，作业也会从 Checkpoint 处恢复
-    env.getCheckpointConfig().setPreferCheckpointForRecovery(true);
-    
-    // 作业最多允许 Checkpoint 失败 1 次（flink 1.9 开始支持）
-    env.getCheckpointConfig().setTolerableCheckpointFailureNumber(1);
-    
-    // Checkpoint 失败后，整个 Flink 任务也会失败（flink 1.9 之前）
-    env.getCheckpointConfig.setFailTasksOnCheckpointingErrors(true)
-    
+
+​    
+```java
+StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+
+// 开启 Checkpoint，每 1000毫秒进行一次 Checkpoint
+env.enableCheckpointing(1000);
+
+// Checkpoint 语义设置为 EXACTLY_ONCE
+env.getCheckpointConfig().setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE);
+
+// CheckPoint 的超时时间
+env.getCheckpointConfig().setCheckpointTimeout(60000);
+
+// 同一时间，只允许 有 1 个 Checkpoint 在发生
+env.getCheckpointConfig().setMaxConcurrentCheckpoints(1);
+
+// 两次 Checkpoint 之间的最小时间间隔为 500 毫秒
+env.getCheckpointConfig().setMinPauseBetweenCheckpoints(500);
+
+// 当 Flink 任务取消时，保留外部保存的 CheckPoint 信息
+env.getCheckpointConfig().enableExternalizedCheckpoints(ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION);
+
+// 当有较新的 Savepoint 时，作业也会从 Checkpoint 处恢复
+env.getCheckpointConfig().setPreferCheckpointForRecovery(true);
+
+// 作业最多允许 Checkpoint 失败 1 次（flink 1.9 开始支持）
+env.getCheckpointConfig().setTolerableCheckpointFailureNumber(1);
+
+// Checkpoint 失败后，整个 Flink 任务也会失败（flink 1.9 之前）
+env.getCheckpointConfig.setFailTasksOnCheckpointingErrors(true)
+```
+
 
 以上 Checkpoint 相关的参数描述如下所示：
 
@@ -88,25 +92,27 @@ Checkpoint | Savepoint
 Flink 任务停止后，Checkpoint 的状态快照信息默认被清除 | 一旦触发 Savepoint，状态信息就被持久化到外部存储，除非用户手动删除  
 Checkpoint 设计目标：轻量级且尽可能快地恢复任务 | Savepoint 的生成和恢复成本会更高一些，Savepoint
 更多地关注代码的可移植性和兼容任务的更改操作  
-  
+
 除了上述描述外，Checkpoint 和 Savepoint 在当前的实现上基本相同。
 
 强烈建议在程序中给算子分配 Operator ID，以便来升级程序。主要通过 `uid(String)` 方法手动指定算子的 ID ，这些 ID
 将用于恢复每个算子的状态。
 
-    
-    
-    DataStream<String> stream = env.
-      // Stateful source (e.g. Kafka) with ID
-      .addSource(new StatefulSource())
-      .uid("source-id") // ID for the source operator
-      .shuffle()
-      // Stateful mapper with ID
-      .map(new StatefulMapper())
-      .uid("mapper-id") // ID for the mapper
-      // Stateless printing sink
-      .print(); // Auto-generated ID
-    
+
+​    
+```java
+DataStream<String> stream = env.
+  // Stateful source (e.g. Kafka) with ID
+  .addSource(new StatefulSource())
+  .uid("source-id") // ID for the source operator
+  .shuffle()
+  // Stateful mapper with ID
+  .map(new StatefulMapper())
+  .uid("mapper-id") // ID for the mapper
+  // Stateless printing sink
+  .print(); // Auto-generated ID
+```
+
 
 如果不为算子手动指定 ID，Flink 会为算子自动生成 ID。当 Flink 任务从 Savepoint 中恢复时，是按照 Operator ID
 将快照信息与算子进行匹配的，只要这些 ID 不变，Flink 任务就可以从 Savepoint 中恢复。自动生成的 ID
@@ -121,30 +127,30 @@ ID，就不会存在 上述问题了。
 ![images](https://static.lovedata.net/zs/2019-10-19-020528.jpg-wm)
 Savepoint 需要用户手动去触发，触发 Savepoint 的方式如下所示：
 
-    
-    
+
+​    
     bin/flink savepoint :jobId [:targetDirectory]
-    
+
 
 这将触发 ID 为 `:jobId` 的作业进行 Savepoint，并返回创建的 Savepoint 路径，用户需要此路径来还原和删除 Savepoint
 。
 
 使用 YARN 触发 Savepoint 的方式如下所示：
 
-    
-    
+
+​    
     bin/flink savepoint :jobId [:targetDirectory] -yid :yarnAppId
-    
+
 
 这将触发 ID 为 `:jobId` 和 YARN 应用程序 ID `:yarnAppId` 的作业进行 Savepoint，并返回创建的
 Savepoint 路径。
 
 使用 Savepoint 取消 Flink 任务：
 
-    
-    
+
+​    
     bin/flink cancel -s [:targetDirectory] :jobId
-    
+
 
 这将自动触发 ID 为 `:jobid` 的作业进行 Savepoint，并在 Checkpoint
 结束后取消该任务。此外，可以指定一个目标文件系统目录来存储 Savepoint 的状态信息，也可以在 flink 的 conf 目录下 flink-
@@ -219,17 +225,17 @@ MySQL、Redis 由于某些原因需要重启时，Flink 任务在这段时间也
 任务启动时可以从 Checkpoint 处恢复任务，此时必须配置取消 Flink 任务时保留外部存储的 Checkpoint 状态信息。从
 Checkpoint 处恢复任务的命令如下所示，checkpointMetaDataPath 表示 Checkpoint 的目录。
 
-    
-    
+
+​    
     bin/flink run -s :checkpointMetaDataPath xxx.jar [:runArgs]
-    
+
 
 如果 flink on yarn 模式，启动命令如下所示：
 
-    
-    
+
+​    
     bin/flink run -s :checkpointMetaDataPath -yid :yarnAppId xxx.jar [:runArgs]
-    
+
 
 问题来了，Flink 自动维护 Checkpoint，所以用户在这里并拿不到任务取消之前最后一次 Checkpoint
 的目录。那怎么办呢？如下图所示，在任务取消之前，Flink 任务的 WebUI 中可以看到 Checkpoint
@@ -242,23 +248,23 @@ Checkpoint 处恢复任务的命令如下所示，checkpointMetaDataPath 表示 
 ![images](https://static.lovedata.net/zs/2019-10-19-20531.jpg-wm)
 如上图所示是 Flink JobManager 的 overview 页面，只需要将端口号后面的路径和参数按照以下替换即可：
 
-    
-    
+
+​    
     http://node107.bigdata.dmp.local.com:35524/jobs/a1c70b36d19b3a9fc2713ba98cfc4a4f/metrics?get=lastCheckpointExternalPath
-    
+
 
 调用以上接口，即可返回 a1c70b36d19b3a9fc2713ba98cfc4a4f 对应的 job 最后一次 Checkpoint
 的目录，返回格式如下所示。
 
-    
-    
+
+​    
     [
       {
         "id": "lastCheckpointExternalPath",
         "value": "hdfs:/user/flink/checkpoints/a1c70b36d19b3a9fc2713ba98cfc4a4f/chk-18"
       }
     ]
-    
+
 
 通过这种方式可以方便地维护所有 Flink 任务的 Checkpoint 目录，当然也可以通过 Metrics 的 Reporter 将
 Checkpoint 目录保存到外部存储介质中，当任务需要从 Checkpoint 处恢复时，则从外部存储中读取到相应的 Checkpoint 目录。
@@ -271,25 +277,25 @@ Checkpoint 目录，所以如果开启了此配置，需要制定策略，定期
 如下所示，从 Savepoint 恢复任务的命令与 Checkpoint 恢复命令类似，savepointPath 表示 Savepoint
 保存的目录，Savepoint 的各种触发方式都会返回 Savepoint 目录。
 
-    
-    
+
+​    
     bin/flink run -s :savepointPath xxx.jar [:runArgs]
-    
+
 
 如果 flink on yarn 模式，启动命令如下所示：
 
-    
-    
+
+​    
     bin/flink run -s :savepointPath -yid :yarnAppId xxx.jar [:runArgs]
-    
+
 
 默认情况下，恢复操作将尝试将 Savepoint 的所有状态映射到要还原的程序。如果删除了算子，则可以通过
 `--allowNonRestoredState`（short：`-n`）选项跳过那些无法映射到新程序的状态：
 
-    
-    
+
+​    
     bin/flink run -s :savepointPath -n xxx.jar [:runArgs]
-    
+
 
 如果从 Savepoint
 恢复时，在任务中添加一个需要状态的新算子，会发生什么？向任务添加新算子时，它将在没有任何状态的情况下进行初始化，Savepoint

@@ -1,5 +1,7 @@
 # 如何处理FlinkJobBackPressure（反压）问题？
 
+[toc]
+
 反压（BackPressure）机制被广泛应用到实时流处理系统中，流处理系统需要能优雅地处理反压问题。反压通常产生于这样的场景：短时间的负载高峰导致系统接收数据的速率远高于它处理数据的速率。许多日常问题都会导致反压，例如，垃圾回收停顿可能会导致流入的数据快速堆积，或遇到大促、秒杀活动导致流量陡增。反压如果不能得到正确的处理，可能会导致资源耗尽甚至系统崩溃。反压机制是指系统能够自己检测到被阻塞的
 Operator，然后自适应地降低源头或上游数据的发送速率，从而维持整个系统的稳定。
 
@@ -307,10 +309,10 @@ Flink 的反压太过于天然了，导致无法简单地通过监控 BufferPool
 
 
 ​    
-    java.lang.Object.wait(Native Method)
-    o.a.f.[...].LocalBufferPool.requestBuffer(LocalBufferPool.java:163)
-    o.a.f.[...].LocalBufferPool.requestBufferBlocking(LocalBufferPool.java:133) <--- BLOCKING request
-    [...]
+​    java.lang.Object.wait(Native Method)
+​    o.a.f.[...].LocalBufferPool.requestBuffer(LocalBufferPool.java:163)
+​    o.a.f.[...].LocalBufferPool.requestBufferBlocking(LocalBufferPool.java:133) <--- BLOCKING request
+​    [...]
 
 
 Flink 的反压监控就是依赖上述原理，通过不断对每个 Task 的 stack trace

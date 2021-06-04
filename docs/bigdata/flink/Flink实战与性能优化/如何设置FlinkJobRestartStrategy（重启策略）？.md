@@ -1,5 +1,7 @@
 # 如何设置FlinkJobRestartStrategy（重启策略）？
 
+[toc]
+
 从使用 Flink 到至今，遇到的 Flink 有很多，解决的问题更多（含帮助微信好友解决问题），所以对于 Flink
 可能遇到的问题及解决办法都比较清楚，那么在这章就给大家讲解下几个 Flink 中比较常遇到的问题的解决办法。
 
@@ -46,65 +48,69 @@ FixedDelayRestartStrategy
 是固定延迟重启策略，程序按照集群配置文件中或者程序中额外设置的重启次数尝试重启作业，如果尝试次数超过了给定的最大次数，程序还没有起来，则停止作业，另外还可以配置连续两次重启之间的等待时间，在
 `flink-conf.yaml` 中可以像下面这样配置。
 
-    
-    
+
+​    
     restart-strategy: fixed-delay
     restart-strategy.fixed-delay.attempts: 3  #表示作业重启的最大次数，启用 checkpoint 的话是 Integer.MAX_VALUE，否则是 1。
     restart-strategy.fixed-delay.delay: 10 s  #如果设置分钟可以类似 1 min，该参数表示两次重启之间的时间间隔，当程序与外部系统有连接交互时延迟重启可能会有帮助，启用 checkpoint 的话，延迟重启的时间是 10 秒，否则使用 akka.ask.timeout 的值。
-    
+
 
 在程序中设置固定延迟重启策略的话如下：
 
-    
-    
-    ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-    env.setRestartStrategy(RestartStrategies.fixedDelayRestart(
-      3, // 尝试重启的次数
-      Time.of(10, TimeUnit.SECONDS) // 延时
-    ));
-    
+
+​    
+```java
+ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
+env.setRestartStrategy(RestartStrategies.fixedDelayRestart(
+  3, // 尝试重启的次数
+  Time.of(10, TimeUnit.SECONDS) // 延时
+));
+```
+
 
 #### FailureRateRestartStrategy（故障率重启策略）
 
 FailureRateRestartStrategy
 是故障率重启策略，在发生故障之后重启作业，如果固定时间间隔之内发生故障的次数超过设置的值后，作业就会失败停止，该重启策略也支持设置连续两次重启之间的等待时间。
 
-    
-    
+
+​    
     restart-strategy: failure-rate
     restart-strategy.failure-rate.max-failures-per-interval: 3  #固定时间间隔内允许的最大重启次数，默认 1
     restart-strategy.failure-rate.failure-rate-interval: 5 min  #固定时间间隔，默认 1 分钟
     restart-strategy.failure-rate.delay: 10 s #连续两次重启尝试之间的延迟时间，默认是 akka.ask.timeout 
-    
+
 
 可以在应用程序中这样设置来配置故障率重启策略：
 
-    
-    
-    ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-    env.setRestartStrategy(RestartStrategies.failureRateRestart(
-      3, // 固定时间间隔允许 Job 重启的最大次数
-      Time.of(5, TimeUnit.MINUTES), // 固定时间间隔
-      Time.of(10, TimeUnit.SECONDS) // 两次重启的延迟时间
-    ));
-    
+
+​    
+```java
+ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
+env.setRestartStrategy(RestartStrategies.failureRateRestart(
+  3, // 固定时间间隔允许 Job 重启的最大次数
+  Time.of(5, TimeUnit.MINUTES), // 固定时间间隔
+  Time.of(10, TimeUnit.SECONDS) // 两次重启的延迟时间
+));
+```
+
 
 #### NoRestartStrategy（不重启策略）
 
 NoRestartStrategy 作业不重启策略，直接失败停止，在 `flink-conf.yaml` 中配置如下：
 
-    
-    
+
+​    
     restart-strategy: none
-    
+
 
 在程序中如下设置即可配置不重启：
 
-    
-    
+
+​    
     ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
     env.setRestartStrategy(RestartStrategies.noRestart());
-    
+
 
 #### Fallback（备用重启策略）
 
@@ -113,19 +119,19 @@ Integer.MAX_VALUE。
 
 在应用程序中配置好了固定延时重启策略，可以测试一下代码异常后导致 Job 失败后重启的情况，然后观察日志，可以看到 Job 重启相关的日志：
 
-    
-    
+
+​    
     [flink-akka.actor.default-dispatcher-5] INFO org.apache.flink.runtime.executiongraph.ExecutionGraph - Try to restart or fail the job zhisheng default RestartStrategy example (a890361aed156610b354813894d02cd0) if no longer possible.
     [flink-akka.actor.default-dispatcher-5] INFO org.apache.flink.runtime.executiongraph.ExecutionGraph - Job zhisheng default RestartStrategy example (a890361aed156610b354813894d02cd0) switched from state FAILING to RESTARTING.
     [flink-akka.actor.default-dispatcher-5] INFO org.apache.flink.runtime.executiongraph.ExecutionGraph - Restarting the job zhisheng default RestartStrategy example (a890361aed156610b354813894d02cd0).
-    
+
 
 最后重启次数达到配置的最大重启次数后 Job 还没有起来的话，则会停止 Job 并打印日志：
 
-    
-    
+
+​    
     [flink-akka.actor.default-dispatcher-2] INFO org.apache.flink.runtime.executiongraph.ExecutionGraph - Could not restart the job zhisheng default RestartStrategy example (a890361aed156610b354813894d02cd0) because the restart strategy prevented it.
-    
+
 
 Flink 中几种重启策略的设置如上，大家可以根据需要选择合适的重启策略，比如如果程序抛出了空指针异常，但是你配置的是一直无限重启，那么就会导致 Job
 一直在重启，这样无非再浪费机器资源，这种情况下可以配置重试固定次数，每次隔多久重试的固定延时重启策略，这样在重试一定次数后 Job 就会停止，如果对 Job
@@ -154,10 +160,10 @@ FixedDelayRestartStrategy、FailureRateRestartStrategy、ThrowingRestartStrategy
 Flink 通过重启策略和故障恢复策略来控制 Task 重启：重启策略决定是否可以重启以及重启的间隔；故障恢复策略决定哪些 Task 需要重启。在
 Flink 中支持两种不同的故障重启策略，该策略可以在 flink-conf.yaml 中的配置，默认为：
 
-    
-    
+
+​    
     jobmanager.execution.failover-strategy: region
-    
+
 
 该配置有两个可选值，full（重启所有的 Task）和 region（重启 pipelined region），在 Flink 1.9
 中默认设置的恢复策略变成 region 了。

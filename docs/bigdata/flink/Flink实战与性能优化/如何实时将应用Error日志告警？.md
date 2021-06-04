@@ -74,44 +74,48 @@ API)，因为 Logsene 会暴露 Elasticsearch API，所以 Logagent 可以很容
 前面介绍了日志和对比了常用日志采集工具的优势和劣势，通常在不同环境，不同机器上都会部署日志采集工具，然后采集工具会实时的将新的日志采集发送到下游，因为日志数据量毕竟大，所以建议发到
 MQ 中，比如 Kafka，这样再想怎么处理这些日志就会比较灵活。假设我们忽略底层采集具体是哪种，但是规定采集好的日志结构化数据如下：
 
-    
-    
-    public class LogEvent {
-        //日志的类型(应用、容器、...)
-        private String type;
-    
-        //日志的时间戳
-        private Long timestamp;
-    
-        //日志的级别(debug/info/warn/error)
-        private String level;
-    
-        //日志内容
-        private String message;
-    
-        //日志的标识(应用 ID、应用名、容器 ID、机器 IP、集群名、...)
-        private Map<String, String> tags = new HashMap<>();
-    }
-    
+
+​    
+```java
+public class LogEvent {
+    //日志的类型(应用、容器、...)
+    private String type;
+
+    //日志的时间戳
+    private Long timestamp;
+
+    //日志的级别(debug/info/warn/error)
+    private String level;
+
+    //日志内容
+    private String message;
+
+    //日志的标识(应用 ID、应用名、容器 ID、机器 IP、集群名、...)
+    private Map<String, String> tags = new HashMap<>();
+}
+```
+
 
 然后上面这种 LogEvent 的数据（假设采集发上来的是这种结构数据的 JSON 串，所以需要在 Flink 中做一个反序列化解析）就会往 Kafka
 不断的发送数据，样例数据如下：
 
-    
-    
-    {
-        "type": "app",
-        "timestamp": 1570941591229,
-        "level": "error",
-        "message": "Exception in thread \"main\" java.lang.NoClassDefFoundError: org/apache/flink/api/common/ExecutionConfig$GlobalJobParameters",
-        "tags": {
-            "cluster_name": "zhisheng",
-            "app_name": "zhisheng",
-            "host_ip": "127.0.0.1",
-            "app_id": "21"
-        }
+
+​    
+```java
+{
+    "type": "app",
+    "timestamp": 1570941591229,
+    "level": "error",
+    "message": "Exception in thread \"main\" java.lang.NoClassDefFoundError: org/apache/flink/api/common/ExecutionConfig$GlobalJobParameters",
+    "tags": {
+        "cluster_name": "zhisheng",
+        "app_name": "zhisheng",
+        "host_ip": "127.0.0.1",
+        "app_id": "21"
     }
-    
+}
+```
+
 
 那么在 Flink 中如何将应用异常或者错误的日志做实时告警呢？
 
@@ -130,93 +134,95 @@ ElasticSearch，再通过 Kibana 页面做搜索和分析。
 Flink 作业中去实时消费 Kafka 中的数据，下面演示构造日志数据发到 Kafka 的工具类，这个工具类主要分两块，构造 LogEvent
 数据和发送到 Kafka。
 
-    
-    
-    @Slf4j
-    public class BuildLogEventDataUtil {
-        //Kafka broker 和 topic 信息
-        public static final String BROKER_LIST = "localhost:9092";
-        public static final String LOG_TOPIC = "zhisheng_log";
-    
-        public static void writeDataToKafka() {
-            Properties props = new Properties();
-            props.put("bootstrap.servers", BROKER_LIST);
-            props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-            props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-            KafkaProducer producer = new KafkaProducer<String, String>(props);
-    
-            for (int i = 0; i < 10000; i++) {
-                //模拟构造 LogEvent 对象
-                LogEvent logEvent = new LogEvent().builder()
-                        .type("app")
-                        .timestamp(System.currentTimeMillis())
-                        .level(logLevel())
-                        .message(message(i + 1))
-                        .tags(mapData())
-                        .build();
-    //            System.out.println(logEvent);
-                ProducerRecord record = new ProducerRecord<String, String>(LOG_TOPIC, null, null, GsonUtil.toJson(logEvent));
-                producer.send(record);
-            }
-            producer.flush();
+
+​    
+```java
+@Slf4j
+public class BuildLogEventDataUtil {
+    //Kafka broker 和 topic 信息
+    public static final String BROKER_LIST = "localhost:9092";
+    public static final String LOG_TOPIC = "zhisheng_log";
+
+    public static void writeDataToKafka() {
+        Properties props = new Properties();
+        props.put("bootstrap.servers", BROKER_LIST);
+        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        KafkaProducer producer = new KafkaProducer<String, String>(props);
+
+        for (int i = 0; i < 10000; i++) {
+            //模拟构造 LogEvent 对象
+            LogEvent logEvent = new LogEvent().builder()
+                    .type("app")
+                    .timestamp(System.currentTimeMillis())
+                    .level(logLevel())
+                    .message(message(i + 1))
+                    .tags(mapData())
+                    .build();
+//            System.out.println(logEvent);
+            ProducerRecord record = new ProducerRecord<String, String>(LOG_TOPIC, null, null, GsonUtil.toJson(logEvent));
+            producer.send(record);
         }
-    
-        public static void main(String[] args) {
-            writeDataToKafka();
-        }
-    
-        public static String message(int i) {
-            return "这是第 " + i + " 行日志！";
-        }
-    
-        public static String logLevel() {
-            Random random = new Random();
-            int number = random.nextInt(4);
-            switch (number) {
-                case 0:
-                    return "debug";
-                case 1:
-                    return "info";
-                case 2:
-                    return "warn";
-                case 3:
-                    return "error";
-                default:
-                    return "info";
-            }
-        }
-    
-        public static String hostIp() {
-            Random random = new Random();
-            int number = random.nextInt(4);
-            switch (number) {
-                case 0:
-                    return "121.12.17.10";
-                case 1:
-                    return "121.12.17.11";
-                case 2:
-                    return "121.12.17.12";
-                case 3:
-                    return "121.12.17.13";
-                default:
-                    return "121.12.17.10";
-            }
-        }
-    
-        public static Map<String, String> mapData() {
-            Map<String, String> map = new HashMap<>();
-            map.put("app_id", "11");
-            map.put("app_name", "zhisheng");
-            map.put("cluster_name", "zhisheng");
-            map.put("host_ip", hostIp());
-            map.put("class", "BuildLogEventDataUtil");
-            map.put("method", "main");
-            map.put("line", String.valueOf(new Random().nextInt(100)));
-            //add more tag
-            return map;
+        producer.flush();
+    }
+
+    public static void main(String[] args) {
+        writeDataToKafka();
+    }
+
+    public static String message(int i) {
+        return "这是第 " + i + " 行日志！";
+    }
+
+    public static String logLevel() {
+        Random random = new Random();
+        int number = random.nextInt(4);
+        switch (number) {
+            case 0:
+                return "debug";
+            case 1:
+                return "info";
+            case 2:
+                return "warn";
+            case 3:
+                return "error";
+            default:
+                return "info";
         }
     }
-    
+
+    public static String hostIp() {
+        Random random = new Random();
+        int number = random.nextInt(4);
+        switch (number) {
+            case 0:
+                return "121.12.17.10";
+            case 1:
+                return "121.12.17.11";
+            case 2:
+                return "121.12.17.12";
+            case 3:
+                return "121.12.17.13";
+            default:
+                return "121.12.17.10";
+        }
+    }
+
+    public static Map<String, String> mapData() {
+        Map<String, String> map = new HashMap<>();
+        map.put("app_id", "11");
+        map.put("app_name", "zhisheng");
+        map.put("cluster_name", "zhisheng");
+        map.put("host_ip", hostIp());
+        map.put("class", "BuildLogEventDataUtil");
+        map.put("method", "main");
+        map.put("line", String.valueOf(new Random().nextInt(100)));
+        //add more tag
+        return map;
+    }
+}
+```
+
 
 如果之前 Kafka 中没有 zhisheng_log 这个 topic，运行这个工具类之后也会自动创建这个 topic 了。
 
@@ -224,62 +230,66 @@ Flink 作业中去实时消费 Kafka 中的数据，下面演示构造日志数�
 
 在 3.7 章中已经讲过如何使用 Flink Kafka connector 了，接下来就直接写代码去消费 Kafka 中的日志数据，作业代码如下：
 
-    
-    
-    public class LogEventAlert {
-        public static void main(String[] args) throws Exception {
-            final ParameterTool parameterTool = ExecutionEnvUtil.createParameterTool(args);
-            StreamExecutionEnvironment env = ExecutionEnvUtil.prepare(parameterTool);
-            Properties properties = KafkaConfigUtil.buildKafkaProps(parameterTool);
-            FlinkKafkaConsumer011<LogEvent> consumer = new FlinkKafkaConsumer011<>(
-                    parameterTool.get("log.topic"),
-                    new LogSchema(),
-                    properties);
-            env.addSource(consumer)
-                    .print();
-            env.execute("log event alert");
-        }
+
+​    
+```java
+public class LogEventAlert {
+    public static void main(String[] args) throws Exception {
+        final ParameterTool parameterTool = ExecutionEnvUtil.createParameterTool(args);
+        StreamExecutionEnvironment env = ExecutionEnvUtil.prepare(parameterTool);
+        Properties properties = KafkaConfigUtil.buildKafkaProps(parameterTool);
+        FlinkKafkaConsumer011<LogEvent> consumer = new FlinkKafkaConsumer011<>(
+                parameterTool.get("log.topic"),
+                new LogSchema(),
+                properties);
+        env.addSource(consumer)
+                .print();
+        env.execute("log event alert");
     }
-    
+}
+```
+
 
 因为 Kafka 的日志数据是 JSON 的，所以在消费的时候需要额外定义 Schema 来反序列化数据，定义的 LogSchema 如下：
 
-    
-    
-    public class LogSchema implements DeserializationSchema<LogEvent>, SerializationSchema<LogEvent> {
-    
-        private static final Gson gson = new Gson();
-    
-        @Override
-        public LogEvent deserialize(byte[] bytes) throws IOException {
-            return gson.fromJson(new String(bytes), LogEvent.class);
-        }
-    
-        @Override
-        public boolean isEndOfStream(LogEvent logEvent) {
-            return false;
-        }
-    
-        @Override
-        public byte[] serialize(LogEvent logEvent) {
-            return gson.toJson(logEvent).getBytes(Charset.forName("UTF-8"));
-        }
-    
-        @Override
-        public TypeInformation<LogEvent> getProducedType() {
-            return TypeInformation.of(LogEvent.class);
-        }
+
+​    
+```java
+public class LogSchema implements DeserializationSchema<LogEvent>, SerializationSchema<LogEvent> {
+
+    private static final Gson gson = new Gson();
+
+    @Override
+    public LogEvent deserialize(byte[] bytes) throws IOException {
+        return gson.fromJson(new String(bytes), LogEvent.class);
     }
-    
+
+    @Override
+    public boolean isEndOfStream(LogEvent logEvent) {
+        return false;
+    }
+
+    @Override
+    public byte[] serialize(LogEvent logEvent) {
+        return gson.toJson(logEvent).getBytes(Charset.forName("UTF-8"));
+    }
+
+    @Override
+    public TypeInformation<LogEvent> getProducedType() {
+        return TypeInformation.of(LogEvent.class);
+    }
+}
+```
+
 
 配置文件中设置如下：
 
-    
-    
+
+​    
     kafka.brokers=localhost:9092
     kafka.group.id=zhisheng
     log.topic=zhisheng_log
-    
+
 
 接下来先启动 Kafka，然后运行 BuildLogEventDataUtil 工具类，往 Kafka 中发送模拟的日志数据，接下来运行
 LogEventAlert 类，去消费将 Kafka 中的数据做一个验证，通过下图可以发现有日志数据打印出来了。
@@ -289,10 +299,10 @@ LogEventAlert 类，去消费将 Kafka 中的数据做一个验证，通过下�
 
 上面已经能够处理这些日志数据了，但是需求是要将应用的异常日志做告警，所以在消费到所有的数据后需要过滤出异常的日志，比如可以使用 filter 算子进行过滤。
 
-    
-    
+
+​    
     .filter(logEvent -> "error".equals(logEvent.getLevel()))
-    
+
 
 ![images](https://static.lovedata.net/zs/2019-10-13-073245.png-wm)
 在将作业打包通过 UI 提交到集群运行的结果如下：

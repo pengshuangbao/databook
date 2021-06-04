@@ -36,17 +36,19 @@ StreamExecutionEnvironment 中可以使用以下这些已实现的 stream source
 
   3. fromElements(T ...) - 从给定的对象序列中创建数据流。所有对象类型必须相同。
 
-    
-    
-    StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-    
-    DataStream<Event> input = env.fromElements(
-        new Event(1, "barfoo", 1.0),
-        new Event(2, "start", 2.0),
-        new Event(3, "foobar", 3.0),
-        ...
-    );
-    
+
+​    
+```java
+StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+
+DataStream<Event> input = env.fromElements(
+    new Event(1, "barfoo", 1.0),
+    new Event(2, "start", 2.0),
+    new Event(3, "foobar", 3.0),
+    ...
+);
+```
+
 
   1. fromParallelCollection(SplittableIterator, Class) - 从一个迭代器中创建并行数据流。Class 指定了该迭代器返回元素的类型。
 
@@ -56,12 +58,14 @@ StreamExecutionEnvironment 中可以使用以下这些已实现的 stream source
 
 1、readTextFile(path) - 读取文本文件，即符合 TextInputFormat 规范的文件，并将其作为字符串返回。
 
-    
-    
-    final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-    
-    DataStream<String> text = env.readTextFile("file:///path/to/file");
-    
+
+​    
+```java
+final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+
+DataStream<String> text = env.readTextFile("file:///path/to/file");
+```
+
 
 2、readFile(fileInputFormat, path) - 根据指定的文件输入格式读取文件（一次）。
 
@@ -71,14 +75,16 @@ StreamExecutionEnvironment 中可以使用以下这些已实现的 stream source
 _CONTINUOUSLY），或者处理一次路径对应文件的数据并退出（FileProcessingMode.PROCESS_ ONCE）。你可以通过
 pathFilter 进一步排除掉需要处理的文件。
 
-    
-    
-    final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-    
-    DataStream<MyEvent> stream = env.readFile(
-            myFormat, myFilePath, FileProcessingMode.PROCESS_CONTINUOUSLY, 100,
-            FilePathFilter.createDefaultFilter(), typeInfo);
-    
+
+​    
+```java
+final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+
+DataStream<MyEvent> stream = env.readFile(
+        myFormat, myFilePath, FileProcessingMode.PROCESS_CONTINUOUSLY, 100,
+        FilePathFilter.createDefaultFilter(), typeInfo);
+```
+
 
 **实现:**
 
@@ -101,17 +107,19 @@ reader 完成文件内容的读取。当然 reader 会继续阅读，直到读�
 
 socketTextStream(String hostname, int port) - 从 socket 读取。元素可以用分隔符切分。
 
-    
-    
-    StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-    
-    DataStream<Tuple2<String, Integer>> dataStream = env
-            .socketTextStream("localhost", 9999) // 监听 localhost 的 9999 端口过来的数据
-            .flatMap(new Splitter())
-            .keyBy(0)
-            .timeWindow(Time.seconds(5))
-            .sum(1);
-    
+
+​    
+```java
+StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+
+DataStream<Tuple2<String, Integer>> dataStream = env
+        .socketTextStream("localhost", 9999) // 监听 localhost 的 9999 端口过来的数据
+        .flatMap(new Splitter())
+        .keyBy(0)
+        .timeWindow(Time.seconds(5))
+        .sum(1);
+```
+
 
 #### 自定义
 
@@ -128,18 +136,20 @@ FlinkKafkaConsumer011<>(...)) 从 Apache Kafka 读取数据。
 
   4. 自定义 addSource：大多数的场景数据都是无界的，会源源不断过来。比如去消费 Kafka 某个 topic 上的数据，这时候就需要用到这个 addSource，可能因为用的比较多的原因吧，Flink 直接提供了 FlinkKafkaConsumer011 等类可供你直接使用。你可以去看看 FlinkKafkaConsumerBase 这个基础类，它是 Flink Kafka 消费的最根本的类。
 
-    
-    
-    StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-    
-    DataStream<KafkaEvent> input = env
-            .addSource(
-                new FlinkKafkaConsumer011<>(
-                    parameterTool.getRequired("input-topic"), //从参数中获取传进来的 topic 
-                    new KafkaEventSchema(),
-                    parameterTool.getProperties())
-                .assignTimestampsAndWatermarks(new CustomWatermarkExtractor()));
-    
+
+​    
+```java
+StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+
+DataStream<KafkaEvent> input = env
+        .addSource(
+            new FlinkKafkaConsumer011<>(
+                parameterTool.getRequired("input-topic"), //从参数中获取传进来的 topic 
+                new KafkaEventSchema(),
+                parameterTool.getProperties())
+            .assignTimestampsAndWatermarks(new CustomWatermarkExtractor()));
+```
+
 
 Flink 目前支持如下面常见的 Source：
 

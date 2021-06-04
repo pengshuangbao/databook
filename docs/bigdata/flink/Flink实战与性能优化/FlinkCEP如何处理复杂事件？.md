@@ -1,19 +1,21 @@
 # FlinkCEP如何处理复杂事件？
 
+[toc]
+
 6.1 节中介绍 Flink CEP 和其使用场景，本节将详细介绍 Flink CEP 的 API，教会大家如何去使用 Flink CEP。
 
 ### 准备依赖
 
 要开发 Flink CEP 应用程序，首先你得在项目的 `pom.xml` 中添加依赖。
 
-    
-    
+
+​    
     <dependency>
         <groupId>org.apache.flink</groupId>
         <artifactId>flink-cep_${scala.binary.version}</artifactId>
         <version>${flink.version}</version>
     </dependency>
-    
+
 
 这个依赖有两种，一个是 Java 版本的，一个是 Scala 版本，你可以根据项目的开发语言自行选择。
 
@@ -22,74 +24,80 @@
 准备好依赖后，我们开始第一个 Flink CEP 应用程序，这里我们只做一个简单的数据流匹配，当匹配成功后将匹配的两条数据打印出来。首先定义实体类
 Event 如下：
 
-    
-    
-    public class Event {
-        private Integer id;
-        private String name;
-    }
-    
+
+​    
+```java
+public class Event {
+    private Integer id;
+    private String name;
+}
+```
+
 
 然后构造读取 Socket 数据流将数据进行转换成 Event，代码如下：
 
-    
-    
-    SingleOutputStreamOperator<Event> eventDataStream = env.socketTextStream("127.0.0.1", 9200)
-        .flatMap(new FlatMapFunction<String, Event>() {
-            @Override
-            public void flatMap(String s, Collector<Event> collector) throws Exception {
-                if (StringUtil.isNotEmpty(s)) {
-                    String[] split = s.split(",");
-                    if (split.length == 2) {
-                        collector.collect(new Event(Integer.valueOf(split[0]), split[1]));
-                    }
+
+​    
+```java
+SingleOutputStreamOperator<Event> eventDataStream = env.socketTextStream("127.0.0.1", 9200)
+    .flatMap(new FlatMapFunction<String, Event>() {
+        @Override
+        public void flatMap(String s, Collector<Event> collector) throws Exception {
+            if (StringUtil.isNotEmpty(s)) {
+                String[] split = s.split(",");
+                if (split.length == 2) {
+                    collector.collect(new Event(Integer.valueOf(split[0]), split[1]));
                 }
             }
-        });
-    
+        }
+    });
+```
+
 
 接着就是定义 CEP 中的匹配规则了，下面的规则表示第一个事件的 id 为 42，紧接着的第二个事件 id 要大于
 10，满足这样的连续两个事件才会将这两条数据进行打印出来。
 
-    
-    
-    Pattern<Event, ?> pattern = Pattern.<Event>begin("start").where(
-            new SimpleCondition<Event>() {
-                @Override
-                public boolean filter(Event event) {
-                    log.info("start {}", event.getId());
-                    return event.getId() == 42;
-                }
+
+​    
+```java
+Pattern<Event, ?> pattern = Pattern.<Event>begin("start").where(
+        new SimpleCondition<Event>() {
+            @Override
+            public boolean filter(Event event) {
+                log.info("start {}", event.getId());
+                return event.getId() == 42;
             }
-    ).next("middle").where(
-            new SimpleCondition<Event>() {
-                @Override
-                public boolean filter(Event event) {
-                    log.info("middle {}", event.getId());
-                    return event.getId() >= 10;
-                }
-            }
-    );
-    
-    CEP.pattern(eventDataStream, pattern).select(new PatternSelectFunction<Event, String>() {
-        @Override
-        public String select(Map<String, List<Event>> p) throws Exception {
-            StringBuilder builder = new StringBuilder();
-            log.info("p = {}", p);
-            builder.append(p.get("start").get(0).getId()).append(",").append(p.get("start").get(0).getName()).append("\n")
-                    .append(p.get("middle").get(0).getId()).append(",").append(p.get("middle").get(0).getName());
-            return builder.toString();
         }
-    }).print();//打印结果
-    
+).next("middle").where(
+        new SimpleCondition<Event>() {
+            @Override
+            public boolean filter(Event event) {
+                log.info("middle {}", event.getId());
+                return event.getId() >= 10;
+            }
+        }
+);
+
+CEP.pattern(eventDataStream, pattern).select(new PatternSelectFunction<Event, String>() {
+    @Override
+    public String select(Map<String, List<Event>> p) throws Exception {
+        StringBuilder builder = new StringBuilder();
+        log.info("p = {}", p);
+        builder.append(p.get("start").get(0).getId()).append(",").append(p.get("start").get(0).getName()).append("\n")
+                .append(p.get("middle").get(0).getId()).append(",").append(p.get("middle").get(0).getName());
+        return builder.toString();
+    }
+}).print();//打印结果
+```
+
 
 然后笔者在终端开启 Socket，输入的两条数据如下：
 
-    
-    
+
+​    
     42,zhisheng
     20,zhisheng
-    
+
 
 作业打印出来的日志如下图：
 
@@ -113,72 +121,76 @@ Event 如下：
 单个 Pattern 后追加的 Pattern 如果都是相同的，那如果要都重新再写一遍，换做任何人都会比较痛苦，所以就提供了 times(n)
 来表示期望出现的次数，该 times() 方法还有很多写法，如下所示：
 
-    
-    
-     //期望符合的事件出现 4 次
-     start.times(4);
-    
-     //期望符合的事件不出现或者出现 4 次
-     start.times(4).optional();
-    
-      //期望符合的事件出现 2 次或者 3 次或者 4 次
-     start.times(2, 4);
-    
-     //期望出现 2 次、3 次或 4 次，并尽可能多地重复
-     start.times(2, 4).greedy();
-    
-    //期望出现 2 次、3 次、4 次或者不出现
-     start.times(2, 4).optional();
-    
-     //期望出现 0、2、3 或 4 次并尽可能多地重复
-     start.times(2, 4).optional().greedy();
-    
-     //期望出现一个或多个事件
-     start.oneOrMore();
-    
-     //期望出现一个或多个事件，并尽可能多地重复这些事件
-     start.oneOrMore().greedy();
-    
-     //期望出现一个或多个事件或者不出现
-     start.oneOrMore().optional();
-    
-     //期望出现更多次，并尽可能多地重复或者不出现
-     start.oneOrMore().optional().greedy();
-    
-     //期望出现两个或多个事件
-     start.timesOrMore(2);
-    
-     //期望出现 2 次或 2 次以上，并尽可能多地重复
-     start.timesOrMore(2).greedy();
-    
-     //期望出现 2 次或更多的事件，并尽可能多地重复或者不出现
-     start.timesOrMore(2).optional().greedy();
-    
+
+​    
+```java
+ //期望符合的事件出现 4 次
+ start.times(4);
+
+ //期望符合的事件不出现或者出现 4 次
+ start.times(4).optional();
+
+  //期望符合的事件出现 2 次或者 3 次或者 4 次
+ start.times(2, 4);
+
+ //期望出现 2 次、3 次或 4 次，并尽可能多地重复
+ start.times(2, 4).greedy();
+
+//期望出现 2 次、3 次、4 次或者不出现
+ start.times(2, 4).optional();
+
+ //期望出现 0、2、3 或 4 次并尽可能多地重复
+ start.times(2, 4).optional().greedy();
+
+ //期望出现一个或多个事件
+ start.oneOrMore();
+
+ //期望出现一个或多个事件，并尽可能多地重复这些事件
+ start.oneOrMore().greedy();
+
+ //期望出现一个或多个事件或者不出现
+ start.oneOrMore().optional();
+
+ //期望出现更多次，并尽可能多地重复或者不出现
+ start.oneOrMore().optional().greedy();
+
+ //期望出现两个或多个事件
+ start.timesOrMore(2);
+
+ //期望出现 2 次或 2 次以上，并尽可能多地重复
+ start.timesOrMore(2).greedy();
+
+ //期望出现 2 次或更多的事件，并尽可能多地重复或者不出现
+ start.timesOrMore(2).optional().greedy();
+```
+
 
 ##### 条件
 
 可以通过 `pattern.where()`、`pattern.or()` 或 `pattern.until()` 方法指定事件属性的条件。条件可以是
 `IterativeConditions` 或`SimpleConditions`。比如 SimpleCondition 可以像下面这样使用：
 
-    
-    
-    start.where(new SimpleCondition<Event>() {
-        @Override
-        public boolean filter(Event value) {
-            return "zhisheng".equals(value.getName());
-        }
-    });
-    
+
+​    
+```java
+start.where(new SimpleCondition<Event>() {
+    @Override
+    public boolean filter(Event value) {
+        return "zhisheng".equals(value.getName());
+    }
+});
+```
+
 
 #### 组合 Pattern
 
 前面已经对单个 Pattern 做了详细对讲解，接下来讲解如何将多个 Pattern 进行组合来完成一些需求。在完成组合 Pattern 之前需要定义第一个
 Pattern，然后在第一个的基础上继续添加新的 Pattern。比如定义了第一个 Pattern 如下：
 
-    
-    
+
+​    
     Pattern<Event, ?> start = Pattern.<Event>begin("start");
-    
+
 
 接下来，可以为此指定更多的 Pattern，通过指定的不同的连接条件。比如：
 
@@ -194,18 +206,20 @@ Pattern，然后在第一个的基础上继续添加新的 Pattern。比如定�
 
 具体怎么写呢，可以看下样例：
 
-    
-    
-    Pattern<Event, ?> strict = start.next("middle").where(...);
-    
-    Pattern<Event, ?> relaxed = start.followedBy("middle").where(...);
-    
-    Pattern<Event, ?> nonDetermin = start.followedByAny("middle").where(...);
-    
-    Pattern<Event, ?> strictNot = start.notNext("not").where(...);
-    
-    Pattern<Event, ?> relaxedNot = start.notFollowedBy("not").where(...);
-    
+
+​    
+```java
+Pattern<Event, ?> strict = start.next("middle").where(...);
+
+Pattern<Event, ?> relaxed = start.followedBy("middle").where(...);
+
+Pattern<Event, ?> nonDetermin = start.followedByAny("middle").where(...);
+
+Pattern<Event, ?> strictNot = start.notNext("not").where(...);
+
+Pattern<Event, ?> relaxedNot = start.notFollowedBy("not").where(...);
+```
+
 
 可能概念讲了很多，但是还是不太清楚，这里举个例子说明一下，假设有个 Pattern 是 `a b`，给定的数据输入顺序是 `a c b
 b`，对于上面那种不同的连接条件可能最后返回的值不一样。
@@ -228,27 +242,29 @@ begin、followedBy、followedByAny、next 组成和嵌套，另外还可以再�
 oneOrMore()、times(#ofTimes)、times(#fromTimes,
 #toTimes)、optional()、consecutive()、allowCombinations() 等结合使用。效果如下面这种：
 
-    
-    
-    Pattern<Event, ?> start = Pattern.begin(
-        Pattern.<Event>begin("start").where(...).followedBy("start_middle").where(...)
-    );
-    
-    //next 表示连续
-    Pattern<Event, ?> strict = start.next(
-        Pattern.<Event>begin("next_start").where(...).followedBy("next_middle").where(...)
-    ).times(3);
-    
-    //followedBy 代表在后面就行
-    Pattern<Event, ?> relaxed = start.followedBy(
-        Pattern.<Event>begin("followedby_start").where(...).followedBy("followedby_middle").where(...)
-    ).oneOrMore();
-    
-    //followedByAny
-    Pattern<Event, ?> nonDetermin = start.followedByAny(
-        Pattern.<Event>begin("followedbyany_start").where(...).followedBy("followedbyany_middle").where(...)
-    ).optional();
-    
+
+​    
+```java
+Pattern<Event, ?> start = Pattern.begin(
+    Pattern.<Event>begin("start").where(...).followedBy("start_middle").where(...)
+);
+
+//next 表示连续
+Pattern<Event, ?> strict = start.next(
+    Pattern.<Event>begin("next_start").where(...).followedBy("next_middle").where(...)
+).times(3);
+
+//followedBy 代表在后面就行
+Pattern<Event, ?> relaxed = start.followedBy(
+    Pattern.<Event>begin("followedby_start").where(...).followedBy("followedby_middle").where(...)
+).oneOrMore();
+
+//followedByAny
+Pattern<Event, ?> nonDetermin = start.followedByAny(
+    Pattern.<Event>begin("followedbyany_start").where(...).followedBy("followedbyany_middle").where(...)
+).optional();
+```
+
 
 关于上面这些 Pattern 操作的更详细的解释可以查看[官网](https://ci.apache.org/projects/flink/flink-
 docs-release-1.9/dev/libs/cep.html#groups-of-patterns)。
@@ -278,11 +294,11 @@ AfterMatchSkipStrategy 抽象类中已经提供了 5 种静态方法可以直接
 ![images](https://static.lovedata.net/zs/2019-10-29-135526.png-wm)
 使用方法如下：
 
-    
-    
+
+​    
     AfterMatchSkipStrategy skipStrategy = ...; // 使用 AfterMatchSkipStrategy 调用不同的静态方法
     Pattern.begin("start", skipStrategy);
-    
+
 
 ### 检测 Pattern
 
@@ -291,20 +307,22 @@ AfterMatchSkipStrategy 抽象类中已经提供了 5 种静态方法可以直接
 `CEP.pattern()` 方法中，你可以选择传入两个参数（DataStream 和 Pattern），也可以选择传入三个参数
 （DataStream、Pattern 和 EventComparator），因为 CEP 类中它有两个不同参数数量的 pattern 方法。
 
-    
-    
-    public class CEP {
-    
-        public static <T> PatternStream<T> pattern(DataStream<T> input, Pattern<T, ?> pattern) {
-            return new PatternStream(input, pattern);
-        }
-    
-        public static <T> PatternStream<T> pattern(DataStream<T> input, Pattern<T, ?> pattern, EventComparator<T> comparator) {
-            PatternStream<T> stream = new PatternStream(input, pattern);
-            return stream.withComparator(comparator);
-        }
+
+​    
+```java
+public class CEP {
+
+    public static <T> PatternStream<T> pattern(DataStream<T> input, Pattern<T, ?> pattern) {
+        return new PatternStream(input, pattern);
     }
-    
+
+    public static <T> PatternStream<T> pattern(DataStream<T> input, Pattern<T, ?> pattern, EventComparator<T> comparator) {
+        PatternStream<T> stream = new PatternStream(input, pattern);
+        return stream.withComparator(comparator);
+    }
+}
+```
+
 
 #### 选择 Pattern
 
@@ -316,27 +334,29 @@ select 方法，该方法的参数是 `Map<String, List<Event>>`，这个 Map �
 的实现作为参数，这个和 PatternSelectFunction 不一致地方在于它可以返回多个结果，因为这个接口中的 flatSelect 方法含有一个
 Collector，它可以返回多个数据到下游去。两者的样例如下：
 
-    
-    
-    CEP.pattern(eventDataStream, pattern).select(new PatternSelectFunction<Event, String>() {
-        @Override
-        public String select(Map<String, List<Event>> p) throws Exception {
-            StringBuilder builder = new StringBuilder();
-            builder.append(p.get("start").get(0).getId()).append(",").append(p.get("start").get(0).getName()).append("\n")
-                    .append(p.get("middle").get(0).getId()).append(",").append(p.get("middle").get(0).getName());
-            return builder.toString();
+
+​    
+```java
+CEP.pattern(eventDataStream, pattern).select(new PatternSelectFunction<Event, String>() {
+    @Override
+    public String select(Map<String, List<Event>> p) throws Exception {
+        StringBuilder builder = new StringBuilder();
+        builder.append(p.get("start").get(0).getId()).append(",").append(p.get("start").get(0).getName()).append("\n")
+                .append(p.get("middle").get(0).getId()).append(",").append(p.get("middle").get(0).getName());
+        return builder.toString();
+    }
+}).print();
+
+CEP.pattern(eventDataStream, pattern).flatSelect(new PatternFlatSelectFunction<Event, String>() {
+    @Override
+    public void flatSelect(Map<String, List<Event>> map, Collector<String> collector) throws Exception {
+        for (Map.Entry<String, List<Event>> entry : map.entrySet()) {
+            collector.collect(entry.getKey() + " " + entry.getValue().get(0).getId() + "," + entry.getValue().get(0).getName());
         }
-    }).print();
-    
-    CEP.pattern(eventDataStream, pattern).flatSelect(new PatternFlatSelectFunction<Event, String>() {
-        @Override
-        public void flatSelect(Map<String, List<Event>> map, Collector<String> collector) throws Exception {
-            for (Map.Entry<String, List<Event>> entry : map.entrySet()) {
-                collector.collect(entry.getKey() + " " + entry.getValue().get(0).getId() + "," + entry.getValue().get(0).getName());
-            }
-        }
-    }).print();
-    
+    }
+}).print();
+```
+
 
 关于 PatternStream 中的 select 或 flatSelect 方法其实可以传入不同的参数，比如传入 OutputTag 和
 PatternTimeoutFunction 去处理延迟的数据，具体查看下图。
@@ -359,20 +379,22 @@ TimeContext 接口）。另外如果要处理延迟的数据可以与 TimedOutPa
 中会认为收到的水印时间是正确的，会严格按照水印的时间来处理元素，从而保证能顺序的处理元素。另外对于这种延迟的数据（和 3.5 节中的延迟数据类似），CEP
 中也是支持通过 side output 设置 OutputTag 标签来将其收集。使用方式如下：
 
-    
-    
-    PatternStream<Event> patternStream = CEP.pattern(inputDataStream, pattern);
-    
-    OutputTag<String> lateDataOutputTag = new OutputTag<String>("late-data"){};
-    
-    SingleOutputStreamOperator<ComplexEvent> result = patternStream
-        .sideOutputLateData(lateDataOutputTag)
-        .select(
-            new PatternSelectFunction<Event, ComplexEvent>() {...}
-        );
-    
-    DataStream<String> lateData = result.getSideOutput(lateDataOutputTag);
-    
+
+​    
+```java
+PatternStream<Event> patternStream = CEP.pattern(inputDataStream, pattern);
+
+OutputTag<String> lateDataOutputTag = new OutputTag<String>("late-data"){};
+
+SingleOutputStreamOperator<ComplexEvent> result = patternStream
+    .sideOutputLateData(lateDataOutputTag)
+    .select(
+        new PatternSelectFunction<Event, ComplexEvent>() {...}
+    );
+
+DataStream<String> lateData = result.getSideOutput(lateDataOutputTag);
+```
+
 
 #### 时间上下文
 
@@ -380,15 +402,17 @@ TimeContext 接口）。另外如果要处理延迟的数据可以与 TimedOutPa
 访问当前正在处理的事件的时间（Event Time）和此时机器上的时间（Processing Time）。你可以查看到这两个类中都包含了
 Context，而这个 Context 继承自 TimeContext，在 TimeContext 接口中定义了获取事件时间和处理时间的方法。
 
-    
-    
-    public interface TimeContext {
-    
-        long timestamp();
-    
-        long currentProcessingTime();
-    }
-    
+
+​    
+```java
+public interface TimeContext {
+
+    long timestamp();
+
+    long currentProcessingTime();
+}
+```
+
 
 ### 小结与反思
 
