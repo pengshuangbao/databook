@@ -75,6 +75,13 @@
 | Google | 《Google File System》 | 经典论文 [在线阅读](https://drive.google.com/file/d/167Dnn1mo0IYwGaT-tABLJ_ymrSNpxWaa/view?usp=sharing) |
 | Google | 《Google Bigtable》    | 经典论文 [在线阅读](https://drive.google.com/file/d/1c9lqhvAeAqS-qPazPJaBO3uPFzcZRgen/view?usp=sharing) |
 
+### 书
+
+| 书名                                                         | 作者                                                  | 出版年 | 页数 | 豆瓣评分 |
+| ------------------------------------------------------------ | ----------------------------------------------------- | ------ | ---- | -------- |
+| [Hadoop权威指南:大数据的存储与分析(第4版)(修订版)(升级版) (豆瓣)](https://book.douban.com/subject/27115351/) | [Tom White](https://book.douban.com/search/Tom White) | 2017-7 | 705  | 8.1      |
+| [Hadoop 2.X HDFS源码剖析 (豆瓣)](https://book.douban.com/subject/26755716/) | [徐鹏](https://book.douban.com/author/4537616/)       | 2016-3 | 516  | 8.3      |
+
 
 
 ## Hbase

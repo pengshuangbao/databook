@@ -31,15 +31,15 @@ flink-conf.yaml 配置文件中也有状态后端存储相关的配置，为此�
 
 虽然配置这么多，但是，Flink 还支持基于每个 Job 单独设置状态后端存储，方法如下：
 
+```java
+ StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-​    
-​    StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-​    
-    env.setStateBackend(new MemoryStateBackend());  //设置堆内存存储
+ env.setStateBackend(new MemoryStateBackend());  //设置堆内存存储
     
-    //env.setStateBackend(new FsStateBackend(checkpointDir, asyncCheckpoints));   //设置文件存储
-    
-    //env.setStateBackend(new RocksDBStateBackend(checkpointDir, incrementalCheckpoints));  //设置 RocksDB 存储
+//env.setStateBackend(new FsStateBackend(checkpointDir, asyncCheckpoints));   //设置文件存储
+
+//env.setStateBackend(new RocksDBStateBackend(checkpointDir, incrementalCheckpoints));  //设置 RocksDB 存储
+```
 
 
 ![images](https://static.lovedata.net/zs/2019-10-17-141800.png-wm)
@@ -76,9 +76,7 @@ Managers 的内存（JVM 堆）中，当应用程序触发 checkpoint 时，会�
 
 在构造 MemoryStateBackend 的默认函数时是使用的 UNDEFINED，而不是异步：
 
-
-​    
-​    public MemoryStateBackend() {
+​    ​    public MemoryStateBackend() {
 ​        this(null, null, DEFAULT_MAX_STATE_SIZE, TernaryBoolean.UNDEFINED);//使用的是 UNDEFINED
 ​    }
 
@@ -93,12 +91,14 @@ MemoryStateBackendFactory 来创建的 state 的。
 
 
 ​    
-​    //MemoryStateBackendFactory 类
-​    public MemoryStateBackend createFromConfig(Configuration config, ClassLoader classLoader) {
-​        return new MemoryStateBackend().configure(config, classLoader);
-​    }
-​    
+
 ```java
+    
+   //MemoryStateBackendFactory 类
+   public MemoryStateBackend createFromConfig(Configuration config, ClassLoader classLoader) {
+        return new MemoryStateBackend().configure(config, classLoader);
+    }
+
 //MemoryStateBackend 类中的 config 方法
 public MemoryStateBackend configure(Configuration config, ClassLoader classLoader) {
     return new MemoryStateBackend(this, config, classLoader);
@@ -123,20 +123,22 @@ public static final ConfigOption<Boolean> ASYNC_SNAPSHOTS = ConfigOptions
 MemoryStateBackend 的话，利用无参数的构造方法，那么就不是默认异步，如果想使用异步的话，需要利用下面这个构造函数（需要传入一个
 boolean 值，true 代表异步，false 代表同步）：
 
-
-​    
-​    public MemoryStateBackend(boolean asynchronousSnapshots) {
-​        this(null, null, DEFAULT_MAX_STATE_SIZE, TernaryBoolean.fromBoolean(asynchronousSnapshots));
-​    }
-
-
-如果你再细看了这个 MemoryStateBackend 类的话，那么你可能会发现这个构造函数：
+```java
+ public MemoryStateBackend(boolean asynchronousSnapshots) {
+        this(null, null, DEFAULT_MAX_STATE_SIZE, TernaryBoolean.fromBoolean(asynchronousSnapshots));
+    }
 
 
-​    
-​    public MemoryStateBackend(@Nullable String checkpointPath, @Nullable String savepointPath) {
-​        this(checkpointPath, savepointPath, DEFAULT_MAX_STATE_SIZE, TernaryBoolean.UNDEFINED);//需要你传入 checkpointPath 和 savepointPath
-​    }
+//如果你再细看了这个 MemoryStateBackend 类的话，那么你可能会发现这个构造函数：
+
+
+public MemoryStateBackend(@Nullable String checkpointPath, @Nullable String savepointPath) {
+       this(checkpointPath, savepointPath, DEFAULT_MAX_STATE_SIZE, TernaryBoolean.UNDEFINED);//需要你传入 checkpointPath 和 savepointPath
+   }
+```
+
+
+
 
 
 这个也是用来创建一个 MemoryStateBackend 的，它需要传入的参数是两个路径（checkpointPath、savepointPath），其中
