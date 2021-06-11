@@ -268,3 +268,31 @@ tableEnv.getConfig().setSqlDialect(SqlDialect.DEFAULT);
 
 [谈谈三种海量数据实时去重方案（w/ Flink） - 简书](https://www.jianshu.com/p/f6042288a6e3)
 
+
+
+## RocketsDB
+
+### LSM-Tree
+
+>  [LSM-Tree笔记](/algorithm/LSM-Tree笔记)
+
+1. [彻底搞懂LSM-Tree](https://mp.weixin.qq.com/s/2Njngm52jNOo0nu50TvRyQ)
+2. [24 | RocksDB：不丢数据的高性能KV存储-极客时间](https://time.geekbang.org/column/article/225400)
+3. https://ranger.uta.edu/~sjiang/pubs/papers/wang14-LSM-SDF.pdf
+4. [【Paper笔记】The Log structured Merge-Tree（LSM-Tree） · ](https://kernelmaker.github.io/lsm-tree)
+5. [Log Structured Merge Trees(LSM) 原理 - LSM - 软件开发 - 深度开源](https://www.open-open.com/lib/view/open1424916275249.html)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
