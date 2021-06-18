@@ -137,7 +137,7 @@ Java8元空间，字符串常量在堆
 
 简介：在JDK 7中，内部字符串不再分配在Java堆的永久代中，而是分配在Java堆的主要部分（称为年轻代和老年代），与应用程序创建的其他对象一起。这种变化将导致更多的数据驻留在主Java堆中，而更少的数据在永久代中，因此可能需要调整堆的大小。大多数应用程序将看到由于这一变化而导致的堆使用的相对较小的差异，但<mark>加载许多类或大量使用String.intern()方法的大型应用程序将看到更明显的差异</mark>。
 
-## 
+
 
 
 
@@ -369,7 +369,7 @@ public StringBuilder(int capacity) {
 }
 ```
 
-## 
+
 
 ![image](https://static.lovedata.net/20-12-16-0963395a8646dac87950dd5f0c3e9ff7.png-wm)
 
@@ -700,7 +700,7 @@ public class StringIntern2 {
 
 ## StringTable的垃圾回收
 
-## 
+
 
 ```java
 public class StringGCTest {
@@ -733,7 +733,7 @@ Heap
   class space    used 361K, capacity 388K, committed 512K, reserved 1048576K
 ```
 
-## 
+
 
 ## G2中的String去重操作（了解）
 

@@ -93,6 +93,10 @@ module.exports = [
           {
             text: '剑指Offer',
             link:'/interview/sword-to-offer.html'
+          },
+          {
+            text: 'My Interview',
+            link:'/interview/my-interview.html'
           }
         ]
       }

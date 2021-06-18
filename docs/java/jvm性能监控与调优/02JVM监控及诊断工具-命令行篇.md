@@ -155,6 +155,8 @@ jstat（JVM Statistics Monitoring Tool）：用于监视虚拟机各种运行状
 
 **-t参数：** 可以在输出信息前加上一个Timestamp列，显示程序的运行时间。单位：秒
 
+我们可以比较Java进程的启动时间以及总GC时间(GCT列)，或者两次测量的问隔时间以及总GC时间的增量，来得出GC时间占运行时间的比例。如果该比例超过**20%**， 则说明目前堆的压力较大;如果该比例超过**90%**，则说明堆里几乎没有**可用空间**，随时都可能抛出**00M**异常。
+
 **-h参数：** 可以在周期性数据输出时，输出多少行数据后输出一个表头信息
 
 **补充：** jstat还可以用来判断是否出现内存泄漏。
@@ -165,7 +167,9 @@ jstat（JVM Statistics Monitoring Tool）：用于监视虚拟机各种运行状
 
 ## 2.4. jinfo：实时查看和修改JVM配置参数
 
-jinfo(Configuration Info for Java)：查看虚拟机配置参数信息，也可用于调整虚拟机的配置参数。在很多情况卡，Java应用程序不会指定所有的Java虚拟机参数。而此时，开发人员可能不知道某一个具体的Java虚拟机参数的默认值。在这种情况下，可能需要通过查找文档获取某个参数的默认值。这个查找过程可能是非常艰难的。但有了jinfo工具，开发人员可以很方便地找到Java虚拟机参数的当前值。
+**jinfo(Configuration Info for Java)：**
+
+查看虚拟机配置参数信息，也可用于调整虚拟机的配置参数。在很多情况卡，Java应用程序不会指定所有的Java虚拟机参数。而此时，开发人员可能不知道某一个具体的Java虚拟机参数的默认值。在这种情况下，可能需要通过查找文档获取某个参数的默认值。这个查找过程可能是非常艰难的。但有了jinfo工具，开发人员可以很方便地找到Java虚拟机参数的当前值。
 
 基本使用语法为：jinfo [options] pid
 
@@ -180,7 +184,7 @@ jinfo(Configuration Info for Java)：查看虚拟机配置参数信息，也可�
 | -flags           | 输出全部的参数                                               |
 | -sysprops        | 输出系统属性                                                 |
 
-**jinfo -sysprops**
+**jinfo -sysprops ** 可以查看由System,getProperties获取的
 
 ```properties
 > jinfo -sysprops
@@ -220,6 +224,14 @@ Command line:  -agentlib:jdwp=transport=dt_socket,address=127.0.0.1:8040,suspend
 > jinfo -flag UseG1GC 25592
 -XX:-UseG1GC
 ```
+
+jinfo不仅可以查看运行时某一个Java虚拟机参数的实际取值，甚至可以在运行时修改部分参数，并使之立即生效。
+但是，并非所有参数都支持动态修改。参数只有被标记为manageable的flag可以被实时修改其实，这个修改能力是极其有限的。
+
+#可以查看被标记为manageable的参 数
+**java -XX:+PrintFlagsFinal -version| grep manageable**
+
+![image](https://static.lovedata.net/21-06-12-3c241f9d5897eea2a67ea541b6891acd.png-wm)
 
 **jinfo -flag [+-]name**
 
@@ -272,19 +284,19 @@ jmap（JVM Memory Map）：作用一方面是获取dump文件（堆转储快照�
 
 基本使用语法为：
 
-- jmap [option] &lt;pid&gt;
+- jmap [option] &lt;pid>t;
 - jmap [option] &lt;executable &lt;core&gt;
 - jmap [option] [server_id@] &lt;remote server IP or hostname&gt;
 
-| 选项            | 作用                                                         |
-| :-------------- | :----------------------------------------------------------- |
-| -dump           | 生成dump文件（Java堆转储快照），-dump:live只保存堆中的存活对象 |
-| -heap           | 输出整个堆空间的详细信息，包括GC的使用、堆配置信息，以及内存的使用信息等 |
-| -histo          | 输出堆空间中对象的统计信息，包括类、实例数量和合计容量，-histo:live只统计堆中的存活对象 |
-| -J &lt;flag&gt; | 传递参数给jmap启动的jvm                                      |
-| -finalizerinfo  | 显示在F-Queue中等待Finalizer线程执行finalize方法的对象，仅linux/solaris平台有效 |
-| -permstat       | 以ClassLoader为统计口径输出永久代的内存状态信息，仅linux/solaris平台有效 |
-| -F              | 当虚拟机进程对-dump选项没有任何响应时，强制执行生成dump文件，仅linux/solaris平台有效 |
+| 选项                | 作用                                                         |
+| :------------------ | :----------------------------------------------------------- |
+| <mark>-dump</mark>  | 生成dump文件（Java堆转储快照）<br />-dump:live只保存堆中的存活对象 |
+| <mark>-heap</mark>  | 输出整个堆空间的详细信息，包括GC的使用、堆配置信息，以及内存的使用信息等 |
+| <mark>-histo</mark> | 输出堆空间中对象的统计信息，包括类、实例数量和合计容量，-histo:live只统计堆中的存活对象 |
+| -J &lt;flag&gt;     | 传递参数给jmap启动的jvm                                      |
+| -finalizerinfo      | 显示在F-Queue中等待Finalizer线程执行finalize方法的对象，仅linux/solaris平台有效 |
+| -permstat           | 以ClassLoader为统计口径输出永久代的内存状态信息，仅linux/solaris平台有效 |
+| -F                  | 当虚拟机进程对-dump选项没有任何响应时，强制执行生成dump文件，仅linux/solaris平台有效 |
 
 说明：这些参数和linux下输入显示的命令多少会有不同，包括也受jdk版本的影响。
 
@@ -293,15 +305,86 @@ jmap（JVM Memory Map）：作用一方面是获取dump文件（堆转储快照�
 > jmap -dump:live,format=b,file=<filename.hprof> <pid>
 ```
 
+
+
+### 使用1:导出内存映像文件
+
+一般来说， 使用jmap指 令生成dump文件的操作算得上是最常用的jmap命令之，将堆中所有存活对象导出至”一个文件之中。
+
+Heap Dump又叫做堆存储文件，指一个Java进程在某个时间点的内存快照。Heap Dump在触发内存快照的时候会保存此刻的信息如下:
+All objects
+Class,fields ,primitive values and references
+
+All Classes
+ClassLoader, name ,super class,static fields
+
+Garbage Collection Roots
+objects defined to be reachable by the JVM
+
+Thread Stacks and Local Variables 
+The call-stacks of threads at the moment of the snapshot, and per-frame information about local objects
+
+说明:
+
+1. 通常在写Heap Dump文件前会触发一次Full GC，所以heap dump文件 里保存的都是FullGC后留下的对象信息。
+2. 由于生成dump文件比较耗时，因此大家需要耐心等待，尤其是大内存镜像生成dump文件则需要耗费更长的时间来完成。
+
+
+
+#### 手动方式
+
+```shell
+jmap -dump:format=b,file=<filename.hprof> <pid>
+# 一般生产上dump文件比较大，可以使用live，这样文件就比较小
+jmap -dump:live,format=b,file=<filename.hprof> <pid>
+```
+
+
+
+#### 自动方式
+
+当程序发生0OM退出系统时，些瞬时 信息都随着程序的终止而消失，而重现00M问题往往比较困难或者耗时。此时若能在0OM时，自动导出dump文件就显得非常迫切。
+
+这里介绍一种比较常用的取得堆快照文件的方法，即使用:
+-Xx: +HeapDumpOnOutOfMemoryError:在程序发生0OM时， 导出应用程序的当前堆快照。
+-XX:HeapDumpPath:可以指定堆快照的保存位置。
+
+比如:
+-Xmx180m   -XX: +HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=D: \m.hprof
+
+
+
+### 使用2：显示堆内存相关信息
+
+#### jap -heap pid
+
+![image](https://static.lovedata.net/21-06-12-2010586cc36dba251efbdfca8e5ba4a7.png-wm)
+
+![image](https://static.lovedata.net/21-06-12-561aa1062c9b7f0e824606a9efa43b48.png-wm)
+
+#### jmap -histo pid
+
+![image](https://static.lovedata.net/21-06-12-589a5799041da9150161843c94932605.png-wm)
+
+
+
+### 小结
+
 由于jmap将访问堆中的所有对象，为了保证在此过程中不被应用线程干扰，jmap需要借助安全点机制，让所有线程停留在不改变堆中数据的状态。也就是说，由jmap导出的堆快照必定是安全点位置的。这可能导致基于该堆快照的分析结果存在偏差。
 
 举个例子，假设在编译生成的机器码中，某些对象的生命周期在两个安全点之间，那么:live选项将无法探知到这些对象。
 
 另外，如果某个线程长时间无法跑到安全点，jmap将一直等下去。与前面讲的jstat则不同，垃圾回收器会主动将jstat所需要的摘要数据保存至固定位置之中，而jstat只需直接读取即可。
 
+
+
+
+
 ## 2.6. jhat：JDK自带堆分析工具
 
-jhat(JVM Heap Analysis Tool)：Sun JDK提供的jhat命令与jmap命令搭配使用，用于分析jmap生成的heap dump文件（堆转储快照）。jhat内置了一个微型的HTTP/HTML服务器，生成dump文件的分析结果后，用户可以在浏览器中查看分析结果（分析虚拟机转储快照信息）。
+jhat(JVM Heap Analysis Tool)：
+
+Sun JDK提供的jhat命令与jmap命令搭配使用，用于分析jmap生成的heap dump文件（堆转储快照）。jhat内置了一个微型的HTTP/HTML服务器，生成dump文件的分析结果后，用户可以在浏览器中查看分析结果（分析虚拟机转储快照信息）。
 
 使用了jhat命令，就启动了一个http服务，端口是7000，即http://localhost:7000/，就可以在浏览器里分析。
 

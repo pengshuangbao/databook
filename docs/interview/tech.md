@@ -2,6 +2,14 @@
 
 [toc]
 
+## 资源
+
+### 大数据面试100题
+
+[大数据面试100题.pdf](http://index.lovedata.net/大数据面试100题.pdf)
+
+
+
 ## Shopee
 
 [一年工作经验跳槽字节跳动社招经历_牛客博客](https://blog.nowcoder.net/n/5002d9f20a3f4b8da8f9f1f24ba01b58)

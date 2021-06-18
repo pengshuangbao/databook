@@ -109,7 +109,7 @@ function getBookSideBar(){
 }
 
 function getInterviewSideBar(){
-  return ['tech','hr','sword-to-offer']
+  return ['tech','hr','sword-to-offer','my-interview']
 }
 
 function getArchitectureSidebar(){
@@ -228,7 +228,7 @@ function getBigdataSidebar () {
     },{
       title: 'Flink',
       collapsable: true,
-      //sidebarDepth: 2,  
+      sidebarDepth: 1,  
       children: [
         'flink/',
         'flink/通关手册',

@@ -259,3 +259,29 @@ BlockCache也称为读缓存，HBase会将一次文件查找的Block块缓存到
    3.   **IndexTable RowKey**
       1. ![image](https://static.lovedata.net/20-06-30-a687eca5fb78d81e08f143ba69b47dc6.png-wm)
 
+
+
+## bulkload
+
+1. HBase BulkLoad批量写入数据实战
+
+   1. > [HBase BulkLoad批量写入数据实战 - 哥不是小萝莉 - 博客园](https://www.cnblogs.com/smartloli/p/9501887.html)
+
+   2. ![image](https://static.lovedata.net/21-06-17-ae9f2d5008d9edfbf10bec552bc9e0b7.png-wm)
+
+   3. hbase底层文件夹格式 " /hbase/data/default/<tbl_name>/<region_id>/\<cf\>/<hfile_id>"
+
+   4. 按照hbase的底层文件存储在hdfs的原理，使用MR直接生成HFile格式的数据文件 然后通过RS将hfile移动到对应的region中去,HFileOutputFormat2.configureIncrementalLoad(job, table);
+
+
+
+
+
+
+
+
+
+
+
+
+

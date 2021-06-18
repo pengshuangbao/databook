@@ -50,7 +50,7 @@ grep java.lang.Thread.State thread.dump | awk '{print$2$3$4$5}'|uniq -c
 
 
 
-#### 根据线程去搜索
+#### 根据线程id去搜索
 
 ```shell
 # 查看进程的所有线程 按P按照CPU来排序

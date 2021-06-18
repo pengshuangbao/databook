@@ -44,6 +44,16 @@ lscpu
 
 
 
+#### 查看进程下的线程信息
+
+```shell
+top -Hp pid
+```
+
+
+
+
+
 ### 查看内存大小
 
 ![image](https://static.lovedata.net/20-12-25-d5d85be0e48724a26aa85d9cc9c2e860.png-wm)
@@ -774,5 +784,4 @@ git reset --hard HEAD^
 #回退到任何一个版本
 git reset --hard  commitid 
 ```
-
 
