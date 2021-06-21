@@ -4,9 +4,23 @@
 
 ## 资源
 
-### 大数据面试100题
+### 大数据
 
 [大数据面试100题.pdf](http://index.lovedata.net/大数据面试100题.pdf)
+
+
+
+### Java
+
+[面试题汇总-kqa](http://index.lovedata.net/面试题汇总-kqa.pdf)
+
+[2020最新Java面试题及答案](http://index.lovedata.net/2020最新Java面试题及答案.pdf)
+
+[整理的多家公司常见面试题库350道](http://index.lovedata.net/整理的多家公司常见面试题库350道.pdf)
+
+
+
+
 
 
 

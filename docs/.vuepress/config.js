@@ -99,7 +99,7 @@ module.exports = ctx => ({
 })
 
 function getAlgorithmSidebar(){
-  return ['','数据结构','算法']
+  return ['','数据结构','算法','红黑树原理详解','B+Tree笔记','LSM-Tree笔记']
 }
 function getProgrammingSidebar(){
   return ['python','scala']
@@ -109,7 +109,7 @@ function getBookSideBar(){
 }
 
 function getInterviewSideBar(){
-  return ['tech','hr','sword-to-offer','my-interview']
+  return ['tech','sword-to-offer','my-interview']
 }
 
 function getArchitectureSidebar(){
@@ -375,7 +375,8 @@ function getBigdataSidebar () {
       children: [
         'hive/',
         'hive/面试题',
-        'hive/全宇宙最强的25条Hive性能调优实战'
+        'hive/全宇宙最强的25条Hive性能调优实战',
+        'hive/Hive底层执行逻辑深度剖析'
       ]
     },
     'zookeeper',

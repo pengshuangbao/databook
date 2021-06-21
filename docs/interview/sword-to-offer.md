@@ -184,6 +184,39 @@ public class ConstructBinaryTree {
 2. 没有右子树，如果节点是它父节点的左子节点，那么它的下一个节点就是它的父节点
 3. 如果节点没有右边子树，并且还是父节点的右子节点，可以沿着父节点向上遍历，直到找到一个**是它**它**父亲节点左子节点**的节点，如果这个节点存在，那么这个**节点的父节点**就是我们要找的下一个节点
 
+```java
+/**
+ * @author pengshuangbao
+ * @date 2021/2/8 2:45 PM
+ */
+public class NextNodeInBinaryTrees {
+
+    public TreeLinkNode getNext(TreeLinkNode node) {
+        if (node == null) {
+            return null;
+        }
+        //如果有右子树，那么它的下一个节点就是它的右子树中的最左节点。
+        // 一直找左子树指针，找到最左的那个。
+        if (node.right != null) {
+            TreeLinkNode next = node.right;
+            while (next.left != null) {
+                next = next.left;
+            }
+            return next;
+        }
+        // 如果当前子结点pNode右子树为空
+        // 返回上层的父结点，如果父结点的右子结点就是当前结点，继续返回到上层的父结点...直到父结点的左子结点等于当前结点
+        while (node.next != null && node.next.right == node) {
+            node = node.next;
+        }
+        // 如果父结点的左子结点等于当前结点，说明下一个要遍历的结点就是父结点了；或者父结点为空（说明当前结点是root），还是返回父结点（null）
+        // pNode.next == null 或者 pNode.next.left == pNode
+        return node.next;
+    }
+}
+
+```
+
 
 
 #### 栈和队列

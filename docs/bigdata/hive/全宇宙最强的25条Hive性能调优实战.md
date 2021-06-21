@@ -10,9 +10,9 @@
 
 ### 总结
 
-1、Hive的内置四大组件(Driver， Compiler, optimizer, Executor) 完成HQL到MapReduce的转换
-2、在Hive执行HQL编译过程中，会从元数据库获取表结构和数据存储目录等相关信息
-3、Hive 只是完成对存储在HDFS上的结构化数据的管理，并提供一种类SQL 的操作方式来进行海量数据运行，底层支持多
+1. Hive的内置四大组件(Driver， Compiler, optimizer, Executor) 完成HQL到MapReduce的转换
+2. 在Hive执行HQL编译过程中，会从元数据库获取表结构和数据存储目录等相关信息
+3. Hive 只是完成对存储在HDFS上的结构化数据的管理，并提供一种类SQL 的操作方式来进行海量数据运行，底层支持多
 种分布式计算引擎。
 
 ## 调优概述
@@ -20,43 +20,44 @@
 Hive作为大数据领域常用的数据仓库组件,在平时设计和查询时要特别注意效率。影响Hive效率的几乎从不是数据量过大，而是**数据倾斜、数据冗余、Job或I/0过多、 MapReduce 分配不合理**等等。对Hive的调优既包含Hive的建表设计方面，对HiveHQL语句本身的优化，也包含Hive配置参数和底层引擎MapReduce方面的调整。
 
 所以此次调优主要分为以下四个方面展开:
-1、Hive的建表设计层面
-2、HQL语法和运行参数层面
-3、Hive架构层面
-4、Hive数据倾斜
+
+1. Hive的建表设计层面
+2. HQL语法和运行参数层面
+3. Hive架构层面
+4. Hive数据倾斜
 
 **总之，Hive调优的作用:在保证业务结果不变的前提下，降低资源的使用量，减少任务的执行时间。**
 
 
 
-## .调优须知
+## 调优须知
 
-1、对于大数据计算引|擎来说**:数据量大不是问题，数据倾斜是个问题**。
-2、Hive的复 杂HQL底层会转换成多个MapReduce Job并行或者串行执行，**Job数比较多的作业运行效率相对比较**
-**低**，比如即使只有几百行数据的表,如果多次关联多次汇总,产生十几个job,耗时很长。原因是MapReduce作
-业初始化的时间是比较长的。
-3、在进行Hive大数据分析时，常见的聚合操作比如sum，count, max, min, UDAF等，不怕数据倾斜问题,
-MapReduce在Mappe阶段的**预聚合**操作，使数据倾斜不成问题。
-4、好的**建表设计，模型设计**事半功倍。
-5、设置**合理的MapReduce的Task并行度**，能有效提升性能。(比如， 10w+数据量级别的计算,用100个.
-reduceTask,那是相当的浪费，1个足够，但是如果是亿级别的数据量,那么1个Task又显得捉襟见肘)
-6、**了解数据分布**，自己动手解决数据倾斜问题是个不错的选择。这是通用的算法优化,但算法优化有时不能适应
-特定业务背景，开发人员了解业务，了解数据，可以通过业务逻辑精确有效的解决数据倾斜问题。
-7、数据量较大的情况下，慎用**count(distinct), group by**容易产生倾斜问题。
-8、对**小文件进行合并**，是行之有效的提高调度效率的方法，假如所有的作业设置合理的文件数,对任务的整体调
-度效率也会产生积极的正向影响
-9、优化时把握整体，**单个作业最优不如整体最优。**
+1. 对于大数据计算引|擎来说**:数据量大不是问题，数据倾斜是个问题**。
+2. Hive的复 杂HQL底层会转换成多个MapReduce Job并行或者串行执行，**Job数比较多的作业运行效率相对比较**
+   **低**，比如即使只有几百行数据的表,如果多次关联多次汇总,产生十几个job,耗时很长。原因是MapReduce作
+   业初始化的时间是比较长的。
+3. 在进行Hive大数据分析时，常见的聚合操作比如sum，count, max, min, UDAF等，不怕数据倾斜问题,
+   MapReduce在Mappe阶段的**预聚合**操作，使数据倾斜不成问题。
+4. 好的**建表设计，模型设计**事半功倍。
+5. 设置**合理的MapReduce的Task并行度**，能有效提升性能。(比如， 10w+数据量级别的计算,用100个.
+   reduceTask,那是相当的浪费，1个足够，但是如果是亿级别的数据量,那么1个Task又显得捉襟见肘)
+6. **了解数据分布**，自己动手解决数据倾斜问题是个不错的选择。这是通用的算法优化,但算法优化有时不能适应
+   特定业务背景，开发人员了解业务，了解数据，可以通过业务逻辑精确有效的解决数据倾斜问题。
+7. 数据量较大的情况下，慎用**count(distinct), group by**容易产生倾斜问题。
+8. 对**小文件进行合并**，是行之有效的提高调度效率的方法，假如所有的作业设置合理的文件数,对任务的整体调
+   度效率也会产生积极的正向影响
+9. 优化时把握整体，**单个作业最优不如整体最优。**
 
 
 
 ## Hive建表设计层面
 
 关于hive的表的类型有哪些?
-1、分区表
-2、分桶表
 
-Hive的建表设计层面调优，主要讲的怎么样合理的组织数据，方便后续的高效计算。比如建表的类型，文件存储
-格式，是否压缩等等。
+1. 分区表
+2. 分桶表
+
+Hive的建表设计层面调优，主要讲的怎么样合理的组织数据，方便后续的高效计算。比如建表的类型，文件存储格式，是否压缩等等。
 
 ### 利用分区表优化
 
@@ -64,68 +65,69 @@ Hive的建表设计层面调优，主要讲的怎么样合理的组织数据，�
 
 也就是说:当-一个Hive表的查询大多数情况下，会根据某一个字段进行筛选时， 那么非常适合创建为分区表，该字段即为分区字段。
 
-在创建表时通过启用partitioned by实现，用来partition的维度并不是实际数据的某一-列， 具体分区的标志是由插入内容时给定的。当要查询某一分区的内容时可以采用where语句，形似where tabTename. partition_ column = a来实现。
+在创建表时通过启用partitioned by实现，用来partition的维度并不是实际数据的某一-列， 具体分区的标志是由插入内容时给定的。当要查询某一分区的内容时可以采用where语句，形似where tabTename.partition_ column = a来实现。
 
 
 
-#### 1、创建含分区的表:
+#### 1.创建含分区的表:
 
 ```sql
 CREATE TABLE page_ _view(viewTime INT, userid BIGINT ,
-page_ url STRING, referrer. _url STRING,
+page_ url STRING, referrer._url STRING,
 ip STRING COMMENT 'IP Address of the User')
 PARTITIONED BY(date STRING, country STRpING)
 ROW FORMAT DELIMITED FIELDS TERMINATED BY' 1'
 STORED AS TEXTFILE;
 ```
 
-#### 2、载入内容，并指定分区标志:
+#### 2.载入内容，并指定分区标志:
 
 ```sql
-1oad data 1ocal inpath ' /home/bi gdata/pv_ _2018-07-08_ _us. txt' into table page_ _view
+1oad data 1ocal inpath ' /home/bi gdata/pv_ _2018-07-08_ _us.txt' into table page_ _view
 partition(date= ' 2018-07-08', country='us');
 ```
 
 
 
-#### 3、查询指定标志的分区内容:
+#### 3.查询指定标志的分区内容:
 
 ```sql
 SELECT page_ views.* FROM page_ vi ews
 WHERE page_ views.date >= ' 2008-03-01'
 AND page_ views.date <=' 2008-03-31' I
-AND page_ views. referrer. _ur1 1ike ' %xyz. com';
+AND page_ views.referrer._ur1 1ike ' %xyz.com';
 ```
 
 
 
 简单总结:
-1、当你意识到一个字段经常用来做where，建分区表，使用这个字段当做分区字段
-2、在查询的时候，使用分区字段来过滤，就可以避免全表扫描。只需要扫描这张表的一个分区的数据即可
 
-
+1. 当你意识到一个字段经常用来做where，建分区表，使用这个字段当做分区字段
+2. 在查询的时候，使用分区字段来过滤，就可以避免全表扫描。只需要扫描这张表的一个分区的数据即可
 
 ### 利用分桶表优化
 
-跟分区的概念很相似，都是把数据分成多个不同的类别，区别就是规则不- -样!
-1、分区:按照字段值来进行:一个分区，就只是包含这个这一个值的所有记录 不是当前分区的数据一定不在当前分区当前分区也只会包含当前这个分区值的数据
-2、分桶:默认规则: Hash散列. 一个分桶中会有多个不同的值. 如果一个分桶中，包含了某个值，这个值的所有记录，必然都在这个分桶
+跟分区的概念很相似，都是把数据分成多个不同的类别，区别就是规则不一样!
+
+1. 分区:按照字段值来进行:一个分区，就只是包含这个这一个值的所有记录 不是当前分区的数据一定不在当前分区当前分区也只会包含当前这个分区值的数据
+2. 分桶:默认规则: Hash散列.一个分桶中会有多个不同的值.如果一个分桶中，包含了某个值，这个值的所有记录，必然都在这个分桶
 
 
 Hive Bucket,分桶，是指将数据以指定列的值为key进行hash, hash 到指定数目的桶中，这样做的目的和分区表类似，使得筛选时不用全局遍历所有的数据，只需要遍历所在桶就可以了。这样也可以支持高效采样。
 
-1、采样
-2、join
+1. 采样
+
+2. join
 
 如下例就是以userid这一-列为 bucket的依据，共设置32个buckets
 
 ```sql
 CREATE TABLE page_view(viewTime INT, userid BIGINT ,
-page_url STRING, referrer. _url STRING,
+page_url STRING, referrer._url STRING,
 ip STRING COMMENT' IP Address of the User' )
 COMMENT' This is the page view table '
 PARTITIONED BY(dt STRING, country STRING)
-CLUSTERED BY(userid) SORTED JBY(viewTime) INTO 32 BUCKETS
+CLUSTERED BY(userid) SORTED BY(viewTime) INTO 32 BUCKETS
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY' 1
 COLLECTION ITEMS TERMINATED BY' 2 '
@@ -136,11 +138,12 @@ STORED AS SEQUENCEFILE;
 
 
 分桶的语法:
+
 CLUSTERED BY(userid) SORTED BY(viewTime) INTO 32 BUCKETS
 
-CLUSTERED BY(userid) 表示按照userid 来分桶
+CLUSTERED BY(userid)  表示按照userid 来分桶
 
-SORTED BY(viewTime) 按照viewtime来进行桶内排序
+SORTED BY(viewTime)  按照viewtime来进行桶内排序
 
 INTO 32 BUCKETS   分成多少个桶
 
@@ -158,13 +161,13 @@ select price from order t join customer s on t.cid = s.id
 
 ```sql
 
-分桶抽祥:
-select * from student tab 1esamp1e(bucket 3 out of 32);
-随机采祥: randO函数
+-- 分桶抽祥:
+select * from student tablesamp1e(bucket 3 out of 32);
+-- 随机采祥: randO函数
 select * from student order by rand( limit 100;
-//效率低
+-- 效率低
 select * from student distribute by randO sort by randO limit 100; // 推荐使用込神
-数据抉抽祥: tablesamp1eO 函数
+-- 数据抉抽祥: tablesamp1eO 函数
 select * from student tab1esamp1e(10 percent); #百分比
 select * from student tab1esamp1e(5 rows); #行数
 select * from student tab1esamp1e(5 M) ; #大小
@@ -174,7 +177,7 @@ select * from student tab1esamp1e(5 M) ; #大小
 
 ### 选择合适的文件存储格式
 
-在HiveSQL的create table 语句中，可以使用stored as ... 指定表的存储格式。Apache Hive支持Apache Hadoop中使用的几种熟悉的文件格式，比如TextFile、SequenceFile、 RCFile、 Avro、 ORC、ParguetFile等。
+在HiveSQL的create table 语句中，可以使用stored as...指定表的存储格式。Apache Hive支持Apache Hadoop中使用的几种熟悉的文件格式，比如TextFile、SequenceFile、 RCFile、 Avro、 ORC、ParguetFile等。
 
 存储格式一般需要根据业务进行选择,在我们的实操中,绝大多数表都采用TextFile与Parquet两种存储格式之一。TextFile是 最简单的存储格式，它是纯文本记录，也是Hive的默认格式。虽然它的磁盘开销比较大，查询效率也低，但它更多地是作为跳板来使用。RCFile、 ORC、 Parquet等格式的表都不能由文件直接导入数据，必须由TextFile来做中转。Parquet和ORC都是Apache旗 下的开源列式存储格式。列式存储比起传统的行式存储更适合批量OLAP查询，并且也支持更好的压缩和编码。
 
@@ -184,32 +187,33 @@ select * from student tab1esamp1e(5 M) ; #大小
 
 
 第一种: TextFile 
-1、存储方式:行存储。默认格式，如果建表时不指定默认为此格式。，
-2、每一行都是一条记录，每行都以换行符"\n"结尾。数据不做压缩时，磁盘会开销比较大，数据解析开销也比较大。
-3、可结合Gzip、Bzip2等压缩方式一起使用(系统会自动检查，查询时会自动解压) ,推荐选用可切分的压缩算法。
+
+1. 存储方式:行存储。默认格式，如果建表时不指定默认为此格式。，
+2. 每一行都是一条记录，每行都以换行符"\n"结尾。数据不做压缩时，磁盘会开销比较大，数据解析开销也比较大。
+3. 可结合Gzip、Bzip2等压缩方式一起使用(系统会自动检查，查询时会自动解压) ,推荐选用可切分的压缩算法。
 
 第二种: Sequence File
-1、一种Hadoop API提供的二进制文件，使用方便、可分割、可压缩的特点。
-2、支持三种压缩选择: NONE、RECORD、BLOCK。 RECORD压缩率低，一般建议使用BLOCK压缩。
+1. 一种Hadoop API提供的二进制文件，使用方便、可分割、可压缩的特点。
+2. 支持三种压缩选择: NONE、RECORD、BLOCK。 RECORD压缩率低，一般建议使用BLOCK压缩。
 
 第三种: RC File
-1、存储方式:数据按行分块，每块按照列存储。
-	A、首先，将数据按行分块，保证同一个record在一个块上，避免读一个记录需要读取多个block。
-	B、其次，块数据列式存储，有利于数据压缩和快速的列存取。
-2、相对来说，RCFile对于提升任务执行性能提升不大，但是能节省一些存储空间。可以使用升级版的0RC格式。
+1. 存储方式:数据按行分块，每块按照列存储。
+	1. 首先，将数据按行分块，保证同一个record在一个块上，避免读一个记录需要读取多个block。
+	2. 其次，块数据列式存储，有利于数据压缩和快速的列存取。
+2. 相对来说，RCFile对于提升任务执行性能提升不大，但是能节省一些存储空间。可以使用升级版的0RC格式。
 
 
 
 第四种: ORC File
-1、存储方式:数据按行分块，每块按照列存储
-2、Hive提供的新格式，属于RCFile的升级版，性能有大幅度提升，而且数据可以压缩存储，压缩快，快速列存取。
-3、ORC File会基于列创建索引，当查询的时候会很快。
+1. 存储方式:数据按行分块，每块按照列存储
+2. Hive提供的新格式，属于RCFile的升级版，性能有大幅度提升，而且数据可以压缩存储，压缩快，快速列存取。
+3. ORC File会基于列创建索引，当查询的时候会很快。
 
 第五种: Parquet File
-1、存储方式:列式存储。
-2、Parquet对于大型查询的类型是高效的。对于扫描特定表格中的特定列查询，Parquet特别有用。 Parquet-般使用Snappy、Gzi p压缩。默认Snappy。
-3、Parquet支持Impala查询引擎。
- 4、表的文件存储格式尽量采用Parquet或ORC，不仅降低存储量，还优化了查询，压缩，表关联等性能。
+1. 存储方式:列式存储。
+2. Parquet对于大型查询的类型是高效的。对于扫描特定表格中的特定列查询，Parquet特别有用。 Parquet-般使用Snappy、Gzi p压缩。默认Snappy。
+3. Parquet支持Impala查询引擎。
+ 4. 表的文件存储格式尽量采用Parquet或ORC，不仅降低存储量，还优化了查询，压缩，表关联等性能。
 
 
 
@@ -223,26 +227,24 @@ Hive语句最终是转化为MapReduce程序来执行的，而MapReduce的性能�
 
 如何选择压缩方式
 
-1、压缩比率
-2、压缩解压速度
-3、是否支持split
+1. 压缩比率
+2. 压缩解压速度
+3. 是否支持split
 支持分割的文件可以并行的有多个mapper程序处理大数据文件，大多数文件不支持可分刮四为达三义什只比从头开始读。
 
 是否压缩
-1、计算密集型，不压缩，否则进一 步增加了CPU的负担
-2、网络密集型，推荐压缩，减小网络数据传输
-
-
+1. 计算密集型，不压缩，否则进一 步增加了CPU的负担
+2. 网络密集型，推荐压缩，减小网络数据传输
 
 Job输出文件按照Block以GZip的方式进行压缩:
 
 ```shell
 ##默认值是false
-set mapreduce.output.fileoutputformat. compress=true;
+set mapreduce.output.fileoutputformat.compress=true;
 ##默认值是Record
-set mapreduce. output.fileoutputformat. compress.type=BLOCK
-##默认值是org. apache. hadoop. io. compress. Defaultcodec
-set mapreduce. output.fileoutputformat. compress.codec=org. apache . hadoop. io. compress.GzipCodec
+set mapreduce.output.fileoutputformat.compress.type=BLOCK
+##默认值是org.apache.hadoop.io.compress.Defaultcodec
+set mapreduce.output.fileoutputformat.compress.codec=org.apache.hadoop.io.compress.GzipCodec
 ```
 
 
@@ -251,9 +253,9 @@ Map输出结果也以Gzip进行压缩:
 
 ```sql
 ##启用map端输出压缩
-set mapred. map. output. compress=true
-##默认值是org. apache . hadoop. io. compress . DefaultCodec
-set mapreduce. map. output. compress. codec=org. apache . hadoop. io. compress. GzipCodec
+set mapred.map.output.compress=true
+##默认值是org.apache.hadoop.io.compress.DefaultCodec
+set mapreduce.map.output.compress.codec=org.apache.hadoop.io.compress.GzipCodec
 ```
 
 
@@ -261,8 +263,8 @@ set mapreduce. map. output. compress. codec=org. apache . hadoop. io. compress. 
 对Hive输出结果和中间都进行压缩:
 
 ```sql
-set hive. exec. compress. output=true  ##默认值是false,不压缩
-set hive. exec. compress. i nte rmediate=true  ##默认值是false，为true时MR设置的压缩才启用
+set hive.exec.compress.output=true  ##默认值是false,不压缩
+set hive.exec.compress.i nte rmediate=true  ##默认值是false，为true时MR设置的压缩才启用
 ```
 
 
@@ -289,7 +291,7 @@ expjain [extended] query
 Hive在读数据的时候，可以只读取查询中所需要用到的列，而忽略其他的列。这样做可以节省读取开销:中间表存储开销和数据整合开销。
 
 ```sql
-set hive. optimize.cp = true;  ##列裁剪，取数只取查询中需要用到的列，默认是true
+set hive.optimize.cp = true;  ##列裁剪，取数只取查询中需要用到的列，默认是true
 ```
 
 
@@ -299,7 +301,7 @@ set hive. optimize.cp = true;  ##列裁剪，取数只取查询中需要用到�
 将SQL语句中的where谓词逻辑都尽可能提前执行，减少下游处理的数据量。对应逻辑优化器是 PredicatePushDown.
 
 ```sql
-set hive. optimize. ppd=true; ##默认是true
+set hive.optimize.ppd=true; ##默认是true
 ```
 
 示例程序:
@@ -314,7 +316,7 @@ select a.*， c.* from a join (select * from b where age > 20) C on a.id = c.id;
 列裁剪就是在查询时只读取需要的列，分区裁剪就是只读取需要的分区。当列很多或者数据量很大时，如果select * 或者不指定分区，全列扫描和全表扫描效率都很低。 在查询的过程中，只选择需要的分区，可以减少读入的分区数目,减少读入的数据量。 Hive中与分区裁剪优化相关的则是:
 
 ```sql
-set hive. optimize. pruner=true;  ##默认是true 
+set hive.optimize.pruner=true;  ##默认是true 
 ```
 
 在HiveQL解析阶段对应的则是GolumnPruner逻辑优化器。
@@ -325,16 +327,16 @@ set hive. optimize. pruner=true;  ##默认是true
 
 ####  Map输入合并 
 
-在执行MapReduce程序的时候，- -般情况是一个文件的一个数据分块需要一个 mapTask来处理。但是如果数据 源是大量的小文件，这样就会启动大量的mapTask任务，这样会浪费大量资源。可以将输入的小文件进行合并,从而减少mapTask任务数量。
+在执行MapReduce程序的时候，一般情况是一个文件的一个数据分块需要一个 mapTask来处理。但是如果数据 源是大量的小文件，这样就会启动大量的mapTask任务，这样会浪费大量资源。可以将输入的小文件进行合并,从而减少mapTask任务数量。
 
 ```sql
 #### Map端输入、合并文件之后按照b1ock的大小分割(默认)
 
-set hive. input. format=org. apache . hadoop. hive. q1. io. CombineHiveInputFormat; 
+set hive.input.format=org.apache.hadoop.hive.q1.io.CombineHiveInputFormat; 
 
 #### Map端输入，不合并
 
-set hive. input. format=org. apache. hadoop. hive. q1. io. HiveInputFormat;
+set hive.input.format=org.apache.hadoop.hive.q1.io.HiveInputFormat;
 ```
 
 #### Map/Reduce输出合并
@@ -343,25 +345,25 @@ set hive. input. format=org. apache. hadoop. hive. q1. io. HiveInputFormat;
 
 ```sql
 ##是否合并Map输出文件，默认值为true
-set hive . merge . mapfiles=true;
+set hive.merge.mapfiles=true;
 ##是否合并Reduce端输出文件，默认值为false
-set hive . merge . mapredfiles=true ;
+set hive.merge.mapredfiles=true ;
 ##合并文件的大小，默认值为25600000
-set hive . merge. size. per. task=256000000;
+set hive.merge.size.per.task=256000000;
 ##每个Map最大分割大小
-set mapred. max. split. size=2560000p0;
+set mapred.max.split.size=25600000;
 ##一个节点上split的最少值
-set mapred. min. split. size. per. node=1; // 服务器节点
+set mapred.min.split.size.per.node=1; // 服务器节点
 ##一个机架上split的最少值
-set mapred. min.split.size. per. rack=1; //服务器机架
+set mapred.min.split.size.per.rack=1; //服务器机架
 ```
 
-hive.merge.size.per .task和mapred.min.split.size.per.node 联合起来:
+hive.merge.size.per.task和mapred.min.split.size.per.node 联合起来:
 
-1、默认情况先把这个节点上的所有数据进行合并，如果合并的那个文件的大小超过了256M就开启另外一个文件继续合并
-2、如果当前这个节点上的数据不足256M，那么就都合并成一个 逻辑切片。
+1. 默认情况先把这个节点上的所有数据进行合并，如果合并的那个文件的大小超过了256M就开启另外一个文件继续合并
+2. 如果当前这个节点上的数据不足256M，那么就都合并成一个 逻辑切片。
 
-现在有100个Task,总共有10000M的数据，平均- -下，每个Task执行100M的数据的计算。假设只启动10个Task,每个Task就要执行1000M的数据。如果只有2个Task， 5000M
+现在有100个Task,总共有10000M的数据，平均一下，每个Task执行100M的数据的计算。假设只启动10个Task,每个Task就要执行1000M的数据。如果只有2个Task， 5000M
 
 
 
@@ -369,40 +371,38 @@ hive.merge.size.per .task和mapred.min.split.size.per.node 联合起来:
 
 #### 第一: MapReduce中的Map Task的并行度机制
 
-Map数过大:当输入文件特别大，MapTask 特别多,每个计算节点分配执行的MapTask都很多，这时候可以考
-虑减少MapTask的数量。增大每个MapTask处理的数据量。而且MapTask过多，最终生成的结果文件数也太
-多。
+Map数过大:当输入文件特别大，MapTask 特别多,每个计算节点分配执行的MapTask都很多，这时候可以考虑减少MapTask的数量。增大每个MapTask处理的数据量。而且MapTask过多，最终生成的结果文件数也太多。
 
-1、Map阶段输出文件太小，产生大量小文件
-2、初始化和创建Map的开销很大
+1. Map阶段输出文件太小，产生大量小文件
+2. 初始化和创建Map的开销很大
 
 Map数太小:当输入文件都很大，任务逻辑复杂，MapTask 执行非常慢的时候，可以考心項加Iviapiaor奴，不使得每个MapTask处理的数据量减少，从而提高任务的执行效率。
 
-1、文件处理或查询并发度小，Job执行时间过长
-2、大量作业时，容易堵塞集群
+1. 文件处理或查询并发度小，Job执行时间过长
+2. 大量作业时，容易堵塞集群
 
-在MapReduce的编程案例中，我们得知，- -个MapReduce Job 的MapTask数量是由输入分片InputSplit 决定的。而输入分片是由FilelnputFormat.getSplit()决定的。一个输入分片对应一个MapTask,而输入分片是由三个参数决定的:
+在MapReduce的编程案例中，我们得知，一个MapReduce Job 的MapTask数量是由输入分片InputSplit 决定的。而输入分片是由FilelnputFormat.getSplit()决定的。一个输入分片对应一个MapTask,而输入分片是由三个参数决定的:
 
 ![image](https://static.lovedata.net/21-05-30-07754921f3973f963c64e326c4b12921.png-wm)
 
 
 
 输入分片大小的计算是这么计算出来的:
-1ong splitsize = Math. max (minSize，Math. mi n(maxsize，b1ockSize))
+1ong splitsize = Math.max (minSize，Math.mi n(maxsize，b1ockSize))
 
 默认情况下，输入分片大小和HDFS集群默认数据块大小-致，也就是默认-一个数据块,启用-一个MapTask进行处理，这样做的好处是避免了服务器节点之间的数据传输,提高job处理效率
 
 两种经典的控制MapTask的个数方案:减少MapTask数 或者增加MapTask数
 
-1、减少MapTask数是通过合并小文件来实现，这一点主要是针对数据源
-2、增加MapTask数可以通过控制上一个job 的reduceTask 个数
+1. 减少MapTask数是通过合并小文件来实现，这一点主要是针对数据源
+2. 增加MapTask数可以通过控制上一个job 的reduceTask 个数
 
 **重点注意:不推荐把这个值进行随意设置1**
 **推荐的方式:使用默认的切块大小即可。如果非要调整，最好是切块的N倍数**
 
 #### 第二:合理控制MapTask数量
 
-1、减少MapTask数可以通过合并小文件来实现
+1. 减少MapTask数可以通过合并小文件来实现
 2.增加MapTask数可以通过控制上一个ReduceTask默认的MapTask个数
 计算方式
 输入文件总大小: total_ size
@@ -412,27 +412,26 @@ default_ mapper_ _num = total_ size / dfs_ _block_ size
 MapReduce中提供了如下参数来控制map任务个数，从字面上看，貌似是可以直接设置MapTask个数的样子，但是很遗憾不行，这个参数设置只有在大于default_mapper_ num的时候，才会生效。
 
 ```shell
-set mapred. map. tasks=10;  ##默认值是2
+set mapred.map.tasks=10;  ##默认值是2
 ```
 
 
 
 那如果我们需要减少MapTask数量，但是文件大小是固定的，那该怎么办呢?
-可以通过mapred. min. split.size设置每个任务处理的文件的大小，这个大小只有在大于dfs_ b1ock size 的时候才会生效
+可以通过mapred.min.split.size设置每个任务处理的文件的大小，这个大小只有在大于dfs_ b1ock size 的时候才会生效
 
 ```sql
-split_size = max (mapred. min.split.size, dfs_ b1ock_ _sịze)
+split_size = max (mapred.min.split.size, dfs_ b1ock_ _sịze)
 split_ num = total_ _size 1 split_ size
-compute map_ num = Math. min(split_ num, Math. max(default_ mapper_ num, mapred. map. tasks))
+compute map_ num = Math.min(split_ num, Math.max(default_ mapper_ num, mapred.map.tasks))
 ```
 
-送村就可以佩少MopTask散暈て。
-怠結一-下控制mapper个数的方法:
-1、如果想増加MapTask 个数，可以役置mapred. map. tasks カ一 个较大大的值
+这样就可以减少MapTask数量 总结一下控制mapper个数的方法:
+1. 如果想増加MapTask 个数，可以设置 mapred.map.tasks カ一 个较大大的值
 
 2. 如果想减少MapTask个数，可以设置maperd.map.spitsize 谓一个较大的值
 
-MapTask数量与输入文件的split 数息息相关,在Hadoop源码 org. apache . hadoop. mapreduce.1ib. input. FileInputFormat类中可以看到split划分的具体逻辑。可以直接 通过参数mapred. map. tasks (默认值2) 来设定MapTask数的期望值，但它不一定会生效。
+MapTask数量与输入文件的split 数息息相关,在Hadoop源码 org.apache.hadoop.mapreduce.1ib.input.FileInputFormat类中可以看到split划分的具体逻辑。可以直接 通过参数mapred.map.tasks (默认值2) 来设定MapTask数的期望值，但它不一定会生效。
 
 
 
@@ -444,18 +443,16 @@ MapTask数量与输入文件的split 数息息相关,在Hadoop源码 org. apache
 
 Hadoop MapReduce程序中，ReducerTask 个数的设定极大影响执行效率，ReducerTask 数量与输出文件的数量相关。如果ReducerTask数太多,会产生大量小文件，对HDFS造成压力。如果ReducerTask数太少，每个ReducerTask要处理很多数据，容易拖慢运行时间或者造成00M。这使得Hive怎样决定ReducerTask个数成为一个关键问题。遗憾的是Hive的估计机制很弱，不指定ReducerTask个数的情况下，Hive 会猜测确定一个ReducerTask个数，基于以下两个设定:
 
-参数1: hive. exec. reducers . bytes. per. reducer (默认256M)
-参数2: hive. exec. reducers . max (默认为1009)
-参数3: mapreduce. job. reduces (默认值为-1，表示没有设置，那么就按照以上两个参 数进行设置)
-
-
+参数1: hive.exec.reducers.bytes.per.reducer (默认256M)
+参数2: hive.exec.reducers.max (默认为1009)
+参数3: mapreduce.job.reduces (默认值为-1，表示没有设置，那么就按照以上两个参 数进行设置)
 
 ReduceTask的计算公式为:
-N = Math. min(参数2，总输入数据大小/参数1)
+N = Math.min(参数2，总输入数据大小/参数1)
 
 可以通过改变上述两个参数的值来控制ReduceTask的数量。也可以通过
-set mapred. map. tasks=10;
-set mapreduce. job. reduces=10;
+set mapred.map.tasks=10;
+set mapreduce.job.reduces=10;
 
 通常情况下，有必要手动指定ReduceTask个数。考虑到Mapper阶段的输出数据量通常会比输入有大幅减少，因此即使不设定ReduceTask个数，重设参数2还是必要的。依据经验，可以将参数2设定为M * (0.95 * N)(N为集群中NodeManager个数)。一般来说，NodeManage 和
 DataNode的个数是一样的。
@@ -464,14 +461,14 @@ DataNode的个数是一样的。
 
 
 
-### 6.2.8. Join优化
+### 6.2.8.Join优化
 
 #### Join优化整体原则:
 
-1、优先过滤后再进行Join操作，最大限度的减少参与joi n的数据量
-2、小表join大表，最好启动mapjoin, hive 自动启用mapjoin，小表不能超过25M，可以更改
-3、Join on的条件相同的话，最好放入同一个job，并且joi n表的排列顺序从小到大: select a.*，b.*，c.* from a join b on a.id=b.id join C on a.id=c.i
-4、如果多张表做join,如果多个链接条件都相同，会转换成一个J0b
+1. 优先过滤后再进行Join操作，最大限度的减少参与joi n的数据量
+2. 小表join大表，最好启动mapjoin, hive 自动启用mapjoin，小表不能超过25M，可以更改
+3. Join on 的条件相同的话，最好放入同一个job，并且join表的排列顺序从小到大: select a.*，b.*，c.* from a join b on a.id=b.id join C on a.id=c.i
+4. 如果多张表做join,如果多个链接条件都相同，会转换成一个J0b
 
 #### 优先过滤数据
 
@@ -490,16 +487,14 @@ DataNode的个数是一样的。
 
 #### 尽量原子操作
 
-尽量避免一↑SQL包含复杂的逻辑，可以使用中间表来完成复杂的逻辑。
+尽量避免一SQL包含复杂的逻辑，可以使用中间表来完成复杂的逻辑。
 
 #### 大表Join大表
 
-1、空key过滤:有时joi n超时是因为某些key对应的数据太多，而相同key对应的数据都会发送到相同的reducer上，从而导致内存不够。此时我们应该仔细分析这些异常的key，很多情况下，这些key对应的数据是异常数据，我们需要在SQL语句中进行过滤。
-2、空key转换: 有时虽然某个key为空对应的数据很多，但是相应的数据不是异常数据，必须要包含在join的结果中，此时我们可以表a中key为空的字段赋一个随机的值，使得数据随机均匀地分不到不同的reducer上
+1. 空key过滤:有时join超时是因为某些key对应的数据太多，而相同key对应的数据都会发送到相同的reducer上，从而导致内存不够。此时我们应该仔细分析这些异常的key，很多情况下，这些key对应的数据是异常数据，我们需要在SQL语句中进行过滤。
+2. 空key转换: 有时虽然某个key为空对应的数据很多，但是相应的数据不是异常数据，必须要包含在join的结果中，此时我们可以表a中key为空的字段赋一个随机的值，使得数据随机均匀地分不到不同的reducer上
 
-
-
-### .启用MapJoin
+### 启用MapJoin
 
 ***这个优化措施，但凡能用就用!大表 join 小表小表满足需求: 小表 数据小于控制条件时***
 
@@ -508,19 +503,19 @@ Maploin是将join 双方比较小的表直接分发到各个map进程的内存�
 ```sql
 ##是否根据输入小表的大小，自动将reduce端的common join 转化为map join, 将小表刷入内存中。
 ##对应逻辑优化器 是MapJoi nProcessor
-set hive. auto. convert.join = true;
+set hive.auto.convert.join = true;
 ##刷入内存表的大小(字节)
-set hive. mapjoin. smalltable. filesize = 25000000;
+set hive.mapjoin.smalltable.filesize = 25000000;
 
-## hive 会基于表的size自动的将普通joi n转换成mapjoin
-set hive. auto. convert. join. nocondi ti onaltask=true;
+## hive 会基于表的size自动的将普通join转换成mapjoin
+set hive.auto.convert.join.noconditionaltask=true;
 ##多大的表可以自动触发放到内层LocalTask中，默认大小10M
-set hive. auto. convert. join. noconditiona 1task. size=10000000;
+set hive.auto.convert.join.noconditiona 1task.size=10000000;
 ```
 
 
 
-Hive可以进行多表Join。Join 操作尤其是Join大表的时候代价是非常大的。Maploin 特别适合大小表join的情况。在Hive join场景中，- -般总有一-张相对小的表和一 -张相对大的表,小表叫build table,大表叫probe table。Hive在解析带join的SQL语句时，会默认将最后-个表作为probe table,将前面的表作为build table并试图将它们读进内存。如果表顺序写反，probe table在前面，引发00M的风险就高了。在维度建模数据仓库中，事实表就是probe table,维度表就是build table。这种Join方式在map端直接完成join过程，消灭了reduce,效率很高而且Manloin还支持非等值连接
+Hive可以进行多表Join。Join 操作尤其是Join大表的时候代价是非常大的。Maploin 特别适合大小表join的情况。在Hive join场景中，一般总有一-张相对小的表和一 -张相对大的表,小表叫build table,大表叫probe table。Hive在解析带join的SQL语句时，会默认将最后-个表作为probe table,将前面的表作为build table并试图将它们读进内存。如果表顺序写反，probe table在前面，引发00M的风险就高了。在维度建模数据仓库中，事实表就是probe table,维度表就是build table。这种Join方式在map端直接完成join过程，消灭了reduce,效率很高而且Manloin还支持非等值连接
 
 
 
@@ -528,9 +523,9 @@ Hive可以进行多表Join。Join 操作尤其是Join大表的时候代价是非
 也可以手动开启mapjoin:
 
 ```sql
---SQL方式，在SQL 语句中添加MapJoin标记(mapjoin hint )
---将小表放到内存中，省去shff1e操作
-SELECT sma11Table.key， bigTable.value FROM smallTable JOIN bigTable ON smal1Tab1e.key = bigTable. key;
+-- SQL方式，在SQL 语句中添加MapJoin标记(mapjoin hint )
+-- 将小表放到内存中，省去shff1e操作
+SELECT sma11Table.key， bigTable.value FROM smallTable JOIN bigTable ON smal1Tab1e.key = bigTable.key;
 ```
 
 
@@ -548,10 +543,10 @@ SELECT sma11Table.key， bigTable.value FROM smallTable JOIN bigTable ON smal1Ta
 它是另一种Hive Join优化技术,使用这个技术的前提是所有的表都必须是分桶表(bucket) 和分桶排序的
 (sort)。分桶表的优化!
 
-具体实现: .
-1、针对参与jqi n的这两张做相同的hash散列，每个桶里面的数据还要排序
-2、这两张表的分桶个数要成倍数。
-3、开启SMB join的开关!  set hive. auto. convert. sortmerge. join=true ;
+具体实现:.
+1. 针对参与join的这两张做相同的hash散列，每个桶里面的数据还要排序
+2. 这两张表的分桶个数要成倍数。
+3. 开启SMB join的开关   set hive.auto.convert.sortmerge.join=true ;
 
 
 
@@ -559,19 +554,18 @@ SELECT sma11Table.key， bigTable.value FROM smallTable JOIN bigTable ON smal1Ta
 
 ```sql
 ##当用户执行bucket map join的时候， 发现不能执行时，禁止查询
-set hive. enforce. sortmergebucketmapjoin=false;
+set hive.enforce.sortmergebucketmapjoin=false;
 ##如果join的表通过sort merge join的条件， join是否会自动转换为sort merge join
-set hive. auto. convert. sortmerge. join=true ;
-##当两个分桶表join时，如果join on的是分桶字段，小表的分桶数是大表的倍数时，可以启用mapjoin 来提高
-效率。
+set hive.auto.convert.sortmerge.join=true ;
+##当两个分桶表join时，如果join on的是分桶字段，小表的分桶数是大表的倍数时，可以启用mapjoin 来提高效率。
 
 # bucket map join优化，默认值是false
 
-set hive . optimize. bucketmapjoin=false;
+set hive.optimize.bucketmapjoin=false;
 
 ## bucket map join 优化，默认值是false
 
-set hive. optimize . bucketmapjoin. sortedmerge=false;
+set hive.optimize.bucketmapjoin.sortedmerge=false;
 ```
 
 
@@ -583,20 +577,20 @@ set hive. optimize . bucketmapjoin. sortedmerge=false;
 ```sql
 # join的键对应的记录条数超过这个值则会进行分拆，值根据具体数据量设置
 
-set hive. skewjoin. key=100000;
+set hive.skewjoin.key=100000;
 
 #如果是join过 程出现倾斜应该设置为true
-set hive. optimize. skewjoin=false;
+set hive.optimize.skewjoin=false;
 ```
 
 
 
 如果开启了，在Join过程中Hive会将计数超过阈值hive.skewjoin.key (默认100000)的倾斜key对应的行临时写进文件中，然后再启动另一个job做map join生成结果。
 
-通过hive. skewjoin. mapjoin. map. tasks参数还可以控制第1 =个job的mapper数量，默认10000。
+通过hive.skewjoin.mapjoin.map.tasks参数还可以控制第1 =个job的mapper数量，默认10000。
 
 ```sql
-set hive. skewjoin. mapjoin. map. tasks=10000;
+set hive.skewjoin.mapjoin.map.tasks=10000;
 ```
 
 
@@ -604,19 +598,19 @@ set hive. skewjoin. mapjoin. map. tasks=10000;
 ###  CBO优化
 
 join的时候表的顺序的关系:前面的表都会被加载到内存中。后面的表进行磁盘扫描
-select a.*，b.*，c.* from a join b on a.id = b.id join C on a.id = C. id;
+select a.*，b.*，c.* from a join b on a.id = b.id join C on a.id = C.id;
 
-Hive自0.14.0开始，加入了-项"Cost based Optimizer"来对HQL执行计划进行优化，达T功北通过 "hive.cbo.enable"来开启。在Hive 1.1.0之后，这个feature是默认开启的，它可以自动优化HQL中多个Join的顺序，并选择合适的Join算法。CBO,成本优化器，代价最小的执行计划就是最好的执行计划。传统的数据库，成本优化器做出最优化的执行计划是依据统计信息来计算的。Hive 的成本优化器也- -样。
+Hive自0.14.0开始，加入了-项"Cost based Optimizer"来对HQL执行计划进行优化，达T功北通过 "hive.cbo.enable"来开启。在Hive 1.1.0之后，这个feature是默认开启的，它可以自动优化HQL中多个Join的顺序，并选择合适的Join算法。CBO,成本优化器，代价最小的执行计划就是最好的执行计划。传统的数据库，成本优化器做出最优化的执行计划是依据统计信息来计算的。Hive 的成本优化器也一样。
 
  Hive在提供最终执行前，优化每个查询的执行逻辑和物理执行计划。这些优化工作是交给底层来完成的。根据查询成本执行进一步的优化, 从而产生潜在的不同决策:如何排序连接,执行哪种类型的连接，并行度等等。
 
 要使用基于成本的优化(也称为CBO)， 请在查询开始设置以下参数:
 
 ```sql
-set hive. cbo. enab1e=true;
-set hive. compute. query. using. stats=true;
-set hive. stats. fetch. column. stats=true;
-set hive. stats. fetch. partition. stats=true;
+set hive.cbo.enab1e=true;
+set hive.compute.query.using.stats=true;
+set hive.stats.fetch.column.stats=true;
+set hive.stats.fetch.partition.stats=true;
 ```
 
 
@@ -625,19 +619,15 @@ set hive. stats. fetch. partition. stats=true;
 
 当Hive设定为严格模式(hive.mapred.mode-strict) 时，不允许在HQL语句中出现笛卡尔积，这实际说明了Hive对笛卡尔积支持较弱。因为找不到Join key, Hive 只能使用1个reducer来完成笛卡尔积。当然也可以使用limit的办法来减少某个表参与join 的数据量,但对于需要笛卡尔积语义的需求来说，经常是一个大表和一个小表的Join操作，结果仍然很大(以至于无法用单机处理)，这时 Maploin才是最好的解决办法。Maploin,顾名思义，会在Map端完成Join操作。这需要将Join 操作的一个或多个表完全读入内存。
 
-PS: Maploin在子查询中可能出现未知BUG。在大表和小表做笛卡尔积时，规避笛卡尔积的方法是,给Join添加-一个Join key,原理很简单:将小表扩充- -列join key,并将小表的条目复制数倍，join key各不相同;将大表扩充- -列join key为随机数。
+PS: Maploin在子查询中可能出现未知BUG。在大表和小表做笛卡尔积时，规避笛卡尔积的方法是,给Join添加-一个Join key,原理很简单:将小表扩充一列join key,并将小表的条目复制数倍，join key各不相同;将大表扩充一列join key为随机数。
 
 精髓就在于复制几倍，最后就有几个reduce来做，而且大表的数据是前面小表扩张key值范围里面随机出来的，所以复制了几倍n,就相当于这个随机范围就有多大n,那么相应的，大表的数据就被随机的分为了n份。并且最后处理所用的reduce数量也是n,而且也不会出现数据倾斜。
-
-
 
 ![image](https://static.lovedata.net/21-05-30-90acbd2bc260fd62abc8c7f7652f3eb0.png-wm)
 
 
 
-
-
-### Group By优化
+### Group By 优化
 
 默认情况下，Map阶段同-一个Key的数据会分发到-一个Reduce上,当-一个Key的数据过大时会产生数据倾斜。 进行group by操作时可以从以下两个方面进行优化:
 
@@ -647,10 +637,10 @@ PS: Maploin在子查询中可能出现未知BUG。在大表和小表做笛卡尔
 
 ```sql
 ##开启Map端聚合参数设置
-set hive. map. aggr=true;
+set hive.map.aggr=true;
 
 #设置map端预聚 合的行数阈值，超过该值就会分拆job, 默认值100000
-set hive. groupby . mapaggr . checki nterva1=100000
+set hive.groupby.mapaggr.checkinterva1=100000
 ```
 
 
@@ -668,27 +658,27 @@ set hive. groupby . mapaggr . checki nterva1=100000
 当选项设定为true时，生成的查询计划有两个MapReduce任务。
 
 
-1、在第一个MapReduce任务中，map 的输出结果会随机分布到reduce 中，每个reduce 做部分聚合操作，并输出结果，这样处理的结果是相同的group by key有可能分发到不同的reduce 中，从而达到负载均衡的目的;
+1. 在第一个MapReduce任务中，map 的输出结果会随机分布到reduce 中，每个reduce 做部分聚合操作，并输出结果，这样处理的结果是相同的group by key有可能分发到不同的reduce 中，从而达到负载均衡的目的;
 
-2、第二个MapReduce 任务再根据预处理的数据结果按照group by key 分布到各个reduce 中，最后完成最终的聚合操作。
+2. 第二个MapReduce 任务再根据预处理的数据结果按照group by key 分布到各个reduce 中，最后完成最终的聚合操作。
 
 Map端部分聚合:并不是所有的聚合操作都需要在Reduce端完成，很多聚合操作都可以先在Map端进行部分聚合，最后在Reduce端得出最终结果，对应的优化器为GroupByQptimizer.
 
 
 
-### 6.2.14. Order By优化
+### 6.2.14.Order By优化
 
-order by 只能是在一个reduce进程中进行,所以如果对一个大数据集进行order by,会导致一一个reduce进程:
+order by 只能是在一个reduce进程中进行,所以如果对一个大数据集进行order by,会导致一个reduce进程:
 中处理的数据相当大，造成查询执行缓慢。
 
-1、在最终结果上进行order by，不要在中间的大数据集上进行排序。如果最终结果较少，可以在一个reduce上进行排序时，那么就在最后的结果集上进行order by。
-2、如果是取排序后的前N条数据，可以使用distribute by 和sort by在各个reduce.上进行排序后前N条，然后再对各个reduce的结果集合合并后在一个reduce中全局排序，再取前N条，因为参与全局排序的order by的数据量最多是reduce个数* N，所以执行效率会有很大提升。
+1. 在最终结果上进行order by，不要在中间的大数据集上进行排序。如果最终结果较少，可以在一个reduce上进行排序时，那么就在最后的结果集上进行order by。
+2. 如果是取排序后的前N条数据，可以使用distribute by 和sort by在各个reduce.上进行排序后前N条，然后再对各个reduce的结果集合合并后在一个reduce中全局排序，再取前N条，因为参与全局排序的order by的数据量最多是reduce个数* N，所以执行效率会有很大提升。
 
-在Hive中，关于数据排序,提供了四种语法，- -定要区分这四种排序的使用方式和适用场景。
-1、order by:全局排序，缺陷是只能使用一个reduce
-2、sort by: 单机排序，单个reduce结果有序
-3、cluster by:对同一- 字段分桶并排序，不能和sort by连用
-4、distribute by + sort by:分桶，保证同一字段值只存在一 个结果 文件当中，结合sort by保证每个reduceTask结果有序
+在Hive中，关于数据排序,提供了四种语法，一定要区分这四种排序的使用方式和适用场景。
+1. order by:全局排序，缺陷是只能使用一个reduce
+2. sort by: 单机排序，单个reduce结果有序
+3. cluster by:对同一- 字段分桶并排序，不能和sort by连用
+4. distribute by + sort by:分桶，保证同一字段值只存在一 个结果 文件当中，结合sort by保证每个reduceTask结果有序
 
 Hive HQL中的order by与其他SQL方言中的功能一样，就是将结果按某字段全局排序,这会导致所有map端.
 数据都进入-个reducer中，在数据量大时可能会长时间计算不完。
@@ -699,23 +689,23 @@ Hive HQL中的order by与其他SQL方言中的功能一样，就是将结果按�
 
 提供一种方式实现全局排序:两种方式: 
 
-1、建表导入数据准备
+1. 建表导入数据准备
 
 ```sql
 create table if not exists student(id int，name string， sex string， age int，department string) row format de1imited fields terminated by ",";
-load data 1ocal inpath "/home/bi gdata/students. txt" into table student;
+load data 1ocal inpath "/home/bi gdata/students.txt" into table student;
 ```
 
 
 
-2、第一种方式
+2. 第一种方式
 
 ```sql
 -- 直接使用order by来做。如果结果数据量很大，这个任务的执行效率会非常低
 select id,name,age from student order by age;
 ```
 
-3、第二种方式.
+3. 第二种方式.
 
 ```sql
 -- 使用distribute by + sort by 多个reduceTask， 每个reduceTask分别有序
@@ -771,22 +761,22 @@ select count(1) from (select id from tablename group by id) tmp;
 
 ```sql
 -- in / exists 实现
-select a.id, a.name from a where a.id in (select b. id from b);
+select a.id, a.name from a where a.id in (select b.id from b);
 select a.id, a.name from a where exists (select id from b where a.id = b.id);
--- 应该转换成: .
+-- 应该转换成:.
 -- 1eft semi join 实现
 select a.id，a.name from a 1eft semi join b on a.id = b.id;
 ```
 
  
 
-### 6.2.17. 使用 vectorization 技术
+### 6.2.17.使用 vectorization 技术
 
-在计算类似scan, filter, aggregation的时候，vectorization 技术以设置批处理的增量大小为1024行单次来达到. 比单条记录单次获得更高的效率。
+在计算类似scan, filter, aggregation的时候，vectorization 技术以设置批处理的增量大小为1024行单次来达到.比单条记录单次获得更高的效率。
 
 ```sql
-set hive. vectorized. execution. enabled=true ; 
-set hi ve. vectorized. execution. reduce. enab led=true;
+set hive.vectorized.execution.enabled=true ; 
+set hi ve.vectorized.execution.reduce.enab led=true;
 ```
 
 
@@ -795,7 +785,7 @@ set hi ve. vectorized. execution. reduce. enab led=true;
 
 如果你碰到一堆SQL， 并且这一堆SQL的模式还一 样。 都是从同一个表进行扫描，做不同的逻辑。 有可优化的地方:如果有n条SQL，每个SQL执行都会扫描一次这张表 。
 
-如果一一个HQL底层要执行10个Job,那么能优化成8个- -般来说，肯定能有所提高，多重插入就是一个非常实用的技能。- -次读取，多次插入,有些场景是从- -张表读取数据后，要多次利用，这时可以使用multi insert 语法：
+如果一一个HQL底层要执行10个Job,那么能优化成8个一般来说，肯定能有所提高，多重插入就是一个非常实用的技能。一次读取，多次插入,有些场景是从一张表读取数据后，要多次利用，这时可以使用multi insert 语法：
 
 ```sql
 from sale_ _detail
@@ -820,15 +810,15 @@ Multi-Group by是Hive的一个非常好的特性，它使得Hive中利用中间�
 
 ```sql
 from select
-a. status, b. school, b. gender FROM status_ updates a JOIN profiles b ON
+a.status, b.school, b.gender FROM status_ updates a JOIN profiles b ON
 (a.userid = b.userid and a.ds=' 2019-03-20' )) subq1
 INSERT OVERWRITE TABLE gender_ _summary PARTITION(ds= ' 2019-03-20')
-SELECT subq1. gender, COUNT(1) GROUP BY subq1. gender
+SELECT subq1.gender, COUNT(1) GROUP BY subq1.gender
 INSERT OVERWRITE TABLE school _ _summary PARTITION(ds= ' 2019-03-20')
-SELECT subq1. school, COUNT(1) GROUP BY subq1. school;
+SELECT subq1.school, COUNT(1) GROUP BY subq1.school;
 ```
 
-上述查询语句使用了Multi-Group by特性连续group by了2次数据，使用不同的Multi-Group by。这一特性可 以减少- -次MapReduce操作。
+上述查询语句使用了Multi-Group by特性连续group by了2次数据，使用不同的Multi-Group by。这一特性可 以减少一次MapReduce操作。
 
 
 
@@ -836,15 +826,15 @@ SELECT subq1. school, COUNT(1) GROUP BY subq1. school;
 
 #### map输出压缩
 
-set mapreduce . map. output. compress=true;
-set mapreduce . map. output . compress . codec=org. apache . hadoop. io. compress . SnappyCodec ;
+set mapreduce.map.output.compress=true;
+set mapreduce.map.output.compress.codec=org.apache.hadoop.io.compress.SnappyCodec ;
 
 #### 中间数据压缩
 
 中间数据压缩就是对hive查询的多个Job之间的数据进行压缩。最好是选择一个节省CPU耗时的压缩方式。 可以 采用snappy压缩算法，该算法的压缩和解压效率都非常高。
-set hive. exec. compress. inte rmediate=true ;
-set hive. inte rmedi ate. compression. codec=org. apache . hadoop. io. compress. SnappyCodec;
-set hive. i ntermediate. compression. type=BLOCK;
+set hive.exec.compress.inte rmediate=true ;
+set hive.inte rmedi ate.compression.codec=org.apache.hadoop.io.compress.SnappyCodec;
+set hive.i ntermediate.compression.type=BLOCK;
 
 ### 结果数据压缩
 
@@ -852,21 +842,21 @@ set hive. i ntermediate. compression. type=BLOCK;
 
 
 
-set hive. exec. compress. output=true;
-set mapreduce. output. fileoutputformat. compress=true;
-setmapreduce. output. fileoutputformat. compress. codec=org. apache . hadoop. io. compress. Gzi pCodec;
-set mapreduce . output. fi leoutputformat . compress. type=BLOcK; 
+set hive.exec.compress.output=true;
+set mapreduce.output.fileoutputformat.compress=true;
+setmapreduce.output.fileoutputformat.compress.codec=org.apache.hadoop.io.compress.Gzi pCodec;
+set mapreduce.output.fi leoutputformat.compress.type=BLOcK; 
 
-#### Hadoop集群支持的压缩算法: .
+#### Hadoop集群支持的压缩算法:.
 
-org. apache. hadoop. io. compress . Defaultcodec
-org. apache. hadoop. io. compress. Gzi pCodec
-org. apache. hadoop. io. compress. BZi p2Codec
-org. apache . hadoop. io. compress. Deflatecodec
-org. apache . hadoop. io. compress. SnappyCodec
-org. apache . hadoop. io. compress. Lz4codec
-com. hadoop. compression.1zo. LzoCodec
-com. hadoop. compress ion.1zo. LzopCodec
+org.apache.hadoop.io.compress.Defaultcodec
+org.apache.hadoop.io.compress.Gzi pCodec
+org.apache.hadoop.io.compress.BZi p2Codec
+org.apache.hadoop.io.compress.Deflatecodec
+org.apache.hadoop.io.compress.SnappyCodec
+org.apache.hadoop.io.compress.Lz4codec
+com.hadoop.compression.1zo.LzoCodec
+com.hadoop.compress ion.1zo.LzopCodec
 
 
 
@@ -878,11 +868,11 @@ com. hadoop. compress ion.1zo. LzopCodec
 
 Hive的某些SQL语句需要转换成MapReduce的操作，某些SQL语句就不需要转换成MapReduce操作,但是同学们需要注意，理论上来说，所有的SQL语句都需要转换成MapReduce操作，只不过Hive在转换SQL语句的过程中会做部分优化，使某些简单的操作不再需要转换成MapReduce,例如: 
 
-1、只是select*的时候
-2、where条件针对分区字段进行筛选过滤时
-3、带有limit分支语句时↑
+1. 只是select*的时候
+2. where条件针对分区字段进行筛选过滤时
+3. 带有limit分支语句时↑
 
-Hive从HDFS中读取数据，有两种方式:启用MapReduce读取和直接抓取。直接抓取数据比MapReduce方式读取数据要快的多，但是只有少数操作可以使用直接抓取方式。可以通过hive. fetch. task. conversion参数来配置在什么情况下采用直接抓取方式:
+Hive从HDFS中读取数据，有两种方式:启用MapReduce读取和直接抓取。直接抓取数据比MapReduce方式读取数据要快的多，但是只有少数操作可以使用直接抓取方式。可以通过hive.fetch.task.conversion参数来配置在什么情况下采用直接抓取方式:
 
 minimal:只有select *、在分区字段上where过滤、有1imit这三种场景下才启用直接抓取方式。
 more:在select、 where筛选、limit时，都启用直接抓取方式。
@@ -894,7 +884,7 @@ more:在select、 where筛选、limit时，都启用直接抓取方式。
 ```sql
 
 ##查看
-set hive. fetch. task. conversion;
+set hive.fetch.task.conversion;
 ```
 
 设置Hive的抓取策略:
@@ -902,7 +892,7 @@ set hive. fetch. task. conversion;
 ```sql
 
 ##默认more
-set hive. fetch. task. conversi on=more; 
+set hive.fetch.task.conversi on=more; 
 ```
 
 
@@ -921,29 +911,29 @@ Hive在集群上查询时，默认是在集群.上多台机器上运行，需要
 
 ```sql
 ##打开hive自动判断是否启动本地模式的开关
-set hive. exec. mode.1oca1. auto=true;
+set hive.exec.mode.1oca1.auto=true;
 
 ## map任务数最大值，不启用本地模式的task最大个数
 
-set hive. exec. mode.1oca1. auto. input. files. max=4;
+set hive.exec.mode.1oca1.auto.input.files.max=4;
 
 ## map输入文件最大大小，不启动本地模式的最大输入文件大小
 
-set hive. exec. mode.1oca1. auto. inputbytes . max=134217728;
+set hive.exec.mode.1oca1.auto.inputbytes.max=134217728;
 
 ```
 
 
 
-### 6.3.3. JVM重用
+### 6.3.3.JVM重用
 
 
-Hive语句最终会转换为一系列的MapReduce任务,每- -个MapReduce 任务是由一系列的MapTask和ReduceTask组成的，默认情况下，MapReduce 中-一个MapTask或者ReduceTask就会启动-一个 JVM进程，一个Task执行完毕后，JVM 进程就会退出。这样如果任务花费时间很短，又要多次启动JVM的情况下，JVM 的启动时间会变成一个比较大的消耗，这时，可以通过重用JVM来解决。
+Hive语句最终会转换为一系列的MapReduce任务,每一个MapReduce 任务是由一系列的MapTask和ReduceTask组成的，默认情况下，MapReduce 中-一个MapTask或者ReduceTask就会启动-一个 JVM进程，一个Task执行完毕后，JVM 进程就会退出。这样如果任务花费时间很短，又要多次启动JVM的情况下，JVM 的启动时间会变成一个比较大的消耗，这时，可以通过重用JVM来解决。
 
-set mapred. job. reuse. jvm. num. tasks=5;
+set mapred.job.reuse.jvm.num.tasks=5;
 
-JVM也是有缺点的，开启JVM重用会-直占用使用到的task的插槽，以便进行重用，直到任务完成后才会释放。如果某个不平衡的job中有几个reduce task执行的时间要比其他的reduce task消耗的时间要多得多的话，那么保留的插槽就会一直空闲却无法被其他的 job使用，直到所有的task都结束了才会释放。根据经验，- -般来说可以使用一个gpu core启动一个JVM,假如服务器有16个gpucore，但是这个节点，可能
-会启动32个mapTask,完全可以考虑:启动- -个JVM，执行两个Task
+JVM也是有缺点的，开启JVM重用会-直占用使用到的task的插槽，以便进行重用，直到任务完成后才会释放。如果某个不平衡的job中有几个reduce task执行的时间要比其他的reduce task消耗的时间要多得多的话，那么保留的插槽就会一直空闲却无法被其他的 job使用，直到所有的task都结束了才会释放。根据经验，一般来说可以使用一个gpu core启动一个JVM,假如服务器有16个gpucore，但是这个节点，可能
+会启动32个mapTask,完全可以考虑:启动一个JVM，执行两个Task
 
 
 
@@ -957,9 +947,9 @@ JVM也是有缺点的，开启JVM重用会-直占用使用到的task的插槽，
 
 ```sql
 ##可以开启并发执行。
-set hive. exec. para11e1=true;
+set hive.exec.para11e1=true;
 ##同一个sq1允许最大并行度， 默认为8。
-set hive. exec. paralle1. thread. number=16;
+set hive.exec.paralle1.thread.number=16;
 ```
 
 
@@ -974,9 +964,9 @@ set hive. exec. paralle1. thread. number=16;
 
 ```sql
 #启动mapper阶段的推测执行机制
-set mapreduce . map. speculative=true ;
+set mapreduce.map.speculative=true ;
 #启动reducer阶段的推测执行 机制
-set mapreduce. reduce. speculative=true; 
+set mapreduce.reduce.speculative=true; 
 ```
 
 
@@ -999,14 +989,14 @@ set mapreduce. reduce. speculative=true;
 
 
 
-### 6.3.6. Hive严格模式
+### 6.3.6.Hive严格模式
 
 所谓严格模式，就是强制不允许用户执行有风险的HiveQL语句，一-旦执行会直接失败。但是Hive中为 了提高SQL语句的执行效率，可以设置严格模式，充分利用Hive的某些特点。
 
 ```sql
 ##设置Hive的严格模式
-set hive. mapred. mode=strict;
-set hive, exec. dynamic. partition, mode=nostrict;
+set hive.mapred.mode=strict;
+set hive, exec.dynamic.partition, mode=nostrict;
 ```
 
 
@@ -1014,13 +1004,13 @@ set hive, exec. dynamic. partition, mode=nostrict;
 注意:当设置严格模式之后,会有如下限制:
 
 ```sql
-1、对于分区表，必须添加where对于分区字段的条件过滤 
+1.对于分区表，必须添加where对于分区字段的条件过滤 
 	select * from student where age > 25
-2、order by语句必须包含1imi t输出限制
+2.order by语句必须包含1imi t输出限制
 	select * from student order by age limit 100;
-3、限制执行笛卡尔积的查询 
+3.限制执行笛卡尔积的查询 
 	select a.*， b.* from a，b;
-4、在hive的动态分区模式下，如果为严格模式，则必须需要一个 分区列式静态分区
+4.在hive的动态分区模式下，如果为严格模式，则必须需要一个 分区列式静态分区
 ```
 
 
@@ -1030,7 +1020,7 @@ set hive, exec. dynamic. partition, mode=nostrict;
 6.5.1.第一个例子:日志表和用户表做链接
 
 ```sql
-select * from 1og a 1eft outer join users b on a.user. _id = b.user. _id;
+select * from 1og a 1eft outer join users b on a.user._id = b.user._id;
 ```
 
 users表有600W+的记录，把users分发到所有的map.上也是个不小的开销，而且Maploin不支持这么大的小
@@ -1041,7 +1031,7 @@ users表有600W+的记录，把users分发到所有的map.上也是个不小的�
 select /*+mapjoin(x)*/ * from 1og a
 left outer join (
 select /*+mapjoin(c)*/ d.*
-from ( select distinct user. _id from 10g ) C join users d on c.user_ _id = d.user_ _id
+from ( select distinct user._id from 10g ) C join users d on c.user_ _id = d.user_ _id
 )x
 on a.user_ _id = x.user_id;
 ```
@@ -1058,14 +1048,14 @@ on a.user_ _id = x.user_id;
 
 ```shell
 日期，用户ID，朋友圈内容.....
-dt，userid，content， .....
+dt，userid，content，.....
 ```
 
 实现的SQL:
 
 ```sql
 //昨天和今天
-select a.userid from table a join tab1e b on a.userid = b. userid;
+select a.userid from table a join tab1e b on a.userid = b.userid;
 //上一次join的结果和前天join
 //上一次join的结构和大前天join
 ```
@@ -1085,8 +1075,6 @@ select a.userid from table a join tab1e b on a.userid = b. userid;
 
 
 
-
-
 ![image](https://static.lovedata.net/21-05-31-7d4cbbc91698e991793d2cfb1ccacb97.png-wm)
 
 
@@ -1098,15 +1086,15 @@ select a.userid from table a join tab1e b on a.userid = b. userid;
 ### 8.1.性能调优
 
 ```
-1、资源不够时才需要调优
+1.资源不够时才需要调优
 	资源足够的时候，只需要调大一些资 源用量
-2、业务优先，运行效率靠后
+2.业务优先，运行效率靠后
 	首先实现业务，有多余精力再考虑调优
-3、单个作业最优不如整体最优
+3.单个作业最优不如整体最优
 	全局最优
-4、调优不能影响业务运行结果
+4.调优不能影响业务运行结果
 	业务正确性最重要
-5、调优关注点
+5.调优关注点
   架构方面
   业务方面
   开发方面
@@ -1119,32 +1107,32 @@ select a.userid from table a join tab1e b on a.userid = b. userid;
 8.2.源码阅读
 
 ```
-1、了 解大概原理
+1.了 解大概原理
   大致的启动过程
   大致的心跳机制流程
   大致的任务提交过程
-2、场景驱动
+2.场景驱动
   启动流程?
   数据读写流程?
   任务执行机制?
-3、找入口
+3.找入口
   启动集群的命令
   提交任务的命令
-4、理主线
+4.理主线
   namenode启动httpserver
   namenode加载元数据
   namenode启动RPCserver
-5、看源码注释
+5.看源码注释
   类注释
   成员变量注释
   成员方法注释
-6、代码结构:
-  1、参数解析和权限控制，总之为核心业务 做准备
-  2、try catch,
+6.代码结构:
+  1.参数解析和权限控制，总之为核心业务 做准备
+  2.try catch,
 	一般来说，核心方法，都藏于try中，异常以及容错处理，都藏于catch 中
-	3、状态处理，一般用来处理核心业务的结果数据
-	4、收尾，回收资源相关
-7、作图
+	3.状态处理，一般用来处理核心业务的结果数据
+	4.收尾，回收资源相关
+7.作图
 	啥都没有图好使!自从划了图，一辈子忘不了。
 ```
 
