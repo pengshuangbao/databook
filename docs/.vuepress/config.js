@@ -99,17 +99,17 @@ module.exports = ctx => ({
 })
 
 function getAlgorithmSidebar(){
-  return ['','数据结构','算法','红黑树原理详解','B+Tree笔记','LSM-Tree笔记']
+  return ['','数据结构','算法','算法图解','红黑树原理详解','B+Tree','LSM-Tree']
 }
 function getProgrammingSidebar(){
   return ['python','scala']
 }
 function getBookSideBar(){
-  return ['tech','growth','geek','video']
+  return ['tech','growth','geek','video','study']
 }
 
 function getInterviewSideBar(){
-  return ['tech','sword-to-offer','my-interview']
+  return ['tech','sword-to-offer','my-interview','interview_guide']
 }
 
 function getArchitectureSidebar(){
@@ -117,12 +117,6 @@ function getArchitectureSidebar(){
     '',
     'architecture',
   {
-    title: '测试',
-    collapsable: true,
-    children: [
-      '测试/benchmark'
-    ]
-  },{
     title: '数据中台',
     collapsable: true,
     children: [
@@ -151,7 +145,6 @@ function getJavaSidebar(){
     'coding',
     '多线程',
     'java',
-    '学习资源',
     'java核心技术',
     {
       title: 'jvm内存与垃圾回收',
@@ -222,7 +215,6 @@ function getBigdataSidebar () {
       collapsable: true,
       children: [
         'spark/spark-streaming',
-        'spark/spark-sql',
         'spark/spark'
       ]
     },{
@@ -322,9 +314,8 @@ function getBigdataSidebar () {
       //sidebarDepth: 2,  
       children: [
         'hbase/',
-        'hbase/学习资源',
-        'hbase/开源动态',
-        'hbase/性能优化'
+        'hbase/性能优化',
+        'hbase/Hbase读写性能优化'
       ]
     },{
       title: 'ClickHouse',
@@ -351,14 +342,6 @@ function getBigdataSidebar () {
         'kudu/学习资源'
       ]
     },{
-      title: 'CDH',
-      collapsable: true,
-      //sidebarDepth: 2,  
-      children: [
-        'CDH/',
-        'CDH/学习资源'
-      ]
-    },{
       title: 'Redis',
       collapsable: true,
       //sidebarDepth: 2,  
@@ -380,11 +363,7 @@ function getBigdataSidebar () {
       ]
     },
     'zookeeper',
-    'data-mining',
     'solution',
-    'design',
-    'other',
-    'calcite',
-    'antlr'
+    'design'
   ]
 }

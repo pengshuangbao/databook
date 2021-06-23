@@ -1,6 +1,387 @@
-# My Interview
+# 我的面经
 
 [toc]
+
+
+
+## OPPO
+
+### 20210621视一
+
+1. flink 状态的序列化和反序列化机制，增加算子后，怎么扩容
+
+   1. 参考
+      1. [什么是 Flink State Evolution? | 时间与精神的小屋](http://www.whitewood.me/2019/03/17/%E4%BB%80%E4%B9%88%E6%98%AF-Flink-State-Evolution/)
+   2. Kyro 快速高效的java序列化框架，可以自动执行深度拷贝（克隆） 浅拷贝
+   3. 参考书上的
+
+2. java的序列化和反序列化有什么问题？
+
+   1. 必须实现Serializable，使用ObjectInputStream 和 ObjectOutputStream
+   2. JAVA自带的序列化框架，不支持跨语言的序列化和反序列化
+   3. 不用借助其他类包，但是语法生硬，比较难
+   4. 通过serialVersionUID控制序列化版本，如果版本不一致，会抛出异常，如果没有定义，是通过jdk hash生成，所以容易导致不一致
+   5. 性能非常一般
+   6. 参考
+      1. [几种Java常用序列化框架的选型与对比 - SegmentFault 思否](https://segmentfault.com/a/1190000039934578)
+
+3. flink 的反压有了解过吗
+
+   1. [如何处理FlinkJobBackPressure（反压）问题](/bigdata/flink/Flink实战与性能优化/如何处理FlinkJobBackPressure（反压）问题？.html)
+
+4. flink状态存储类型
+
+   1. [如何选择Flink状态后端存储](/bigdata/flink/Flink实战与性能优化/如何选择Flink状态后端存储.html)
+
+5. flink的双流join有了解过吗？ 在生产中会有什么问题？
+
+   1. 参考
+
+      1. [Flink SQL 实战：双流 join 场景应用-阿里云开发者社区](https://developer.aliyun.com/article/780048)
+
+   2. regular join 
+
+      1. 最通用的Join类型，不支持窗口是时间属性
+
+      2. 任何一侧有数据流更改都是可见的
+
+      3. 如果一侧有新数据，就会将另一侧所有的过去的和将来的数据合并在一起，因为regular join 没有提出策略
+
+      4. 支持数据流的任何更新操作
+
+      5. 支持离线场景和小数据量场景
+
+      6. ```sql
+         SELECT columns
+         FROM t1  [AS <alias1>]
+         [LEFT/INNER/FULL OUTER] JOIN t2
+         ON t1.column1 = t2.key-name1
+         ```
+
+   3. interval join
+
+      1. 利用窗口给两个输入表的Join设定一个世间界限，超过时间范围的数据对join不可见，并可以被清理掉
+
+      2. 避免需要大量的资源和没有剔除数据造成的结果误差
+
+      3. 需要定义时间属性字段 PT 或者 ET
+
+      4. inner ,left outer, right outer , full outer 
+
+      5. 只需要缓存时间边界内的数据，占用空间小，结果更精确
+
+      6. ```sql
+         -- 写法1
+         SELECT columns
+         FROM t1  [AS <alias1>]
+         [LEFT/INNER/FULL OUTER] JOIN t2
+         ON t1.column1 = t2.key-name1 AND t1.timestamp BETWEEN t2.timestamp  AND  BETWEEN t2.timestamp + + INTERVAL '10' MINUTE;
+         
+         -- 写法2
+         SELECT columns
+         FROM t1  [AS <alias1>]
+         [LEFT/INNER/FULL OUTER] JOIN t2
+         ON t1.column1 = t2.key-name1 AND t2.timestamp <= t1.timestamp and t1.timestamp <=  t2.timestamp + + INTERVAL ’10' MINUTE ;
+         ```
+
+      7. 适用于双流Join
+
+   4. temproal table join
+
+      1. interval join 更准确，资源占用更小，但是有个问题，两个join，必须要有时间属性，需要明确时间的下界，用来提出数据
+
+      2. 不适合维度join，因为维度join没有时间界限
+
+      3. regular join 和interval join的两侧是平等的，任何一侧的更新都会跟另外一侧的历史记录去进行匹配，
+
+      4. temproal table 的更新对另一表在该时间之前的记录是不可见的
+
+      5. ```sql
+         SELECT columns
+         FROM t1  [AS <alias1>]
+         [LEFT] JOIN t2 FOR SYSTEM_TIME AS OF t1.proctime [AS <alias2>]
+         ON t1.column1 = t2.key-name1
+         ```
+
+         
+
+6. mysql的聚族索引和普通索引的区别 ？
+
+   1. 参考
+
+      1. [说一下聚簇索引 & 非聚簇索引](https://juejin.cn/post/6844903845554814983)
+
+   2. ```
+      普通索引：没有限制
+      CREATE INDEX indexName ON tablename(column1[,column2,……])
+      
+      唯一索引：不允许重复，允许空值
+      CREATE UNIQUE INDEX indName ON tablename(column1[,column2,……])
+      
+      主键索引： 一种特殊的唯一索引，不允许有空值，一般是在建表的时候指定了主键，就会创建主键索引。
+      CREATEINDEX indName ON tablename(column1[,column2,……])
+      
+      组合索引：多个列的索引组合起来
+      全文索引：FULLTEXT，目前只有Innodb和MyISAM引擎主持，在全文搜索，仅适用于 CHAR， VARCHAR和 TEXT列。
+      ```
+
+   3. B+树是mysql的数据结构，数据是存储在叶子结点上，非叶子结点只存储key
+
+   4. 聚族索引和非聚族索引是由索引的顺序是否和索引的物理数据顺序相同来共同决定的，是，则是聚族索引
+
+   5. “聚簇”的意思是数据行被按照一定顺序一个个紧密地排列在一起存储
+
+   6. InnoDB的默认数据结构是聚簇索引，而MyISAM是非聚簇索引。
+
+   7. 不仅仅是一种索引类型，而是一种数据存储方式
+
+   8. 一张表只允许有一个聚族索引
+
+7. spring mvc 和 spring boot的区别？
+
+8. kudu做了什么优化？
+
+   1. 参考
+      1. [impala + kudu一些优化心得 - 简书](https://www.jianshu.com/p/a49e68c0015b)
+   2. --memory_limit_hard_bytes 能大就大
+   3. --maintenance_manager_num_threads 提高数据从内存写入磁盘的效率
+   4. compute stats  
+   5. 慢sql 要 explain ，有没有 kudu predicates 执行summray命令，重点查看单点峰值内存和时间比较大的点，对相关的表做优化，解决数据倾斜问题
+   6. 
+
+9. java怎么实现线程安全的？
+
+   1. 参考：
+
+      1. [07 | 安全性、活跃性以及性能问题-极客时间](https://time.geekbang.org/column/article/85702)
+
+   2. 什么是线程安全呢？其实本质上就是正确性，而正确性的含义就是**程序按照我们期望的执行**，不要让我们感到意外。
+
+   3. 并发 Bug 的三个主要源头：**原子性问题、可见性问题和有序性问题**
+
+   4. 理论上线程安全的程序，就要**避免出现原子性问题、可见性问题和有序性问题。**
+
+   5. **存在共享数据并且该数据会发生变化，通俗地讲就是有多个线程会同时读写同一数据** 就需要分析上面的问题，例如 例如线程本地存储（Thread Local Storage，TLS）、不变模式等等
+
+   6. 当多个线程同时访问同一数据，并且至少有一个线程会写这个数据的时候，如果我们不采取防护措施，那么就会导致并发 Bug，对此还有一个专业的术语，叫做数据竞争
+
+   7. **竞态条件（Race Condition）**。所谓竞态条件，指的是程序的执行结果依赖线程执行的顺序
+
+   8. 理解竞态条件。在并发场景中，程序的执行依赖于某个状态变量，也就是类似于下面这样：
+
+      1. ```java
+         
+         if (状态变量 满足 执行条件) {
+           执行操作
+         }
+         ```
+
+   9. 都可以采用互斥的方法解决，统一归为**锁**
+
+   10. 性能问题
+
+       1. 使用无锁的算法和数据结构了。
+       2. 减少锁持有的时间
+          1. 细粒度的锁，一个典型的例子就是 Java 并发包里的 ConcurrentHashMap
+          2. 读写锁，读不用加锁
+
+10. mysql binlog的格式？
+
+11. java锁的AQS有了解过吗？
+
+    1. AQS(AbstractQueuedSynchronizer 抽象队列同步器)
+    2. AQS内部维护一个state状态位，尝试加锁的时候通过CAS(CompareAndSwap)修改值，如果成功设置为 1，并且把当前线程ID赋值，则代表加锁成功，一旦获取到锁，其他的线程将会被阻塞进入阻塞队列自 旋，获得锁的线程释放锁的时候将会唤醒阻塞队列中的线程，释放锁的时候则会把state重新置为0，同 时当前线程ID置为空。
+    3. ![image](https://static.lovedata.net/21-06-22-3818fbf53d6df1979625a66de8db4b3a.png-wm)
+
+## 富途
+
+### 20210622电一
+
+1. java的反射机制是怎样的
+
+2. flink的checkpoint 机制？
+
+3. hbase的读写流程？
+
+4. java的hashmap实现原理？
+
+5. kafka是如何实现高可用的？
+
+6. **两个有序的数组，怎么找到中位数？**
+
+   1. 参考
+
+      1. 
+
+   2. 这个题目非常复杂，就是想到了先归并，然后在去中位数
+
+   3. ```java
+      //前提是两个有序数组，有序数组（如此）可直接用此方法
+      func sortArray(arr1: [Int], arr2: [Int]) -> [Int] {
+          var resultArray: [Int] = []
+          var index1 = 0
+          var index2 = 0
+          while index1 < arr1.count && index2 < arr2.count {
+              if arr1[index1] < arr2[index2] {
+                  resultArray.append(arr1[index1])
+                  index1 += 1
+              } else {
+                  resultArray.append(arr2[index2])
+                  index2 += 1
+              }     
+          }
+          while index1 < arr1.count {
+              resultArray.append(arr1[index1])
+              index1 += 1
+          }
+          while index2 < arr2.count {
+              resultArray.append(arr2[index2])
+              index2 += 1
+          }
+          return resultArray
+      }
+      ```
+
+7. **一个数组长度为n，怎么找到其中随机的m个数？**
+
+   1. 参考
+
+      1. [写一个函数，随机地从大小为n的数组中选取m个整数。要求每个元素被选中的概率相等](https://my.oschina.net/u/2822116/blog/795323)
+
+   2. ```java
+         public static int[] selectM(int[] arr,int m){  
+              int len=arr.length;  
+              if(m>arr.length)  
+                  throw new RuntimeException("e");  
+              int[] res=new int[m];  
+              for(int i=0;i<m;i++){  
+                  int randomIndex=len-1-new Random().nextInt(len-i);  
+                  res[i]=arr[randomIndex];  
+                  int tmp=arr[randomIndex];  
+                  arr[randomIndex]=arr[i];  
+                  arr[i]=tmp;  
+              }  
+              return res;  
+          }  
+      ```
+
+8. linux的常用命令
+
+9. 怎么查看当前cpu 磁盘 内存的 负载情况
+
+10. 怎么查看端口的？
+
+## 深信服
+
+### 20210618电一
+
+1. flink如何实现精准一次消费？
+
+2. hive是怎么转换为MR程序的？
+
+   1. [Hive底层执行逻辑深度剖析](/bigdata/hive/Hive底层执行逻辑深度剖析.html)
+
+3. kylin的构建原理？
+
+   1. [kylin的构建原理](/bigdata/kylin/#kylin的构建原理)
+
+4. CMS 和 G1垃圾回收器的差别？
+
+5. 一个数组四千个数字，除了两个是单独的数，其他都是成对出现的，怎么找出这单独的两个数？
+
+   1. 参考
+
+      1. [剑指offer：一个整型数组里除了两个数字之外，其他的数字都出现了两次。请写程序找出这两个只出现一次的数字](https://blog.csdn.net/gaozhuang63/article/details/108873633)
+
+   2. 首先：位运算中异或的性质：两个相同数字异或=0，一个数和0异或还是它本身。
+
+      当只有一个数出现一次时，我们把数组中所有的数，依次异或运算，最后剩下的就是落单的数，因为成对儿出现的都抵消了。
+
+      依照这个思路，我们来看两个数（我们假设是AB）出现一次的数组。我们首先还是先异或，剩下的数字肯定是A、B异或的结果，这个结果的二进制中的1，表现的是A和B的不同的位。我们就取第一个1所在的位数，假设是第3位，接着把原数组分成两组，分组标准是第3位是否为1。如此，相同的数肯定在一个组，因为相同数字所有位都相同，而不同的数，肯定不在一组。然后把这两个组按照最开始的思路，依次异或，剩余的两个结果就是这两个只出现一次的数字。
+
+      ```java
+      public class Solution {
+          public void FindNumsAppearOnce(int [] array,int num1[] , int num2[]) {        
+              int result = 0;
+              int len = array.length;
+              for(int i = 0 ; i < len ; i++){
+                  result ^=array[i];
+              }        
+              int index = findFirst1(result);        
+              for(int i = 0; i<len ; i++){
+                  if(isBit1(array[i] , index)){
+                      num1[0] ^=array[i];
+                  }else{
+                      num2[0] ^= array[i];
+                  }
+              }
+          }    
+          private int findFirst1(int bitResult){
+              int index = 0;
+              while(((bitResult & 1) == 0) && index <32){
+                  bitResult >>= 1;
+                  index++;
+              }
+              return index;
+          }    
+          private boolean isBit1(int target, int index){
+              return((target >> index)&1) ==1;
+          }
+      }
+      ```
+
+      
+
+   3. 衍生题目，只有一个是不一样的，怎么找出来？
+
+      1. 参考
+
+         1. [136. 只出现一次的数字](https://leetcode-cn.com/problems/single-number/solution/zhi-chu-xian-yi-ci-de-shu-zi-by-leetcode-solution/)
+
+      2. 不考虑时间复杂度和空间复杂度
+
+         1. 集合存储数字，遍历，没有就加入，有就删除，到最后剩下的就是
+         2. 哈希表存储 次数
+         3. 集合存储数组，计算数组元素只和，在用集合数字的两倍减去数组只和，就是剩下的数
+
+      3. Leetcode
+
+         1. 位运算，异或运算 \oplus⊕ 异或运算有以下特性
+
+            1. 任何数和 00 做异或运算，结果仍然是原来的数，
+            2. 任何数和其自身做异或运算，结果是 00，
+            3. 异或运算满足交换律和结合律，
+            4. ![image](https://static.lovedata.net/21-06-23-e8542f3923427caec4ccd5d9357b92d6.png-wm)
+
+         2. ```java
+            class Solution {
+                public int singleNumber(int[] nums) {
+                    int single = 0;
+                    for (int num : nums) {
+                        single ^= num;
+                    }
+                    return single;
+                }
+            }	
+            ```
+
+      
+
+
+
+### 20210620视二
+
+1. Arraylist的add方法实现
+2. jvm相关
+3. 1. gc原理
+   2. 垃圾回收器
+   3. 生产问题怎么定位
+4. kylin的构建原理，发展趋势
+5. kylin的不足
+6. 选择impala+kudu的原因
+7. hive可以被替换吗？
+
+
 
 ## 找靓机
 

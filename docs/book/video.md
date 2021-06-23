@@ -37,7 +37,7 @@
 
 | 地址                                                       | 笔记                                                |
 | ---------------------------------------------------------- | --------------------------------------------------- |
-| [HashMap源码](https://www.bilibili.com/video/BV1LJ411W7dP) | [HashMap源码详解](/java/java#HashMap源码详解)       |
+| [HashMap源码](https://www.bilibili.com/video/BV1LJ411W7dP) | [HashMap源码详解](/java/java.html#HashMap源码详解)  |
 | [红黑树原理](https://www.bilibili.com/video/BV1UJ411J7CU)  | [红黑树原理详解文档笔记](/algorithm/红黑树原理详解) |
 
 

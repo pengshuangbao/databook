@@ -6,19 +6,11 @@
 
 ## JVM基础
 
-### JVM内存查看与分析,编写内存泄露实例
+## CMS
 
-### JVM垃圾回收机制,何时触发MinorGC等操作
+### CMS并发清理阶段为什么是安全的
 
-### 新生代和老生代的内存回收策略
-
-### 深入分析Classloader,双亲委派机制
-
-### JVM的编译优化
-
-### 指令重排序,内存栅栏
-
-### JVM对final关键字的编译优化
+[CMS并发清理阶段为什么是安全的__再见阿郎_的专栏-CSDN博客](https://blog.csdn.net/FU250/article/details/105386291)
 
 ###  老生代GC策略 – Concurrent Mark-Sweep
 
@@ -34,20 +26,15 @@
 相应的，对于CMS算法，也需要关注两点：
 
 1. ‘stop－the－world’暂停时间也很短暂，耗时较长的标记和清理都是并发执行的。
-2. CMS算法在标记清理之后并没有重新压缩分配存活对象，因此整个老生代会产生很多的内存碎片。 
+2. CMS算法在标记清理之后并没有重新压缩分配存活对象，因此整个老生代会产生很多的<mark>**内存碎片**</mark>。 
 
-##  CMS Failure Mode 导致GC卡顿,时间长的原因
+###  CMS Failure Mode 导致GC卡顿,时间长的原因
 
-1. Concurrent Failure  这种场景其实比较简单，假如现在系统正在执行CMS回收老生代空间，在回收的过程中新生代来了一批对象进来，不巧的是，老生代已经没有空间再容纳这些对象了。这种场景下，CMS回收器会停止继续工作，系统进入 ’stop-the-world’ 模式，并且回收算法会退化为单线程复制算法，重新分配整个堆内存的存活对象到S0中，释放所有其他空间  解决方法 ： 很容易解决，只需要让CMS回收器更早一点回收就可以避免。JVM提供了参数-XX:CMSInitiatingOccupancyFraction=N来设置CMS回收的时机，其中N表示当前老生代已使用内存占新生代总内存的比例，该值默认为68，可以将该值修改的更小使得回收更早进行。
+1. Concurrent Failure  这种场景其实比较简单，假如现在系统正在执行CMS回收老生代空间，在回收的过程中新生代来了一批对象进来，不巧的是，老生代已经没有空间再容纳这些对象了。这种场景下，CMS回收器会停止继续工作，系统进入 ’stop-the-world’ 模式，并且回收算法会退化为单线程复制算法，重新分配整个堆内存的存活对象到S0中，释放所有其他空间 
+   1.  **解决方法** ： 很容易解决，只需要让CMS回收器更早一点回收就可以避免。JVM提供了参数-XX:CMSInitiatingOccupancyFraction=N来设置CMS回收的时机，其中N表示当前老生代已使用内存占新生代总内存的比例，该值默认为68，可以将该值修改的更小使得回收更早进行。
 2. Promotion Failure  假设此时设置XX:CMSInitiatingOccupancyFraction＝60，但是在已使用内存还没有达到总内存60%的时候，已经没有空间容纳从新生代迁移的对象了。oh，my god！怎么会这样？罪魁祸首就是内存碎片，上文中提到CMS算法会产生大量碎片，当碎片容量积累到一定大小之后就会造成上面的场景。这种场景下，CMS回收器一样会停止工作，进入漫长的 ’stop-the-world’ 模式。JVM也提供了参数   -XX: **UseCMSCompactAtFullCollection**  **来减少碎片的产生** ，这个参数表示会在每次CMS回收垃圾之后执行一次碎片整理，很显然，这个参数会对性能有比较大的影响，对HBase这种对延迟敏感的业务来说并不是一个完美解决方案。
 
-## CMS垃圾收集器
-
-#### CMS并发清理阶段为什么是安全的
-
-[CMS并发清理阶段为什么是安全的__再见阿郎_的专栏-CSDN博客](https://blog.csdn.net/FU250/article/details/105386291)
-
-## G1垃圾收集器
+## G1
 
 [深入理解 Java G1 垃圾收集器 | 水晶命匣](http://ghoulich.xninja.org/2018/01/27/understanding-g1-garbage-collector-in-java/)
 

@@ -83,20 +83,30 @@ module.exports = [
         text:'面经',
         items:[
           {
-            text: '技术',
+            text: '大厂面经',
             link:'/interview/tech.html'
           },
-          {
-            text: 'HR',
-            link:'/interview/hr.html'
-          },
+         
           {
             text: '剑指Offer',
             link:'/interview/sword-to-offer.html'
           },
           {
-            text: 'My Interview',
+            text: '我的面经',
             link:'/interview/my-interview.html'
+          },
+          {
+            text: '面试导航',
+            link:'/interview/interview_guide.html'
+          }
+        ]
+      },
+      {
+        text:'其他',
+        items:[
+          {
+            text: '学习笔记',
+            link:'/book/study.html'
           }
         ]
       }
