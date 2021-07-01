@@ -1,8 +1,12 @@
-# Hbase读写性能优化
+# Hbase性能优化
 
 [toc]
 
-## Hbase 优化
+## 参考
+
+1. [HBase最佳实践－写性能优化策略 – 有态度的HBase/Spark/BigData](http://hbasefly.com/2016/12/10/hbase-parctice-write/)
+
+## HBase最佳实践－写性能优化策略-hbasefly
 
 ###  GC优化
 
@@ -132,6 +136,5 @@ HBase数据写入通常会遇到两类问题，一类是写性能较差，另一
    1. 以RegionServer级别flush进行解析，HBase设定一旦整个RegionServer上所有Memstore占用内存大小总和大于配置文件中upperlimit时，系统就会执行RegionServer级别flush，flush算法会首先按照Region大小进行排序，再按照该顺序依次进行flush，直至总Memstore大小低至lowerlimit。
 8. Store中HFile数量是否大于配置参数blockingStoreFile?
 
-[HBase最佳实践－写性能优化策略 – 有态度的HBase/Spark/BigData](http://hbasefly.com/2016/12/10/hbase-parctice-write/)
 
-## 
+

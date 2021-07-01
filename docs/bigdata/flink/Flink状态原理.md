@@ -1,8 +1,12 @@
-# Flink State最佳实践
+# 状态原理
 
+[toc]
 
+## 参考
 
-[Flink State 最佳实践 -](https://ververica.cn/developers/flink-state-best-practices/)
+1. [Flink State 最佳实践](https://ververica.cn/developers/flink-state-best-practices/)
+
+## Flink State 最佳实践
 
 - 四个维度来区分两种不同的 state：operator state 以及 keyed state。
 

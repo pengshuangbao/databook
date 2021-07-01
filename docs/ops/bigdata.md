@@ -143,3 +143,48 @@ hive -e "set hive.cli.print.header=false; select * from device" | sed 's/[\t]/\0
 
 
 
+## Kudu
+
+### 健康检查
+
+```shell
+sudo -u kudu kudu cluster ksck impala5.fibodata.com:7051,impala6.fibodata.com:7051
+```
+
+### 获取kudu-flags
+
+```shell
+sudo -u kudu kudu tserver get_flags  localhost
+```
+
+### 设置kudu-flags
+
+```shell
+sudo -u kudu kudu tserver set_flag localhost  maintenance_manager_num_threads 6 --force
+```
+
+### 获取master的状态
+
+```shell
+sudo -u kudu kudu master  status  impala5.fibodata.com:7051
+```
+
+### 获取所有的kudu表
+
+```shell
+sudo -u kudu kudu table list impala5.fibodata.com:7051,impala6.fibodata.com:7051
+```
+### 重平衡
+
+> 参考 [Apache Kudu - Apache Kudu Command Line Tools Reference](https://kudu.apache.org/docs/command_line_tools_reference.html#cluster-rebalance)
+
+```shell
+sudo -u kudu  kudu cluster rebalance impala5.fibodata.com,impala6.fibodata.com
+```
+
+
+
+
+
+
+

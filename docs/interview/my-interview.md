@@ -4,6 +4,28 @@
 
 
 
+## 字节跳动
+
+### 20210623视一
+
+1. flink的状态机制？
+2. flink的状态是怎么存储的？怎么持久化的？
+3. flink 状态修改了是怎么处理的？
+4. flink怎么实现反压的？
+5. flink的两阶段提交是怎么实现的？
+6. kafka的事物是怎么处理？flink是怎么实现的？ 
+   1. 参考
+      1. [Kafka 事务性之幂等性实现 | Matt's Blog](http://matt33.com/2018/10/24/kafka-idempotent/#%E5%B9%82%E7%AD%89%E6%80%A7%E8%A6%81%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98)
+      2. [Kafka Exactly-Once 之事务性实现 | Matt's Blog](http://matt33.com/2018/11/04/kafka-transaction/)
+7. 事物的原理？什么是事物？特性怎么实现的？
+8. hbase的读数据流程？
+   1. [Hbase读数据流程-databook](/bigdata/hbase/Hbase读数据流程)
+9. blockcache是干什么的？
+10. hbase对于不同版本的key是怎么合并的？
+    1. 参考
+       1. [一条数据的HBase之旅，简明HBase入门教程-Flush与Compaction-Nosql漫谈](https://mp.weixin.qq.com/s/ctnCm3uLCotgRpozbXmVMg)
+11. 项目中有做过什么关于hdfs和yarn的优化？
+
 ## OPPO
 
 ### 20210621视一
@@ -255,14 +277,17 @@
                   throw new RuntimeException("e");  
               int[] res=new int[m];  
               for(int i=0;i<m;i++){  
+                  //核心关键在下面这行代码，为什么要len-i，因为要依次缩小这个随机数的范围 i++ len-i 就越来越小
+                  // 后面为什么要 len-1-random,因为，上面 Random().nextInt(len-i)得到的是 0 到 len-i 这个范围内的
+                  // 所以 len -1 - (random) 得到的就是 i 到 len-1 这个范围内的啦
                   int randomIndex=len-1-new Random().nextInt(len-i);  
                   res[i]=arr[randomIndex];  
                   int tmp=arr[randomIndex];  
                   arr[randomIndex]=arr[i];  
                   arr[i]=tmp;  
-              }  
-              return res;  
-          }  
+           }  
+           return res;  
+       }  
       ```
 
 8. linux的常用命令

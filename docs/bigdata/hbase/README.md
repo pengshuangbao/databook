@@ -13,11 +13,79 @@
 
 ## Hbase  热点现象及解决办法
 
+
+
 ## RowKey的设计原则?
+
+### 参考
+
+1. [一条数据的HBase之旅，简明HBase入门教程-Write全流程](https://mp.weixin.qq.com/s/cpsX0j7IVfi54CjVWpGoqg)
 
 rowkey的设计原则：各个列簇数据平衡，长度原则、相邻原则，创建表的时候设置表放入regionserver缓存中，避免自动增长和时间，使用字节数组代替string，最大长度64kb，最好16字节以内，按天分表，两个字节散列，四个字节存储时分毫秒。
 
-## HBase和传统数据库的区别；
+### 一条数据的HBase之旅
+
+![image](https://static.lovedata.net/21-06-24-6ced89348e9fe3f935d157b2155109d8.png-wm)
+
+**RowKey Format 1**： Mobile1 + StartTime
+
+![image](https://static.lovedata.net/21-06-24-9f309ead4a06ecbc6055c002379a2a93.png-wm)
+
+**RowKey Format 2**： StartTime + Mobile1
+
+![image](https://static.lovedata.net/21-06-24-b81236fc6bcef828f71cb20c7e34e7c8.png-wm)
+
+
+
+> 我们将RowKey中的第一个字段称之为"**先导字段**"。
+
+<mark>第一种设计，有利于查询"手机号码XXX的在某时间范围内的数据记录"，但不利于查询"某段时间范围内有哪些手机号码拨出了电话？"，而第二种设计却恰好相反。</mark>
+
+
+
+两种设计都是两个字段的直接组合，这种设计在实际应用中，会带来读写<mark>**热点**</mark>问题，难以保障数据读写请求在所有Regions之间的负载均衡。避免热点的常见方法有如下几种：
+
+**Reversing**
+
+如果先导字段本身会带来热点问题，但该字段尾部的信息却具备良好的随机性，此时，可以考虑将先导字段做反转处理，将尾部几位直接提前到前面，或者直接将整个字段完全反转。
+
+将**先导字段**Mobile1翻转后，就具备非常好的随机性。
+
+例如：
+
+  13400001111^201803010800
+
+将先导字段Mobile1反转后的RowKey变为：
+
+  11110000431^201803010800
+
+![image](https://static.lovedata.net/21-06-24-f1baaad1a12c4c16b45dcb8a495fcd11.png-wm)
+
+RowKey应该为： **66660000431^201803011300**
+
+因为创建表时预设的Region与RowKey强相关，我们现在才可以给出本文样例所需要创建的表的"**Region分割点**"信息：
+
+假设，Region分割点为"1,2,3,4,5,6,7,8,9"，基于这9个分割点，可以预先创建10个Region，这10个Region的StartKey和StopKey如下所示：
+
+![image](https://static.lovedata.net/21-06-24-99a3b4a08e693548868500ce05dae1c9.png-wm)
+
+由于Mobile1字段的最后一位是0~9之间的随机数字，因此，可以均匀打散到这10个Region中
+
+**Salting**
+
+Salting的原理是在RowKey的前面添加固定长度的随机Bytes，随机Bytes能保障数据在所有Regions间的负载均衡。
+
+能够分散，但是对于读取不是很友好，查询并不知道前面添加的是什么，所以包含 A B C的regions都得去查一下
+
+![image](https://static.lovedata.net/21-06-24-1f2837243b460dbf3189a0af48211485.png-wm)
+
+**Hashing**
+
+Hashing是将一个RowKey通过一个Hash函数生成一组固定长度的bytes，Hash函数能保障所生成的随机bytes具备良好的离散度，从而也能够均匀打散到各个Region中
+
+Hashing既有利于**随机写入**，又利于基于知道**RowKey各字段**的确切信息之后的**随机读取**操作，但如果是基于**RowKey范围的Scan或者是RowKey的模糊信息**进行查询的话，就会带来显著的**性能问题**，因为原来在字典顺序相邻的RowKey列表，通过Hashing打散后导致这些数据被**分散**到了多个Region中
+
+
 
 ## Hbase BlockCache的理解
 
@@ -42,17 +110,29 @@ BlockCache也称为读缓存，HBase会将一次文件查找的Block块缓存到
 
 
 
+
+
 ## HBase Master和Regionserver的交互；
+
+
 
 ## HBase的HA,Zookeeper在其中的作用；
 
+
+
 ## Master宕机的时候,哪些能正常工作,读写数据；
 
+
+
 ## region分裂的过程?
+
+
 
 ## Hbase 列簇的设计原则
 
 列族的设计原则：尽可能少（按照列族进行存储，按照region进行读取，不必要的io操作），经常和不经常使用的两类数据放入不同列族中，列族名字尽可能短。
+
+
 
 ## hbase性能解决方案：
 
@@ -79,59 +159,7 @@ hbase.regionserver.handler.count属性，可以适当的放大。默认值为10�
 6、直接将时间戳作为行健，在写入单个region 时候会发生热点问题，为什么呢?
 HBase的rowkey在底层是HFile存储数据的，以键值对存放到SortedMap中。并且region中的rowkey是有序存储，若时间比较集中。就会存储到一个region中，这样一个region的数据变多，其它的region数据很好，加载数据就会很慢。直到region分裂可以解决。
 
-## HBase － 数据写入流程解析
 
-> HBase默认适用于写多读少的应用
-
-客户端
-
-1. 用户提交put请求后，HBase客户端会将put请求添加到本地buffer中，符合一定条件就会通过AsyncProcess异步批量提交 HBase默认设置autoflush=true 可设置为false,没有保护机制
-2. 在提交之前，HBase会在元数据表.meta.中根据rowkey找到它们归属的region server，这个定位的过程是通过HConnection的locateRegion方法获得的
-3. HBase会为每个HRegionLocation构造一个远程RPC请求MultiServerCallable，然后通过rpcCallerFactory.newCaller()执行调用
-
-服务端
-
-> 服务器端RegionServer接收到客户端的写入请求后，首先会反序列化为Put对象，然后执行各种检查操作，比如检查region是否是只读、memstore大小是否超过blockingMemstoreSize 
-
-![image](https://static.lovedata.net/jpg/2018/6/20/183daf0ec61cdcf47aaff6fe85ae9389.jpg-wm)
-
-1. 获取行锁、Region更新共享锁 同行数据的原子性
-2. 开始写事务：获取write number，用于实现MVCC，实现数据的非锁定读，在保证读写一致性的前提下提高读取性能
-3. 写缓存memstore：HBase中每列族都会对应一个store，用来存储该列数据。每个store都会有个写缓存memstore，用于缓存写入数据。HBase并不会直接将数据落盘，而是先写入缓存，等缓存满足一定大小之后再一起落盘。
-4. Append HLog：HBase使用WAL机制保证数据可靠性，即首先写日志再写缓存，即使发生宕机，也可以通过恢复HLog还原出原始数据。
-5. 释放行锁以及共享锁
-6. Sync HLog：HLog真正sync到HDFS，在释放行锁之后执行sync操作是为了尽量减少持锁时间，提升写性能 如果Sync失败，执行回滚操作将memstore中已经写入的数据移除。
-7. 结束写事务
-8. flush memstore：当写缓存满64M之后，会启动flush线程将数据刷新到硬盘
-
-参考
-[HBase － 数据写入流程解析 – 有态度的HBase/Spark/BigData](http://hbasefly.com/2016/03/23/hbase_writer/)
-
-## HBase 数据读取流程
-
-> 查询比较复杂，一是因为整个HBase存储引擎基于LSM-Like树实现   其二是因为HBase中更新操作以及删除操作实现都很简单，更新操作并没有更新原有数据  是插入了一条打上”deleted”标签的数据，而真正的数据删除发生在系统异步执行Major_Compact的时候 但是对于数据读取来说却意味着套上了层层枷锁
-
-![image](https://static.lovedata.net/jpg/2018/6/20/d0f9a3466084169a700b73db005584d6.jpg-wm)
-
-![image](https://static.lovedata.net/jpg/2018/6/20/d358a28eb3558b62c1ee23169f5b0620.jpg-wm)
-
-![客户端缓存RegionServer地址信息](https://static.lovedata.net/jpg/2018/6/20/3f6ec491d3504cbb4a163fa7ff7b0998.jpg-wm)
-
-scan数据就和开发商盖房一样，也是分成两步：组建施工队体系，明确每个工人的职责；一层一层盖楼。
-
- scanner体系的核心在于三层scanner：RegionScanner、StoreScanner以及StoreFileScanner。三者是层级的关系，一个RegionScanner由多个StoreScanner构成，一张表由多个列族组成，就有多少个StoreScanner负责该列族的数据扫描。一个StoreScanner又是由多个StoreFileScanner组成。每个Store的数据由内存中的MemStore和磁盘上的StoreFile文件组成，相对应的，StoreScanner对象会雇佣一个MemStoreScanner和N个StoreFileScanner来进行实际的数据读取，每个StoreFile文件对应一个StoreFileScanner，注意：StoreFileScanner和MemstoreScanner是整个scan的最终执行者。 
-
-![image](https://static.lovedata.net/jpg/2018/6/20/931c83f325dd513936b66fafdf085282.jpg-wm)
-
- HBase中KeyValue是什么样的结构？
-
- ![image](https://static.lovedata.net/jpg/2018/6/20/9d1f2731d5383ed8461fdf2a8908ee8c.jpg-wm)
-
-参考
-[HBase原理－迟到的‘数据读取流程’部分细节 – 有态度的HBase/Spark/BigData](http://hbasefly.com/2017/06/11/hbase-scan-2/)
-[HBase原理－数据读取流程解析 – 有态度的HBase/Spark/BigData](http://hbasefly.com/2016/12/21/hbase-getorscan/)
-
-## 
 
 ## bulkload原理？
 

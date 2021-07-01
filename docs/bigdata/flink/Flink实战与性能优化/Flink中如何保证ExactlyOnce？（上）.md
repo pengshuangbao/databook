@@ -514,18 +514,18 @@ notifyCheckpointComplete 方法。
 
 TwoPhaseCommitSinkFunction定义了如下 5 个抽象方法：
 
-
-​    
-​    // 处理每一条数据
-​    protected abstract void invoke(TXN transaction, IN value, Context context) throws Exception;
-​    // 开始一个事务，返回事务信息的句柄
-​    protected abstract TXN beginTransaction() throws Exception;
-​    // 预提交（即提交请求）阶段的逻辑
-​    protected abstract void preCommit(TXN transaction) throws Exception;
-​    // 正式提交阶段的逻辑
-​    protected abstract void commit(TXN transaction);
-​    // 取消事务，Rollback 相关的逻辑
-​    protected abstract void abort(TXN transaction);
+   ```java
+      // 处理每一条数据
+   protected abstract void invoke(TXN transaction, IN value, Context context) throws Exception;
+    // 开始一个事务，返回事务信息的句柄
+   protected abstract TXN beginTransaction() throws Exception;
+    // 预提交（即提交请求）阶段的逻辑
+   protected abstract void preCommit(TXN transaction) throws Exception;
+   // 正式提交阶段的逻辑
+   protected abstract void commit(TXN transaction);
+   // 取消事务，Rollback 相关的逻辑
+    protected abstract void abort(TXN transaction);
+   ```
 
 TwoPhaseCommitSinkFunction 里这些方法什么时候会被执行呢？如下图所示，在状态初始化的 initializeState
 方法内或者每次 Checkpoint 的 snapshotState 方法内都会调用 beginTransaction
@@ -534,6 +534,7 @@ Checkpoint 执行 snapshotState 时，会调用 preCommit 方法进行预提交�
 操作，到这里为止可以理解为 2PC 的第一阶段。
 
 ![image](https://static.lovedata.net/21-04-01-02f2f4c2f91ef46bff23892030c24dc0.png-wm)
+
 第一阶段运行期间无论是机器故障还是 invoke 失败或者 preCommit 对应预提交的 flush 失败都可以理解为 2PC 的第一阶段返回了
 No，即投票失败就会执行 2PC 第二阶段的 Rollback，对应到 TwoPhaseCommitSinkFunction 中就是执行 abort
 方法，abort 方法内一般会对本次事务进行 abortTransaction 操作。
@@ -541,26 +542,27 @@ No，即投票失败就会执行 2PC 第二阶段的 Rollback，对应到 TwoPha
 只有当 2PC 的第一阶段所有参与者都完全成功，也就是说 Flink TwoPhaseCommitSinkFunction 对应的所有并行度在本次事务中
 invoke 全部成功且 preCommit 对应预提交的 flush 也全部成功才认为 2PC 的第一阶段返回了Yes，即投票成功就会执行 2PC
 第二阶段的 Commit，对应到 TwoPhaseCommitSinkFunction 中就是执行 Commit 方法，Commit
-方法内一般会对本次事务进行 commitTransaction 操作，以上就是 Flink 中 TwoPhaseCommitSinkFunction
+方法内一般会对本次事务进行 **commitTransaction** 操作，以上就是 Flink 中 TwoPhaseCommitSinkFunction
 的大概执行流程。
 
 在第一阶段结束时，数据被写入到了外部存储，但是当事务的隔离级别为读已提交（Read
 Committed）时，在外部存储中并读取不到我们写入的数据，因为并没有执行 Commit 操作。如下图所示，是第二阶段的两种情况。
 
-!![image](https://static.lovedata.net/21-04-01-06265c0033baaaff7be49053a43e0224.png-wm)
+![image](https://static.lovedata.net/21-04-01-06265c0033baaaff7be49053a43e0224.png-wm)
 FlinkKafkaProducer011 继承了 TwoPhaseCommitSinkFunction，如下图所示，Flink 应用使用
 FlinkKafkaProducer011 时，Checkpoint 的时候不仅要将快照保存到状态后端，还要执行 preCommit 操作将缓存中的数据
 flush 到 Sink 端的 Kafka 中。
 
 ![images](https://static.lovedata.net/zs/2019-10-07-151549.jpg-wm)
+
 当所有的实例快照完成且所有 Sink 实例执行完 preCommit 操作时，会把快照完成的消息发送给 JobManager，JobManager
 收到所有实例的 Checkpoint 完成消息时，就认为这次 Checkpoint 完成了，会向所有的实例发送 Checkpoint
-完成的通知（Notify Checkpoint Completed），当 FlinkKafkaProducer011 接收到 Checkpoint
-完成的消息时，就会执行 Commit 方法。
+完成的通知（Notify Checkpoint Completed)，当 FlinkKafkaProducer011 接收到 Checkpoint
+完成的消息时，就会执行 **Commit** 方法。
 
 ![images](https://static.lovedata.net/zs/2019-10-07-151550.jpg-wm)
-上文提到过 2PC 有一些缺点存在，关于协调者和参与者故障的问题，对应到 Flink 中如果节点发生故障会申请资源并从最近一次成功的 Checkpoint
-处恢复任务，所以，节点故障的问题 Flink 已经解决了。关于 2PC 同步阻塞的问题，2PC
+
+上文提到过 2PC 有一些缺点存在，关于协调者和参与者故障的问题，对应到 Flink 中如果节点发生故障会申请资源并从最近一次成功的 Checkpoint处恢复任务，所以，节点故障的问题 Flink 已经解决了。关于 2PC 同步阻塞的问题，2PC
 算法在没有等到第一阶段所有参与者的投票之前肯定是不能执行第二阶段的 Commit，所以基于 2PC 实现原理同步阻塞的问题没有办法解决，除非使用其他算法。
 
 那数据不一致的问题呢？
@@ -572,31 +574,31 @@ Committed），那么第一阶段就不会导致数据不一致的问题。
 
 Flink 中，Checkpoint 成功后，会由 JobManager 给所有的实例发送 Checkpoint 完成的通知，然后 KafkaSink 在
 notifyCheckpointComplete 方法内执行 commit。假如现在执行第 n 次 Checkpoint，快照完成且预提交完成，我们认为第
-n 次 Checkpoint 已经成功了，这里一定要记住无论第二阶段是否 commit 成功，Flink 都会认为第 n 次 Checkpoint
+n 次 Checkpoint 已经成功了，<mark>这里一定要记住无论第二阶段是否 commit 成功，Flink 都会认为第 n 次 Checkpoint
 已经结束了，换言之 Flink 可能会出现第 n 次 Checkpoint 成功了，但是第 n 次 Checkpoint 对应的事务 commit
-并没有成功。
+并没有成功。</mark>
 
 当 Checkpoint 成功后，JobManager 会向所有的 KafkaSink 发送 Checkpoint 完成的通知，所有的 KafkaSink
 接收到通知后才会执行 Commit 操作。假如 JobManager 发送通知时出现了故障，导致 KafkaSink
 的所有并行度都没有收到通知或者只有其中一部分 KafkaSink 接收到了通知，最后有一部分的 KafkaSink 执行了 Commit，另外一部分
-KafkaSink 并没有执行 Commit，此时出现了 Checkpoint 成功，但是数据并没有完整地提交到 Kafka
-的情况，出现了数据不一致的问题。
+KafkaSink 并没有执行 Commit，**此时出现了 Checkpoint 成功，但是数据并没有完整地提交到 Kafka**
+**的情况，出现了数据不一致的问题。**
 
 那 Flink 如何解决这个问题呢？
 
 在任务执行过程中，如果因为各种原因导致有任意一个 KafkaSink 没有 Commit 成功，就会认为 Flink 任务出现故障，就会从最近一次成功的
 Checkpoint 处恢复任务，也就是从第 n 次 Checkpoint 处恢复，TwoPhaseCommitSinkFunction 将每次
-Checkpoint 时需要 Commit 的事务保存在状态里，当从第 n 次 Checkpoint 恢复时会从状态中拿到第 n 次 Checkpoint
+Checkpoint 时需要 Commit 的事务保存在状态里，<mark>当从第 n 次 Checkpoint 恢复时会从状态中拿到第 n 次 Checkpoint
 可能没有提交的事务并执行 Commit，通过这种方式来保证所有的 KafkaSink 都能将事务进行 Commit，从而解决了 2PC
-协议中可能出现的数据不一致的问题。
+协议中可能出现的数据不一致的问题。</mark>
 
-也就是说 Flink 任务重启后，会检查之前 Checkpoint 是否有未提交的事务，如果有则执行 Commit，从而保证了 Checkpoint
-之前的数据被完整地提交。
+**也就是说 Flink 任务重启后，会检查之前 Checkpoint 是否有未提交的事务，如果有则执行 Commit，从而保证了 Checkpoint**
+**之前的数据被完整地提交。**
 
 简单描述一下 FlinkKafkaProducer011 的实现原理：
 
-  * FlinkKafkaProducer011 继承了 TwoPhaseCommitSinkFunction，所有并行度在 initializeState 初始化状态时，会开启新的事务，并把状态里保存的之前未提交事务进行 commit。
-  * 接下来开始调用 invoke 方法处理数据，会把数据通过事务 api 发送到 Kafka。一段时间后，开始 Checkpoint，checkpoint 时 snapshotState 方法会被执行，snapshotState 方法会调用 preCommit 方法并把当前还未 Commit 的事务添加到状态中来提供故障容错。
+  * FlinkKafkaProducer011 继承了 TwoPhaseCommitSinkFunction，所有并行度在 **initializeState** 初始化状态时，会开启新的事务，并把状态里保存的之前未提交事务进行 **commit**。
+  * 接下来开始调用 invoke 方法处理数据，会把数据通过事务 api 发送到 Kafka。一段时间后，开始 Checkpoint，checkpoint 时 snapshotState 方法会被执行，snapshotState 方法会调用 **preCommit** 方法并把当前**还未 Commit 的事务添加到状态中来提供故障容错。**
   * snapshotState 方法执行完成后，会对自身状态信息进行快照并上传到 HDFS 上来提供恢复。所有的实例都将状态信息备份完成后就认为本次 Checkpoint 结束了，此时 JobManager 会向所有的实例发送 Checkpoint 完成的通知，各实例收到通知后，会调用 notifyCheckpointComplete 方法把未提交的事务进行 commit。
   * 期间如果出现其中某个并行度出现故障，JobManager 会停止此任务，向所有的实例发送通知，各实例收到通知后，调用 close 方法，关闭 Kafka 事务 Producer。
 

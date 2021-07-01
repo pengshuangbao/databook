@@ -2,30 +2,21 @@
 
 [toc]
 
-反压（BackPressure）机制被广泛应用到实时流处理系统中，流处理系统需要能优雅地处理反压问题。反压通常产生于这样的场景：短时间的负载高峰导致系统接收数据的速率远高于它处理数据的速率。许多日常问题都会导致反压，例如，垃圾回收停顿可能会导致流入的数据快速堆积，或遇到大促、秒杀活动导致流量陡增。反压如果不能得到正确的处理，可能会导致资源耗尽甚至系统崩溃。反压机制是指系统能够自己检测到被阻塞的
-Operator，然后自适应地降低源头或上游数据的发送速率，从而维持整个系统的稳定。
+反压（BackPressure）机制被广泛应用到实时流处理系统中，流处理系统需要能优雅地处理反压问题。反压通常产生于这样的场景：<mark>短时间的负载高峰导致系统接收数据的速率远高于它处理数据的速率</mark>。许多日常问题都会导致反压，例如，**垃圾回收停顿可能会导致流入的数据快速堆积，或遇到大促、秒杀活动导致流量陡增**。反压如果不能得到正确的处理，可能会导致资源耗尽甚至系统崩溃。反压机制是指系统能够自己检测到被阻塞的Operator，然后自适应地降低源头或上游数据的发送速率，从而维持整个系统的稳定。
 
-Flink
-任务一般运行在多个节点上，数据从上游算子发送到下游算子需要网络传输，若系统在反压时想要降低数据源头或上游算子数据的发送速率，那么肯定也需要网络传输。所以下面先来了解一下
-Flink 的网络流控（Flink 对网络数据流量的控制）机制。
+Flink任务一般运行在多个节点上，数据从上游算子发送到下游算子需要网络传输，若系统在反压时想要降低数据源头或上游算子数据的发送速率，那么肯定也需要网络传输。所以下面先来了解一下Flink 的网络流控（Flink 对网络数据流量的控制）机制。
 
 ### Flink 流处理为什么需要网络流控
 
-下图是一个简单的 Flink 流任务执行图：任务首先从 Kafka 中读取数据、通过 map 算子对数据进行转换、keyBy 按照指定 key
-对数据进行分区（key 相同的数据经过 keyBy 后分到同一个 subtask 实例中），keyBy 后对数据进行 map 转换，然后使用 Sink
-将数据输出到外部存储。
+下图是一个简单的 Flink 流任务执行图：任务首先从 Kafka 中读取数据、通过 map 算子对数据进行转换、keyBy 按照指定 key对数据进行分区（key 相同的数据经过 keyBy 后分到同一个 subtask 实例中），keyBy 后对数据进行 map 转换，然后使用 Sink将数据输出到外部存储。
 
 ![简单的Flink流任务执行图.png](https://static.lovedata.net/zs/2019-10-07-152946.jpg-wm)
-众所周知，在大数据处理中，无论是批处理还是流处理，单点处理的性能总是有限的，我们的单个 Job
-一般会运行在多个节点上，通过多个节点共同配合来提升整个系统的处理性能。图中，任务被切分成 4 个可独立执行的 subtask 分别是
-A0、A1、B0、B1，在数据处理过程中就会存在 shuffle。例如，subtask A0 处理完的数据经过 keyBy 后被发送到 subtask
-B0、B1 所在节点去处理。那么问题来了，subtask A0 应该以多快的速度向 subtask B0、B1 发送数据呢？把上述问题抽象化，如下图所示，将
-subtask A0 当作 Producer，subtask B0 当做 Consumer，上游 Producer 向下游 Consumer
-发送数据，在发送端和接收端有相应的 Send Buffer 和 Receive Buffer，但是上游 Producer 生产数据的速率比下游
-Consumer 消费数据的速率大，Producer 生产数据的速率为 2MB/s， Consumer 消费数据速率为 1MB/s，Receive
+
+众所周知，在大数据处理中，无论是批处理还是流处理，单点处理的性能总是有限的，我们的单个 Job一般会运行在多个节点上，通过多个节点共同配合来提升整个系统的处理性能。图中，任务被切分成 4 个可独立执行的 subtask 分别是A0、A1、B0、B1，在数据处理过程中就会存在 shuffle。例如，subtask A0 处理完的数据经过 keyBy 后被发送到 subtaskB0、B1 所在节点去处理。那么问题来了，subtask A0 应该以多快的速度向 subtask B0、B1 发送数据呢？把上述问题抽象化，如下图所示，将subtask A0 当作 Producer，subtask B0 当做 Consumer，上游 Producer 向下游 Consumer发送数据，在发送端和接收端有相应的 Send Buffer 和 Receive Buffer，但是上游 Producer 生产数据的速率比下游Consumer 消费数据的速率大，Producer 生产数据的速率为 2MB/s， Consumer 消费数据速率为 1MB/s，Receive
 Buffer 容量只有 5MB，所以过了 5 秒后，接收端的 Receive Buffer 满了。
 
 ![网络流控存在的问题.png](https://static.lovedata.net/zs/2019-11-12-004946.png-wm)
+
 下游消费速率慢，且接收区的 Receive Buffer 有限，如果上游一直有源源不断的数据，那么将会面临着以下两种情况：
 
   1. 下游消费者的缓冲区放不下数据，导致下游消费者会丢弃新到达的数据。
@@ -36,8 +27,8 @@ Buffer 容量只有 5MB，所以过了 5 秒后，接收端的 Receive Buffer �
 Consumer 端无限制地堆积数据。那上游 Producer 端该如何做限流呢？可以采用下图所示静态限流的策略：
 
 ![网络流控-静态限速.png](https://static.lovedata.net/zs/2019-11-12-005000.png-wm)
-静态限速的思想就是，提前已知下游 Consumer 端的消费速率，然后在上游 Producer 端使用类似令牌桶的思想，限制 Producer
-端生产数据的速率，从而控制上游 Producer 端向下游 Consumer 端发送数据的速率。但是静态限速会存在问题：
+
+静态限速的思想就是，提前已知下游 Consumer 端的消费速率，然后在上游 Producer 端使用类似令牌桶的思想，限制 Producer端生产数据的速率，从而控制上游 Producer 端向下游 Consumer 端发送数据的速率。但是静态限速会存在问题：
 
   1. 通常无法事先预估下游 Consumer 端能承受的最大速率。
   2. 就算通过某种方式预估出下游 Consumer 端能承受的最大速率，在运行过程中也可能会因为网络抖动、CPU 共享竞争、内存紧张、IO阻塞等原因造成下游 Consumer 的吞吐量降低，但是上游 Producer 的吞吐量正常，然后又会出现之前所说的下游接收区的 Receive Buffer 有限，上游一直有源源不断的数据发送到下游的问题，还是会造成下游要么丢数据，要么为了不丢数据 buffer 不断扩充导致下游 OOM 的问题。
@@ -45,10 +36,8 @@ Consumer 端无限制地堆积数据。那上游 Producer 端该如何做限流�
 综上所述，我们发现了，上游 Producer 端必须有一个限流的策略，且静态限流是不可靠的，于是就需要一个动态限流的策略。可以采用下图所示的动态反馈策略：
 
 ![网络流控-动态限速.png](https://static.lovedata.net/zs/2019-11-12-005009.png-wm)
-下游 Consumer 端会频繁地向上游 Producer 端进行动态反馈，告诉 Producer 下游 Consumer 的负载能力，从而使
-Producer 端可以动态调整向下游 Consumer 发送数据的速率，以实现 Producer 端的动态限流。当 Consumer
-端处理较慢时，Consumer 将负载反馈到 Producer 端，Producer 端会根据反馈适当降低 Producer 自身从上游或者 Source
-端读数据的速率来降低向下游 Consumer 发送数据的速率。当 Consumer 处理负载能力提升后，又及时向 Producer 端反馈，Producer
+
+下游 Consumer 端会频繁地向上游 Producer 端进行动态反馈，告诉 Producer 下游 Consumer 的负载能力，从而使Producer 端可以动态调整向下游 Consumer 发送数据的速率，以实现 Producer 端的动态限流。当 Consumer端处理较慢时，Consumer 将负载反馈到 Producer 端，Producer 端会根据反馈适当降低 Producer 自身从上游或者 Source端读数据的速率来降低向下游 Consumer 发送数据的速率。当 Consumer 处理负载能力提升后，又及时向 Producer 端反馈，Producer
 会通过提升自身从上游或 Source 端读数据的速率来提升向下游发送数据的速率，通过动态反馈的策略来动态调整系统整体的吞吐量。
 
 读到这里，应该知道 Flink 为什么需要网络流控机制了，并且知道 Flink 的网络流控机制必须是一个动态反馈的策略。但是还有以下几个问题：
@@ -60,8 +49,7 @@ Producer 端可以动态调整向下游 Consumer 发送数据的速率，以实�
 
 ### Flink 1.5 之前网络流控机制介绍
 
-在 Flink 1.5 之前，Flink 没有使用任何复杂的机制来解决反压问题，因为根本不需要那样的方案！Flink
-利用自身作为纯数据流引擎的优势来优雅地响应反压问题。下面我们会深入分析 Flink 是如何在 Task 之间传输数据的，以及数据流如何实现自然降速的。
+在 Flink 1.5 之前，Flink 没有使用任何复杂的机制来解决反压问题，因为根本不需要那样的方案！Flink利用自身作为纯数据流引擎的优势来优雅地响应反压问题。下面我们会深入分析 Flink 是如何在 Task 之间传输数据的，以及数据流如何实现自然降速的。
 
 如下图所示，Job 分为 Task A、B、C，Task A 是 Source Task、Task B 处理转换数据、Task C 是 Sink Task。
 
@@ -70,31 +58,18 @@ Producer 端可以动态调整向下游 Consumer 发送数据的速率，以实�
   * Task C 再从 Task C 的 Receive Buffer 中将数据反序列后输出到外部 Sink 端，这就是所有数据的传输和处理流程。
 
 ![简单的3个Task数据传输示意图.png](https://static.lovedata.net/zs/2019-11-12-005021.png-wm)
-Flink 中，动态反馈策略原理比较简单，假如 Task C 由于各种原因吞吐量急剧降低，那么肯定会造成 Task C 的 Receive Buffer
-中堆积大量数据，此时 Task B 还在给 Task C 发送数据，但是毕竟内存是有限的，持续一段时间后 Task C 的 Receive Buffer
-满了，此时 Task B 发现 Task C 的 Receive Buffer 满了后，就不会再往 Task C 发送数据了，Task B
-处理完的数据就开始往 Task B 的 Send Buffer 积压，一段时间后 Task B 的 Send Buffer 也满了，Task B
-的处理就会被阻塞，这时 Task A 还在往 Task B 的 Receive Buffer 发送数据。
 
-同样的道理，Task B 的 Receive Buffer 很快满了，导致 Task A 不再往 Task B 发送数据，Task A 的 Send
-Buffer 也会被用完，Task A 是 Source Task 没有上游，所以 Task A 直接降低从外部 Source
-端读取数据的速率甚至完全停止读取数据。
+Flink 中，动态反馈策略原理比较简单，假如 Task C 由于各种原因吞吐量急剧降低，那么肯定会造成 Task C 的 Receive Buffer中堆积大量数据，此时 Task B 还在给 Task C 发送数据，但是毕竟内存是有限的，持续一段时间后 Task C 的 Receive Buffer满了，此时 Task B 发现 Task C 的 Receive Buffer 满了后，就不会再往 Task C 发送数据了，Task B处理完的数据就开始往 Task B 的 Send Buffer 积压，一段时间后 Task B 的 Send Buffer 也满了，Task B的处理就会被阻塞，这时 Task A 还在往 Task B 的 Receive Buffer 发送数据。
+
+同样的道理，Task B 的 Receive Buffer 很快满了，导致 Task A 不再往 Task B 发送数据，Task A 的 SendBuffer 也会被用完，Task A 是 Source Task 没有上游，所以 Task A 直接降低从外部 Source端读取数据的速率甚至完全停止读取数据。
 
 通过以上原理，Flink 将下游的压力传递给上游。
 
 如果下游 Task C 的负载能力恢复后，如何将负载提升的信息反馈给上游呢？
 
-实际上 Task B 会一直向 Task C 发送探测信号，检测 Task C 的 Receive Buffer 是否有足够的空间，当 Task C
-的负载能力恢复后，Task C 会优先消费 Task C Receive Buffer 中的数据，Task C Receive Buffer
-中有足够的空间时，Task B 会从 Send Buffer 继续发送数据到 Task C 的 Receive Buffer，Task B 的 Send
-Buffer 有足够空间后，Task B 又开始正常处理数据，很快 Task B 的 Receive Buffer 中也会有足够空间，同理，Task A
-会从 Send Buffer 继续发送数据到 Task B 的 Receive Buffer，Task A 的 Receive Buffer
-有足够空间后，Task A 就可以从外部的 Source 端开始正常读取数据了。
+实际上 Task B 会一直向 Task C 发送探测信号，检测 Task C 的 Receive Buffer 是否有足够的空间，当 Task C的负载能力恢复后，Task C 会优先消费 Task C Receive Buffer 中的数据，Task C Receive Buffer中有足够的空间时，Task B 会从 Send Buffer 继续发送数据到 Task C 的 Receive Buffer，Task B 的 SendBuffer 有足够空间后，Task B 又开始正常处理数据，很快 Task B 的 Receive Buffer 中也会有足够空间，同理，Task A会从 Send Buffer 继续发送数据到 Task B 的 Receive Buffer，Task A 的 Receive Buffer有足够空间后，Task A 就可以从外部的 Source 端开始正常读取数据了。
 
-通过以上原理，Flink 将下游负载过低的消息传递给上游。所以说 Flink
-利用自身纯数据流引擎的优势优雅地响应反压问题，并没有任何复杂的机制来解决反压。上述流程，就是 Flink 动态限流（反压机制）的简单描述，可以看到
-Flink 的反压是从下游往上游传播的，一直往上传播到 Source Task 后，Source Task 最终会降低或提升从外部 Source
-端读取数据的速率。
+通过以上原理，Flink 将下游负载过低的消息传递给上游。所以说 Flink利用自身纯数据流引擎的优势优雅地响应反压问题，并没有任何复杂的机制来解决反压。上述流程，就是 Flink 动态限流（反压机制）的简单描述，可以看到Flink 的反压是从下游往上游传播的，一直往上传播到 Source Task 后，Source Task 最终会降低或提升从外部 Source端读取数据的速率。
 
 如下图所示，对于一个 Flink 任务，动态反馈要考虑如下两种情况：
 
@@ -105,8 +80,6 @@ Flink 的反压是从下游往上游传播的，一直往上传播到 Source Tas
 
 > 注：这里又分了两种情况，Task B 和 Task C 可能在同一个 TaskManager 上运行，也有可能不在同一个 TaskManager
 上运行。
-
->
 
 >   1. Task B 和 Task C 在同一个 TaskManager 运行指的是：一个 TaskManager 包含了多个 Slot，Task B
 和 Task C 都运行在这个 TaskManager 上。此时 Task B 给 Task C 发送数据实际上是同一个 JVM 内的数据发送，所以
@@ -123,6 +96,7 @@ TaskManager 中。此时 Task B 给 Task C 发送数据是跨节点的，所以 
   * 当 Task B 的 Send Buffer 空了，如何告诉 Task B 内部的 Receive Buffer 下游 Send Buffer 空了，并把下游负载很低的消息传递给 Task A。
 
 ![简单的3个Task反压图示.png](https://static.lovedata.net/zs/2019-10-07-153007.jpg-wm)
+
 到目前为止，动态反馈的具体细节抽象成了三个问题：
 
   * 跨 Task 且 Task 不在同一个 TaskManager 内，动态反馈具体如何从下游 Task 的 Receive Buffer 反馈给上游 Task 的 Send Buffer；
@@ -307,12 +281,14 @@ Flink 的反压太过于天然了，导致无法简单地通过监控 BufferPool
 通过对运行中的任务进行采样来确定其反压，如果一个 Task 因为反压导致处理速度降低了，那么它肯定会卡在向 LocalBufferPool
 申请内存块上。那么该 Task 的 stack trace 应该是这样：
 
+    ```bash
+       java.lang.Object.wait(Native Method)
+       o.a.f.[...].LocalBufferPool.requestBuffer(LocalBufferPool.java:163)
+       o.a.f.[...].LocalBufferPool.requestBufferBlocking(LocalBufferPool.java:133) <--- BLOCKING request
+       [...]
+    ```
 
-​    
-​    java.lang.Object.wait(Native Method)
-​    o.a.f.[...].LocalBufferPool.requestBuffer(LocalBufferPool.java:163)
-​    o.a.f.[...].LocalBufferPool.requestBufferBlocking(LocalBufferPool.java:133) <--- BLOCKING request
-​    [...]
+
 
 
 Flink 的反压监控就是依赖上述原理，通过不断对每个 Task 的 stack trace

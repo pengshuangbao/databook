@@ -2,6 +2,55 @@
 
 [toc]
 
+## hdfs怎么新增结点和删除结点？
+
+### 参考
+
+1. [Hadoop动态扩容,增加节点-华为云](https://www.huaweicloud.com/zhishi/arc-9558377.html)
+
+   1. ```shell
+      # 新增节点
+      hadoop-daemon.sh start datanode
+      # 查看集群情况
+      hdfs dfsadmin -report
+      # 数据传输带宽比较低，可以设置为64M
+      hdfs dfsadmin -setBalancerBandwidth 67108864
+      sbin/start-balancer.sh -threshold 5
+      ```
+
+2. [Hadoop记录-Hadoop集群添加节点和删除节点 - 信方 - 博客园](https://www.cnblogs.com/xinfang520/p/10131756.html)
+
+   1. ```shell
+      # A：修改Name节点的hdfs-site.xml增加
+      <property>
+          <name>dfs.hosts.exclude</name>
+          <value>/soft/hadoop/conf/excludes</value>
+      </property>
+      # B：修改Name节点的mapred-site.xml增加
+      <property>
+         <name>mapred.hosts.exclude</name>
+         <value>/soft/hadoop/conf/excludes</value>
+         <final>true</final>
+      </property>
+      # C：新建excludes文件，文件里写要删除节点的hostname
+      # D：Name节点执行
+      hadoop mradmin –refreshNodes
+      hadoop dfsadmin –refreshNodes<br>(task进程可以kill进程ID)
+      # 查看关闭进程
+      hadoop dfsadmin -report
+      # 当节点处于Decommissioned，表示关闭成功。
+      ```
+
+      
+
+## hdfs如果一台结点挂了，会有什么结果？十台呢？错误丢失概率是多少？
+
+### 参考
+
+1. [CDH大数据节点宕机测试 - 程序员大本营](https://www.pianshen.com/article/32791307789/)
+
+
+
 ## hdfs 是什么
 
 Hadoop 自带的一个分布式文件系统,Hadoop Distribut File System 

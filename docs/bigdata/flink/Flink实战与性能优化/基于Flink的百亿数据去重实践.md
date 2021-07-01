@@ -250,19 +250,21 @@ long 类型，然后看 long 类型重复的个数。测试过程如下所示：
 
 1\. 清洗出测试要使用的日志主键 id 到 test.tmp _event_ id 表中：
 
-    ```sql
-          select * from test.tmp_event_id limit 6;
-          +--------------------------------------+
-          | event_id                             |
-          +--------------------------------------+
-        | 65f37a7f-f938-44a9-b660-0004963e0163 |
-          | 74d5c030-a4a1-4e28-8721-dc2d6b1de0dd |
-          | 9bda7924-f093-42f4-9962-08b28d29b66d |
-          | 286c1593-dc7f-415e-8df3-b952517d5ffc |
-          | 7b5e9189-20f2-4764-8b68-54e834b84a72 |
-          | 3e174384-4613-4191-8793-a08a75830117 |
-          +--------------------------------------+
-    ```
+```sql
+
+    select * from test.tmp_event_id limit 6;
+      +--------------------------------------+
+      | event_id                             |
+      +--------------------------------------+
+    | 65f37a7f-f938-44a9-b660-0004963e0163 |
+      | 74d5c030-a4a1-4e28-8721-dc2d6b1de0dd |
+      | 9bda7924-f093-42f4-9962-08b28d29b66d |
+      | 286c1593-dc7f-415e-8df3-b952517d5ffc |
+      | 7b5e9189-20f2-4764-8b68-54e834b84a72 |
+      | 3e174384-4613-4191-8793-a08a75830117 |
+      +--------------------------------------+
+
+```
 
 
 
@@ -407,16 +409,13 @@ Checkpoint 时间过长然后针对性的解决问题。
 
 参数 | 含义及设置建议  
 ---|---  
-state.backend.rocksdb.block.cache-size | 整个 RocksDB 共享一个 block cache，读数据时内存的
-cache 大小，该参数越大读数据时缓存命中率越高，强烈建议调大该参数，例如：512M  
-state.backend.rocksdb.thread.num | 用于后台 flush 和合并 sst 文件的线程数，默认为 1，建议调大  
-state.backend.rocksdb.writebuffer.size | RocksDB 中，每个 State 使用一个 Column
-Family，每个 Column Family 使用独占的 write buffer，建议调大，例如：32M  
-state.backend.rocksdb.writebuffer.count | 每个 Column Family 对应的 writebuffer 数目  
-state.backend.rocksdb.writebuffer.number-to-merge | 将数据从 writebuffer 中 flush
-到磁盘时，需要合并的 writebuffer 数量  
-state.backend.local-recovery | 设置本地恢复，当 Flink 任务失败时，可以基于本地的状态信息进行恢复任务，可能不需要从
-hdfs 拉取数据  
+state.backend.rocksdb.block.cache-size | 整个 RocksDB 共享一个 block cache，读数据时内存的cache 大小，该参数越大读数据时缓存命中率越高，强烈建议调大该参数，例如：512M 
+state.backend.rocksdb.thread.num | 用于后台 flush 和合并 sst 文件的线程数，默认为 1，建议调大 
+state.backend.rocksdb.writebuffer.size | RocksDB 中，每个 State 使用一个 ColumnFamily，每个 Column Family 使用独占的 write buffer，建议调大，例如：32M 
+state.backend.rocksdb.writebuffer.count | 每个 Column Family 对应的 writebuffer 数目 
+state.backend.rocksdb.writebuffer.number-to-merge | 将数据从 writebuffer 中 flush到磁盘时，需要合并的 writebuffer 数量 
+state.backend.local-recovery | 设置本地恢复，当 Flink 任务失败时，可以基于本地的状态信息进行恢复任务，可能不需要从 
+
 
 ### 小结与反思
 

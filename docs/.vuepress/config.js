@@ -226,13 +226,7 @@ function getBigdataSidebar () {
         'flink/通关手册',
         'flink/学习资源',
         'flink/开源动态',
-        {
-          title: '学习笔记',
-          collapsable: true,
-          children: [
-            'flink/学习笔记/Flink State最佳实践'
-          ]
-        },
+        'flink/Flink状态原理',
         {
           title: 'Flink实战与性能优化',
           collapsable: true,
@@ -315,7 +309,9 @@ function getBigdataSidebar () {
       children: [
         'hbase/',
         'hbase/性能优化',
-        'hbase/Hbase读写性能优化'
+        'hbase/Hbase性能优化',
+        'hbase/Hbase读数据流程',
+        'hbase/Hbase写数据流程'
       ]
     },{
       title: 'ClickHouse',
