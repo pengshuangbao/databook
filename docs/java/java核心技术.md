@@ -1,9 +1,6 @@
 # Java核心技术
 
 [toc]
-
-
-
 ## 第16讲 | synchronized底层如何实现?什么是锁的升级、降级?
 
 ## 第17讲｜一个线程两次调用 start() 方法会出现什么情况？谈谈线程的生命周期和状态转移。
@@ -30,7 +27,7 @@ Java 的线程是不允许启动两次的，第二次调用必然会抛出 Illeg
 
 3. 和进程内其他线程共享文件描述符、虚拟地址空间
 
-具体实现中，线程还分为<u>**内核线程**</u>、<u>**用户线程**</u>。 
+具体实现中，线程还分为*内核线程**</u>、*用户线程**</u>。 
 
 当前JVM ： 现在的模型是**一对一映射**到操作系统**内核线程**。
 
@@ -70,9 +67,9 @@ daemonThread.start();
 
 ### ThreadLocal(线程本地变量)
 
-Java 提供的一种**保存线程私有信息**的机制，因为其在整个**线程生命周期内有效**，所以可以方便地在一个线程关联的不同业务模块之间**<u>传递信息</u>**，比如事务 ID、Cookie 等上下文相关信息。
+Java 提供的一种**保存线程私有信息**的机制，因为其在整个**线程生命周期内有效**，所以可以方便地在一个线程关联的不同业务模块之间**传递信息*，比如事务 ID、Cookie 等上下文相关信息。
 
-废弃项目的回收依赖于显式地触发，否则就要等待线程结束，进而回收相应 ThreadLocalMap！这就是很多 **<u>OOM 的来源</u>**，所以通常都会建议，应用一定要自己负责 remove，并且不要和线程池配合，因为 worker 线程往往是不会退出的。
+废弃项目的回收依赖于显式地触发，否则就要等待线程结束，进而回收相应 ThreadLocalMap！这就是很多 **OOM 的来源*，所以通常都会建议，应用一定要自己负责 remove，并且不要和线程池配合，因为 worker 线程往往是不会退出的。
 
 **线程池一般不建议和thread local配合...**
 
@@ -152,7 +149,7 @@ public class DeadLockSample extends Thread {
 - **CountDownLatch** 是**不可以重置**的，所以**无法重用**；而 CyclicBarrier 则没有这种限制，可以重用。
 - CountDownLatch 的基本操作组合是 **countDown/await。**调用 await 的线程阻塞等待 **countDown** 足够的次数，不管你是在一个线程还是多个线程里 countDown，只要次数足够即可。所以就像 Brain Goetz 说过的，***CountDownLatch 操作的是事件***。
 - **CyclicBarrier** 的基本操作组合，则就是 **await**，当所有的伙伴（parties）都调用了 **await**，才会继续进行任务*，**并自动进行重置**。注意，正常情况下，CyclicBarrier 的重置都是自动发生的，如果我们调用 reset 方法，但还有线程在等待，就会导致等待线程被打扰，抛出 BrokenBarrierException 异常。
-- CyclicBarrier 侧重点是**<u>*线程*</u>**，而不是**<u>*调用事件*</u>**，它的典型应用场景是用来***<u>等待并发线程结束</u>***。
+- CyclicBarrier 侧重点是**线程**，而不是**调用事件**，它的典型应用场景是用来***等待并发线程结束**。
 
 ![image](https://static.lovedata.net/20-11-10-8bb926900cc9db63c472e4e89d9ab60c.png-wm)
 
@@ -168,7 +165,7 @@ Map 放入或者获取的速度，而不在乎顺序，大多推荐使用 **Conc
 
 ### 为什么并发容器里面没有 ConcurrentTreeMap 呢？
 
-这是因为 TreeMap 要实现**高效的线程安全**是非常困难的，它的实现基于复杂的红黑树。为保证访问效率，当我们**<u>*插入或删除节点时，会移动节点进行平衡操作*</u>**，这导致在并发场景中难以进行合理粒度的同步。而 **SkipList** 结构则要相对简单很多，通过**层次结构提高访问速度**，虽然不够紧凑，空间使用有一定提高（O(nlogn)），但是在增删元素时线程安全的开销要好很多
+这是因为 TreeMap 要实现**高效的线程安全**是非常困难的，它的实现基于复杂的红黑树。为保证访问效率，当我们**插入或删除节点时，会移动节点进行平衡操作**，这导致在并发场景中难以进行合理粒度的同步。而 **SkipList** 结构则要相对简单很多，通过**层次结构提高访问速度**，虽然不够紧凑，空间使用有一定提高（O(nlogn)），但是在增删元素时线程安全的开销要好很多
 
 ![image](https://static.lovedata.net/20-11-10-c3dceb25c189ab256550fc6fb7896b39.png-wm)
 
@@ -200,7 +197,7 @@ final void setArray(Object[] a) {
 
 ## 第20讲 | 并发包中的ConcurrentLinkedQueue和LinkedBlockingQueue有什么区别？ ***
 
-Concurrent 类型基于 **lock-free**，在常见的多线程访问场景，一般可以<u>*提供较高吞吐量</u>*。
+Concurrent 类型基于 **lock-free**，在常见的多线程访问场景，一般可以提供较高吞吐量。
 
 而 LinkedBlockingQueue 内部则是**基于锁**，并提供了 **BlockingQueue** 的等待性方法。
 
@@ -266,7 +263,7 @@ private final Condition notFull = putLock.newCondition();
 
 - 考虑应用场景中对队列边界的要求。ArrayBlockingQueue 是有明确的容量限制的，而 LinkedBlockingQueue 则取决于我们是否在创建时指定，SynchronousQueue 则干脆不能缓存任何元素。
 - 从空间利用角度，数组结构的 ArrayBlockingQueue 要比 LinkedBlockingQueue 紧凑，因为其不需要创建所谓节点，但是其初始分配阶段就需要一段连续的空间，所以初始内存需求更大。
-- 通用场景中，LinkedBlockingQueue 的吞吐量一般优于 ArrayBlockingQueue，因为它实现了<u>***更加细粒度的锁操作***</u>。ArrayBlockingQueue 实现比较简单，性能更好预测，属于表现稳定的“选手”。
+- 通用场景中，LinkedBlockingQueue 的吞吐量一般优于 ArrayBlockingQueue，因为它实现了**更加细粒度的锁操作***</u>。ArrayBlockingQueue 实现比较简单，性能更好预测，属于表现稳定的“选手”。
 - 如果我们需要实现的是**两个线程之间接力性（handoff）的场景**，按照专栏上一讲的例子，你可能会选择 **CountDownLatch**，但是SynchronousQueue也是完美符合这种场景的，**而且线程间协调和数据传输统一起来**，代码更加规范。
 - 可能令人意外的是，很多时候 SynchronousQueue 的性能表现，往往大大超过其他实现，尤其是在队列元素较小的场景。
 
@@ -327,3 +324,4 @@ private final Condition notFull = putLock.newCondition();
 - newSingleThreadExecutor()，它的特点在于工作线程数目被限制为 1，操作一个无界的工作队列，所以它保证了所有任务的都是被顺序执行，最多会有一个任务处于活动状态，并且不允许使用者改动线程池实例，因此可以避免其改变线程数目。
 - newSingleThreadScheduledExecutor() 和 newScheduledThreadPool(int corePoolSize)，创建的是个 ScheduledExecutorService，可以进行定时或周期性的工作调度，区别在于单一工作线程还是多个工作线程。
 - newWorkStealingPool(int parallelism)，这是一个经常被人忽略的线程池，Java 8 才加入这个创建方法，其内部会构建ForkJoinPool，利用Work-Stealing算法，并行地处理任务，不保证处理顺序。
+

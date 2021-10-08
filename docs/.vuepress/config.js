@@ -4,18 +4,18 @@ const slugify = require('@vuepress/shared-utils/lib/slugify')
 module.exports = ctx => ({
   markdown: {
     // markdown-it-anchor 的选项
-   // anchor: { permalink: false },
+    // anchor: { permalink: false },
     // markdown-it-toc 的选项
-    toc: { 
+    toc: {
       //includeLevel: [2, 3]
     },
     extendMarkdown: md => {
       // 使用更多的 markdown-it 插件! 配置: https://github.com/Oktavilla/markdown-it-table-of-contents
       md.use(require("markdown-it-table-of-contents"), {
-        includeLevel: [2,3,4],
-        slugify:function(s){
+        includeLevel: [2, 3, 4],
+        slugify: function (s) {
           return slugify(s)
-        }, 
+        },
         markerPattern: /^\[toc\]/im
       });
     }
@@ -60,13 +60,14 @@ module.exports = ctx => ({
           '/architecture/': getArchitectureSidebar(),
           '/computer/': getComputerSidebar(),
           '/database/': getDatabaseSidebar(),
+          '/fe/': getFeSidebar(),
           '/ops/': getOpsSidebar(),
           '/programming/': getProgrammingSidebar(),
-          '/book/':getBookSideBar(),
-          '/interview/':getInterviewSideBar(),
-          '/guide/':['','nav']
+          '/book/': getBookSideBar(),
+          '/interview/': getInterviewSideBar(),
+          '/guide/': ['', 'nav']
         },
-        sidebarDepth: 3,
+        sidebarDepth: 1,
       }
     }
   },
@@ -98,47 +99,60 @@ module.exports = ctx => ({
   ]
 })
 
-function getAlgorithmSidebar(){
-  return ['','数据结构','算法','算法图解','红黑树原理详解','B+Tree','LSM-Tree']
+function getAlgorithmSidebar() {
+  return ['', '数据结构', '算法', '算法图解', '红黑树原理详解', 'B+Tree', 'LSM-Tree']
 }
-function getProgrammingSidebar(){
-  return ['python','scala']
+function getProgrammingSidebar() {
+  return ['python', 'scala']
 }
-function getBookSideBar(){
-  return ['tech','growth','geek','video','study']
-}
-
-function getInterviewSideBar(){
-  return ['tech','sword-to-offer','my-interview','interview_guide']
+function getBookSideBar() {
+  return ['tech', 'growth', 'geek', 'video', 'study']
 }
 
-function getArchitectureSidebar(){
+function getInterviewSideBar() {
+  return ['tech', 'sword-to-offer', 'my-interview', 'interview_guide']
+}
+
+function getArchitectureSidebar() {
   return [
     '',
     'architecture',
-  {
-    title: '数据中台',
-    collapsable: true,
-    children: [
-      '数据中台/DT时代转型中的数据中台建设'
-    ]
-  }]
+    {
+      title: '数据中台',
+      collapsable: true,
+      children: [
+        '数据中台/DT时代转型中的数据中台建设'
+      ]
+    }]
 }
 
-function getComputerSidebar(){
-  return ['','network','cpu','disk','memory']
+function getComputerSidebar() {
+  return ['', 'network', 'cpu', 'disk', 'memory']
 }
 
-function getDatabaseSidebar(){
+function getDatabaseSidebar() {
   return ['']
 }
 
-function getOpsSidebar(){
-  return ['','java','bigdata']
+function getOpsSidebar() {
+  return ['', 'java', 'bigdata']
+}
+
+function getFeSidebar() {
+  return [
+    '',
+    {
+      title: 'react',
+      collapsable: true,
+      children: [
+        'react/尚硅谷React全家桶',
+      ]
+    }
+  ]
 }
 
 
-function getJavaSidebar(){
+function getJavaSidebar() {
   return [
     '',
     'jvm',
@@ -196,7 +210,7 @@ function getJavaSidebar(){
 }
 
 
-function getBigdataSidebar () {
+function getBigdataSidebar() {
   return [
     '',
     {
@@ -217,10 +231,10 @@ function getBigdataSidebar () {
         'spark/spark-streaming',
         'spark/spark'
       ]
-    },{
+    }, {
       title: 'Flink',
       collapsable: true,
-      sidebarDepth: 1,  
+      sidebarDepth: 1,
       children: [
         'flink/',
         'flink/通关手册',
@@ -283,7 +297,7 @@ function getBigdataSidebar () {
           ]
         }
       ],
-    },{
+    }, {
       title: 'Kylin',
       collapsable: true,
       //sidebarDepth: 2,  
@@ -292,7 +306,7 @@ function getBigdataSidebar () {
         'kylin/学习资源',
         'kylin/开源动态'
       ]
-    },{
+    }, {
       title: 'Kafka',
       collapsable: true,
       //sidebarDepth: 2,  
@@ -302,7 +316,7 @@ function getBigdataSidebar () {
         'kafka/Kafka核心技术与实战',
         'kafka/大数据集群资源评估'
       ]
-    },{
+    }, {
       title: 'Hbase',
       collapsable: true,
       //sidebarDepth: 2,  
@@ -313,7 +327,7 @@ function getBigdataSidebar () {
         'hbase/Hbase读数据流程',
         'hbase/Hbase写数据流程'
       ]
-    },{
+    }, {
       title: 'ClickHouse',
       collapsable: true,
       //sidebarDepth: 2,  
@@ -321,7 +335,7 @@ function getBigdataSidebar () {
         'clickhouse/',
         'clickhouse/学习资源'
       ]
-    },{
+    }, {
       title: 'Impala',
       collapsable: true,
       //sidebarDepth: 2,  
@@ -329,7 +343,7 @@ function getBigdataSidebar () {
         'impala/',
         'impala/学习资源'
       ]
-    },{
+    }, {
       title: 'Kudu',
       collapsable: true,
       //sidebarDepth: 2,  
@@ -337,7 +351,7 @@ function getBigdataSidebar () {
         'kudu/',
         'kudu/学习资源'
       ]
-    },{
+    }, {
       title: 'Redis',
       collapsable: true,
       //sidebarDepth: 2,  

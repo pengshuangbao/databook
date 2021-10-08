@@ -2,6 +2,29 @@
 
 [toc]
 
+## Maven
+
+### maven打包跳过单元测试
+
+```shell
+# 不但跳过单元测试的运行，也跳过测试代码的编译。
+mvn package -Dmaven.test.skip=true  
+# 跳过单元测试，但是会继续编译
+mvn package -DskipTests
+```
+
+
+
+## Jar
+
+### java 通过一个命令将一个class文件打入到一个已经存在的jar包中，而不用重新运行
+
+```shell
+jar -uvf mk_phoenix-flume-4.7.0-HBase-1.1.jar org/apache/phoenix/flume/serializer/EventSerializers.class
+```
+
+
+
 ## JVM
 
 ### 内存溢出的时候生成Dump文件
@@ -11,6 +34,21 @@
 ```shell
 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=path
 ```
+
+### 查看JDK使用的默认垃圾回收器
+
+```shell
+java -XX:+PrintCommandLineFlags -version
+```
+
+```
+-XX:InitialHeapSize=524457920 -XX:MaxHeapSize=8391326720 -XX:+PrintCommandLineFlags -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseParallelGC
+java version "1.8.0_111"
+Java(TM) SE Runtime Environment (build 1.8.0_111-b14)
+Java HotSpot(TM) 64-Bit Server VM (build 25.111-b14, mixed mode)
+```
+
+
 
 ### Jstat
 

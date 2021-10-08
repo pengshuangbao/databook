@@ -171,6 +171,19 @@ chmod g-w /home/sshproxyuser/.ssh/authorized_keys
 find . -size +100M
 ```
 
+#### find 指定的文件并打包
+
+```shell
+# 找到小于1M的文件并打包
+find ./ -type f -size -1024k | grep -v  logs | xargs tar jcvf sdk-backend.tar.gz
+# 找到指定文件并打包
+find ./ -type f -name 'rabbit-*.jar' |  xargs tar jcvf sdk-backend.tar.gz
+# 打包指定文件并排除一些文件
+tar -jcvf /tmp/sdk-backend.tar.gz /data/server/ --exclude='*.([log]|[txt]|[out])' --include='./rabbit-app-center-server-36030'
+```
+
+
+
 ### sed
 
 [如何使用 sed 命令删除文件中的行](https://juejin.cn/post/6844903926756704269)
@@ -306,7 +319,13 @@ lsof -d 2-3
 
 
 
+### SCP
 
+#### scp指定端口
+
+```shell
+scp -P 65532 /Users/apple/Downloads/install-release.sh root@lovedata:/data/
+```
 
 
 
@@ -330,6 +349,33 @@ launchctl start  com.lovedata.checktoken.plist
 ```shell
 kill $(ps -ef|grep chromedriver |awk '$0 !~/grep/ {print $2}' |tr -s '\n' ' ')
 kill $(ps -ef|grep 'Google Chrome Helper' |awk '$0 !~/grep/ {print $2}' |tr -s '\n' ' ')
+```
+
+### 安装程序显示文件已经损坏
+
+![image](https://static.lovedata.net/21-07-02-b3e29bc9fc4882b794e8040b012fd048.png-wm)
+
+1、打开任何来源。
+2、打开终端，执行下面的命令。
+
+```shell
+sudo xattr -r -d com.apple.quarantine /Applications/Sublime\ Text.app 
+```
+
+### Item2 Pem文件登陆
+
+```shell
+sudo chmod 0600 pem文件名.pem
+ssh -i pem文件名.pem 用户名@登陆的IP
+```
+
+### Mac关闭SIP
+
+重启Mac，按住⌘ + R进入Recovery模式。 实用工具（Utilities）-> 终端（Terminal）。 输入命令csrutil disable运行。 重启进入系统后，终端里输入 csrutil status，结果中如果有 System Integrity Protection status:disabled. 则说明关闭成功。
+
+```shell
+➜  ~ csrutil status
+System Integrity Protection status: disabled.
 ```
 
 
@@ -614,6 +660,16 @@ scp -r useful-scripts root@server3:/data3/test/
 
 
 
+## SSH
+
+### ssh匿名登陆
+
+```shell
+ssh -T root@lovedata -p65532 /bin/bash -i
+```
+
+
+
 ## 程序
 
 ### 循环干掉job
@@ -784,4 +840,64 @@ git reset --hard HEAD^
 #回退到任何一个版本
 git reset --hard  commitid 
 ```
+
+
+
+## FQ
+
+### Linux离线安装v2ray客户端
+
+> 参考
+>
+> 1. [v2ray离线安装](https://www.jansora.com/notes/166)
+
+1. 先在有外网的环境下在下面两个文件
+
+   1. https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh
+   2. https://github.com/v2fly/v2ray-core/releases/download/v4.40.1/v2ray-linux-64.zip
+   3. [Linux下使用v2ray - Jun's Blog](https://www.junz.org/post/v2_in_linux/)
+
+2. 将文件传到机器上面
+
+3. ```shell
+   sudo bash install-release.sh --local ./v2ray-linux-64.zip --version v4.40.1
+   vim /usr/local/etc/v2ray/config.json
+   # 粘贴config.json的内容到这里
+   systemctl enable v2ray
+   systemctl restart v2ray
+   # 产看是否能返回数据
+   curl -x https://127.0.0.1:1087 https://www.google.com  -v
+   ```
+
+4. ![image](https://static.lovedata.net/21-07-21-dc84bf457bb8c73fffbd315197fdb58e.png-wm)
+
+
+
+### Linux下离线安装proxychains4
+
+> 参考
+>
+> 1. https://github.com/rofl0r/proxychains-ng
+> 2. [Centos 7安装Proxychains实现Linux 代理 - yunying - 博客园](https://www.cnblogs.com/BOHB-yunying/articles/12205099.html)
+
+1. ```shell
+   # 下载，如果下载不了，浏览器下载
+   git clone https://github.com/rofl0r/proxychains-ng
+   cd proxychains-ng
+   ./configure --prefix=/usr --sysconfdir=/etc
+   make 
+   make install
+   make install-config
+   cd .. && rm -rf proxychains-ng
+   # make: cc: Command not found  使用
+   yum  install  gcc
+   ```
+
+2. ```shell
+   # 添加配置 
+   vim /etc/proxychains.conf
+   socks5          127.0.0.1 1080
+   ```
+
+   
 

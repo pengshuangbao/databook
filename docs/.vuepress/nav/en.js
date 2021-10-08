@@ -26,9 +26,32 @@ module.exports = [
     text: '数据库 ',
     link: '/database/'
   },
+   {
+    text: '前端',
+    link: '/fe/'
+  },
   {
     text: '运维 ',
-    link: '/ops/'
+    link: '/ops/',
+    items:[
+      {
+        text:'基础',
+        link:'/ops/'
+      },
+      {
+        text: '分类',
+        items: [
+          {
+            text:'Java',
+            link:'/ops/java.html'
+          },
+          {
+            text:'大数据',
+            link:'/ops/bigdata.html'
+          }
+        ]
+      }
+    ]
   },
   {
     text: '编程',
@@ -94,6 +117,10 @@ module.exports = [
           {
             text: '我的面经',
             link:'/interview/my-interview.html'
+          },
+          {
+            text: '前端面经',
+            link:'/interview/fe.html'
           },
           {
             text: '面试导航',
