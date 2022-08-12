@@ -184,6 +184,60 @@ sudo -u kudu  kudu cluster rebalance impala5.fibodata.com,impala6.fibodata.com
 
 
 
+## Grafana
+
+### Docker启动Grafana
+
+```shell
+docker run -d -p 3000:3000 --name grafana grafana/grafana
+```
+
+## Prometheus
+
+### Docker启动Prometheus
+
+```shell
+docker run -d \
+    -p 9090:9090 \
+    -v /opt/prometheus/config:/etc/prometheus  \
+    prom/prometheus \
+     --config.file=/etc/prometheus/prometheus.yml
+```
+
+
+
+### Docker启动Prometheus并支持热更新
+
+
+
+```shell
+docker run -d \
+    -p 9090:9090 \
+    -v /opt/prometheus/config:/etc/prometheus \
+    prom/prometheus \
+    --config.file=/etc/prometheus/prometheus.yml  --web.enable-lifecycle
+```
+
+
+
+### 热更新Prometheus配置
+
+```shell
+curl -X POST http://192.168.2.12:9090/-/reload
+```
+
+
+
+## Pushgateway
+
+### Docker启动pushgateway
+
+```shell
+docker run -d -p 9091:9091 prom/pushgateway
+```
+
+
+
 
 
 

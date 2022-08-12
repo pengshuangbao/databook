@@ -447,7 +447,11 @@ seq 10 | xargs -i dd if=/dev/zero of={}.dat bs=1024 count=1
 #### 查看监听端口
 
 ```shell
+# netstat
 netstat -atunlp | grep LISTEN
+# lsof
+yum install lsof
+lsof -i:9001
 ```
 
 #### 查看 某一个端口的占用情况
@@ -456,6 +460,36 @@ netstat -atunlp | grep LISTEN
 # 查看 某一个端口的占用情况，去重要先排序才能去重计数
 netstat -atunlp | grep 2181 | awk '{ print $5" : "$7 }' | sort | uniq -c
 ```
+
+
+
+#### 关闭防火墙
+
+```shell
+# 查看防火墙状态
+firewall-cmd --state
+
+# 停止防火墙
+systemctl stop firewalld.service
+
+# 新增开放端口
+firewall-cmd --zone=public --add-port=端口号/tcp --permanent
+
+# 移除开放端口
+firewall-cmd --zone=public --remove-port=端口号/tcp --permanent
+
+# 查看开放的端口
+firewall-cmd --zone=public --list-ports
+
+# 刷新防火墙
+firewall-cmd --reload
+```
+
+
+
+
+
+
 
 ## 内存
 
@@ -700,6 +734,29 @@ tmux   new -s peng
 #Ctrl+B  然后按一下D  就可以退出这个窗口，进入外部shell
 tmux a -t peng
 ```
+
+
+
+#### 支持滚动条
+
+在 tmux里面，因为每个窗口(tmux window)的历史内容已经被tmux接管了，所以原来console/terminal提供的Shift+PgUp/PgDn所显示的内容并不是当前窗口的历史内容，所以要用C-b [ 进入copy-mode，然后才能用PgUp/PgDn/光标/Ctrl-S等键在copy-mode中移动。
+
+如果要启用鼠标滚轮来卷动窗口内容的话，可以按C-b :然后输入
+   ```bash
+    setw mode-mouse on
+   ```
+
+
+这就可以了。如果要对所有窗口开启的话:
+    ```
+    setw -g mode-mouse on
+    ```
+
+(这种情况下，Vi/Emacs等全屏程序并不受影响，还可以自己接管滚轮事件)
+
+也可以加到~/.tmux.conf里面
+     set-window-option -g mode-mouse on
+(setw其实是set-window-option的别名)
 
 
 

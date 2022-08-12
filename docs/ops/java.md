@@ -2,6 +2,24 @@
 
 [toc]
 
+## JDK
+
+### JDK安装
+
+```shell
+mkdir /usr/java
+tar -zxvf jdk1.8.0_111.tar.gz -C  /usr/java/
+
+vim /etc/profile
+
+export JAVA_HOME=/usr/java/jdk1.8.0_111
+export PATH=$PATH:$JAVA_HOME/bin
+
+source /etc/profile
+```
+
+
+
 ## Maven
 
 ### maven打包跳过单元测试

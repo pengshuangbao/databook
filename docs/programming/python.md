@@ -274,3 +274,16 @@ mpd = pd.merge(df, df_est, how='inner', on=['province', 'global_day'])
 [Python3 pandas库（8） 匹配合并merge() - 知乎](https://zhuanlan.zhihu.com/p/30113030)
 
 
+
+## 运维
+
+### 安装venv虚拟环境
+
+```shell
+/usr/local/python3/bin/python3.8 -m venv venv
+```
+
+
+
+
+
