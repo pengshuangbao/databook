@@ -110,7 +110,7 @@ function getBookSideBar() {
 }
 
 function getInterviewSideBar() {
-  return ['tech', 'sword-to-offer', 'my-interview', 'interview_guide']
+  return ['tech', 'sword-to-offer', 'interview_guide']
 }
 
 function getArchitectureSidebar() {

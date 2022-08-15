@@ -1,9 +1,5 @@
 module.exports = [
   {
-    text: '导航',
-    link: '/guide/'
-  },
-  {
     text: 'Java',
     link: '/java/'
   },{
@@ -113,10 +109,6 @@ module.exports = [
           {
             text: '剑指Offer',
             link:'/interview/sword-to-offer.html'
-          },
-          {
-            text: '我的面经',
-            link:'/interview/my-interview.html'
           },
           {
             text: '前端面经',
