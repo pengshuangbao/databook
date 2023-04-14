@@ -56,7 +56,7 @@ for i in tqdm(range(1, 500)):
 sleep(0.5)
 ```
 
-![image](https://static.lovedata.net/21-01-12-113e963323391fce21ed0360e7d439a4.png-wm)
+![image](https://static.lovedata.net/21-01-12-113e963323391fce21ed0360e7d439a4.png)
 
 
 
@@ -68,7 +68,7 @@ sleep(0.5)
 | %d          | 整数               | print ("He is %d years old"%(25))                            |
 | %f          | 浮点数             | print ("His height is %f m"%(1.83))                          |
 | %.2f        | 浮点数(保留小数点) | print ("His height is %.2f m"%(1.83))                        |
-| %10s  %8.2f | 指定占位符宽度     | print ("Name:%10s Age:%8d Height:%8.2f"%("Aviad",25,1.83))<br />![image](https://static.lovedata.net/20-12-29-e710c540b1beb47c4e3e436f14028d63.png-wm) |
+| %10s  %8.2f | 指定占位符宽度     | print ("Name:%10s Age:%8d Height:%8.2f"%("Aviad",25,1.83))<br />![image](https://static.lovedata.net/20-12-29-e710c540b1beb47c4e3e436f14028d63.png) |
 | bin(10)     | 二进制整数         |                                                              |
 | oct(10)     | 八进制整数         |                                                              |
 | hex(10)     | 十六进制整数       |                                                              |
@@ -109,6 +109,23 @@ print(table)
 | 4  |  104  | job4 |   R    |
 +----+-------+------+--------+
 ```
+
+
+
+#### 字符串驼峰下划线互转
+
+[pyhumps · PyPI](https://pypi.org/project/pyhumps/)
+
+```python
+import humps
+
+humps.camelize("jack_in_the_box")  # jackInTheBox
+humps.decamelize("rubyTuesdays")  # ruby_tuesdays
+humps.pascalize("red_robin")  # RedRobin
+humps.kebabize("white_castle")  # white-castle
+```
+
+
 
 
 
@@ -282,6 +299,57 @@ mpd = pd.merge(df, df_est, how='inner', on=['province', 'global_day'])
 ```shell
 /usr/local/python3/bin/python3.8 -m venv venv
 ```
+
+
+
+
+
+## 问题
+
+### Python2
+
+#### urllib2打开https链接报错
+
+```python
+<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed (_ssl.c:727)>
+https://blog.51cto.com/lsieun/2952082
+```
+
+原因
+
+Python2.7.9 之后，当使用urllib.urlopen打开一个 https 链接时，会验证一次 SSL 证书。而当目标网站使用的是自签名的证书时就会抛出如下异常：
+
+##### 方案一
+
+使用ssl创建未经验证的上下文，在urlopen中传入上下文参数：
+
+```
+import ssl
+ 
+context = ssl._create_unverified_context()
+urllib.request.urlopen(req,context=context)
+```
+
+##### 方案二
+
+全局取消证书验证：
+
+```
+import ssl
+ 
+ssl._create_default_https_context = ssl._create_unverified_context
+urllib2.urlopen("https://www.12306.cn/mormhweb/").read()
+```
+
+##### 方案三
+
+使用的是requests模块，将方法中的verify设置位False即可：
+
+```
+requests.get(url, headers=Hostreferer,verify=False) 
+```
+
+ 
 
 
 

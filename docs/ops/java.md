@@ -127,7 +127,7 @@ jstack 1205 | grep '4b8' -C5 --color
 vim /usr/local/apache-tomcat-8.5.12/bin/catalina.sh
 ```
 
-![image](https://static.lovedata.net/20-12-28-586872716c786d567f1c7de48fb452d6.png-wm)
+![image](https://static.lovedata.net/20-12-28-586872716c786d567f1c7de48fb452d6.png)
 
 
 

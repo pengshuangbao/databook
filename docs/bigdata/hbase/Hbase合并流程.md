@@ -22,7 +22,7 @@ MinorCompaction和MajorCompaction
 
 整个Compaction始于特定的触发条件，<mark>比如flush操作、周期性地Compaction检查操作等</mark>
 
-![image](https://static.lovedata.net/21-06-25-921db3b2ce49093cb0e3436d272d8014.png-wm)
+![image](https://static.lovedata.net/21-06-25-921db3b2ce49093cb0e3436d272d8014.png)
 
 
 

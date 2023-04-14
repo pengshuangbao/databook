@@ -4,7 +4,7 @@
 
 ## 性能工具图 
 
-![image](https://static.lovedata.net/20-11-11-7ceebb617ce3ee156789b652255df844.png-wm)
+![image](https://static.lovedata.net/20-11-11-7ceebb617ce3ee156789b652255df844.png)
 
 
 
@@ -40,7 +40,7 @@ lscpu
 
 [top图解PDF](https://drive.google.com/file/d/1C9HxJDVXc3F6Wr4mlxBpmEFFizDW_MsI/view)
 
-![top](https://static.lovedata.net/top.gif-wm)
+![top](https://static.lovedata.net/top.gif)
 
 
 
@@ -56,7 +56,7 @@ top -Hp pid
 
 ### 查看内存大小
 
-![image](https://static.lovedata.net/20-12-25-d5d85be0e48724a26aa85d9cc9c2e860.png-wm)
+![image](https://static.lovedata.net/20-12-25-d5d85be0e48724a26aa85d9cc9c2e860.png)
 
 #### 输出便于理解的内存信息
 
@@ -353,7 +353,7 @@ kill $(ps -ef|grep 'Google Chrome Helper' |awk '$0 !~/grep/ {print $2}' |tr -s '
 
 ### 安装程序显示文件已经损坏
 
-![image](https://static.lovedata.net/21-07-02-b3e29bc9fc4882b794e8040b012fd048.png-wm)
+![image](https://static.lovedata.net/21-07-02-b3e29bc9fc4882b794e8040b012fd048.png)
 
 1、打开任何来源。
 2、打开终端，执行下面的命令。
@@ -926,7 +926,7 @@ git reset --hard  commitid
    curl -x https://127.0.0.1:1087 https://www.google.com  -v
    ```
 
-4. ![image](https://static.lovedata.net/21-07-21-dc84bf457bb8c73fffbd315197fdb58e.png-wm)
+4. ![image](https://static.lovedata.net/21-07-21-dc84bf457bb8c73fffbd315197fdb58e.png)
 
 
 

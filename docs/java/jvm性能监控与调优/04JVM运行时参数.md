@@ -225,7 +225,7 @@ jinfo -flag <name>=<value> <pid>
 - 绿色虚线表示在jdk14时被Deprecate
 - 绿色虚框表示在jdk9时被Deprecate，jdk14时被删除
 
-![image-20210506182458663](https://static.lovedata.net/zs/20210506182504.png-wm)
+![image-20210506182458663](https://static.lovedata.net/zs/20210506182504.png)
 ```shell
 # Serial回收器
 -XX:+UseSerialGC  年轻代使用Serial GC， 老年代使用Serial Old GC
@@ -325,7 +325,7 @@ $$
 -Xloggc:<file> 输出GC导指定路径下的文件中
 ```
 
-![image-20210506195156935](https://static.lovedata.net/zs/20210506195202.png-wm)
+![image-20210506195156935](https://static.lovedata.net/zs/20210506195202.png)
 ```shell
 -XX:+TraceClassLoading  监控类的加载
 -XX:+PrintGCApplicationStoppedTime  打印GC时线程的停顿时间

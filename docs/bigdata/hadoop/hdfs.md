@@ -74,9 +74,9 @@ Hadoop **对于压缩格式的是自动识别** 。如果我们压缩的文件�
 
 如果压缩的文件没有扩展名，则需要在执行 MapReduce 任务的时候指定输入格式。
 
-![image](https://static.lovedata.net/jpg/2018/6/28/8b8797f41d9aeb4401af87932f0a2aa1.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/28/8b8797f41d9aeb4401af87932f0a2aa1.jpg)
 
-![image](https://static.lovedata.net/jpg/2018/6/28/da4a53d587b5b848dbde4935cb87cd8c.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/28/da4a53d587b5b848dbde4935cb87cd8c.jpg)
 
 因此我们可以得出
 
@@ -107,7 +107,7 @@ Hadoop **对于压缩格式的是自动识别** 。如果我们压缩的文件�
 
 ## 读数据流程
 
-![image](https://static.lovedata.net/jpg/2018/5/31/459e0d017d85b47b3e1380b1985d2225.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/5/31/459e0d017d85b47b3e1380b1985d2225.jpg)
 
 1. 客户端(Client)调用FileSystem的open()函数打开文件。
 2. DistributeFileSystem通过RPC调用元数据节点，得
@@ -120,7 +120,7 @@ Hadoop **对于压缩格式的是自动识别** 。如果我们压缩的文件�
 
 ## 写数据流程
 
-![image](https://static.lovedata.net/jpg/2018/5/31/3d11422458fe21f376f2f478a7bf1073.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/5/31/3d11422458fe21f376f2f478a7bf1073.jpg)
 
 1. 客户端调用create()函数创建文件。
 2. DistributedFileSystem通过RPC调用 **元数据节点** ，在文件系统的 **命名空间** 中创建一个新的文件。元数据节点会首先确定文件原先不存在，并且客户端有创建文件的权限，然后创建新文件。
@@ -213,7 +213,7 @@ HDFS适合存储半结构化和非结构化数据，若有严格的结构化数�
 
 ###  namenode 备用 HA
 
-![image](https://static.lovedata.net/jpg/2018/7/4/7a050172879277cd9604c7c9f917eb31.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/4/7a050172879277cd9604c7c9f917eb31.jpg)
 
 ###  两种高可用性共享存储 NFS过滤器和QJM
 
@@ -271,7 +271,7 @@ SecondaryNameNOde
 
 保存HDFS元数据，比如命名空间信息、块。运行时，这些存在内存，也可以吃就到磁盘山
 
-![image](https://static.lovedata.net/21-04-22-3af78a159b5556724a3e8b01822aaeda.png-wm)
+![image](https://static.lovedata.net/21-04-22-3af78a159b5556724a3e8b01822aaeda.png)
 
 #### fsimage
 
@@ -289,7 +289,7 @@ SecondaryNameNOde
 
 sn就是帮助解决上面问题，指责就是合并nn的edit logs 到 fsimage种
 
-![image](https://static.lovedata.net/21-04-22-f3c640ffe936099e68d838b48f378a3a.png-wm)
+![image](https://static.lovedata.net/21-04-22-f3c640ffe936099e68d838b48f378a3a.png)
 
 
 
@@ -307,7 +307,7 @@ Active NameNode会把最近的操作记录写到本地的一个**edits**文件�
 
 #### NFS
 
-![image](https://static.lovedata.net/21-04-22-7a69ca735e8f5682e003fc5a52dd59da.png-wm)
+![image](https://static.lovedata.net/21-04-22-7a69ca735e8f5682e003fc5a52dd59da.png)
 
 缺点： 如果 ANN 或者 SNN又一个与NFS有网络问题，会造成数据同步出问题
 
@@ -315,7 +315,7 @@ Active NameNode会把最近的操作记录写到本地的一个**edits**文件�
 
 #### QJM
 
-![image](https://static.lovedata.net/21-04-22-ab19b734ef040815820532df86c2ec45.png-wm)
+![image](https://static.lovedata.net/21-04-22-ab19b734ef040815820532df86c2ec45.png)
 
 
 
@@ -325,5 +325,5 @@ QJM的方式可以解决上述NFS容错机制不足的问题。Active NameNode�
 
 ### 主备切换
 
-![image](https://static.lovedata.net/21-04-22-2dfdfb7ab264c6ed82d8598403c15ea2.png-wm)
+![image](https://static.lovedata.net/21-04-22-2dfdfb7ab264c6ed82d8598403c15ea2.png)
 

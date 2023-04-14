@@ -20,7 +20,7 @@ Flink 支持 Maven 直接构建模版项目，你在终端使用该命令：
 
 在执行的过程中它会提示你输入 groupId、artifactId、和 package 名，你按照要求输入就行，最后就可以成功创建一个项目。
 
-![images](https://static.lovedata.net/zs/2019-10-17-151203.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-17-151203.png)
 进入到目录你就可以看到已经创建了项目，里面结构如下：
 
 
@@ -51,10 +51,10 @@ StreamExecutionEnvironment 环境，然后就执行 execute 方法，这在 Flin
 
 上传 Jar：
 
-![images](https://static.lovedata.net/zs/2019-10-17-151434.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-17-151434.png)
 运行报错：
 
-![images](https://static.lovedata.net/zs/2019-10-17-152026.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-17-152026.png)
     
     
     Server Response Message:
@@ -63,7 +63,7 @@ StreamExecutionEnvironment 环境，然后就执行 execute 方法，这在 Flin
 
 我们查看 Flink Job Manager 的日志可以看到：
 
-![images](https://static.lovedata.net/zs/2019-10-17-152954.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-17-152954.png)
     
     
     2019-04-26 17:27:33,706 ERROR org.apache.flink.runtime.webmonitor.handlers.JarRunHandler    - Unhandled exception.
@@ -80,7 +80,7 @@ Flink 项目。
 
 我们利用 IDEA 创建 Maven 项目，工程如下图这样，项目下面分很多模块，每个模块负责不同的业务
 
-![images](https://static.lovedata.net/zs/2019-10-17-153538.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-17-153538.png)
 接下来我们需要在父工程的 pom.xml 中加入如下属性（含编码、Flink 版本、JDK 版本、Scala 版本、Maven 编译版本）：
 
     ```properties
@@ -256,10 +256,10 @@ IDEA 的中查看下面两个配置确定一下（配置其中一个即可以起
 
 1、查看 Maven 中的该 profile 是否已经默认勾选上了，如果没有勾选上，则手动勾选一下才会起作用
 
-![images](https://static.lovedata.net/zs/2019-10-17-161253.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-17-161253.png)
 2、Include dependencies with "Provided" scope 是否勾选，如果未勾选，则手动勾选后才起作用
 
-![images](https://static.lovedata.net/zs/2019-10-17-161557.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-17-161557.png)
 ### 流计算 WordCount 应用程序代码
 
 回到正题，利用 IDEA 创建好 WordCount 应用后，我们开始编写代码。
@@ -381,7 +381,7 @@ ClassNotFoundException，该问题是初学者很容易遇到的问题，很多�
 
 编译好 WordCount 程序后，我们在 IDEA 中右键 run main 方法就可以把 Job 运行起来，结果如下图：
 
-![images](https://static.lovedata.net/zs/2019-10-17-161730.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-17-161730.png)
 图中的就是将每个 word 和对应的个数一行一行打印出来，在本地 IDEA 中运行没有问题，我们接下来使用命令 `mvn clean package`
 打包成一个 Jar (flink-learning-examples-1.0-SNAPSHOT.jar) 然后将其上传到 Flink UI
 上运行一下看下效果。
@@ -393,10 +393,10 @@ examples-1.0-SNAPSHOT.jar 后，然后点击 Submit 后就可以运行了。
 
 运行 Job 的 UI 如下：
 
-![images](https://static.lovedata.net/zs/2019-10-17-161909.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-17-161909.png)
 Job 的结果在 Task Manager 的 Stdout 中：
 
-![images](https://static.lovedata.net/zs/2019-10-17-162006.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-17-162006.png)
 ### WordCount 应用程序代码分析
 
 我们已经将 WordCount 程序代码写好了并且也在 IDEA 中和 Flink UI 上运行了 Job，并且程序运行的结果都是正常的。

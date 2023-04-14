@@ -19,9 +19,9 @@ BucketCache中offheap模式来讲，即使HBase数据块是缓存在堆外内存
 
 调优
 
-![image](https://static.lovedata.net/jpg/2018/7/3/5c09485d9305477941bffcd45b75dcfd.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/3/5c09485d9305477941bffcd45b75dcfd.jpg)
 
-![image](https://static.lovedata.net/jpg/2018/7/3/04fe6da6ad071a7178c031b794386f55.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/3/04fe6da6ad071a7178c031b794386f55.jpg)
 **可见BucketCache模式比LruBlockCache模式GC表现好很多，强烈建议线上配置BucketCache模式**
 
 需要加上-XX:+PrintTenuringDistribution 才能打印对应日志
@@ -59,7 +59,7 @@ MaxTenuringThreshold=15已经相对比较大，
 参考
 [HBase最佳实践－CMS GC调优 – 有态度的HBase/Spark/BigData](http://hbasefly.com/2016/08/09/hbase-cms-gc/)
 
-![image](https://static.lovedata.net/jpg/2018/7/3/84a839d36fbeae1fdda1751f58b99c00.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/3/84a839d36fbeae1fdda1751f58b99c00.jpg)
 
 [HBase GC的前生今世 – 身世篇 – 有态度的HBase/Spark/BigData](http://hbasefly.com/2016/05/21/hbase-gc-1/)
 
@@ -68,10 +68,10 @@ MaxTenuringThreshold=15已经相对比较大，
 ###  列族设计优化
 
 1. BlockSize设置 块大小是HBase的一个重要配置选项，默认块大小为64K。对于不同的业务数据，块大小的合理设置对读写性能有很大的影响。而对块大小的调整，主要取决于两点 1 用户平均读取数据的大小 2 数据平均键值对规模
-2. 数据编码/压缩  Compress/DeCompress ![image](https://static.lovedata.net/jpg/2018/7/4/7f1b7a9dbc7212a7dcfe4033df9b063b.jpg-wm)  
-   1. 可见，压缩特性就是使用CPU资源换取磁盘空间资源，对读写性能并不会有太大影响。HBase目前提供了三种常用的压缩方式：GZip | LZO | Snappy ![image](https://static.lovedata.net/jpg/2018/7/4/a953dabaad6041703d6a5f91128de571.jpg-wm)  Snappy的压缩率最低，但是编解码速率最高，对CPU的消耗也最小，目前一般建议使用Snappy。
+2. 数据编码/压缩  Compress/DeCompress ![image](https://static.lovedata.net/jpg/2018/7/4/7f1b7a9dbc7212a7dcfe4033df9b063b.jpg)  
+   1. 可见，压缩特性就是使用CPU资源换取磁盘空间资源，对读写性能并不会有太大影响。HBase目前提供了三种常用的压缩方式：GZip | LZO | Snappy ![image](https://static.lovedata.net/jpg/2018/7/4/a953dabaad6041703d6a5f91128de571.jpg)  Snappy的压缩率最低，但是编解码速率最高，对CPU的消耗也最小，目前一般建议使用Snappy。
 3. Encode/Decode
-   1. ![image](https://static.lovedata.net/jpg/2018/7/4/c1a4dd238f14c8e72933f0cc57b689dd.jpg-wm) 
+   1. ![image](https://static.lovedata.net/jpg/2018/7/4/c1a4dd238f14c8e72933f0cc57b689dd.jpg) 
    2. 因此一般建议使用PREFIX_TREE编码压缩
 
 [HBase最佳实践－列族设计优化 – 有态度的HBase/Spark/BigData](http://hbasefly.com/2016/07/02/hbase-pracise-cfsetting/)
@@ -111,9 +111,9 @@ HDFS相关优化
 2. Hedged Read功能是否开启？
 3. 数据本地率是否太低？数据本地率低的原因一般是因为Region迁移（自动balance开启、RegionServer宕机迁移、手动迁移等）,因此一方面可以通过避免Region无故迁移来保持数据本地率，另一方面如果数据本地率很低，也可以通过执行major_compact提升数据本地率到100%。   优化建议：避免Region无故迁移，比如关闭自动balance、RS宕机及时拉起并迁回飘走的Region等；在业务低峰期执行major_compact提升数据本地率
 
-![image](https://static.lovedata.net/jpg/2018/7/3/453bce3c61d13bdc252ac602d17b85d0.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/3/453bce3c61d13bdc252ac602d17b85d0.jpg)
 
-![image](https://static.lovedata.net/jpg/2018/7/3/6aa1c1434d723ccfe84d37039e961032.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/3/6aa1c1434d723ccfe84d37039e961032.jpg)
 
 [HBase最佳实践－读性能优化策略 – 有态度的HBase/Spark/BigData](http://hbasefly.com/2016/11/11/hbase%e6%9c%80%e4%bd%b3%e5%ae%9e%e8%b7%b5%ef%bc%8d%e8%af%bb%e6%80%a7%e8%83%bd%e4%bc%98%e5%8c%96%e7%ad%96%e7%95%a5/)
 
@@ -121,7 +121,7 @@ HDFS相关优化
 
 HBase数据写入通常会遇到两类问题，一类是写性能较差，另一类是数据根本写不进去。这两类问题的切入点也不尽相同，如下图所示：
 
-![image](https://static.lovedata.net/jpg/2018/7/3/a93d759e4458811e7aa76535125c65c4.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/3/a93d759e4458811e7aa76535125c65c4.jpg)
 
 1. 是否需要写WAL？WAL是否需要同步写入？  ，比如某些推荐业务，这类业务即使丢失一部分用户行为数据可能对推荐结果并不构成很大影响   优化推荐：根据业务关注点在WAL机制与写入吞吐量之间做出选择 
 2. Put是否可以同步批量提交？  HBase分别提供了单条put以及批量put的API接口，使用批量put接口可以减少客户端到RegionServer之间的RPC连接数，提高写入性能。另外需要注意的是，批量put请求要么全部成功返回，要么抛出异常。  **优化建议：使用批量put进行写入请求** 

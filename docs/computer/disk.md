@@ -18,7 +18,7 @@
 
 #### 文件目录布局
 
-![image](https://static.lovedata.net/21-01-15-f7a0d02957172dfde60610e6e4a1f4a5.png-wm)
+![image](https://static.lovedata.net/21-01-15-f7a0d02957172dfde60610e6e4a1f4a5.png)
 
 
 
@@ -45,9 +45,9 @@
 
 #### 物理设备命名规则
 
-![image](https://static.lovedata.net/21-01-15-9fbf48484a3d89da03bc1d223fdc4447.png-wm)
+![image](https://static.lovedata.net/21-01-15-9fbf48484a3d89da03bc1d223fdc4447.png)
 
-![image](https://static.lovedata.net/21-01-15-14c29ec0229b8f17e2e2d4652f517bb1.png-wm)
+![image](https://static.lovedata.net/21-01-15-14c29ec0229b8f17e2e2d4652f517bb1.png)
 
 > “/dev/sda5”表示的就是“这是系统中第一块被识别到的硬件设备中分区编号为5的逻辑分区的设备文件”。
 >
@@ -56,11 +56,11 @@
 
 硬盘设备是由大量的扇区组成的，**每个扇区的容量为512字节**。其中第一个扇区最重要，它里面保存着主引导记录与分区表信息。就第一个扇区来讲，**主引导记录需要占用446字节**，分区表为64字节，结束符占用2字节；其中分区表中每记录一个分区信息就需要16字节，这样一来最多只有4个分区信息可以写到第一个扇区中，这4个分区就是4个主分区。
 
-![image](https://static.lovedata.net/21-01-15-aca629948b385b3009413563c2e88a2b.png-wm)
+![image](https://static.lovedata.net/21-01-15-aca629948b385b3009413563c2e88a2b.png)
 
 那么问题来了——第一个扇区最多只能创建出4个分区？于是为了解决分区个数不够的问题，可以将第一个扇区的分区表中16字节（原本要写入主分区信息）的空间（称之为扩展分区）拿出来指向另外一个分区。也就是说，扩展分区其实并不是一个真正的分区，而更像是一个占用16字节分区表空间的指针——一个指向另外一个分区的指针。这样一来，用户一般会选择使用3个主分区加1个扩展分区的方法，然后在扩展分区中创建出数个逻辑分区，从而来满足多分区（大于4个）的需求。当然，就目前来讲大家只要明白为什么主分区不能超过4个就足够了。主分区、扩展分区、逻辑分区可以像图64那样来规划。
 
-![image](https://static.lovedata.net/21-01-15-7b1140347289b83ce35e1438d99bb2d2.png-wm)
+![image](https://static.lovedata.net/21-01-15-7b1140347289b83ce35e1438d99bb2d2.png)
 
 
 
@@ -99,7 +99,7 @@ mount 文件系统 挂载目录
 mount /dev/sdb2 /backup
 ```
 
-![image](https://static.lovedata.net/21-01-15-0dc688da754a09f44dc89d777b107258.png-wm)
+![image](https://static.lovedata.net/21-01-15-0dc688da754a09f44dc89d777b107258.png)
 
 > mount之后能立即使用了，重启后挂载失效，每次启动都要手动挂载一下。\
 >
@@ -131,7 +131,7 @@ umount /dev/sdb2
 
 fdisk命令中的参数和作用
 
-![image](https://static.lovedata.net/21-01-15-4502bc81edaf42d6d24cd20dd1ba3d9a.png-wm)
+![image](https://static.lovedata.net/21-01-15-4502bc81edaf42d6d24cd20dd1ba3d9a.png)
 
 使用fdisk命令来尝试管理/dev/sdb硬盘设备
 
@@ -177,7 +177,7 @@ df -h
   - 管理员通过LVM可以方便的调整存储卷组的大小
   - 对磁盘存储按照组的方式进行命名、管理和分配 随便取名字 比如 DBData 而不是使用 sda sdb 
 
-![image](https://static.lovedata.net/21-01-06-7f984fae6c53848f218010bc6aa4172c.png-wm)
+![image](https://static.lovedata.net/21-01-06-7f984fae6c53848f218010bc6aa4172c.png)
 
 #### LVM基本术语
 
@@ -207,19 +207,19 @@ df -h
    1. 逻辑卷也被分成为LE的可被寻址的基本单位
    2. 同一个卷组与PE大小相同，一一对应
 
-   ![image](https://static.lovedata.net/21-01-06-c50f972ab1c65e6a1ce9a108208721af.png-wm)
+   ![image](https://static.lovedata.net/21-01-06-c50f972ab1c65e6a1ce9a108208721af.png)
 
-   ![image](https://static.lovedata.net/21-01-06-fe7583ce01b4e7d8b6fa3dd62e605307.png-wm)
+   ![image](https://static.lovedata.net/21-01-06-fe7583ce01b4e7d8b6fa3dd62e605307.png)
 
 磁盘分区、卷组、逻辑卷和文件系统之间的逻辑关系的示意图
 
-![image](https://static.lovedata.net/21-01-06-2d3436190f33b215a4d3379367adb0a3.png-wm)
+![image](https://static.lovedata.net/21-01-06-2d3436190f33b215a4d3379367adb0a3.png)
 
 ### Linux就该这么学
 
 LVM可以允许用户对硬盘资源进行动态调整
 
-![image](https://static.lovedata.net/21-01-15-2dbd4d2ecc34827ee3058a550cde1029.png-wm)
+![image](https://static.lovedata.net/21-01-15-2dbd4d2ecc34827ee3058a550cde1029.png)
 
 #### 核心概念
 
@@ -369,7 +369,7 @@ RAID技术通过把多个**硬盘设备**组合成一个**容量更大**、**安
 
 提升吞吐速度，不具备数据容错能力
 
-![image](https://static.lovedata.net/21-01-07-f568482573164a6f405df4a7b4592e38.png-wm)
+![image](https://static.lovedata.net/21-01-07-f568482573164a6f405df4a7b4592e38.png)
 
 
 
@@ -381,7 +381,7 @@ RAID0 数据是分开存放的。
 
 如果，由两块以上的硬盘进行绑定，同时写入多块设备上，一块硬盘故障，会立即自动移热交换方式恢复数据
 
-![image](https://static.lovedata.net/21-01-07-c722b4c4f17e63f221c1dfd2f7dbd46e.png-wm)
+![image](https://static.lovedata.net/21-01-07-c722b4c4f17e63f221c1dfd2f7dbd46e.png)
 
 
 
@@ -400,7 +400,7 @@ RAID5技术虽然在理论上兼顾了三者（读写速度、数据安全性、
 
 是一种妥协，坚固了读写速度、数据安全性和存储成本
 
-![image](https://static.lovedata.net/21-01-07-3df65504fc8f8dfaf9b9de9daba29342.png-wm)
+![image](https://static.lovedata.net/21-01-07-3df65504fc8f8dfaf9b9de9daba29342.png)
 
 
 
@@ -420,7 +420,7 @@ RAID10技术是RAID1+RAID0技术的一个“组合体”。
 
 吸取了RAID0 高速读写 和 RAID1 数据安全的，不考虑成本下，性能超过RAID5
 
-![image](https://static.lovedata.net/21-01-07-f4677dbc1254051fd919379f6cc69400.png-wm)
+![image](https://static.lovedata.net/21-01-07-f4677dbc1254051fd919379f6cc69400.png)
 
 
 

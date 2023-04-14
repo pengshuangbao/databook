@@ -124,7 +124,7 @@ ccc，导致任务从 Savepoint 恢复时，SavePoint 中只有 Operator ID 为 
 Operator ID 为 ccc 的状态信息，所以算子 B 不能正常恢复。这里如果在写代码时通过 `uid(String)` 手动指定了 Operator
 ID，就不会存在 上述问题了。
 
-![images](https://static.lovedata.net/zs/2019-10-19-020528.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-10-19-020528.jpg)
 Savepoint 需要用户手动去触发，触发 Savepoint 的方式如下所示：
 
 
@@ -164,14 +164,14 @@ Flink 任务 Checkpoint 的详细流程如下所示：
 1\. JobManager 端的 CheckPointCoordinator 会定期向所有 SourceTask 发送
 CheckPointTrigger，Source Task 会在数据流中安插 Checkpoint barrier
 
-![images](https://static.lovedata.net/zs/2019-11-06-021819.png-wm)
+![images](https://static.lovedata.net/zs/2019-11-06-021819.png)
 2\. 当 task 收到上游所有实例的 barrier 后，向自己的下游继续传递
 barrier，然后自身同步进行快照，并将自己的状态异步写入到持久化存储中
 
   * 如果是增量 Checkpoint，则只是把最新的一部分更新写入到外部持久化存储中
   * 为了下游尽快进行 Checkpoint，所以 task 会先发送 barrier 到下游，自身再同步进行快照
 
-![images](https://static.lovedata.net/zs/2019-11-06-021846.png-wm)
+![images](https://static.lovedata.net/zs/2019-11-06-021846.png)
 > 注：Task B 必须接收到上游 Task A 所有实例发送的 barrier 时，Task B 才能开始进行快照，这里有一个 barrier
 对齐的概念，关于 barrier 对齐的详细介绍请参阅 9.5.1 节 Flink 内部如何保证 Exactly Once 中的 barrier 对齐部分
 
@@ -183,7 +183,7 @@ barrier，然后自身同步进行快照，并将自己的状态异步写入到�
 4\. 如果 CheckPointCoordinator 收集完所有算子的 State Handle，CheckPointCoordinator 会把整个
 StateHandle 封装成 completed Checkpoint Meta，写入到外部存储中，Checkpoint 结束
 
-![images](https://static.lovedata.net/zs/2019-11-06-021900.png-wm)
+![images](https://static.lovedata.net/zs/2019-11-06-021900.png)
 如果对上述 Checkpoint 过程不理解，在后续 9.5 节 Flink 如何保障 Exactly Once 中会详细介绍 Flink 的
 Checkpoint 过程以及为什么这么做。
 
@@ -197,7 +197,7 @@ Checkpoint 过程以及为什么这么做。
 也是基于 LSM Tree 实现的，HBase 磁盘上的 HFile 就相当于这里的 ssTable 文件，每次生成的 HFile
 都是不可变的而且内部有序的文件。基于 ssTable 不可变的特性，才实现了增量 Checkpoint，具体流程如下所示：
 
-![images](https://static.lovedata.net/zs/2019-11-06-021910.png-wm)
+![images](https://static.lovedata.net/zs/2019-11-06-021910.png)
 第一次 Checkpoint 时生成的状态快照信息包含了两个 sstable 文件：sstable1 和 sstable2 及 Checkpoint1
 的元数据文件 MANIFEST-chk1，所以第一次 Checkpoint 时需要将 sstable1、sstable2 和 MANIFEST-chk1
 上传到外部持久化存储中。第二次 Checkpoint 时生成的快照信息为 sstable1、sstable2、sstable3 及元数据文件
@@ -241,11 +241,11 @@ Checkpoint 处恢复任务的命令如下所示，checkpointMetaDataPath 表示 
 的目录。那怎么办呢？如下图所示，在任务取消之前，Flink 任务的 WebUI 中可以看到 Checkpoint
 的目录，可以在取消任务之前将此目录保存起来，恢复时就可以从该目录恢复任务。
 
-![images](https://static.lovedata.net/zs/2019-10-19-020530.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-10-19-020530.jpg)
 上述方法最大缺陷就是用户的人力成本太高了，假如需要重启 100 个任务，难道需要用户手动维护 100 个任务的 Checkpoint
 目录吗？可以做一个简单后台项目，用于管理和发布 Flink 任务，这里讲述一种通过 rest api 来获取 Checkpoint 目录的方式。
 
-![images](https://static.lovedata.net/zs/2019-10-19-20531.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-10-19-20531.jpg)
 如上图所示是 Flink JobManager 的 overview 页面，只需要将端口号后面的路径和参数按照以下替换即可：
 
 

@@ -10,7 +10,7 @@
 
 [常用算法Java实现之直接插入排序 - 潇潇Leslie - 博客园](https://www.cnblogs.com/LeslieXia/p/5808057.html)
 
-![image](https://static.lovedata.net/jpg/2018/6/22/b77081821375d271bd1a5a830db725a0.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/22/b77081821375d271bd1a5a830db725a0.jpg)
 
 1. 第一层循环控制对比多少遍
 2. 第二层就是一次对比 的数量下标
@@ -61,7 +61,7 @@ public class BubbleSort {
 
 ###  快速排序
 
-![快速排序动图](http://static.lovedata.net/quick_sort_w.gif-wm)
+![快速排序动图](http://static.lovedata.net/quick_sort_w.gif)
 
 ```java
 
@@ -112,7 +112,7 @@ public class QuickSort {
 
 ###  直接插入排序
 
-![image](https://static.lovedata.net/jpg/2018/6/22/480d879b4ef17c3d0aa4754bb12a5e7a.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/22/480d879b4ef17c3d0aa4754bb12a5e7a.jpg)
 
 直接插入排序是将未排序的数据插入至已排好序序列的合适位置。
 具体流程如下：

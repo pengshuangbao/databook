@@ -179,7 +179,7 @@ All of these will compile down to JavaScript code.
 
 ### React 事件机制
 
-![image](https://static.lovedata.net/21-09-22-6cf3de07a72f90a5a8f644ae315b6dee.png-wm)
+![image](https://static.lovedata.net/21-09-22-6cf3de07a72f90a5a8f644ae315b6dee.png)
 
 ### 哪些方法会触发 React 重新渲染？重新渲染 render 会做些什么？
 
@@ -212,7 +212,7 @@ All of these will compile down to JavaScript code.
 
 ###  React的生命周期有哪些？
 
-![image](https://static.lovedata.net/21-09-22-05992fe5885b2a9caa70a03ed0edd752.png-wm)
+![image](https://static.lovedata.net/21-09-22-05992fe5885b2a9caa70a03ed0edd752.png)
 
 
 
@@ -267,7 +267,7 @@ https://github.com/haizlin/fe-interview/issues/131)
 
 ### 怎么计算一个数组的和?
 
-![image](https://static.lovedata.net/21-10-06-ff68bd62caf3449a8847efccd4db7e31.png-wm)
+![image](https://static.lovedata.net/21-10-06-ff68bd62caf3449a8847efccd4db7e31.png)
 
 
 

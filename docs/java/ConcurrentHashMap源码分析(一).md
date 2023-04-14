@@ -62,7 +62,7 @@ public class Test02 {
 
 ##### 3.1、图解说明
 
-![image](https://static.lovedata.net/21-06-21-ef963f17ba6f96bf97ea37bc2fa32003.png-wm)
+![image](https://static.lovedata.net/21-06-21-ef963f17ba6f96bf97ea37bc2fa32003.png)
 
 
 
@@ -126,7 +126,7 @@ public ConcurrentHashMap(int initialCapacity,
 
 #### 2、图解
 
-![image](https://static.lovedata.net/21-06-21-9ebd63b80cd377bc9847b46d8fce71e3.png-wm)
+![image](https://static.lovedata.net/21-06-21-9ebd63b80cd377bc9847b46d8fce71e3.png)
 
 #### 3、Segment是什么？
 
@@ -357,9 +357,9 @@ public static void main(String[] args) throws Exception {
 
 ##### 2.1、多线程环境下的条件断点设置
 
-![image](https://static.lovedata.net/21-06-21-6986b5c72faf0e0d83d66d25ab141e03.png-wm)
+![image](https://static.lovedata.net/21-06-21-6986b5c72faf0e0d83d66d25ab141e03.png)
 
-![image](https://static.lovedata.net/21-06-21-44ec030d12abff20a193a67f71dcbca3.png-wm)
+![image](https://static.lovedata.net/21-06-21-44ec030d12abff20a193a67f71dcbca3.png)
 
 ##### 2.2、运行结果
 
@@ -367,7 +367,7 @@ public static void main(String[] args) throws Exception {
 >
 > 然后就可以分别让不同的线程向下执行，查看代码走向了。
 
-![image](https://static.lovedata.net/21-06-21-761941cfd313082a6f00d6d19368d926.png-wm)
+![image](https://static.lovedata.net/21-06-21-761941cfd313082a6f00d6d19368d926.png)
 
 
 
@@ -440,15 +440,15 @@ private void rehash(HashEntry<K,V> node) {
 
 > 图一
 
-![image](https://static.lovedata.net/21-06-21-7bc46b4355c3ff5b4840835745388bcc.png-wm)
+![image](https://static.lovedata.net/21-06-21-7bc46b4355c3ff5b4840835745388bcc.png)
 
 > 图二
 
-![image](https://static.lovedata.net/21-06-21-8ea221ddf1146efad1076dad46203853.png-wm)
+![image](https://static.lovedata.net/21-06-21-8ea221ddf1146efad1076dad46203853.png)
 
 > 图三
 
-![image](https://static.lovedata.net/21-06-21-87e91b07f21026189a3778c598bf44dd.png-wm)
+![image](https://static.lovedata.net/21-06-21-87e91b07f21026189a3778c598bf44dd.png)
 
 
 

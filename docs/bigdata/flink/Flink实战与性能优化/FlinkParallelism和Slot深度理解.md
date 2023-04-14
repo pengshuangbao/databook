@@ -11,17 +11,17 @@
     Sender[null] sent message of type "org.apache.flink.runtime.rpc.messages.LocalRpcInvocation".
 
 
-![images](https://static.lovedata.net/zs/FkaM6A.jpg-wm)
+![images](https://static.lovedata.net/zs/FkaM6A.jpg)
 跟着这问题在 Flink 的 Issue
 列表里看到了一个类似的问题：[https://issues.apache.org/jira/browse/FLINK-9056]()https://issues.apache.org/jira/browse/FLINK-9056
 ，看下面的评论意思大概就是 TaskManager 的 Slot 数量不足导致的 Job 提交失败，在 Flink 1.63 中已经修复了，变成抛出异常了。
 
-![images](https://static.lovedata.net/zs/p4Tr9Z.jpg-wm)
+![images](https://static.lovedata.net/zs/p4Tr9Z.jpg)
 竟然知道了是因为 Slot 不足的原因了，那么我们就要先了解下 Slot 是什么呢？不过再了解 Slot 之前这里先介绍下 parallelism。
 
 ### 什么是 Parallelism？
 
-![images](https://static.lovedata.net/zs/FaZUcj.jpg-wm)
+![images](https://static.lovedata.net/zs/FaZUcj.jpg)
 如翻译这样，parallelism 是并行的意思，在 Flink 里面代表每个算子的并行度，适当的提高并行度可以大大提高 Job 的执行效率，比如你的
 Job 消费 Kafka 数据过慢，适当调大可能就消费正常了。
 
@@ -29,7 +29,7 @@ Job 消费 Kafka 数据过慢，适当调大可能就消费正常了。
 
 ### 如何设置 Parallelism？
 
-![images](https://static.lovedata.net/zs/2019-10-06-055925.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-06-055925.png)
 如上图，在 Flink 配置文件中可以看到默认并行度是 1。
 
 
@@ -79,7 +79,7 @@ data.keyBy(new xxxKey())
 
 其实 Slot 的概念在 1.2 节中已经提及到，这里再细讲一点。
 
-![images](https://static.lovedata.net/zs/r19yJh.jpg-wm)
+![images](https://static.lovedata.net/zs/r19yJh.jpg)
 图中 TaskManager 是从 JobManager 处接收需要部署的 Task，任务能配置的最大并行度由 TaskManager 上可用的 Slot
 决定。每个任务代表分配给任务槽的一组资源，Slot 在 Flink 里面可以认为是资源组，Flink 将每个任务分成子任务并且将这些子任务分配到 Slot
 中，这样就可以并行的执行程序。
@@ -89,7 +89,7 @@ Slot 中的线程共享相同的 JVM。 同一 JVM 中的任务共享 TCP 连接
 代表一个可用线程，该线程具有固定的内存，注意 Slot 只对内存隔离，没有对 CPU 隔离。默认情况下，Flink 允许子任务共享 Slot，即使它们是不同
 Task 的 subtask，只要它们来自相同的 Job，这种共享模式可以大大的提高资源利用率。拿下面的图片来讲解会更好些。
 
-![images](https://static.lovedata.net/zs/ECv5y2.jpg-wm)
+![images](https://static.lovedata.net/zs/ECv5y2.jpg)
 上面图片中有两个 TaskManager，每个 TaskManager 有三个 Slot，这样我们的算子最大并行度那么就可以达到 6 个，在同一个 Slot
 里面可以执行 1 至多个子任务。那么再看上面的图片，source/map/keyby/window/apply 算子最大可以设置 6 个并行度，sink
 只设置了 1 个并行度。
@@ -98,7 +98,7 @@ Task 的 subtask，只要它们来自相同的 Job，这种共享模式可以大
 内核数成比例（一般情况下 Slot 个数是每个 TaskManager 的 CPU 核数）。Flink 配置文件中设置的一个 TaskManager 默认的
 Slot 是 1。
 
-![images](https://static.lovedata.net/zs/2019-10-06-062913.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-06-062913.png)
 `taskmanager.numberOfTaskSlots: 1` 该参数可以根据实际情况做一定的修改。
 
 ### Slot 和 Parallelism 的关系
@@ -107,20 +107,20 @@ Slot 是 1。
 
 1、Slot 是指 TaskManager 最大能并发执行的能力
 
-![images](https://static.lovedata.net/zs/zpX2sh.jpg-wm)
+![images](https://static.lovedata.net/zs/zpX2sh.jpg)
 如上图，如果设置的单个 TaskManager 的 Slot 个数为 3，启动 3 个 TaskManager 后，那么就一共有 9 个 Slot。
 
 2、parallelism 是指 TaskManager 实际使用的并发能力
 
-![images](https://static.lovedata.net/zs/npq4kW.jpg-wm)
+![images](https://static.lovedata.net/zs/npq4kW.jpg)
 运行程序默认的并行度为 1，9 个 Slot 只用了 1 个，有 8 个处于空闲，设置合适的并行度才能提高 Job 计算效率。
 
 3、parallelism 是可配置、可指定的
 
-![images](https://static.lovedata.net/zs/xAuHJn.jpg-wm)
+![images](https://static.lovedata.net/zs/xAuHJn.jpg)
 上图中 example2 每个算子设置的并行度是 2， example3 每个算子设置的并行度是 9。
 
-![images](https://static.lovedata.net/zs/syrCLs.jpg-wm)
+![images](https://static.lovedata.net/zs/syrCLs.jpg)
 example4 除了 sink 是设置的并行度为 1，其他算子设置的并行度都是 9。
 
 ### 可能会遇到 Slot 和 Parallelism 的问题

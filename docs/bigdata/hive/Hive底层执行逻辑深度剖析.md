@@ -32,7 +32,7 @@ Hive依赖于HDFS存储数据I Hive将HQL转换成MapReduce执行，所以说Hiv
 
 ## 架构
 
-![image](https://static.lovedata.net/21-05-26-7a17e2e96617198524ca6ad9430b40bc.png-wm)
+![image](https://static.lovedata.net/21-05-26-7a17e2e96617198524ca6ad9430b40bc.png)
 
 
 
@@ -95,7 +95,7 @@ mapreduce的执行原理! ! !
 select u. name, o. orderid from order O join user u on o.uid = u. uid;
 ```
 
-![image](https://static.lovedata.net/21-05-26-364dbe212d8b2f15566cd51c7f9a9bca.png-wm)
+![image](https://static.lovedata.net/21-05-26-364dbe212d8b2f15566cd51c7f9a9bca.png)
 
 
 
@@ -107,7 +107,7 @@ select rank, isonline, count(*) from city group by rank , isonline;
 
 
 
-![image](https://static.lovedata.net/21-05-26-4970c718bf9cf81a8f777e179c55366a.png-wm)
+![image](https://static.lovedata.net/21-05-26-4970c718bf9cf81a8f777e179c55366a.png)
 
 
 
@@ -117,7 +117,7 @@ select rank, isonline, count(*) from city group by rank , isonline;
 select dealid, count(distinct uid) num from order group by dealid;
 ```
 
-![image](https://static.lovedata.net/21-05-26-77d7d2c3fd82db09c29574b8499c499f.png-wm)
+![image](https://static.lovedata.net/21-05-26-77d7d2c3fd82db09c29574b8499c499f.png)
 
 
 
@@ -129,7 +129,7 @@ select dealid, count(distinct uid) num from order group by dealid;
 1. Antlr 定义SQL的语法规则，完成SQL词法， 语法解析，将SQL转化为抽象语法树AST Tree 树上的每个节点就是一个 AST Node
 2. 遍历AST Tree，抽象出查询的基本组成单元QueryBlock 子查询
 
-   ![image](https://static.lovedata.net/21-05-26-5a4602d62baee65b5af790a45d3a9f07.png-wm)
+   ![image](https://static.lovedata.net/21-05-26-5a4602d62baee65b5af790a45d3a9f07.png)
 
 3. 遍历QueryB1ock，翻译为执行操作树operatorTree
 4. 逻辑层优化器进行operatorTree变换，合并不必要的Reducesi nkoperator,减少shuff1e数据量
@@ -140,7 +140,7 @@ select dealid, count(distinct uid) num from order group by dealid;
 
 ### 原理
 
-![image](https://static.lovedata.net/21-05-28-a31deb261cb35ec910455f0dfd794a4d.png-wm)
+![image](https://static.lovedata.net/21-05-28-a31deb261cb35ec910455f0dfd794a4d.png)
 
 
 

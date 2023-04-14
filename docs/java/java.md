@@ -182,11 +182,11 @@ JDK 1.7 中，采用分段锁的机制，实现并发的更新操作，底层采
 
 ③、每个桶是由若干个 HashEntry 对象链接起来的链表
 
-![image](https://static.lovedata.net/20-06-03-c97f24463903a7a7e9e5a46803deef03.png-wm)
+![image](https://static.lovedata.net/20-06-03-c97f24463903a7a7e9e5a46803deef03.png)
 
 JDK 1.8 中，采用Node + CAS + Synchronized来保证并发安全。取消类 Segment，直接用 table 数组存储键值对；当 HashEntry 对象组成的链表长度超过 TREEIFY_THRESHOLD 时，链表转换为红黑树，提升性能。底层变更为数组 + 链表 + 红黑树。
 
-![image](https://static.lovedata.net/20-06-03-6c387f8657b63bc3b88e5f249784cde7.png-wm)
+![image](https://static.lovedata.net/20-06-03-6c387f8657b63bc3b88e5f249784cde7.png)
 
 ####  
 
@@ -294,26 +294,26 @@ helpTransfer()：调用多个工作线程一起帮助进行扩容，这样的效
 
 1.HashMap的继承体系是什么样的？
 
-![image](https://static.lovedata.net/21-06-21-ec3b39eb0962160a8d37991498f04b99.png-wm)
+![image](https://static.lovedata.net/21-06-21-ec3b39eb0962160a8d37991498f04b99.png)
 
 2.Node数据结构分析？
 
-![image](https://static.lovedata.net/21-06-21-a2d54be954c2f39c52739a6487e75ab5.png-wm)
+![image](https://static.lovedata.net/21-06-21-a2d54be954c2f39c52739a6487e75ab5.png)
 
 3.底层存储结构介绍？
 
-![image](https://static.lovedata.net/21-06-21-c4057bef6a4a76198d5a9931d46594d4.png-wm)
+![image](https://static.lovedata.net/21-06-21-c4057bef6a4a76198d5a9931d46594d4.png)
 
 4.put数据原理分析？
 
-![image](https://static.lovedata.net/21-06-21-39f29d35043702cfe4b56aa791051602.png-wm)
+![image](https://static.lovedata.net/21-06-21-39f29d35043702cfe4b56aa791051602.png)
 
 5.什么是Hash碰撞？
 6.什么是链化？
 7.jdk8为什么引入红黑树？
 8.HashMap扩容原理？
 
-![image](https://static.lovedata.net/21-06-21-6f063cb4f0306671eeef334ee85f3a0e.png-wm)
+![image](https://static.lovedata.net/21-06-21-6f063cb4f0306671eeef334ee85f3a0e.png)
 
 #### 第三部分，手撕源码：
 

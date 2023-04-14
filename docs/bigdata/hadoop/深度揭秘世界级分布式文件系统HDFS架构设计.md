@@ -19,7 +19,7 @@ HDFS的全称: Hadoop Distributed File System
 
 ## 演进
 
-![image](https://static.lovedata.net/21-05-27-a7373d20f6b1bbb3c90477ed17488013.png-wm)
+![image](https://static.lovedata.net/21-05-27-a7373d20f6b1bbb3c90477ed17488013.png)
 
 
 
@@ -27,7 +27,7 @@ HDFS的全称: Hadoop Distributed File System
 
 
 
-![image](https://static.lovedata.net/21-05-27-b2a1f8a5226da0700d5a2a7d2eea2f25.png-wm)
+![image](https://static.lovedata.net/21-05-27-b2a1f8a5226da0700d5a2a7d2eea2f25.png)
 
 HDFS1架构
 HDFS1是-一个主从式的架构，主节点只有一个叫NameNode。 从节点有多个叫DataNode
@@ -46,13 +46,13 @@ DataNode
 
 单点故障问题
 
-![image](https://static.lovedata.net/21-05-27-6d7ab7c2501688866c65f5d3897b9dfd.png-wm)
+![image](https://static.lovedata.net/21-05-27-6d7ab7c2501688866c65f5d3897b9dfd.png)
 
-![image](https://static.lovedata.net/21-05-28-e53f566d0e574dcfc4a73b170b3d3252.png-wm)
+![image](https://static.lovedata.net/21-05-28-e53f566d0e574dcfc4a73b170b3d3252.png)
 
 内存 受限问题
 
-![image](https://static.lovedata.net/21-05-28-efe2b71b7fbec3f3042cf5f8e2bcca4b.png-wm) 
+![image](https://static.lovedata.net/21-05-28-efe2b71b7fbec3f3042cf5f8e2bcca4b.png) 
 
 
 
@@ -97,7 +97,7 @@ HA方案( High Available)
 
 
 
-![image](https://static.lovedata.net/21-05-28-adc8fdbc2cf67690d2452df55c51088d.png-wm)
+![image](https://static.lovedata.net/21-05-28-adc8fdbc2cf67690d2452df55c51088d.png)
 
 > ### 数据同步共享问题
 >
@@ -116,7 +116,7 @@ HA方案( High Available)
 
 此方案，一边写内存，一边写磁盘，肯定是扛不住亿流量的，磁盘很慢，怎么解决的呢？
 
-![image](https://static.lovedata.net/21-05-28-cd84e9bcb3285cf1683d8369088df943.png-wm)  
+![image](https://static.lovedata.net/21-05-28-cd84e9bcb3285cf1683d8369088df943.png)  
 
 
 

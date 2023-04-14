@@ -9,7 +9,7 @@
 刚好，Flink 是支持可以获取到整个 Job 的执行计划的，另外 Flink 官网还提供了一个可视化工具 visualizer（可以将执行计划 JSON
 绘制出执行图）。
 
-![images](https://static.lovedata.net/zs/2019-08-27-093014.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-08-27-093014.jpg)
 ### 如何获取执行计划 JSON？
 
 既然知道了将执行计划 JSON 绘制出可查看的执行图的工具，那么该如何获取执行计划 JSON 呢？方法很简单，你只需要在你的 Flink Job 的
@@ -29,15 +29,15 @@ System.out.println(env.getExecutionPlan());
     {"nodes":[{"id":1,"type":"Source: Custom Source","pact":"Data Source","contents":"Source: Custom Source","parallelism":5},{"id":2,"type":"Sink: flink-connectors-kafka","pact":"Data Sink","contents":"Sink: flink-connectors-kafka","parallelism":5,"predecessors":[{"id":1,"ship_strategy":"FORWARD","side":"second"}]}]}
 
 
-![images](https://static.lovedata.net/zs/2019-10-23-154219.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-154219.png)
 ### 生成执行计划图
 
 获取到执行计划 JSON 了，那么利用 Flink 自带的工具来绘出执行计划图，将获得到的 JSON 串复制粘贴到刚才那网址去。
 
-![images](https://static.lovedata.net/zs/2019-08-27-093059.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-08-27-093059.jpg)
 点击上图的 `Draw` 按钮，就会生成下图的执行流程图了：
 
-![images](https://static.lovedata.net/zs/2019-08-27-093114.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-08-27-093114.jpg)
 从图中我们可以看到哪些内容呢？
 
   * operator name（算子）：比如 source、sink
@@ -46,20 +46,20 @@ System.out.println(env.getExecutionPlan());
 
 你还可以点击下图中的 `Data Source(ID = 1)` 查看具体详情：
 
-![images](https://static.lovedata.net/zs/2019-08-27-093132.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-08-27-093132.jpg)
 随着需求的不段增加，可能算子的个数会增加，所以执行计划也会变得更为复杂。
 
-![images](https://static.lovedata.net/zs/2019-08-27-093151.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-08-27-093151.jpg)
 看到上图是不是觉得就有点很复杂了，笔者相信可能你自己的业务需求比这还会复杂得更多，不过从这图我们可以看到比上面那个简单的执行计划图多了一种数据下发类型就是
 HASH。但是大家可能会好奇的说：为什么我平时从 Flink UI 上查看到的 Job ”执行计划图“ 却不是这样子的呀？
 
 这里我们复现一下这个问题，我们把这个稍微复杂的 Flink Job 提交到 Flink UI 上去查看一下到底它在 UI
 上的执行计划图是个什么样子？我们提交 Jar 包后不运行，直接点击 show plan 试下：
 
-![images](https://static.lovedata.net/zs/2019-08-27-093209.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-08-27-093209.jpg)
 我们再运行一下，查看运行的时候的展示的 “执行计划图” 是什么样的呢？
 
-![images](https://static.lovedata.net/zs/2019-08-27-093230.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-08-27-093230.jpg)
 ### 深入探究 Flink Job 执行计划
 
 我们可以发现这两个 “执行计划图” 都和在 Flink 官网提供的 visualizer 工具生成的执行计划图是不一样的。粗略观察可以发现：在 Flink
@@ -210,17 +210,17 @@ Flink 在内部会将多个算子串在一起作为一个 operator chain（执�
 
 举个例子，拿一个 Flink Job （算子的并行度都设置为 5）生成的 StreamGraph JSON 渲染出来的执行流程图是下图这样的：
 
-![images](https://static.lovedata.net/zs/2019-08-27-093302.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-08-27-093302.jpg)
 提交到 Flink UI 上的 JobGraph 是下图这样的：
 
-![images](https://static.lovedata.net/zs/2019-08-27-093318.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-08-27-093318.jpg)
 可以看到 Flink 它内部将三个算子（source、filter、sink）都串成在一个执行链里。但是我们修改一下 filter 这个算子的并行度为
 4，我们再次提交到 Flink UI 上运行，效果如下图：
 
-![images](https://static.lovedata.net/zs/2019-08-27-093342.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-08-27-093342.jpg)
 你会发现它竟然拆分成三个了，我们继续将 sink 的并行度也修改成 4，继续打包运行后的效果如下图：
 
-![images](https://static.lovedata.net/zs/2019-08-27-093356.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-08-27-093356.jpg)
 神奇不，它变成了 2 个了，将 filter 和 sink
 算子串在一起了执行了。经过简单的测试，我们可以发现其实如果想要把两个不一样的算子串在一起执行确实还不是那么简单的，的确，它背后的条件可是比较复杂的，这里笔者给出源码出来，感兴趣的可以独自阅读下源码。
 
@@ -275,14 +275,14 @@ public static boolean isChainable(StreamEdge edge, StreamGraph streamGraph) {
 
 如下图是 word count 程序默认的执行图：
 
-![images](https://static.lovedata.net/zs/2019-10-06-114825.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-06-114825.png)
 设置禁止 chain 后的执行图：
 
-![images](https://static.lovedata.net/zs/2019-10-06-115100.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-06-115100.png)
 可以看到设置禁止 chain 后的执行图中每个算子都是隔离的，另外可以看到禁止 chain 后整个 Job 的 task 变多了，并且整个 Job
 的执行时间也要更久了。
 
-![images](https://static.lovedata.net/zs/2019-10-06-115150.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-06-115150.png)
 除了设置全局的算子不可以 chain 在一起，也可以单独设置某个算子不能 chain 在一起，如下设置后 flatMap 算子则不会和前面和后面的算子
 chain 在一起。
 

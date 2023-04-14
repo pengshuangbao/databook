@@ -4,20 +4,20 @@
 
 在前面 3.6 节中介绍了 Flink 中的 Data Source 和 Data Sink，然后还讲诉了自带的一些 Source 和 Sink 的Connector。本篇文章将讲解一下用的最多的 Connector —— Kafka，带大家利用 Kafka Connector 读取 Kafka数据，做一些计算操作后然后又通过 Kafka Connector 写入到 kafka 消息队列去。
 
-![images](https://static.lovedata.net/zs/2019-10-23-101054.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-101054.png)
 ### 准备环境和依赖
 
 #### 环境安装和启动
 
 如果你已经安装好了 Flink 和 Kafka，那么接下来使用命令运行启动 Flink、Zookepeer、Kafka 就行了。
 
-![images](https://static.lovedata.net/zs/2019-10-11-042714.png-wm)
-![images](https://static.lovedata.net/zs/2019-10-11-142523.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-11-042714.png)
+![images](https://static.lovedata.net/zs/2019-10-11-142523.png)
 执行命令都启动好了后就可以添加依赖了。
 
 #### 添加 maven 依赖
 
-![images](https://static.lovedata.net/zs/2019-10-11-043040.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-11-043040.png)
 
 Flink 里面支持 Kafka 0.8.x 以上的版本，具体采用哪个版本的 Maven 依赖需要根据安装的 Kafka 版本来确定。因为之前我们安装的Kafka 是 1.1.0 版本，所以这里我们选择的 Kafka Connector 为 `flink-connector-kafka-0.11_2.11`（支持 Kafka 0.11.x 版本及以上，该 Connector 支持 Kafka 事务消息传递，所以能保证 Exactly Once)。
 
@@ -148,7 +148,7 @@ public class KafkaUtils {
 
 运行：
 
-![images](https://static.lovedata.net/zs/2019-10-23-101504.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-101504.png)
 如果出现如上图标记的，即代表能够不断往 kafka 发送数据的。
 
 ### Flink 如何消费 Kafka 数据？
@@ -183,7 +183,7 @@ public class Main {
 
 运行起来：
 
-![images](https://static.lovedata.net/zs/2019-10-23-101832.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-101832.png)
 看到没程序，Flink 程序控制台能够源源不断地打印数据呢。
 
 #### 代码分析
@@ -194,7 +194,7 @@ public class Main {
   * 序列化：上面代码我们使用的是 SimpleStringSchema
   * 配置属性：将 Kafka 等的一些配置传入 
 
-![images](https://static.lovedata.net/zs/2019-10-23-102157.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-102157.png)
 前面演示了 Flink 如何消费 Kafak 数据，接下来演示如何把其他 Kafka 集群中 topic 数据原样写入到自己本地起的 Kafka 中去。
 
 ### Flink 如何将计算后的数据发到 Kafka？
@@ -223,7 +223,7 @@ stream.sink.parallelism=5
     bin/kafka-topics.sh --list --zookeeper localhost:2181
 
 
-![images](https://static.lovedata.net/zs/6KFHKT.jpg-wm)
+![images](https://static.lovedata.net/zs/6KFHKT.jpg)
 可以看到本地的 Kafka 是没有任何 topic 的，如果等下程序运行起来后，再次执行这个命令出现 metric-test
 topic，那么证明程序确实起作用了，已经将其他集群的 Kafka 数据写入到本地 Kafka 了。
 
@@ -255,26 +255,26 @@ public class Main {
 
 启动程序，查看运行结果，不段执行上面命令，查看是否有新的 topic 出来：
 
-![images](https://static.lovedata.net/zs/nxqZmZ.jpg-wm)
+![images](https://static.lovedata.net/zs/nxqZmZ.jpg)
 执行命令可以查看该 topic 的信息：
 
 
 ​    
     bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic metric-test
 
-![images](https://static.lovedata.net/zs/y5vPRR.jpg-wm)
+![images](https://static.lovedata.net/zs/y5vPRR.jpg)
 前面代码使用的 FlinkKafkaProducer011只传了三个参数：brokerList、topicId、serializationSchema（序列化)，其实是支持传入多个参数的。
 
-![images](https://static.lovedata.net/zs/2019-10-23-102620.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-102620.png)
 ### FlinkKafkaConsumer 源码剖析
 
 FlinkKafkaConsumer 的继承关系如下图所示。
 
-![images](https://static.lovedata.net/zs/2019-10-11-144643.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-11-144643.png)
 
 可以发现几个版本的 FlinkKafkaConsumer 都继承自 FlinkKafkaConsumerBase 抽象类，所以可知FlinkKafkaConsumerBase 是最核心的类了。FlinkKafkaConsumerBase 实现了CheckpointedFunction、CheckpointListener 接口，继承了 RichParallelSourceFunction抽象类来读取 Kafka 数据。
 
-![images](https://static.lovedata.net/zs/2019-10-11-164025.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-11-164025.png)
 
 在 FlinkKafkaConsumerBase 中的 open 方法中做了大量的配置初始化工作，然后在 run 方法里面是由AbstractFetcher 来获取数据的，在 AbstractFetcher 中有用 List> 来存储着所有订阅分区的状态信息，包括了下面这些字段：
 
@@ -292,8 +292,8 @@ private volatile long committedOffset;  //提交的 offset
 
 FlinkKafkaProducer 这个有些特殊，不同版本的类结构有些不一样，如 FlinkKafkaProducer011 是继承的TwoPhaseCommitSinkFunction 抽象类，而 FlinkKafkaProducer010 和 FlinkKafkaProducer09是基于 FlinkKafkaProducerBase 类来实现的。
 
-![images](https://static.lovedata.net/zs/2019-10-12-025704.png-wm)
-![images](https://static.lovedata.net/zs/2019-10-12-030003.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-12-025704.png)
+![images](https://static.lovedata.net/zs/2019-10-12-030003.png)
 在 Kafka 0.11.x 版本后支持了事务，这让 Flink 与 Kafka 的事务相结合从而实现端到端的 Exactly once 才有了可能，在9.5 节中会详细讲解如何利用 TwoPhaseCommitSinkFunction 来实现 Exactly once 的。
 
 数据 Sink 到下游的 Kafka，可你能会关心数据的分区策略，在 Flink 中自带了一种就是 FlinkFixedPartitioner，它使用的是round-robin 策略进行下发到下游 Kafka Topic 的分区上的，当然也提供了 FlinkKafkaPartitioner接口供你去实现自定义的分区策略。

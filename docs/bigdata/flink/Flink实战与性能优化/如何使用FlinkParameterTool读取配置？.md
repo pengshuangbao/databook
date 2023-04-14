@@ -97,7 +97,7 @@ ParameterTool 还支持通过 `ParameterTool.fromSystemProperties()` 方法读�
 
 ParameterTool 类提供了很多便捷方法去获取值。
 
-![images](https://static.lovedata.net/zs/2019-10-09-134119.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-09-134119.png)
 你可以在应用程序的 main() 方法中直接使用这些方法返回的值，例如：你可以按如下方法来设置一个算子的并行度：
 
 

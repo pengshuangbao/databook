@@ -266,7 +266,7 @@ API&SQL 中其实不再适合，其实 Flink Table API&SQL
 将结果存储到数据库中。这里讲解一下该如何去定义 TableSource 和 TableSink 并将它们注册。在官网，它提供了如下这些 Connectors
 和 Formats 的下载。
 
-![images](https://static.lovedata.net/zs/2019-11-04-071612.png-wm)
+![images](https://static.lovedata.net/zs/2019-11-04-071612.png)
 从 Flink 1.6 开始，不仅可以使用编程的方式指定 Connector，还可以使用声明式去定义。下面举个例子（读取 Kafka 中 Avro
 格式的数据）来讲解这两种区别。
 
@@ -417,7 +417,7 @@ Elasticsearch Connector、CSV 和 JSON 等的使用说明。
 
 在启动 Flink 后可以通过运行 `./bin/sql-client.sh embedded` 命令来启动 SQL Client CLI，如下图所示：
 
-![images](https://static.lovedata.net/zs/2019-11-04-075132.png-wm)
+![images](https://static.lovedata.net/zs/2019-11-04-075132.png)
 你可以运行下面的命令就可以知道名字和其出现的次数的结果。
 
 

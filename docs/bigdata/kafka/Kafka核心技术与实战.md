@@ -16,7 +16,7 @@ kafka 起到了很好的效果。数据量激增来说，**Kafka 能够有效隔
 
 一套框架就能在实际业务系统中实现**消息引擎应用、应用程序集成、分布式存储构建，甚至是流处理应用的开发与部署**
 
-![image](https://static.lovedata.net/21-03-11-960bdb8bb7dcc17cf190b8806cd889a9.png-wm)
+![image](https://static.lovedata.net/21-03-11-960bdb8bb7dcc17cf190b8806cd889a9.png)
 
 
 
@@ -80,7 +80,7 @@ kafka未完全遵循JMS，另辟蹊径
 
 比如应对秒杀、下单这种场景，更常见的办法是引入像 Kafka 这样的消息引擎系统来对抗这种上下游系统 TPS 的错配以及瞬时峰值流量
 
-![image](https://static.lovedata.net/21-03-11-589a40b82b97c0d5a381db319f8aeb13.png-wm)
+![image](https://static.lovedata.net/21-03-11-589a40b82b97c0d5a381db319f8aeb13.png)
 
 
 
@@ -289,7 +289,7 @@ Kafka Streams 是一个用于搭建实时流处理的**客户端库**而非是�
 
 
 
-![image](https://static.lovedata.net/21-03-11-8e912cf7fb738682b0f4a1712fabd25a.png-wm)
+![image](https://static.lovedata.net/21-03-11-8e912cf7fb738682b0f4a1712fabd25a.png)
 
 
 
@@ -301,7 +301,7 @@ Kafka Streams 是一个用于搭建实时流处理的**客户端库**而非是�
 
 Kafka Connect 通过一个个具体的连接器（Connector），串联起上下游的外部系统。
 
-![image](https://static.lovedata.net/21-03-12-543af39100f6188f62b0bf9a68050366.png-wm)
+![image](https://static.lovedata.net/21-03-12-543af39100f6188f62b0bf9a68050366.png)
 
 
 
@@ -350,7 +350,7 @@ CDH HDP 大数据平台
 
 如果你需要快速地搭建消息引擎系统，或者你需要搭建的是多框架构成的数据平台且 Kafka 只是其中一个组件，那么我推荐你使用这些大数据云公司提供的 Kafka。
 
-![image](https://static.lovedata.net/21-03-12-b568e63fd10887ef2289a0451b017294.png-wm)
+![image](https://static.lovedata.net/21-03-12-b568e63fd10887ef2289a0451b017294.png)
 
 
 
@@ -366,7 +366,7 @@ CDH HDP 大数据平台
 
 ## 05 | 聊聊Kafka的版本号
 
-![image](https://static.lovedata.net/21-03-12-1b0cc8fb6f7fb76fffcfc182d7a63eb8.png-wm)
+![image](https://static.lovedata.net/21-03-12-1b0cc8fb6f7fb76fffcfc182d7a63eb8.png)
 
 版本号实际上是 2.1.1  
 
@@ -396,7 +396,7 @@ CDH HDP 大数据平台
 
 
 
-![image](https://static.lovedata.net/21-03-12-44970d6accf002f0b7a2aa3093c052df.png-wm)
+![image](https://static.lovedata.net/21-03-12-44970d6accf002f0b7a2aa3093c052df.png)
 
 
 
@@ -509,7 +509,7 @@ Kafka 支持数据的压缩，假设压缩比是 0.75，那么最后你需要规
 
 
 
-![image](https://static.lovedata.net/21-03-12-99a5253aef92b25771cbcc559ad692a1.png-wm)
+![image](https://static.lovedata.net/21-03-12-99a5253aef92b25771cbcc559ad692a1.png)
 
 
 
@@ -592,7 +592,7 @@ message.max.bytes：控制 Broker 能够接收的最大消息大小。
 
 
 
-![image](https://static.lovedata.net/21-03-16-1667fab587c23c20082542a6019b2b52.png-wm)
+![image](https://static.lovedata.net/21-03-16-1667fab587c23c20082542a6019b2b52.png)
 
 
 
@@ -694,7 +694,7 @@ XFS强于EXT4
 
 
 
-![image](https://static.lovedata.net/21-03-16-fa590b7dd72bf963d2162c63caf07eb0.png-wm)
+![image](https://static.lovedata.net/21-03-16-fa590b7dd72bf963d2162c63caf07eb0.png)
 
 
 
@@ -704,7 +704,7 @@ XFS强于EXT4
 
 ### 为什么分区
 
-![image](https://static.lovedata.net/21-03-22-9c66506d6f93b46816fb2675d046046c.png-wm)
+![image](https://static.lovedata.net/21-03-22-9c66506d6f93b46816fb2675d046046c.png)
 
 
 
@@ -724,7 +724,7 @@ partitioner.class   org.apache.kafka.clients.producer.Partitioner
 
 #### 轮询策略 Round-robin 顺序分配，默认的分区策略
 
-![image](https://static.lovedata.net/21-03-22-6511323409ecbcaf8a07615199530ffe.png-wm)
+![image](https://static.lovedata.net/21-03-22-6511323409ecbcaf8a07615199530ffe.png)
 
 
 
@@ -732,7 +732,7 @@ partitioner.class   org.apache.kafka.clients.producer.Partitioner
 
 #### 随机策略 Randomness，
 
-![image](https://static.lovedata.net/21-03-22-93f48d1d0144070d3cc2b33a33dbafcd.png-wm)
+![image](https://static.lovedata.net/21-03-22-93f48d1d0144070d3cc2b33a33dbafcd.png)
 
 
 
@@ -746,7 +746,7 @@ partitioner.class   org.apache.kafka.clients.producer.Partitioner
 
 同一个key的消息都进入到相同的分区  **每个分区的消息处理都是有顺序的**，所以 被称为 **按照消息键保序策略**
 
-![image](https://static.lovedata.net/21-03-22-1ab0f3026b8c630a52619c24e8c8cb5e.png-wm)
+![image](https://static.lovedata.net/21-03-22-1ab0f3026b8c630a52619c24e8c8cb5e.png)
 
 
 
@@ -754,7 +754,7 @@ partitioner.class   org.apache.kafka.clients.producer.Partitioner
 
 
 
-![image](https://static.lovedata.net/21-03-22-d186abb4f1a54f6120aecbbc72b6c200.png-wm)
+![image](https://static.lovedata.net/21-03-22-d186abb4f1a54f6120aecbbc72b6c200.png)
 
 
 
@@ -784,7 +784,7 @@ V1 版本中保存压缩消息的方法是把多条消息进行压缩然后保�
 
 V2 版本的做法是对整个消息集合进行压缩，显然压缩效果更好
 
-![image](https://static.lovedata.net/21-03-22-bd39fa706998854efece4c9162418199.png-wm)
+![image](https://static.lovedata.net/21-03-22-bd39fa706998854efece4c9162418199.png)
 
 
 
@@ -826,7 +826,7 @@ Producer 端压缩、Broker 端保持、Consumer 端解压缩。
 
 Kafka 支持 3 种压缩算法：GZIP、Snappy 和 LZ4。从 2.1.0 开始，Kafka 正式支持 Zstandard 算法（简写为 zstd），提供超高压缩比
 
-![image](https://static.lovedata.net/21-03-22-906bbfef5fabe89f6d5005ef3d200b44.png-wm)
+![image](https://static.lovedata.net/21-03-22-906bbfef5fabe89f6d5005ef3d200b44.png)
 
 
 
@@ -921,7 +921,7 @@ Producer 永远要使用带有回调通知的发送 API，也就是说不要使�
 
 Consumer 端要消费的消息不见了，位移的概念，表示要消费的位置。
 
-![image](https://static.lovedata.net/21-03-23-701edb755ce247f6482f1e857b8d3421.png-wm)
+![image](https://static.lovedata.net/21-03-23-701edb755ce247f6482f1e857b8d3421.png)
 
 应对这种情况的消息丢失
 
@@ -950,7 +950,7 @@ Consumer 端要消费的消息不见了，位移的概念，表示要消费的�
 7. 确保 replication.factor > min.insync.replicas。如果两者相等，那么只要有一个副本挂机，整个分区就无法正常工作了。我们不仅要改善消息的持久性，防止数据丢失，还要在不降低可用性的基础上完成。推荐设置成 replication.factor = min.insync.replicas + 1。
 8. 确保消息消费完成再提交。Consumer 端有个参数 enable.auto.commit，最好把它设置成 false，并采用手动提交位移的方式。就像前面说的，这对于单 Consumer 多线程处理的场景而言是至关重要的。
 
-![image](https://static.lovedata.net/21-03-23-a3d09751b3d4bd16c07b70b5042ea27e.png-wm)
+![image](https://static.lovedata.net/21-03-23-a3d09751b3d4bd16c07b70b5042ea27e.png)
 
 
 
@@ -990,7 +990,7 @@ ISR : In-Sync Replicas，这是一个副本集合，里面的所有副本都是�
 
 基本思想就是允许应用程序在不修改逻辑的情况下，动态地实现一组可插拔的事件处理逻辑链路
 
-![image](https://static.lovedata.net/21-03-29-fc6a0d43c88e1bbb4ceebfba230a32d6.png-wm)
+![image](https://static.lovedata.net/21-03-29-fc6a0d43c88e1bbb4ceebfba230a32d6.png)
 
 
 
@@ -1104,7 +1104,7 @@ public class AvgLatencyConsumerInterceptor implements ConsumerInterceptor<String
     public void configure(Map<String, ?> configs) {
 ```
 
-![image](https://static.lovedata.net/21-03-29-de8af4eb4bacf84dad1151d700774f39.png-wm)
+![image](https://static.lovedata.net/21-03-29-de8af4eb4bacf84dad1151d700774f39.png)
 
 
 
@@ -1166,7 +1166,7 @@ TCP 连接还可能在两个地方被创建：一个是在更新元数据后，�
 4. 如果设置 Producer 端 connections.max.idle.ms 参数大于 0，则步骤 1 中创建的 TCP 连接会被自动关闭；
 5. 如果设置该参数 =-1，那么步骤 1 中创建的 TCP 连接将无法被关闭，从而成为“僵尸”连接。
 
-![image](https://static.lovedata.net/21-03-30-5a57423e6d7620a9ae08ecab241bc5e8.png-wm)
+![image](https://static.lovedata.net/21-03-30-5a57423e6d7620a9ae08ecab241bc5e8.png)
 
 
 
@@ -1283,7 +1283,7 @@ try {
 
 而事务能够保证跨分区、跨会话间的幂等性。从交付语义上来看，自然是事务型 Producer 能做的更多。
 
-![image](https://static.lovedata.net/21-03-30-12bd866140eec2fa3bddd78870f77efa.png-wm)
+![image](https://static.lovedata.net/21-03-30-12bd866140eec2fa3bddd78870f77efa.png)
 
 
 
@@ -1322,7 +1322,7 @@ Rebalance 的触发条件有 3 个
 2. 订阅主题数发生变更。比如用正则订阅主题， 有新增的主题了。
 3. 订阅主题的分区数发生变更 只允许新增
 
-![image](https://static.lovedata.net/21-04-01-5da52290ed23628603a535eb6a313955.png-wm)
+![image](https://static.lovedata.net/21-04-01-5da52290ed23628603a535eb6a313955.png)
 
 #### Rebalance缺点
 
@@ -1332,7 +1332,7 @@ Rebalance 的触发条件有 3 个
 
 Rebalance比较满。
 
-![image](https://static.lovedata.net/21-04-01-4ac3c58587f49d53cced939b25cd0d31.png-wm)
+![image](https://static.lovedata.net/21-04-01-4ac3c58587f49d53cced939b25cd0d31.png)
 
 
 
@@ -1377,11 +1377,11 @@ consumer.commitSync
 
 > 对于同一个 Key 的两条消息 M1 和 M2，如果 M1 的发送时间早于 M2，那么 M1 就是过期消息
 
-![image](https://static.lovedata.net/21-04-01-9292fa523a38191d7916aaa0fe7aff31.png-wm)
+![image](https://static.lovedata.net/21-04-01-9292fa523a38191d7916aaa0fe7aff31.png)
 
 Kafka 提供了专门的后台线程定期地巡检待 Compact 的主题，看看是否存在满足条件的可删除数据。
 
-![image](https://static.lovedata.net/21-04-01-08158ce44581f271972be1df3e0a642f.png-wm)
+![image](https://static.lovedata.net/21-04-01-08158ce44581f271972be1df3e0a642f.png)
 
 
 ## 17 | 消费者组重平衡能避免吗？
@@ -1453,7 +1453,7 @@ max.poll.interval.ms 限定了 Consumer 端应用程序两次调用 poll 方法�
 第二类非必要 Rebalance 是 Consumer 消费时间过长导致的  max.poll.interval.ms ，比如写mongo这种比较重的操作，设置大一些，比最长的消费时间要大一些
 
 
-![image](https://static.lovedata.net/21-04-06-03f8dd9da1b6e1df327528f25bf9806c.png-wm)
+![image](https://static.lovedata.net/21-04-06-03f8dd9da1b6e1df327528f25bf9806c.png)
 
 
 
@@ -1515,7 +1515,7 @@ auto.commit.interval.ms 默认值是5s，自动模式下生效
 ```
 
 
-![image](https://static.lovedata.net/21-04-06-cd8052898b153d1349d0a6e3bd45fee7.png-wm)
+![image](https://static.lovedata.net/21-04-06-cd8052898b153d1349d0a6e3bd45fee7.png)
 
 
 ### QA
@@ -1536,7 +1536,7 @@ auto.commit.interval.ms 默认值是5s，自动模式下生效
 
 .消费者程序启动多个线程，每个线程维护专属的 KafkaConsumer 实例，负责完整的消息获取、消息处理流程
 
-![image](https://static.lovedata.net/21-04-06-28059ce9dca34add4e7f380815337182.png-wm)
+![image](https://static.lovedata.net/21-04-06-28059ce9dca34add4e7f380815337182.png)
 
 优势：
 1. 实现简单。
@@ -1545,16 +1545,16 @@ auto.commit.interval.ms 默认值是5s，自动模式下生效
 
 消费者程序使用单或多线程获取消息，同时创建多个消费线程执行消息处理逻辑。获取消息的线程可以是一个，也可以是多个，每个线程维护专属的 KafkaConsumer 实例，处理消息则交由特定的线程池来做，
 
-![image](https://static.lovedata.net/21-04-06-a13b724a6f4c9cf01a776fe17f48763d.png-wm)
+![image](https://static.lovedata.net/21-04-06-a13b724a6f4c9cf01a776fe17f48763d.png)
 
 
 #### 对比 
 
-![image](https://static.lovedata.net/21-04-06-12a2adb25c1d7422659929663b6a3792.png-wm)
+![image](https://static.lovedata.net/21-04-06-12a2adb25c1d7422659929663b6a3792.png)
 
 
 
-![image](https://static.lovedata.net/21-04-06-ca450ccc72d7294cb4212339f9eb3794.png-wm)
+![image](https://static.lovedata.net/21-04-06-ca450ccc72d7294cb4212339f9eb3794.png)
 
 
 ## 21 | Java 消费者是如何管理TCP连接的?
@@ -1591,7 +1591,7 @@ Kafka 自动关闭
 
 如果是循环调用poll方法消费，那么 会定期有请求， 因此这些socket 链接有请求，实现了场链接 
 
-![image](https://static.lovedata.net/21-04-06-83de5a56574a519deaab3b8cb6571827.png-wm)
+![image](https://static.lovedata.net/21-04-06-83de5a56574a519deaab3b8cb6571827.png)
 
 
 ## 22 | 消费者组消费进度监控都怎么实现？
@@ -1604,7 +1604,7 @@ afka 消费者提供了一个名为 kafka.consumer:type=consumer-fetch-manager-m
 
 在实际生产环境中，请你一定要同时监控 Lag 值和 Lead 值
 
-![image](https://static.lovedata.net/21-04-07-e151de59807402774611888a0edb01da.png-wm)
+![image](https://static.lovedata.net/21-04-07-e151de59807402774611888a0edb01da.png)
 
 
 
@@ -1623,14 +1623,14 @@ kafka 只能提供第一种
 ### 副本定义
 
 所谓副本（Replica），本质就是一个只能追加写消息的提交日志，同分区所有副本保存相同的消息序列。
-![image](https://static.lovedata.net/21-04-07-6be2d81d14bf20346e95a6d321554904.png-wm)
+![image](https://static.lovedata.net/21-04-07-6be2d81d14bf20346e95a6d321554904.png)
 
 ### 副本角色
 
 如何保证副本的所有数据是一致的呢？ 
 基于领导者的（leader-based）的副本机制
 
-![image](https://static.lovedata.net/21-04-07-197607c6f0ac280b4ac958d0695cfb5a.png-wm)
+![image](https://static.lovedata.net/21-04-07-197607c6f0ac280b4ac958d0695cfb5a.png)
 
 1. 副本两类： 领导者和追随者副本(leader. follower)，每个分区一个领导者副本，其余自动是追随者副本
 2. 追随者副本不提供任何读写服务。追随者唯一任务就是从领导者副本 **异步拉取**消息，并存入到自己的提交日志中，从而实现同步
@@ -1651,7 +1651,7 @@ kafka 只能提供第一种
 
 ISR 不只是追随者副本集合，它必然包括 Leader 副本。甚至在某些情况下，ISR 只有 Leader 这一个副本。
 
-![image](https://static.lovedata.net/21-04-07-feb3b44bffb825b33ce034295c31b6f6.png-wm)
+![image](https://static.lovedata.net/21-04-07-feb3b44bffb825b33ce034295c31b6f6.png)
 
 kafka判定follower 是否与leader同步的标准，不是看相差的条数
 
@@ -1677,7 +1677,7 @@ kafka判定follower 是否与leader同步的标准，不是看相差的条数
 
 墙裂建议不要开启它。 
 
-![image](https://static.lovedata.net/21-04-07-c16302146c37e45b16dc18c01f8f8ecc.png-wm
+![image](https://static.lovedata.net/21-04-07-c16302146c37e45b16dc18c01f8f8ecc.png
 
 
 
@@ -1692,15 +1692,15 @@ http://gee.cs.oswego.edu/dl/cpjslides/nio.pdf
 
 Reactor 模式是事件驱动架构的一种实现方式，特别适合应用于处理多个客户端并发向服务器端发送请求的场景
 
-![image](https://static.lovedata.net/21-04-12-42ba38619079d69e2ffc9c0cd209833f.png-wm)
+![image](https://static.lovedata.net/21-04-12-42ba38619079d69e2ffc9c0cd209833f.png)
 
-![image](https://static.lovedata.net/21-04-12-0d7b5be09bf06e8c001387a42f9b2c61.png-wm)
+![image](https://static.lovedata.net/21-04-12-0d7b5be09bf06e8c001387a42f9b2c61.png)
 
 
 > Kafka 的 Broker 端有个 SocketServer 组件，类似于 Reactor 模式中的 Dispatcher，它也有对应的 Acceptor 线程和一个工作线程池，只不过在 Kafka 中，这个工作线程池有个专属的名字，叫网络线程池。Kafka 提供了 Broker 端参数 num.network.threads，用于调整该网络线程池的线程数。其默认值是 3，表示每台 Broker 启动时会创建 3 个网络线程，专门处理客户端发送的请求。
 
 
-![image](https://static.lovedata.net/21-04-12-387ff47380e1d3bb548916dccc16a436.png-wm)
+![image](https://static.lovedata.net/21-04-12-387ff47380e1d3bb548916dccc16a436.png)
 
 
 ### Purgatory
@@ -1738,9 +1738,9 @@ Kafka 设计了一套消费者组状态机（State Machine），来帮助协调�
 
 它能够帮助你搞懂消费者组的设计原理，比如消费者组的过期位移（Expired Offsets）删除等。
 
-![image](https://static.lovedata.net/21-04-12-8702e6a755e7b1a20e76af3a044ecd28.png-wm)
+![image](https://static.lovedata.net/21-04-12-8702e6a755e7b1a20e76af3a044ecd28.png)
 
-![image](https://static.lovedata.net/21-04-12-68522f708e72b42d00cf0619671c3171.png-wm)
+![image](https://static.lovedata.net/21-04-12-68522f708e72b42d00cf0619671c3171.png)
 
 
 一个消费者组最开始是 Empty 状态，当重平衡过程开启后，它会被置于 PreparingRebalance 状态等待成员加入，之后变更到 CompletingRebalance 状态等待分配方案，最后流转到 Stable 状态完成重平衡。当有新成员加入或已有成员退出时，消费者组的状态从 Stable 直接跳到 PreparingRebalance 状态，此时，所有现存成员就必须重新申请加入组。当所有成员都退出组后，消费者组状态变更为 Empty。Kafka 定期自动删除过期位移的条件就是，组要处于 Empty 状态。因此，如果你的消费者组停掉了很长时间（超过 7 天），那么 Kafka 很可能就把该组的位移数据删除了。
@@ -1763,9 +1763,9 @@ Kafka 设计了一套消费者组状态机（State Machine），来帮助协调�
 
 领导者向协调者发送 SyncGroup 请求，将刚刚做出的分配方案发给协调者，其他组成员也会发送，只不过请求题是空的， 这一步是让协调者接受分配方案，然后以SyncGroup响应体的方式返回给所有成员
 
-![image](https://static.lovedata.net/21-04-12-5420970d7b970c89fe6c6c4b6d0cbce8.png-wm)
+![image](https://static.lovedata.net/21-04-12-5420970d7b970c89fe6c6c4b6d0cbce8.png)
 
-![image](https://static.lovedata.net/21-04-12-9dd67f2e7b0d3aa8a3eae74f2cadfdee.png-wm)
+![image](https://static.lovedata.net/21-04-12-9dd67f2e7b0d3aa8a3eae74f2cadfdee.png)
 
 ### Broker 端重平衡场景剖析
 
@@ -1775,7 +1775,7 @@ Kafka 设计了一套消费者组状态机（State Machine），来帮助协调�
 
 协调者收到新的 JoinGroup 请求后，它会通过心跳请求响应的方式通知组内现有的所有成员，强制它们开启新一轮的重平衡
 
-![image](https://static.lovedata.net/21-04-12-9692516a34a97ef0ff6fbbc8e4002637.png-wm)
+![image](https://static.lovedata.net/21-04-12-9692516a34a97ef0ff6fbbc8e4002637.png)
 
 
 
@@ -1784,7 +1784,7 @@ Kafka 设计了一套消费者组状态机（State Machine），来帮助协调�
 就是指消费者实例所在线程或进程调用 close() 方法主动通知协调者它要退出
 
 发送 LeaveGroup
-![image](https://static.lovedata.net/21-04-12-2f961cba0436a3b304dba41f0d0f4059.png-wm)
+![image](https://static.lovedata.net/21-04-12-2f961cba0436a3b304dba41f0d0f4059.png)
 
 
 #### 场景三：组成员崩溃离组。
@@ -1793,19 +1793,19 @@ Kafka 设计了一套消费者组状态机（State Machine），来帮助协调�
 
 崩溃离组是被动的，协调者通常需要等待一段时间才能感知到，这段时间一般是由消费者端参数 session.timeout.ms 控制的
 
-![image](https://static.lovedata.net/21-04-12-4784b44fd6a1ab737194943a6159abd6.png-wm)
+![image](https://static.lovedata.net/21-04-12-4784b44fd6a1ab737194943a6159abd6.png)
 
 
 #### 场景四：重平衡时协调者对组内成员提交位移的处理。
 
 每个组内成员都会定期汇报位移给协调者。当重平衡开启时，协调者会给予成员一段缓冲时间，要求每个成员必须在这段时间内快速地上报自己的位移信息，然后再开启正常的 JoinGroup/SyncGroup 请求发送
 
-![image](https://static.lovedata.net/21-04-12-3ea6e6300d56d0867ca1ee77eb9d1e20.png-wm)
+![image](https://static.lovedata.net/21-04-12-3ea6e6300d56d0867ca1ee77eb9d1e20.png)
 
 
 
 
-![image](https://static.lovedata.net/21-04-12-1ba0ab2ca7620c4481a5ef42dcfc8635.png-wm)
+![image](https://static.lovedata.net/21-04-12-1ba0ab2ca7620c4481a5ef42dcfc8635.png)
 
 
 ## 27 | 关于高水位和Leader Epoch的讨论
@@ -1819,7 +1819,7 @@ Leader Epoch 是社区在 0.11 版本中新推出的，主要是为了弥补高�
 “Streaming System”一书则是这样表述水位的：水位是一个单调增加且表征最早未完成工作（oldest work not yet completed）的时间戳。
 
 
-![image](https://static.lovedata.net/21-04-13-19f6a3e58986f6d703893b2dffe4b46a.png-wm)
+![image](https://static.lovedata.net/21-04-13-19f6a3e58986f6d703893b2dffe4b46a.png)
 
 
 ### 高水位作用
@@ -1827,7 +1827,7 @@ Leader Epoch 是社区在 0.11 版本中新推出的，主要是为了弥补高�
 1. 定义消息可见性，即用来标识分区下的哪些消息是可以被消费者消费的。
 2. 帮助 Kafka 完成副本同步。
 
-![image](https://static.lovedata.net/21-04-13-8582fdaaa3eb10d0d3dd78876598de60.png-wm)
+![image](https://static.lovedata.net/21-04-13-8582fdaaa3eb10d0d3dd78876598de60.png)
 
 在分区高水位以下的消息被认为是已提交消息，反之就是未提交消息。消费者只能消费已提交消息，即图中位移小于 8 的所有消息。注意 （没涉及到kafka实物，实物影响消费者看到消息的范围，不仅仅简单以来高水位来判断，以来一个LSO(log stable offset) 来判断事物的可见性）
 
@@ -1844,7 +1844,7 @@ Leader Epoch 是社区在 0.11 版本中新推出的，主要是为了弥补高�
 
 在 Leader 副本所在的 Broker 上，还保存了其他 Follower 副本的 LEO 值。
 
-![image](https://static.lovedata.net/21-04-13-c7dad78669048359df370a75f36a5e2c.png-wm)
+![image](https://static.lovedata.net/21-04-13-c7dad78669048359df370a75f36a5e2c.png)
 
 Kafka 把 Broker 0 上保存的这些 Follower 副本又称为远程副本（Remote Replica）
 
@@ -1852,7 +1852,7 @@ kafka 副本机制在运行过程中，会更新 Broker 1 上 Follower 副本的
 
 作用： 帮助 Leader 副本确定其高水位，也就是分区高水位。
 
-![image](https://static.lovedata.net/21-04-13-72e1fdf726c0c18dfce616163177c711.png-wm)
+![image](https://static.lovedata.net/21-04-13-72e1fdf726c0c18dfce616163177c711.png)
 
 Broker 0.上远程副本L EO Follower副本从eader副本拉取消息时，会告诉L eader副本从哪个位
 移处开始拉取。L eader副本会使用这个位移值来更新远程副本的LEO。因为follower副本已经明确从这里拉取了，肯定副本的LEO是确定是这个值了。
@@ -1889,15 +1889,15 @@ Broker 0.上远程副本L EO Follower副本从eader副本拉取消息时，会�
 
 ### 副本同步机制解析
 
-![image](https://static.lovedata.net/21-04-13-c4cf04bedcee0a9ffe7dac2bd8130847.png-wm)
+![image](https://static.lovedata.net/21-04-13-c4cf04bedcee0a9ffe7dac2bd8130847.png)
 
-![image](https://static.lovedata.net/21-04-13-de8fd48948f480d00ce1f0d9788c8cda.png-wm)
+![image](https://static.lovedata.net/21-04-13-de8fd48948f480d00ce1f0d9788c8cda.png)
 
-![image](https://static.lovedata.net/21-04-13-befea41afa06d46f9cf6d15970eeb10a.png-wm)
+![image](https://static.lovedata.net/21-04-13-befea41afa06d46f9cf6d15970eeb10a.png)
 
 > Follower 副本也成功地更新 LEO 为 1。此时，Leader 和 Follower 副本的 LEO 都是 1，但各自的高水位依然是 0，还没有被更新。它们需要在下一轮的拉取中被更新，如下图所示：
 
-![image](https://static.lovedata.net/21-04-13-080cbeee61019b3c1123bb3eeca6ff26.png-wm)
+![image](https://static.lovedata.net/21-04-13-080cbeee61019b3c1123bb3eeca6ff26.png)
 
 > 在新一轮的拉取请求中，由于位移值是 0 的消息已经拉取成功，因此 Follower 副本这次请求拉取的是位移值 =1 的消息。Leader 副本接收到此请求后，更新远程副本 LEO 为 1，然后更新 Leader 高水位为 1。做完这些之后，它会将当前已更新过的高水位值 1 发送给 Follower 副本。Follower 副本接收到以后，也将自己的高水位值更新成 1
 
@@ -1913,7 +1913,7 @@ Leader Epoch，我们大致可以认为是 Leader 版本。它由两部分数据
 
 #### 单纯依赖HW 数据丢失场景
 
-![image](https://static.lovedata.net/21-04-13-785ea11a7d69f63825870d73697253be.png-wm)
+![image](https://static.lovedata.net/21-04-13-785ea11a7d69f63825870d73697253be.png)
 
 
 倘若此时副本 B 所在的 Broker 宕机，当它重启回来后，副本 B 会执行日志截断操作，将 LEO 值调整为之前的高水位值，也就是 1。这就是说，位移值为 1 的那条消息被副本 B 从磁盘中删除，此时副本 B 的底层磁盘文件中只保存有 1 条消息，即位移值为 0 的那条消息。
@@ -1924,7 +1924,7 @@ Leader Epoch，我们大致可以认为是 Leader 版本。它由两部分数据
 
 #### Leader Epoch 规避
 
-![image](https://static.lovedata.net/21-04-13-4983d7f651b643af2cdc21c5de5870e2.png-wm)
+![image](https://static.lovedata.net/21-04-13-4983d7f651b643af2cdc21c5de5870e2.png)
 
 只不过引用 Leader Epoch 机制后，Follower 副本 B 重启回来后，需要向 A 发送一个特殊的请求去获取 Leader 的 LEO 值  B 发现该 LEO 值不比它自己的 LEO 值小，而且缓存中也没有保存任何起始位移值 > 2 的 Epoch 条目，因此 B 无需执行任何日志截断操作   
 
@@ -1933,7 +1933,7 @@ A宕机后，B成为leader 当 A 重启回来后，执行与 B 相同的逻辑�
 后面当生产者程序向 B 写入新消息时，副本 B 所在的 Broker 缓存中，会生成新的 Leader Epoch 条目：[Epoch=1, Offset=2]。
 
 
-![image](https://static.lovedata.net/21-04-13-d62c6c5073960a4cc21b1e07f9df994c.png-wm)
+![image](https://static.lovedata.net/21-04-13-d62c6c5073960a4cc21b1e07f9df994c.png)
 
 [Kafka水位(high watermark)与leader epoch的讨论 - huxihx - 博客园](https://www.cnblogs.com/huxi2b/p/7453543.html)
 
@@ -1941,7 +1941,7 @@ A宕机后，B成为leader 当 A 重启回来后，执行与 B 相同的逻辑�
 
 
 
-![image](https://static.lovedata.net/21-04-13-c71d499b8919e692df97f137b96dc576.png-wm)
+![image](https://static.lovedata.net/21-04-13-c71d499b8919e692df97f137b96dc576.png)
 
 
 

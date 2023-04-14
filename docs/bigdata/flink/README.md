@@ -38,8 +38,8 @@
 
 - Barrier 分割数据流， 前面一部分进入到当前快照，另一部分进入到下一次，每个Barrier有快照ID，并且之前的数据进入了此快照。
 
-  - ![image](https://static.lovedata.net/20-05-20-693ead1dcfb4534524efba10634defe2.png-wm)
-  - ![image](https://static.lovedata.net/20-05-20-d237d343ea98ca60b7dbb6ef08010ed0.png-wm)
+  - ![image](https://static.lovedata.net/20-05-20-693ead1dcfb4534524efba10634defe2.png)
+  - ![image](https://static.lovedata.net/20-05-20-d237d343ea98ca60b7dbb6ef08010ed0.png)
 
   
 
@@ -55,14 +55,14 @@
    1. Apache Flink的DAG图中只有边相连的节点有网络通信 也就是整个DAG在垂直方向有网络IO，在水平方向如下图的stateful节点之间没有网络通信
    2. 这种模型也保证了每个operator实例维护一份自己的state，并且保存在本地磁盘
    3. 扩容
-      1. ![image](https://static.lovedata.net/20-08-03-f0c6ec7fced957e51a2e7c012eeae73e.png-wm)+
+      1. ![image](https://static.lovedata.net/20-08-03-f0c6ec7fced957e51a2e7c012eeae73e.png)+
       2. Keystone 扩容
          1. hash(key) mod parallelism(operator)  这种分配方式大多数情况是恢复的state不是本地已有的state 需要一次网络拷贝   **OperatorState采用这种简单的方式进行处理是因为OperatorState的state一般都比较小，网络拉取的成本很小**
          2. 在Apache Flink中采用的是Key-Groups方式进行分配。
          3. 什么决定Key-Groups的个数
             1. key-group的数量在job启动前必须是确定的且运行中不能改变。由于key-group是state分配的原子单位，而每个operator并行实例至少包含一个key-group
             2. 如何决定每个Key属于哪个Key-Group呢？我们采取的是取mod的方式，在KeyGroupRangeAssignment中的assignToKeyGroup方法会将key划分到指定的key-group中
-         4. ![image](https://static.lovedata.net/20-08-03-23fbaea0080a3f8b58809a113d58a7fb.png-wm)
+         4. ![image](https://static.lovedata.net/20-08-03-23fbaea0080a3f8b58809a113d58a7fb.png)
 
    
 
@@ -78,7 +78,7 @@
 - 包含
   - 对于并行输入数据源：快照创建时数据流中的位置偏移
   - 对于 operator：存储在快照中的状态指针
-  - ![image](https://static.lovedata.net/20-05-20-5ea3a0ab93d435c36098b80bdb89471f.png-wm)
+  - ![image](https://static.lovedata.net/20-05-20-5ea3a0ab93d435c36098b80bdb89471f.png)
 
 ### Exactly Once vs. At Least Once
 
@@ -104,7 +104,7 @@
 ### 可查询状态
 
 1. [Flink DataStream 可查询状态(Queryable State)_王佩的CSDN博客-CSDN博客_flink queryable state](https://blog.csdn.net/wangpei1949/article/details/100608828)
-   1. ![image](https://static.lovedata.net/20-07-31-00e0bd917ec48c7797174dcab02612b5.png-wm)![image](https://static.lovedata.net/20-07-31-00e0bd917ec48c7797174dcab02612b5.png-wm)
+   1. ![image](https://static.lovedata.net/20-07-31-00e0bd917ec48c7797174dcab02612b5.png)![image](https://static.lovedata.net/20-07-31-00e0bd917ec48c7797174dcab02612b5.png)
 
 
 
@@ -153,7 +153,7 @@
       8. 无法进行Adhoc的分析
 2. [深度解读 Flink 1.11：流批一体 Hive 数仓-阿里云开发者社区](https://developer.aliyun.com/article/763199)
    1. 传统离线数仓是由 Hive 加上 HDFS 的方案，Hive 数仓有着成熟和稳定的大数据分析能力，结合调度和上下游工具，构建一个完整的数据处理分析平台
-      1. ![image](https://static.lovedata.net/20-09-16-b3ccb5fd4feff9f83c25b5c53feedef7.png-wm)
+      1. ![image](https://static.lovedata.net/20-09-16-b3ccb5fd4feff9f83c25b5c53feedef7.png)
       2. 离线数仓
          1. 流程
             1. Flume 把数据导入 Hive 数仓

@@ -104,7 +104,7 @@ HBase 最终会安装在路径 `/usr/local/Cellar/hbase/` 下面，安装版本�
     ./bin/hbase shell
 
 
-![images](https://static.lovedata.net/zs/2019-05-04-035328.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-05-04-035328.jpg)
 #### 停止 HBase
 
 执行下面的命令：
@@ -114,14 +114,14 @@ HBase 最终会安装在路径 `/usr/local/Cellar/hbase/` 下面，安装版本�
     ./bin/stop-hbase.sh
 
 
-![images](https://static.lovedata.net/zs/2019-05-04-035513.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-05-04-035513.jpg)
 #### HBase 常用命令
 
 HBase
 中常用的命令有：list（列出已存在的表）、create（创建表）、put（写数据）、get（读数据）、scan（读数据，读全表）、describe（显示表详情）
 
-![images](https://static.lovedata.net/zs/2019-05-04-040821.jpg-wm)
-![images](https://static.lovedata.net/zs/2019-05-04-040230.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-05-04-040821.jpg)
+![images](https://static.lovedata.net/zs/2019-05-04-040230.jpg)
 #### 添加依赖
 
 在 pom.xml 中添加 HBase 相关的依赖：
@@ -161,7 +161,7 @@ Flink HBase Connector 中，HBase 不仅可以作为数据源，也还可以写�
 
 scan 整个 `zhisheng` 表的话，有五条数据：
 
-![images](https://static.lovedata.net/zs/2019-05-04-073344.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-05-04-073344.jpg)
 #### Flink Job 代码
 
 
@@ -213,7 +213,7 @@ public class HBaseReadMain {
 
 上面代码中将 HBase 中的读取全部读取出来后然后过滤以 `zhisheng` 开头的 value 数据。读取结果：
 
-![images](https://static.lovedata.net/zs/2019-05-04-074754.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-05-04-074754.jpg)
 可以看到输出的结果中已经将以 `zhisheng` 开头的四条数据都打印出来了。
 
 ### Flink 使用 TableOutputFormat 向 HBase 写入数据
@@ -246,7 +246,7 @@ public class HBaseReadMain {
     create 'zhisheng_sink', 'info_sink'
 
 
-![images](https://static.lovedata.net/zs/2019-05-04-101515.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-05-04-101515.jpg)
 #### Flink Job 代码
 
 接着写 Flink Job 的代码，这里我们将 WordCount 的结果 KV 数据写入到 HBase 中去，代码如下：
@@ -311,7 +311,7 @@ public class HBaseWriteMain {
 
 运行该 Job 的话，然后再用 HBase shell 命令去验证数据是否插入成功了：
 
-![images](https://static.lovedata.net/zs/2019-05-04-102337.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-05-04-102337.jpg)
 可以看见数据已经成功写入了 11 条，然后我们验证一下数据的条数是不是一样的呢？我们在上面的代码中将 map 和 output 算子给注释掉，然后用上
 print 打印出来的话，结果如下：
 
@@ -337,7 +337,7 @@ print 打印出来的话，结果如下：
     java.lang.IllegalArgumentException: Can not create a Path from a null string
 
 
-![images](https://static.lovedata.net/zs/2019-05-04-102835.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-05-04-102835.jpg)
 这个问题是因为：
 
 
@@ -491,7 +491,7 @@ private static class HBaseOutputFormat implements OutputFormat<String> {
 运行项目后然后你再去用 HBase shell 命令查看你会发现该 `zhisheng_stream` 表之前没有建立，现在建立了，再通过 scan
 命令查看的话，你会发现数据一直在更新，不断增加数据条数。
 
-![images](https://static.lovedata.net/zs/2019-05-04-143011.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-05-04-143011.jpg)
 ### 小结与反思
 
 本节开始讲解了 HBase 相关的环境安装和基础命令，接着讲解了如何去读取 HBase 数据和写入数据到 HBase。

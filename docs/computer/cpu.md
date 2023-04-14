@@ -24,7 +24,7 @@ NUMA 技术的主要思想是将 CPU 进行**分组**，Node 即是分组的抽�
 
 每个 Node 之间通过互联模块（**QPI**）进行通信，Node之间可以互相访问，性能会差些，一般用 **distance** 这个抽象的概念来表示各个 Node 之间互访资源的开销。
 
-![image](https://static.lovedata.net/20-12-24-70779e16caf99a72384a2a5c70ab1267.png-wm)
+![image](https://static.lovedata.net/20-12-24-70779e16caf99a72384a2a5c70ab1267.png)
 
 **Node** 逻辑概念，Socket 物理概念，代表一个CPU封装，主板上的吃草
 
@@ -32,7 +32,7 @@ Core 就是socket里独立的一组程序执行单元， **物理核**
 
 Thread就是**逻辑核**，或者称之为超线程，提升CPU的处理能力，将Core划分为多个逻辑核(**一般是两个**)，有独立寄存器和终端逻辑。 多个逻辑核共享Core内的**执行单元**和**Cache**
 
-![image](https://static.lovedata.net/20-12-24-c722fec48014089d49c39b55440406ca.png-wm)
+![image](https://static.lovedata.net/20-12-24-c722fec48014089d49c39b55440406ca.png)
 
 
 
@@ -284,7 +284,7 @@ Hyper-Threading: on
 
    4. 进程上下文切换
 
-      1. ![image](https://static.lovedata.net/21-06-17-2dd8952ff3e90a72e2db45933457f4f3.png-wm)
+      1. ![image](https://static.lovedata.net/21-06-17-2dd8952ff3e90a72e2db45933457f4f3.png)
       2. 内核空间（Ring 0）具有最高权限，可以直接访问所有资源 
       3. 用户空间（Ring 3）只能访问受限资源，不能直接访问内存等硬件设备，必须通过系统调用陷入到内核中，才能访问这些特权资源。
       4. 进程在用户空间运行时，被称为进程的用户态，而陷入内核空间的时候，被称为进程的内核态。

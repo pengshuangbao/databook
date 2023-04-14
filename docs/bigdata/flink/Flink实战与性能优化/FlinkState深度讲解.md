@@ -16,7 +16,7 @@ Job 挂的那个时刻数据消费到哪里了？那么你重启的话该从哪�
 
   * Job 挂的那个时间之后：如果是从 Job 挂之后开始消费的话，那么会导致部分数据（从 Job 挂的那个时间点到新消费的时间点产生的数据）丢失，没有消费
 
-![images](https://static.lovedata.net/zs/2019-06-22-163002.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-06-22-163002.jpg)
 为了解决上面两种情况（数据重复消费或者数据没有消费）的发生，那么是不是就得需要个什么东西做个记录将这种数据消费状态，Flink state
 就这样诞生了，state 中存储着每条数据消费后数据的消费点（生产环境需要持久化这些状态），当 Job 因为某种错误或者其他原因导致重启时，就能够从
 checkpoint（定时将 state 做一个全局快照，在 Flink 中，为了能够让 Job 在运行的过程中保证容错性，才会对这些 state
@@ -47,7 +47,7 @@ State。
 在 Flink 源码中，在 flink-core module 下的 org.apache.flink.api.common.state 中可以看到
 Flink 中所有和 State 相关的类。
 
-![images](https://static.lovedata.net/zs/2019-10-23-143333.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-143333.png)
 ### Raw and Managed State
 
 Keyed State 和 Operator State 都有两种存在形式，即 Raw State（原始状态）和 Managed State（托管状态）。
@@ -271,7 +271,7 @@ StateTtlConfig ttlConfig = StateTtlConfig
 
 在该类中的属性有如下：
 
-![images](https://static.lovedata.net/zs/2019-10-23-143816.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-143816.png)
   * DISABLED：它默认创建了一个 UpdateType 为 Disabled 的 StateTtlConfig 
 
   * UpdateType：这个是一个枚举，包含 Disabled（代表 TTL 是禁用的，状态不会过期）、OnCreateAndWrite、OnReadAndWrite 可选
@@ -284,10 +284,10 @@ StateTtlConfig ttlConfig = StateTtlConfig
 
   * CleanupStrategies：TTL 清理策略，在该类中又有字段 isCleanupInBackground（是否在后台清理） 和相关的清理 strategies（包含 FULL _STATE_ SCAN _SNAPSHOT、INCREMENTAL_ CLEANUP 和 ROCKSDB _COMPACTION_ FILTER），同时该类中还有 CleanupStrategy 接口，它的实现类有 EmptyCleanupStrategy（不清理，为空）、IncrementalCleanupStrategy（增量的清除）、RocksdbCompactFilterCleanupStrategy（在 RocksDB 中自定义压缩过滤器）。
 
-![images](https://static.lovedata.net/zs/2019-10-23-144111.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-144111.png)
 如果对 State TTL 还有不清楚的可以看看 Flink 源码 flink-runtime module 中的 state ttl 相关的实现：
 
-![images](https://static.lovedata.net/zs/2019-10-23-144324.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-144324.png)
 ### 如何使用托管 Operator State
 
 为了使用托管的 Operator State，必须要有一个有状态的函数，这个函数可以实现 CheckpointedFunction 或者
@@ -399,7 +399,7 @@ checkpointedState = context.getOperatorStateStore().getListState(descriptor);
 
 是一种受限的 CheckpointedFunction，只支持 List 风格的状态和 even-spit 的重分配策略。该接口里面的方法有：
 
-![images](https://static.lovedata.net/zs/2019-10-23-144503.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-144503.png)
   * snapshotState(): 获取函数的当前状态。状态必须返回此函数先前所有的调用结果。
 
   * restoreState(): 将函数或算子的状态恢复到先前 checkpoint 的状态。此方法在故障恢复后执行函数时调用。如果函数的特定并行实例无法恢复到任何状态，则状态列表可能为空。
@@ -614,17 +614,17 @@ KeyedBroadcastProcessFunction 做了个对比，那么接下来强调一下使�
 
 Queryable State，顾名思义，就是可查询的状态。
 
-![images](https://static.lovedata.net/zs/2019-06-29-075631.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-06-29-075631.jpg)
 传统管理这些状态的方式是通过将计算后的状态结果存储在第三方 KV 存储中，然后由第三方应用去获取这些 KV 状态，但是在 Flink 种，现在有了
 Queryable State，意味着允许用户对流的内部状态进行实时查询。
 
-![images](https://static.lovedata.net/zs/2019-06-29-091521.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-06-29-091521.jpg)
 那么就不再像其他流计算框架，需要将结果存储到其他外部存储系统才能够被查询到，这样我们就可以不再需要等待状态写入外部存储（这块可能是其他系统的主要瓶颈之一），甚至可以做到无需任何数据库就可以让用户直接查询到数据，这使得数据获取到的时间会更短，更及时，如果你有这块的需求（需要将某些状态数据进行展示，比如数字大屏），那么就强烈推荐使用
 Queryable State。目前可查询的 state 主要针对可分区的 state，如 keyed state 等。
 
 在 Flink 源码中，为此还专门有一个 module 来讲 Queryable State 呢！
 
-![images](https://static.lovedata.net/zs/2019-10-23-144649.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-144649.png)
 那么我们该如何使用 Queryable State 呢？有如下两种方式 ：
 
   * QueryableStateStream, 将 KeyedStream 转换为 QueryableStateStream，类似于 Sink，后续不能进行任何转换操作
@@ -636,11 +636,11 @@ Queryable State。目前可查询的 state 主要针对可分区的 state，如 
 内部的具体实现如下图（图片来自 [Queryable States in ApacheFlink - How it
 works](http://vishnuviswanath.com/flink_queryable_state1.html)）所示：
 
-![images](https://static.lovedata.net/zs/2019-06-29-073842.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-06-29-073842.jpg)
 上面讲解了让 State 可查询的原理，如果要在 Flink 集群中使用的话，首先得将 Flink 安装目录下 opt 里面的 `flink-
 queryable-state-runtime_2.11-1.9.0.jar` 复制到 lib 目录下，默认 lib 目录是不包含这个 jar 的。
 
-![images](https://static.lovedata.net/zs/2019-10-23-144825.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-144825.png)
 然后你可以像下面这样操作让状态可查询：
 
 
@@ -671,7 +671,7 @@ asQueryableState 方法后会返回 QueryableStateStream，接着无需再做其
 
 那么用户如果定义了 Queryable State 的话，该怎么来查询对应的状态呢？下面来看看具体逻辑：
 
-![images](https://static.lovedata.net/zs/2019-06-29-074814.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-06-29-074814.jpg)
 简单来说，当用户在 Job 中定义了 queryable state 之后，就可以在外部通过QueryableStateClient
 来查询对应的状态实时值，你可以创建如下方法：
 

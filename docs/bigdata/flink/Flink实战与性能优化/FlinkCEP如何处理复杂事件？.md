@@ -101,10 +101,10 @@ CEP.pattern(eventDataStream, pattern).select(new PatternSelectFunction<Event, St
 
 作业打印出来的日志如下图：
 
-![images](https://static.lovedata.net/zs/2019-10-29-072247.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-29-072247.png)
 整个作业 print 出来的结果如下图：
 
-![images](https://static.lovedata.net/zs/2019-10-29-072320.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-29-072320.png)
 好了，一个完整的 Flink CEP 应用程序如上，相信你也能大概理解上面的代码，接着来详细的讲解一下 Flink CEP 中的 Pattern API。
 
 ### Pattern API
@@ -234,7 +234,7 @@ followedByAny()，笔者一开始也是毕竟懵，后面也是通过代码测�
 该时间不仅支持处理时间还支持事件时间。另外还可以与 consecutive()、allowCombinations() 等组合，更多的请看下图中
 Pattern 类的方法。
 
-![images](https://static.lovedata.net/zs/2019-10-29-164118.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-29-164118.png)
 #### Group Pattern
 
 业务需求比较复杂的场景，如果要使用 Pattern 来定义的话，可能这个 Pattern 会很长并且还会嵌套，比如由
@@ -286,12 +286,12 @@ docs-release-1.9/dev/libs/cep.html#groups-of-patterns)。
 
 这几种策略都是根据 AfterMatchSkipStrategy 来实现的，可以看下它们的类结构图，如下所示：
 
-![images](https://static.lovedata.net/zs/2019-10-29-133737.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-29-133737.png)
 关于这几种跳过策略的具体区别可以查看[官网](https://ci.apache.org/projects/flink/flink-docs-
 release-1.9/dev/libs/cep.html#after-match-skip-strategy)，至于如何使用跳过策略，其实
 AfterMatchSkipStrategy 抽象类中已经提供了 5 种静态方法可以直接使用，方法如下：
 
-![images](https://static.lovedata.net/zs/2019-10-29-135526.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-29-135526.png)
 使用方法如下：
 
 
@@ -361,7 +361,7 @@ CEP.pattern(eventDataStream, pattern).flatSelect(new PatternFlatSelectFunction<E
 关于 PatternStream 中的 select 或 flatSelect 方法其实可以传入不同的参数，比如传入 OutputTag 和
 PatternTimeoutFunction 去处理延迟的数据，具体查看下图。
 
-![images](https://static.lovedata.net/zs/2019-10-29-125416.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-29-125416.png)
 如果使用的 Flink CEP 版本是大于等于 1.8 的话，还可以使用 process 方法，在上图中也可以看到在 PatternStream
 类中包含了该方法。要使用 process 的话，得传入一个 PatternProcessFunction 的实现作为参数，在该实现中需要重写
 processMatch 方法。使用 PatternProcessFunction 比使用 PatternSelectFunction 和

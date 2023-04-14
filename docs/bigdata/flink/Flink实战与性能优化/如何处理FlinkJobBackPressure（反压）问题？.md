@@ -10,12 +10,12 @@ Flink任务一般运行在多个节点上，数据从上游算子发送到下游
 
 下图是一个简单的 Flink 流任务执行图：任务首先从 Kafka 中读取数据、通过 map 算子对数据进行转换、keyBy 按照指定 key对数据进行分区（key 相同的数据经过 keyBy 后分到同一个 subtask 实例中），keyBy 后对数据进行 map 转换，然后使用 Sink将数据输出到外部存储。
 
-![简单的Flink流任务执行图.png](https://static.lovedata.net/zs/2019-10-07-152946.jpg-wm)
+![简单的Flink流任务执行图.png](https://static.lovedata.net/zs/2019-10-07-152946.jpg)
 
 众所周知，在大数据处理中，无论是批处理还是流处理，单点处理的性能总是有限的，我们的单个 Job一般会运行在多个节点上，通过多个节点共同配合来提升整个系统的处理性能。图中，任务被切分成 4 个可独立执行的 subtask 分别是A0、A1、B0、B1，在数据处理过程中就会存在 shuffle。例如，subtask A0 处理完的数据经过 keyBy 后被发送到 subtaskB0、B1 所在节点去处理。那么问题来了，subtask A0 应该以多快的速度向 subtask B0、B1 发送数据呢？把上述问题抽象化，如下图所示，将subtask A0 当作 Producer，subtask B0 当做 Consumer，上游 Producer 向下游 Consumer发送数据，在发送端和接收端有相应的 Send Buffer 和 Receive Buffer，但是上游 Producer 生产数据的速率比下游Consumer 消费数据的速率大，Producer 生产数据的速率为 2MB/s， Consumer 消费数据速率为 1MB/s，Receive
 Buffer 容量只有 5MB，所以过了 5 秒后，接收端的 Receive Buffer 满了。
 
-![网络流控存在的问题.png](https://static.lovedata.net/zs/2019-11-12-004946.png-wm)
+![网络流控存在的问题.png](https://static.lovedata.net/zs/2019-11-12-004946.png)
 
 下游消费速率慢，且接收区的 Receive Buffer 有限，如果上游一直有源源不断的数据，那么将会面临着以下两种情况：
 
@@ -26,7 +26,7 @@ Buffer 容量只有 5MB，所以过了 5 秒后，接收端的 Receive Buffer �
 一直累积数据，而是上游 Producer 发现下游 Consumer 消费比较慢的时候，应该在 Producer 端做出限流的策略，防止在下游
 Consumer 端无限制地堆积数据。那上游 Producer 端该如何做限流呢？可以采用下图所示静态限流的策略：
 
-![网络流控-静态限速.png](https://static.lovedata.net/zs/2019-11-12-005000.png-wm)
+![网络流控-静态限速.png](https://static.lovedata.net/zs/2019-11-12-005000.png)
 
 静态限速的思想就是，提前已知下游 Consumer 端的消费速率，然后在上游 Producer 端使用类似令牌桶的思想，限制 Producer端生产数据的速率，从而控制上游 Producer 端向下游 Consumer 端发送数据的速率。但是静态限速会存在问题：
 
@@ -35,7 +35,7 @@ Consumer 端无限制地堆积数据。那上游 Producer 端该如何做限流�
 
 综上所述，我们发现了，上游 Producer 端必须有一个限流的策略，且静态限流是不可靠的，于是就需要一个动态限流的策略。可以采用下图所示的动态反馈策略：
 
-![网络流控-动态限速.png](https://static.lovedata.net/zs/2019-11-12-005009.png-wm)
+![网络流控-动态限速.png](https://static.lovedata.net/zs/2019-11-12-005009.png)
 
 下游 Consumer 端会频繁地向上游 Producer 端进行动态反馈，告诉 Producer 下游 Consumer 的负载能力，从而使Producer 端可以动态调整向下游 Consumer 发送数据的速率，以实现 Producer 端的动态限流。当 Consumer端处理较慢时，Consumer 将负载反馈到 Producer 端，Producer 端会根据反馈适当降低 Producer 自身从上游或者 Source端读数据的速率来降低向下游 Consumer 发送数据的速率。当 Consumer 处理负载能力提升后，又及时向 Producer 端反馈，Producer
 会通过提升自身从上游或 Source 端读数据的速率来提升向下游发送数据的速率，通过动态反馈的策略来动态调整系统整体的吞吐量。
@@ -57,7 +57,7 @@ Consumer 端无限制地堆积数据。那上游 Producer 端该如何做限流�
   * Task B 的算子从 Task B 的 Receive Buffer 中将数据反序列后进行处理，将处理后数据序列化放到 Task B 的 Send Buffer 中，再由 Task B 的 Send Buffer 发送到 Task C 的 Receive Buffer；
   * Task C 再从 Task C 的 Receive Buffer 中将数据反序列后输出到外部 Sink 端，这就是所有数据的传输和处理流程。
 
-![简单的3个Task数据传输示意图.png](https://static.lovedata.net/zs/2019-11-12-005021.png-wm)
+![简单的3个Task数据传输示意图.png](https://static.lovedata.net/zs/2019-11-12-005021.png)
 
 Flink 中，动态反馈策略原理比较简单，假如 Task C 由于各种原因吞吐量急剧降低，那么肯定会造成 Task C 的 Receive Buffer中堆积大量数据，此时 Task B 还在给 Task C 发送数据，但是毕竟内存是有限的，持续一段时间后 Task C 的 Receive Buffer满了，此时 Task B 发现 Task C 的 Receive Buffer 满了后，就不会再往 Task C 发送数据了，Task B处理完的数据就开始往 Task B 的 Send Buffer 积压，一段时间后 Task B 的 Send Buffer 也满了，Task B的处理就会被阻塞，这时 Task A 还在往 Task B 的 Receive Buffer 发送数据。
 
@@ -95,7 +95,7 @@ TaskManager 中。此时 Task B 给 Task C 发送数据是跨节点的，所以 
   * 当 Task B 的 Send Buffer 满了，如何告诉 Task B 内部的 Receive Buffer，自身的 Send Buffer 已经满了？要让 Task B 的 Receive Buffer 感受到压力，才能把下游的压力传递到 Task A。
   * 当 Task B 的 Send Buffer 空了，如何告诉 Task B 内部的 Receive Buffer 下游 Send Buffer 空了，并把下游负载很低的消息传递给 Task A。
 
-![简单的3个Task反压图示.png](https://static.lovedata.net/zs/2019-10-07-153007.jpg-wm)
+![简单的3个Task反压图示.png](https://static.lovedata.net/zs/2019-10-07-153007.jpg)
 
 到目前为止，动态反馈的具体细节抽象成了三个问题：
 
@@ -115,7 +115,7 @@ TaskManager 中。此时 Task B 给 Task C 发送数据是跨节点的，所以 
 这就是两个 TaskManager 之间的数据传输过程，我们可以看到发送方和接收方各有三层的 Buffer。当 Task B 往下游发送数据时，整个流程与
 Source Task 给 Task B 发送数据的流程类似。
 
-![TaskManager 之间数据传输流向.png](https://static.lovedata.net/zs/2019-11-12-005036.png-wm)
+![TaskManager 之间数据传输流向.png](https://static.lovedata.net/zs/2019-11-12-005036.png)
 根据上述流程，下表中对 Flink 通信相关的一些术语进行介绍：
 
 概念/术语 | 解释  
@@ -138,7 +138,7 @@ InputGate 和 ResultPartition 的内存是如何申请的呢？如下图所示�
   * 虽然可以申请，但是必须明白内存申请肯定是有限制的，不可能无限制的申请，我们在启动任务时可以指定该任务最多可能申请多大的内存空间用于 NetworkBufferPool。
   * 当 InputChannel 的内存块被 Operator 读取消费掉或 ResultSubPartition 的内存块已经被写入到了 Netty 中，那么 InputChannel 和 ResultSubPartition 中的内存块就可以还给 LocalBufferPool 了（图中⑤），如果 LocalBufferPool 中有较多空闲的内存块，就会还给 NetworkBufferPool （图中⑥）。
 
-![Flink 网络传输相关的内存管理.png](https://static.lovedata.net/zs/2019-11-12-005044.png-wm)
+![Flink 网络传输相关的内存管理.png](https://static.lovedata.net/zs/2019-11-12-005044.png)
 了解了 Flink 网络传输相关的内存管理，我们来分析 3 种动态反馈的具体细节。
 
 #### 跨 Task 且 Task 不在同一个 TaskManager 内时，反压如何向上游传播
@@ -146,7 +146,7 @@ InputGate 和 ResultPartition 的内存是如何申请的呢？如下图所示�
 如下图所示，Producer 端生产数据速率为 2MB/s，Consumer 消费数据速率为 1MB/s。持续下去，下游消费较慢，Buffer
 容量又是有限的，那 Flink 反压是怎么做的？
 
-![跨TaskManager反压如何向上游传播.png](https://static.lovedata.net/zs/2019-11-12-005052.png-wm)
+![跨TaskManager反压如何向上游传播.png](https://static.lovedata.net/zs/2019-11-12-005052.png)
 数据从 Task A 的 ResultSubPartition 按照上面的流程最后传输到 Task B 的 InputChannel 供 Task B
 读取并计算。持续一段时间后，由于 Task B 消费比较慢，导致 InputChannel 被占满了，所以 InputChannel 向
 LocalBufferPool 申请新的 Buffer 空间，LocalBufferPool 分配给 InputChannel 一些 Buffer。
@@ -165,7 +165,7 @@ Socket 的 Receive Buffer 就会变满，TCP 的 Socket 通信有动态反馈的
 
 可以看到下图中 Consumer 端多个通道显示 ❌，表示该通道所能提供的内存已经被申请完，数据已经不能往下游写了，发生了阻塞。
 
-![跨TaskManager反压如何向上游传播-下游全部阻塞.png](https://static.lovedata.net/zs/2019-11-12-005101.png-wm)
+![跨TaskManager反压如何向上游传播-下游全部阻塞.png](https://static.lovedata.net/zs/2019-11-12-005101.png)
 此时 Task A 持续生产数据，发送端 Socket 的 Send Buffer 很快被打满，所以 Task A 端的 Netty 也会停止往
 Socket 写数据。数据会在 Netty 的 Buffer 中缓存数据，Netty 的 Buffer 是无界的，可以设置 Netty
 的高水位，即：设置一个 Netty 中 Buffer 的上限。
@@ -181,7 +181,7 @@ Buffer。NetWorkBufferPool 也会被用完，或者说 NetWorkBufferPool 不能�
 BufferPool 中的一部分。此时，Task A 已经申请不到任何的 Buffer 了，Task A 的 Record Writer 输出就被
 wait，Task A 不再生产数据。如下图所示，Producer 和 Consumer 端所有的通道都被阻塞。
 
-![跨TaskManager反压如何向上游传播-上下游全部阻塞.png](https://static.lovedata.net/zs/2019-11-12-005119.png-wm)
+![跨TaskManager反压如何向上游传播-上下游全部阻塞.png](https://static.lovedata.net/zs/2019-11-12-005119.png)
 当下游 Task B 持续消费，Task B 的 InputChannel 中部分的 Buffer 可以被回收，所有被阻塞的数据通道会被一个个打开，之后
 Task A 又可以开始正常的生产数据了。通过上述的整个流程，来动态反馈，保障各个 Buffer 都不会因为数据太多导致内存溢出。
 
@@ -225,7 +225,7 @@ A2，TaskManager 2 运行着 SubTask B1 和 SubTask B2。假如 SubTask B2
 没有压力，但是发现在 SubTask A1 和 A2 中都积压了很多 SubTask B1 的数据。本来只是 SubTask B2 遇到瓶颈了，但是也影响到
 SubTask B1 的正常处理，为什么呢？
 
-![Flink 1.5之前反压机制存在的问题.png](https://static.lovedata.net/zs/2019-11-12-005131.png-wm)
+![Flink 1.5之前反压机制存在的问题.png](https://static.lovedata.net/zs/2019-11-12-005131.png)
 这里需要明确一点：不同 Job 之间的每个（远程）网络连接将在 Flink 的网络堆栈中获得自己的TCP通道。但是，如果同一 Task 的不同
 SubTask 被安排到同一个 TaskManager，则它们与其他 TaskManager
 的网络连接将被多路复用并共享一个TCP信道以减少资源使用。图中的 SubTask A1 和 A2 是 Task A 不同并行度的实例，且安排到同一个
@@ -257,7 +257,7 @@ LocalBufferPool。与之前不同，LocalBufferPool 的缓冲区称为流动缓�
 Operator 对应一个 Floating buffers，Floating buffers 内的 buffer 会在 InputChannel
 间流动并且可用于每个 InputChannel。
 
-![Credit 反压机制原理.png](https://static.lovedata.net/zs/2019-11-12-005137.png-wm)
+![Credit 反压机制原理.png](https://static.lovedata.net/zs/2019-11-12-005137.png)
 如上图所示，上游 SubTask A2 发送完数据后，还有 4 个 Buffer 被积压，会把要发送的 Buffer 数据和 Backlog size =
 4 一块发送给下游 SubTask B2，下游接受到数据后，知道上游积压了 4 个Buffer 的数据，于是向 Buffer Pool 申请
 Buffer，申请完成后由于容量有限，下游 InputChannel 目前仅有 2 个 Buffer 空间，所以，SubTask B2 会向上游
@@ -310,8 +310,8 @@ Task 的状态为 OK 表示没有反压，HIGH 表示这个 Task 被反压。
 
 如下图所示，表示 Flink Web UI 中 BackPressure 选项卡，可以查看任务中 subtask 的反压状态。
 
-![back_pressure_sampling_ok.png](https://static.lovedata.net/zs/2019-10-07-153013.jpg-wm)
-![back_pressure_sampling_high.png](https://static.lovedata.net/zs/2019-11-12-005150.png-wm)
+![back_pressure_sampling_ok.png](https://static.lovedata.net/zs/2019-10-07-153013.jpg)
+![back_pressure_sampling_high.png](https://static.lovedata.net/zs/2019-11-12-005150.png)
 如果看到一个 Task 发生反压警告（例如：High），意味着它生产数据的速率比下游 Task
 消费数据的速率要快。在工作流中数据记录是从上游向下游流动的（例如：从 Source 到
 Sink）。反压沿着相反的方向传播，沿着数据流向上游传播。以一个简单的 Source -> Sink Job 为例。如果看到 Source
@@ -336,7 +336,7 @@ FlatMap 的 BackPressure 页面都显示 HIGH，Sink 的 BackPressure 页面显�
 时，意思是任务产生了反压，且反压的根源是 Sink，也就是说 Sink 算子目前遇到了性能瓶颈吞吐量较低，下一步就应该定位什么原因导致 Sink
 算子吞吐量降低。
 
-![单任务流执行计划.png](https://static.lovedata.net/zs/2019-10-07-153012.jpg-wm)
+![单任务流执行计划.png](https://static.lovedata.net/zs/2019-10-07-153012.jpg)
 当集群中网络 IO 遇到瓶颈时也可能会导致 Job 产生反压，假设有两个 Task A 和 B，Task A 是 Task B 的上游，若 Task B
 的吞吐量很高，但是由于网络瓶颈，造成 Task A 的数据不能快速的发送给 Task B，所以导致上游 Task A 被反压了。此时在反压监控页面也会看到
 Task A 的反压状态为 HIGH、Task B 的反压状态为 OK，但实际上并不是 Task B
@@ -347,7 +347,7 @@ Redis Sink。当看到 Source 和 FlatMap 的 BackPressure 页面都显示 HIGH�
 Sink 的 BackPressure 页面显示 OK 时，意思是任务产生了反压，且反压的根源是 Sink，但此时无法判断到底是 HBase Sink 还是
 Redis Sink 出现了故障。这种情况，该如何来定位反压的来源呢？来学习我们下一部分利用 Flink Metrics 定位产生反压的位置。
 
-![多 Sink 任务流执行计划.png](https://static.lovedata.net/zs/2019-11-12-005200.png-wm)
+![多 Sink 任务流执行计划.png](https://static.lovedata.net/zs/2019-11-12-005200.png)
 #### 利用 Flink Metrics 定位产生反压的位置
 
 当某个 Task 吞吐量下降时，基于 Credit 的反压机制，上游不会给该 Task 发送数据，所以该 Task 不会频繁卡在向 Buffer Pool

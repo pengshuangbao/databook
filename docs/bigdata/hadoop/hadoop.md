@@ -6,13 +6,13 @@
 
 ###  Mapreduce的过程
 
- ![image](https://static.lovedata.net/jpg/2018/5/18/21730e68df257d648a1c17284040c966.jpg-wm)
+ ![image](https://static.lovedata.net/jpg/2018/5/18/21730e68df257d648a1c17284040c966.jpg)
  1. 由算个阶段构成 **Map、shuffle、Reduce**
  2. Map 是映射，将原始数据转换为键值对
  3. Reduce 是合并，将相同的key值得value进行处理后在输出新的键值对作为最终结果
  4. 为了让Reduce可以并行处理Map的结果，**必须对Map的输出进行一定的排序与分割**
  5. 将Map输出进行进一步整理并交给Reduce的过程就是Shuffle
- ![Map shuffle](https://static.lovedata.net/jpg/2018/5/18/f29021d32b6c5c447e53e7aebd4e326b.jpg-wm)
+ ![Map shuffle](https://static.lovedata.net/jpg/2018/5/18/f29021d32b6c5c447e53e7aebd4e326b.jpg)
  6. [MapReduce shuffle过程详解](https://blog.csdn.net/u014374284/article/details/49205885)
 
 ###  谈谈数据倾斜,如何发生的,并给出优化方案
@@ -59,7 +59,7 @@
 
 ###  hadoop的shuffer的概念
 
-![image](https://static.lovedata.net/jpg/2018/5/20/9633d38b5494528b083a881c61c6d12a.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/5/20/9633d38b5494528b083a881c61c6d12a.jpg)
 
 - [MapReduce:详解Shuffle(copy,sort,merge)过程](https://blog.csdn.net/luyee2010/article/details/8624469)
 - Shuffle的正常意思是洗牌或弄乱
@@ -87,7 +87,7 @@
         job.setGroupingComparatorClass(RawComparator c);
         setGroupingComparatorClass
         **就是通过一个comparator比较两个值是否返回0，如果是0，则就表示是一个组中的。**  然后开始构造一个key对应的value迭代器。这时就要用到分组，使用jobjob.setGroupingComparatorClass设置的分组函数类。只要这个比较器比较的两个key相同，他们就属于同一个组，它们的value放在一个value迭代器，而这个迭代器的key使用属于同一个组的所有key的第一个key   **如果不用分组，那么同一组的记录就要在多次reduce方法中独立处理，那么有些状态数据就要传递了，就会增加复杂度，在一次调用中处理的话，这些状态只要用方法内的变量就可以的。比如查找最大值，只要读第一个值就可以了。**        
-      ![image](https://static.lovedata.net/jpg/2018/6/5/77cdfa80aa37a7f44712c93d0fed25f1.jpg-wm)
+      ![image](https://static.lovedata.net/jpg/2018/6/5/77cdfa80aa37a7f44712c93d0fed25f1.jpg)
 2. 参考
     1. [[转]Hadoop MapReduce 二次排序原理及其应用 | 四号程序员](https://www.coder4.com/archives/4248)
     2. [Hadoop SecondrySort 中有了sort为什么要使用setGroupingComparatorClass排序的解释](http://www.360doc.com/content/15/0428/21/23016082_466665862.shtml)
@@ -97,7 +97,7 @@
 
 ###  hadoop常见的链接join操作?
 
-![内连接和外连接](https://static.lovedata.net/jpg/2018/5/24/8f84a6747faa534c0b03a90b356cd383.jpg-wm)
+![内连接和外连接](https://static.lovedata.net/jpg/2018/5/24/8f84a6747faa534c0b03a90b356cd383.jpg)
 
 为了实现内连接和外连接，MapReduce中有三种连接策略，如下所示。这三种连接策略有的在map阶段，有的在reduce阶段。它们都针对MapReduce的排序-合并（sort-merge）的架构进行了优化。
 
@@ -106,7 +106,7 @@
 - 半连接（Semi-join）—— 另一个map端连接。使用场景：待连接的数据集中有一个数据集非常大，但同时这个数据集可以被过滤成小到可以放在缓存中。
 
 1. Reduce side join
-    ![image](https://static.lovedata.net/jpg/2018/5/22/9659eb7d2f3b0b34f51f7bcfabff4d7a.jpg-wm)
+    ![image](https://static.lovedata.net/jpg/2018/5/22/9659eb7d2f3b0b34f51f7bcfabff4d7a.jpg)
 
     1. **Map阶段**
     读取源表的数据，Map输出时候以Join on条件中的列为key，如果Join有多个关联键，则以这些关联键的组合作为key；Map输出的value为join之后所关心的(select或者where中需要用到的)列，同时在value中还会包含表的Tag信息，用于标明此value对应哪个表。
@@ -116,7 +116,7 @@
         根据key的值完成join操作，期间通过Tag来识别不同表中的数据。
 
 2. Map Side join
-    ![image](https://static.lovedata.net/jpg/2018/5/22/8358ada057f8cbd0ba792d3841058bda.jpg-wm)
+    ![image](https://static.lovedata.net/jpg/2018/5/22/8358ada057f8cbd0ba792d3841058bda.jpg)
     - 没有reduce 直接输出结果
     - 独立task 读取小表 放入 DistributeCache
 

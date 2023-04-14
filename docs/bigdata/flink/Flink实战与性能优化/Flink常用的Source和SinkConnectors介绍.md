@@ -2,7 +2,7 @@
 
 通过前面我们可以知道 Flink Job 的大致结构就是 `Source ——> Transformation ——> Sink`。
 
-![images](https://static.lovedata.net/zs/2019-04-30-061441.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-04-30-061441.jpg)
 那么这个 Source 是什么意思呢？我们下面来看看。
 
 ### Data Source 介绍
@@ -25,7 +25,7 @@ Flink 已经提供了若干实现好了的 source function，当然你也可以�
 
 StreamExecutionEnvironment 中可以使用以下这些已实现的 stream source。
 
-![images](https://static.lovedata.net/zs/2019-10-23-083744.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-083744.png)
 总的来说可以分为下面几大类：
 
 #### 基于集合
@@ -153,14 +153,14 @@ DataStream<KafkaEvent> input = env
 
 Flink 目前支持如下面常见的 Source：
 
-![images](https://static.lovedata.net/zs/UTfWCZ.jpg-wm)
+![images](https://static.lovedata.net/zs/UTfWCZ.jpg)
 如果你想自定义自己的 Source 呢？在后面 3.8 节会讲解。
 
 ### Data Sink 介绍
 
 首先 Sink 的意思是：
 
-![images](https://static.lovedata.net/zs/1atUyo.jpg-wm)
+![images](https://static.lovedata.net/zs/1atUyo.jpg)
 大概可以猜到了吧！Data sink 有点把数据存储下来（落库）的意思。Flink
 在拿到数据后做一系列的计算后，最后要将计算的结果往下游发送。比如将数据存储到 MySQL、ElasticSearch、Cassandra，或者继续发往
 Kafka、 RabbitMQ 等消息队列，更或者直接调用其他的第三方应用服务（比如告警）。
@@ -169,10 +169,10 @@ Kafka、 RabbitMQ 等消息队列，更或者直接调用其他的第三方应�
 
 上面介绍了 Flink Data Source 有哪些，这里也看看 Flink Data Sink 支持的有哪些。
 
-![images](https://static.lovedata.net/zs/siWsAK.jpg-wm)
+![images](https://static.lovedata.net/zs/siWsAK.jpg)
 再看下源码有哪些呢？
 
-![images](https://static.lovedata.net/zs/2019-10-23-084839.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-084839.png)
 可以看到有 Kafka、ElasticSearch、Socket、RabbitMQ、JDBC、Cassandra POJO、File、Print 等
 Sink 的方式。
 

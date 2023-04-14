@@ -24,7 +24,7 @@
 
 > 服务器端RegionServer接收到客户端的写入请求后，首先会反序列化为Put对象，然后执行各种检查操作，比如检查region是否是只读、memstore大小是否超过blockingMemstoreSize 
 
-![image](https://static.lovedata.net/jpg/2018/6/20/183daf0ec61cdcf47aaff6fe85ae9389.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/20/183daf0ec61cdcf47aaff6fe85ae9389.jpg)
 
 1. 获取行锁、Region更新共享锁 同行数据的原子性
 2. 开始写事务：获取write number，用于实现MVCC，实现数据的非锁定读，在保证读写一致性的前提下提高读取性能
@@ -39,11 +39,11 @@
 
 ## 一条数据的HBase之旅Write全流程-Nosql漫谈
 
-![image](https://static.lovedata.net/21-06-24-10080732b4aa7230ffd26c107f1736c9.png-wm)
+![image](https://static.lovedata.net/21-06-24-10080732b4aa7230ffd26c107f1736c9.png)
 
 基于RowKey和列定义信息，就可以组建HBase的Put对象，**一个Put对象用来描述待写入的一行数据**，一个Put可以理解成与某个RowKey关联的1个或多个KeyValue的集合。
 
-![image](https://static.lovedata.net/21-06-24-92c1d522228dd5219073b9aed66b5ac9.png-wm)
+![image](https://static.lovedata.net/21-06-24-92c1d522228dd5219073b9aed66b5ac9.png)
 
 
 
@@ -57,13 +57,13 @@
 
 通过前面建立的连接，从ZooKeeper中读取meta Region所在的RegionServer 获取了meta Region的路由信息以后，再从meta Region中定位要读写的RowKey所关联的Region信息
 
-![image](https://static.lovedata.net/21-06-24-41eb168b902bb746e7f7888d89477db1.png-wm)
+![image](https://static.lovedata.net/21-06-24-41eb168b902bb746e7f7888d89477db1.png)
 
 
 
 因为每一个用户表Region都是一个**RowKey Range**，meta Region中记录了每一个用户表Region的路由以及状态信息，以RegionName(**包含表名，Region StartKey，Region ID，副本ID等信息**)作为RowKey。基于一条用户数据RowKey，快速查询该RowKey所属的**Region**的方法其实很简单：只需要基于表名以及该用户数据RowKey，构建一个虚拟的Region Key，然后通过Reverse Scan的方式，读到的第一条Region记录就是该数据所关联的Region。如下图所示
 
-![image](https://static.lovedata.net/21-06-24-07cfa1ba93c77aa2335de4125e2fdc32.png-wm)
+![image](https://static.lovedata.net/21-06-24-07cfa1ba93c77aa2335de4125e2fdc32.png)
 
 
 
@@ -76,17 +76,17 @@ Batch Put: 客户端在将所有的数据写到对应的RegionServer之前，会
 1. **按Region分组** ,遍历每一条Rowkey，根据meta表，得到每一条数据属于哪一个获取到Region到RowKey列表的映射关系。
 2. **按RegionServer"打包"**  因为Region一定归属于某一个RegionServer 属于同一个RegionServer的多个Regions的写入请求，被打包成一个MultiAction对象，这样可以一并发送到每一个RegionServer中
 
-![image](https://static.lovedata.net/21-06-24-6440aabfd585de2dbf1bc2a650b74d96.png-wm)
+![image](https://static.lovedata.net/21-06-24-6440aabfd585de2dbf1bc2a650b74d96.png)
 
 
 
 ### Client发RPC请求到RegionServer
 
-![image](https://static.lovedata.net/21-06-24-66b1857a25bda14cfada3241fc12f27f.png-wm)
+![image](https://static.lovedata.net/21-06-24-66b1857a25bda14cfada3241fc12f27f.png)
 
 
 
-![image](https://static.lovedata.net/21-06-24-91d49ffd76f4d49efaafedfe6ff27744.png-wm)
+![image](https://static.lovedata.net/21-06-24-91d49ffd76f4d49efaafedfe6ff27744.png)
 
 
 
@@ -100,7 +100,7 @@ Batch Put: 客户端在将所有的数据写到对应的RegionServer之前，会
 
 则接收到的请求参数为MultiRequest，在MultiRequest中，混合了这个RegionServer所持有的多个Region的写入请求，每一个Region的写入请求都被包装成了一个RegionAction对象。RegionServer接收到MultiRequest请求以后，遍历所有的RegionAction，而后写入到每一个Region中，此过程是**串行**的:
 
-![image](https://static.lovedata.net/21-06-24-138b41f5b853998ecf7c08651c90a0ed.png-wm)
+![image](https://static.lovedata.net/21-06-24-138b41f5b853998ecf7c08651c90a0ed.png)
 
 
 
@@ -112,13 +112,13 @@ hbase 基于 **LSM-Tree**的架构  LSM-Tree利用了传统机械硬盘的“**�
 
 **顺序写入**到一个称之为WAL
 
-![image](https://static.lovedata.net/21-06-24-c04aa78ee823823ccd672e0bf8d7b7a5.png-wm)
+![image](https://static.lovedata.net/21-06-24-c04aa78ee823823ccd672e0bf8d7b7a5.png)
 
 
 
 断电 wal 回放即可
 
-![image](https://static.lovedata.net/21-06-24-d1a09ae70180a23836f9485351dcd120.png-wm)
+![image](https://static.lovedata.net/21-06-24-d1a09ae70180a23836f9485351dcd120.png)
 
 
 
@@ -127,7 +127,7 @@ hbase 基于 **LSM-Tree**的架构  LSM-Tree利用了传统机械硬盘的“**�
 - **WALKey **{Encoded Region Name，Table Name，Sequence ID，Timestamp} Sequence ID在维持数据一致性方面起到了关键作用，可以理解为一个事务ID
 - **WALEdit** WALEdit中直接保存待写入数据的所有的KeyValues，而这些KeyValues可能来自一个Region中的多行数据。
 
-![image](https://static.lovedata.net/21-06-24-0acd9d9e282836b72f95490ddef3812b.png-wm)
+![image](https://static.lovedata.net/21-06-24-0acd9d9e282836b72f95490ddef3812b.png)
 
 
 
@@ -135,9 +135,9 @@ hbase 基于 **LSM-Tree**的架构  LSM-Tree利用了传统机械硬盘的“**�
 
 #### WAL Roll and Archive
 
-![image](https://static.lovedata.net/21-06-24-e1735046ae9353e826f181af86b1f0cb.png-wm)
+![image](https://static.lovedata.net/21-06-24-e1735046ae9353e826f181af86b1f0cb.png)
 
-![image](https://static.lovedata.net/21-06-24-027f400411c2305bcaedb6a694495bf1.png-wm)
+![image](https://static.lovedata.net/21-06-24-027f400411c2305bcaedb6a694495bf1.png)
 
 
 
@@ -149,11 +149,11 @@ MemStore中用来存放所有的**KeyValue**的数据结构，称之为**CellSet
 
 写MemStore的过程，事实上是将batch put提交过来的所有的KeyValue列表，写入到MemStore的以ConcurrentSkipListMap为组成核心的CellSet中：
 
-![image](https://static.lovedata.net/21-06-24-173542f9a97b2b3e235ed2a801862d6d.png-wm)
+![image](https://static.lovedata.net/21-06-24-173542f9a97b2b3e235ed2a801862d6d.png)
 
 
 
-![image](https://static.lovedata.net/21-06-24-078f6c0a6398c621bd929a1516c572f0.png-wm)
+![image](https://static.lovedata.net/21-06-24-078f6c0a6398c621bd929a1516c572f0.png)
 
 
 
@@ -165,13 +165,13 @@ MemStore中用来存放所有的**KeyValue**的数据结构，称之为**CellSet
 
 > 1.x 更早 MemStore中的数据，达到一定的阈值，被Flush成HDFS中的HFile文件。
 
-![image](https://static.lovedata.net/21-06-25-d54d18bc2251a5224e29857861338b9c.png-wm)
+![image](https://static.lovedata.net/21-06-25-d54d18bc2251a5224e29857861338b9c.png)
 
 随着HFile的数量的不断增多对**读取时延**带来的影响
 
 Read流程
 
-![image](https://static.lovedata.net/21-06-25-c5ed828a8d420a250c748aa491aa1071.png-wm)
+![image](https://static.lovedata.net/21-06-25-c5ed828a8d420a250c748aa491aa1071.png)
 
 
 
@@ -181,7 +181,7 @@ Read流程
 
 除了范围不同， Major Compaction还会清理一些TTL过期/版本过旧以及被标记删除的数据。
 
-![image](https://static.lovedata.net/21-06-25-4421e714484af23e743afaa66d12d48f.png-wm)
+![image](https://static.lovedata.net/21-06-25-4421e714484af23e743afaa66d12d48f.png)
 
 
 
@@ -191,7 +191,7 @@ Read流程
 
 **MemStore由一个可写的Segment，以及一个或多个不可写的Segments构成**。
 
-![image](https://static.lovedata.net/21-06-25-e1ac4bc4984519cd9753503f5a4dafa0.png-wm)
+![image](https://static.lovedata.net/21-06-25-e1ac4bc4984519cd9753503f5a4dafa0.png)
 
 MemStore中的数据先Flush成一个**Immutable**的Segment，多个Immutable Segments可以在内存中进行Compaction，当达到一定阈值以后才将内存中的数据持久化成HDFS中的HFile文件
 
@@ -205,7 +205,7 @@ MemStore中的数据先Flush成一个**Immutable**的Segment，多个Immutable S
 
 In-Memory Flush and Compaction
 
-![image](https://static.lovedata.net/21-06-25-b5196d7e51bf191ef0fd3fa8c8cc3b4d.png-wm)
+![image](https://static.lovedata.net/21-06-25-b5196d7e51bf191ef0fd3fa8c8cc3b4d.png)
 
 
 
@@ -215,7 +215,7 @@ In-Memory Flush and Compaction
 
 随着不断的执行Minor Compaction以及Major Compaction，可以看到，**这条数据被反复读取/写入了多次**，这是导致写放大的一个关键原因，这里的写放大，涉及到**网络IO**与**磁盘IO**，因为数据在HDFS中默认有三个副本。
 
-![image](https://static.lovedata.net/21-06-25-060a239b0fe57a5220561b1e06a81759.png-wm)
+![image](https://static.lovedata.net/21-06-25-060a239b0fe57a5220561b1e06a81759.png)
 
 
 

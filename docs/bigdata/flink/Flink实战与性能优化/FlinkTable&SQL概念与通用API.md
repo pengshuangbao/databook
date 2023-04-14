@@ -11,10 +11,10 @@ API——Table API&SQL，本节将开始 Table&SQL 之旅。
 Apache Flink 之后，社区就致力于为 Table API&SQL 集成 Blink 的查询优化器和 runtime。先来看下 1.8 版本的
 Flink Table 项目结构如下图：
 
-![images](https://static.lovedata.net/zs/2019-10-30-130607.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-30-130607.png)
 1.9 版本的 Flink Table 项目结构图如下：
 
-![images](https://static.lovedata.net/zs/2019-10-30-130751.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-30-130751.png)
 可以发现新增了 flink-sql-parser、flink-table-planner-blink、flink-table-runtime-
 blink、flink-table-uber-blink 模块，对 Flink Table 模块的重构详细内容可以参考
 [FLIP-32](https://cwiki.apache.org/confluence/display/FLINK/FLIP-32%3A+Restructure+flink-
@@ -28,7 +28,7 @@ API&SQL：1.9 以前的 Flink 处理器和新的基于 Blink 的处理器。基�
 Join、TopN、去重）和聚合场景缓解数据倾斜的优化，以及内置更多常用的函数，具体可以查看 flink-table-runtime-blink
 代码。目前整个模块的结构如下：
 
-![images](https://static.lovedata.net/zs/2019-10-30-124512.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-30-124512.png)
 注意：两个查询处理器之间的语义和功能大部分是一致的，但未完全对齐，因为基于 Blink 的查询处理器还在优化中，所以在 1.9 版本中默认查询处理器还是
 1.9 之前的版本。如果你想使用 Blink 处理器的话，可以在创建 TableEnvironment 时通过 EnvironmentSettings
 配置启用。被选择的处理器必须要在正在执行的 Java 进程的类路径中。对于集群设置，默认两个查询处理器都会自动地加载到类路径中。如果要在 IDE
@@ -78,7 +78,7 @@ Table API&SQL 是一种关系型 API，用户可以像操作数据库一样直�
   * flink-table-runtime-blink：Blink 的 Table 程序的 runtime（阿里开源的版本）
   * flink-table-uber-blink：将 Blink 版本的 planner 和 runtime 与前面模块（除 flink-table-planner 模块）打成一个 fat jar，在 lib 目录下 
 
-![images](https://static.lovedata.net/zs/2019-11-02-164352.png-wm)
+![images](https://static.lovedata.net/zs/2019-11-02-164352.png)
   * flink-sql-client：SQL 客户端
 
 ### 两种 planner 之间的区别

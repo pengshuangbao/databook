@@ -73,14 +73,14 @@ Container是RM分配资源的基本单位。每个Container包含特定数量的
 
 ## 画一个yarn架构图,及其通信流程；
 
-![image](https://static.lovedata.net/jpg/2018/7/4/33789bff3b6481fa26da13c743d815c7.jpg-wm)
-![image](https://static.lovedata.net/jpg/2018/7/4/50b9c520a08ac25c70008cf1fb620ed9.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/4/33789bff3b6481fa26da13c743d815c7.jpg)
+![image](https://static.lovedata.net/jpg/2018/7/4/50b9c520a08ac25c70008cf1fb620ed9.jpg)
 
-![image](https://static.lovedata.net/jpg/2018/7/4/5ad787782060aa4e9310f186b2cedbf8.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/4/5ad787782060aa4e9310f186b2cedbf8.jpg)
 
 ## Hadoop的作业提交流程
 
-![image](https://static.lovedata.net/jpg/2018/7/4/5ad787782060aa4e9310f186b2cedbf8.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/4/5ad787782060aa4e9310f186b2cedbf8.jpg)
 
 
 ## 如何减少Hadoop Map端到Reduce端的数据传输量

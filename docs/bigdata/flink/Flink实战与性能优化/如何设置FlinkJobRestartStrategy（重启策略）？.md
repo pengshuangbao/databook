@@ -10,9 +10,9 @@
 不知道大家是否有遇到过这样的问题：整个 Job 一直在重启，并且还会伴随着一些错误（可以通过 UI 查看 Exceptions
 日志），以下是笔者遇到过的一些问题截图：
 
-![images](https://static.lovedata.net/zs/2019-10-04-152844.png-wm)
-![images](https://static.lovedata.net/zs/2019-10-06-140519.png-wm)
-![images](https://static.lovedata.net/zs/2019-09-26-2019-05-14_00-59-25.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-04-152844.png)
+![images](https://static.lovedata.net/zs/2019-10-06-140519.png)
+![images](https://static.lovedata.net/zs/2019-09-26-2019-05-14_00-59-25.png)
 其实遇到上面这种问题比较常见的，比如有时候因为数据的问题（不合规范、为 null
 等），这时在处理这些脏数据的时候可能就会遇到各种各样的异常错误，比如空指针、数组越界、数据类型转换错误等。可能你会说只要过滤掉这种脏数据就行了，或者进行异常捕获就不会导致
 Job 不断重启的问题了。
@@ -143,18 +143,18 @@ Flink 中几种重启策略的设置如上，大家可以根据需要选择合�
 类，通过该类的方法就可以创建不同的重启策略，在 RestartStrategies 类中提供了五个方法用来创建四种不同的重启策略（有两个方法是创建
 FixedDelay 重启策略的，只不过方法的参数不同），如下图所示：
 
-![images](https://static.lovedata.net/zs/2019-10-08-151745.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-08-151745.png)
 在每个方法内部其实调用的是 RestartStrategies 中的内部静态类，分别是
 NoRestartStrategyConfiguration、FixedDelayRestartStrategyConfiguration、FailureRateRestartStrategyConfiguration、FallbackRestartStrategyConfiguration，这四个类都继承自
 RestartStrategyConfiguration 抽象类。
 
-![images](https://static.lovedata.net/zs/2019-10-08-151617.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-08-151617.png)
 上面是定义的四种重启策略的配置类，在 Flink 中是靠 RestartStrategyResolving 类中的 resolve 方法来解析
 RestartStrategies.RestartStrategyConfiguration，然后根据配置使用 RestartStrategyFactory
 创建 RestartStrategy。RestartStrategy 是一个接口，它有 canRestart 和 restart 两个方法，它有四个实现类：
 FixedDelayRestartStrategy、FailureRateRestartStrategy、ThrowingRestartStrategy、NoRestartStrategy。
 
-![images](https://static.lovedata.net/zs/2019-10-08-151311.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-08-151311.png)
 ### Failover Strategies（故障恢复策略）
 
 Flink 通过重启策略和故障恢复策略来控制 Task 重启：重启策略决定是否可以重启以及重启的间隔；故障恢复策略决定哪些 Task 需要重启。在
@@ -181,18 +181,18 @@ Failover 策略失败时作为保底策略使用。
 Region，不同 Region 之间无数据交换。如果有 Task 发生故障的时候，它会重启发生错误的 Task 所在 Region 的所有
 Task，这种策略相对于重启所有的 Task 策略来说重启的 Task 数量会变少。
 
-![images](https://static.lovedata.net/zs/2019-10-08-131936.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-08-131936.png)
 如上图如果 C2 Task 因为错误挂了，它会根据数据流往上找到 Source，然后根据 Source 可以知道数据流到下游的所有 Task，进而将这些
 Task 重启（见下图）。
 
-![images](https://static.lovedata.net/zs/2019-10-08-140828.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-08-140828.png)
 当然你会发现上面这种重启方式其实重启的 Task 数量还是不少，为了进一步减少需要重新启动的 Task 数量，可以使用某些类型的数据流交换，将 Task
 运算的结果暂存在中间，然后如果有 Task 失败了，那么就往前去找中间结果，然后重启中间结果到数据流向的最后 Task 之间所有的 Task。
 
-![images](https://static.lovedata.net/zs/2019-10-08-144622.png-wm)
-![images](https://static.lovedata.net/zs/2019-10-08-144713.png-wm)
-![images](https://static.lovedata.net/zs/2019-10-08-145101.png-wm)
-![images](https://static.lovedata.net/zs/2019-10-08-150015.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-08-144622.png)
+![images](https://static.lovedata.net/zs/2019-10-08-144713.png)
+![images](https://static.lovedata.net/zs/2019-10-08-145101.png)
+![images](https://static.lovedata.net/zs/2019-10-08-150015.png)
 从上面四个图可以看到这样的话，故障恢复的需要重启的 Task 数量就降低了，但是适合这种的策略的场景是有限的，详情可以参考：
 
 >

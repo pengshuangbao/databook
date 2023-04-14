@@ -15,7 +15,7 @@ Pipeline，那么对于后一类用户来说绝对是一种福音。虽然在 1.
 
 `flink-ml-api` 模块增加了 ML Pipeline 和 MLLib 的接口，它的类结构图如下：
 
-![images](https://static.lovedata.net/zs/2019-10-22-124512.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-22-124512.png)
   * Transformer: Transformer 是一种可以将一个表转换成另一个表的算法
 
   * Model: Model 是一种特别的 Transformer，它继承自 Transformer。它通常是由 Estimator 生成，Model 用于推断，输入一个数据表会生成结果表。
@@ -32,7 +32,7 @@ Pipeline，那么对于后一类用户来说绝对是一种福音。虽然在 1.
 
 Flink-ML 的 pipeline 流程如下：
 
-![images](https://static.lovedata.net/zs/2019-10-22-135555.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-22-135555.png)
 `flink-ml-lib` 模块包括了 DenseMatrix、DenseVector、SparseVector 等类的基本操作。这两个模块是
 Flink-ML 的基础模块，相信社区在后面的稳定版本一定会带来更加完善的 Flink-ML 库。
 

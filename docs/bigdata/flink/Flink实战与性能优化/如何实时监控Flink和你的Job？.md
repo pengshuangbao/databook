@@ -109,12 +109,12 @@ failover，所以在重启这段时间它是不会去消费数据的，所以必
 那么在 Flink 中自带的 Task Manager Metrics 有哪些呢？主要也是 CPU、类加载、GC、内存、网络等。其实这些信息在 Flink
 UI 上也是有，不知道读者有没有细心观察过。
 
-![images](https://static.lovedata.net/zs/2019-10-19-030513.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-19-030513.png)
 在这个 Task Manager 的 Metrics 监控页面通常比较关心的指标有内存相关的，还有就是 GC 的指标，通常一个 Task Manager
 出现 OOM 之前会不断的进行 GC，在这个 Metrics 页面它展示了年轻代和老年代的 GC 信息（时间和次数），大家可以细心观察下是否 Task
 Manager OOM 前老年代和新生代的 GC 次数比较、时间比较长。
 
-![images](https://static.lovedata.net/zs/2019-10-19-030954.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-19-030954.png)
 在 Flink Reporter 中提供的 Task Manager Metrics 指标如下：
 
 
@@ -157,11 +157,11 @@ Task）、消费速度能否跟上生产数据的速度、处理数据的过程�
 Sent（发出去的记录的容量大小）、Records Sent（发出去记录的条数）、异常信息、timeline（作业运行状态的时间线）、Checkpoint
 信息。
 
-![images](https://static.lovedata.net/zs/2019-10-19-042958.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-19-042958.png)
 这些指标也可以通过 Flink 的 Reporter 进行上报存储到第三方的时序数据库，然后通过类似 Grafana
 展示出来。通过这些信息大概就可以清楚的知道一个 Job 的整个运行状态，然后根据这些运行状态去分析作业是否有问题。
 
-![images](https://static.lovedata.net/zs/2019-10-19-070124.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-19-070124.png)
 在流作业中最关键的指标无非是作业的实时性，那么延迟就是衡量作业的是否实时的一个基本参数，但是对于现有的这些信息其实还不知道作业的消费是否有延迟，通常来说可以结合
 Kafka 的监控去查看对应消费的 Topic 的 Group 的 Lag 信息，如果 Lag
 很大就表明有数据堆积了，另外还有一个办法就是需要自己在作业中自定义 Metrics 做埋点，将算子在处理数据的系统时间与数据自身的 Event Time
@@ -178,7 +178,7 @@ Metrics Reporter 将埋点的 Metrics 信息上传，这样最终就可以获取
   * 作业运行所在的 Task Manager 堆内存使用率异常的低
   * 作业运行所在的 Task Manager 的 GC 时间和次数非常规律，没有出现异常的现象
 
-![images](https://static.lovedata.net/zs/2019-10-19-064123.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-19-064123.png)
 在 Flink Metrics Reporter 上传的指标中大概有下面这些：
 
 
@@ -264,10 +264,10 @@ TaskManager 的资源使用情况，所以 TaskManager 的基础监控指标比�
 
   * 作业的状态：在 UI 上是可以看到作业的状态信息，常见的状态变更信息如下图。
 
-![images](https://static.lovedata.net/zs/2019-10-19-080858.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-19-080858.png)
   * Task 的状态：其实导致作业的状态发生变化的原因通常是由于 Task 的运行状态出现导致，所以也需要对 Task 的运行状态进行监控，Task 的运行状态如下图。
 
-![images](https://static.lovedata.net/zs/2019-10-19-081049.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-19-081049.png)
   * 作业异常日志：导致 Task 出现状态异常的根因通常是作业中的代码出现各种各样的异常日志，最后可能还会导致作业无限重启，所以作业的异常日志也是需要及时关注。
 
   * 作业重启次数：当 Task 状态和作业的状态发生变化的时候，如果作业中配置了重启策略或者开启了 Checkpoint 则会进行作业重启的，重启作业的带来的影响也会很多，并且会伴随着一些不确定的因素，最终导致作业一直重启，这样既不能解决问题，还一直在占用着资源的消耗。

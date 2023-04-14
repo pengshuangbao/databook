@@ -56,4 +56,4 @@ resS: Option[scala.util.Try[Int]] =
 Some(Failure(java.lang.ArithmeticException: I by zero))
 ```
 
-![image](https://static.lovedata.net/20-07-30-521674357264a6f13627ae3af9069150.png-wm)
+![image](https://static.lovedata.net/20-07-30-521674357264a6f13627ae3af9069150.png)

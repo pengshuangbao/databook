@@ -9,7 +9,7 @@
 因为在 2.1 节中已经讲过 ElasticSearch 的安装，这里就不做过多的重复，需要注意的一点就是 Flink 的 ElasticSearch
 Connector 是区分版本号的。
 
-![images](https://static.lovedata.net/zs/2019-10-23-103746.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-103746.png)
 所以添加依赖的时候要区分一下，根据你安装的 ElasticSearch 来选择不一样的版本依赖，另外就是不同版本的 ElasticSearch
 还会导致下面的数据写入到 ElasticSearch 中出现一些不同，我们这里使用的版本是
 ElasticSearch6，如果你使用的是其他的版本可以参考官网的实现。
@@ -144,15 +144,15 @@ public class Sink2ES6Main {
 
 执行 Main 类的 main 方法，我们的程序是只打印 Flink 的日志，没有打印存入的日志（因为我们这里没有打日志）：
 
-![images](https://static.lovedata.net/zs/2019-10-23-104325.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-104325.png)
 所以看起来不知道我们的 Sink 是否有用，数据是否从 Kafka 读取出来后存入到 ES 了。你可以查看下本地起的 ES 终端或者服务器的 ES
 日志就可以看到效果了。ES 日志如下：
 
-![images](https://static.lovedata.net/zs/F62ZpP.jpg-wm)
+![images](https://static.lovedata.net/zs/F62ZpP.jpg)
 上图是我本地 Mac 电脑终端的 ES 日志，可以看到我们的索引了。如果还不放心，你也可以在你的电脑装个 Kibana，然后更加的直观查看下 ES
 的索引情况（或者直接敲 ES 的命令）。我们用 Kibana 查看存入 ES 的索引如下：
 
-![images](https://static.lovedata.net/zs/nynNxR.jpg-wm)
+![images](https://static.lovedata.net/zs/nynNxR.jpg)
 程序执行了一会，存入 ES 的数据量就很大了。
 
 ### 如何保证在海量数据实时写入下 ElasticSearch 的稳定性？
@@ -179,7 +179,7 @@ Flink 自带的 es sink 就支持了，常用的失败重试配置有:
 
 看下，就是如下这些配置了，如果你需要的话，可以在这个地方配置扩充。
 
-![images](https://static.lovedata.net/zs/2019-10-23-104516.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-104516.png)
 ### 使用 Flink-connector-elasticsearch 可能会遇到的问题
 
 写入 ES 的时候会有这些情况会导致写入 ES 失败。
@@ -203,16 +203,16 @@ threadpool.html
 这个就不用说了，肯定写入失败的。跟过源码可以发现 RestClient 类里的 performRequestAsync
 方法一开始会随机的从集群中的某个节点进行写入数据，如果这台机器掉线，会进行重试在其他的机器上写入，那么当时写入的这台机器的请求就需要进行失败重试，否则就会把数据丢失！
 
-![images](https://static.lovedata.net/zs/2019-10-23-110218.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-110218.png)
 3、ES 集群某个节点的磁盘满了
 
 这里说的磁盘满了，并不是磁盘真的就没有一点剩余空间的，是 ES 会在写入的时候检查磁盘的使用情况，在 85% 的时候会打印日志警告。
 
-![images](https://static.lovedata.net/zs/QOGm4g.jpg-wm)
+![images](https://static.lovedata.net/zs/QOGm4g.jpg)
 这里我看了下源码如下图：
 
-![images](https://static.lovedata.net/zs/2019-10-23-111338.png-wm)
-![images](https://static.lovedata.net/zs/2019-10-23-111724.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-111338.png)
+![images](https://static.lovedata.net/zs/2019-10-23-111724.png)
 如果你想继续让 ES 写入的话就需要去重新配一下 ES 让它继续写入，或者你也可以清空些不必要的数据腾出磁盘空间来。
 
 #### 解决方法

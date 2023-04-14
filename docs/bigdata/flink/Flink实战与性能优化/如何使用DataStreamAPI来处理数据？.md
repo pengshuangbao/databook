@@ -7,7 +7,7 @@ Flink 中的各种 DataStream API。
 
 我们先来看下源码里面的 DataStream 大概有哪些类呢？
 
-![images](https://static.lovedata.net/zs/2019-10-23-080701.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-080701.png)
 可以发现其实还是有很多的类，只有熟练掌握了这些 API，我们才能在做数据转换和计算的时候足够灵活的运用开来（知道何时该选用哪种
 DataStream？选用哪个 Function？）。那么我们先从 DataStream 开始吧！
 
@@ -25,7 +25,7 @@ DataStream？选用哪个 Function？）。那么我们先从 DataStream 开始�
 
 然后 DataStream 的类结构图如下：
 
-![images](https://static.lovedata.net/zs/2019-10-23-082134.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-082134.png)
 
 它的继承类有 KeyedStream、SingleOutputStreamOperator 和SplitStream。这几个类本文后面都会一一给大家讲清楚。下面我们来看看 DataStream 这个类中的属性和方法吧。
 
@@ -603,7 +603,7 @@ ConnectedStreams 在概念上可以认为和 Union 数据流是一样的。
 
 在 ConnectedStreams 类中有三个属性：environment、inputStream1 和 inputStream2，该类中的方法如下：
 
-![images](https://static.lovedata.net/zs/2019-10-23-082354.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-082354.png)
 在 ConnectedStreams 中可以通过 getFirstInput 获取连接的第一个流、通过 getSecondInput
 获取连接的第二个流，同时它还含有六个 keyBy 方法来将连接后的数据流进行分组，这六个 keyBy 方法的参数各有不同。另外它还含有
 map、flatMap、process 方法来处理数据（其中 map 和 flatMap 方法的参数分别使用的是 CoMapFunction 和
@@ -723,7 +723,7 @@ public <R> BroadcastConnectedStream<T, R> connect(BroadcastStream<R> broadcastSt
 
 在这个 BroadcastConnectedStream 类中主要的方法有：
 
-![images](https://static.lovedata.net/zs/2019-10-23-082515.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-082515.png)
 从图中可以看到四个 process 方法和一个 transform 私有方法，其中四个 process 方法也是参数不同，最后实际调用的方法就是这个私有的
 transform 方法。
 

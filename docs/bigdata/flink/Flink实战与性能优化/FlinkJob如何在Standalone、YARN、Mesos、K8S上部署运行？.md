@@ -45,10 +45,10 @@ standalone 模式的集群呢？我们就需要修改 Flink 安装目录下面�
 将 slaves 中再添加一个 `localhost`，这样就可以启动两个 Task Manager 了。接着启动脚本 `start-
 cluster.sh`，启动日志显示如下：
 
-![images](https://static.lovedata.net/zs/2019-10-23-161333.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-161333.png)
 可以看见有两个 Task Manager 启动了，再看下 UI 显示的：
 
-![images](https://static.lovedata.net/zs/2019-10-23-161431.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-161431.png)
 那么如果还想要添加一个 Job Manager 或者 Task Manager 怎么办？总不能再次重启修改配置文件后然后再重启吧！这里你可以这样操作。
 
 **增加一个 Job Manager** ：
@@ -69,7 +69,7 @@ cluster.sh`，启动日志显示如下：
 
 比如我执行了 `./bin/taskmanager.sh start` 命令后：
 
-![images](https://static.lovedata.net/zs/2019-10-23-161657.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-161657.png)
 Standalone 模式下可以先对 Flink Job 通过 `mvn clean package` 编译打包，得到 Jar 包后，可以在 UI
 上直接上传 Jar 包，然后点击 Submit 就可以运行了。
 
@@ -85,7 +85,7 @@ Flink 不仅仅支持以 standalone 模式运行，还支持在 YARN 上运行�
 
 下图是 Flink on YARN 的架构图：
 
-![images](https://static.lovedata.net/zs/2019-04-27-004-flink-on-yarn.png-wm)
+![images](https://static.lovedata.net/zs/2019-04-27-004-flink-on-yarn.png)
 [官网](https://ci.apache.org/projects/flink/flink-docs-
 release-1.9/ops/deployment/yarn_setup.html) 对 Flink On YARN 讲解很多，包含 Flink 在
 YARN 上的安装方式、 Flink YARN Session 和怎么允许单一的 Flink Job、怎么查看在 YARN
@@ -114,7 +114,7 @@ Flink，比如：
 Flink 会话集群需要在运行的 Mesos 上部署执行，然后你可以在一个会话集群上运行多个 Flink
 作业，在部署会话集群之后，需要将每个作业提交给集群。在 Flink 的安装目录 bin 下，你可以找到 2 个在 Mesos 上启动 Flink 的脚本。
 
-![images](https://static.lovedata.net/zs/2019-10-23-161843.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-161843.png)
   * mesos-appmaster.sh：它将启动 Mesos 应用程序主程序，会注册 Mesos 调度程序，负责启动工作节点
 
   * mesos-taskmanager.sh：Mesos 进程的入口点，你不需要手动执行该脚本，它由 Mesos 工作节点自动启动来启动新的 Task Manager。
@@ -288,10 +288,10 @@ service、jobmanager-deployment、taskmanager-deployment，在利用 kubectl
     kubectl create -f taskmanager-deployment.yaml
 
 
-![images](https://static.lovedata.net/zs/2019-05-31-070748.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-05-31-070748.jpg)
 然后去 K8s 的 Dashboard 上面查看 Flink 的情况：
 
-![images](https://static.lovedata.net/zs/2019-05-31-071343.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-05-31-071343.jpg)
 我们如果要看 Flink 自带的 UI 的话需要将端口映射一下，使用如下命令：
 
 
@@ -299,10 +299,10 @@ service、jobmanager-deployment、taskmanager-deployment，在利用 kubectl
     kubectl port-forward service/flink-jobmanager 8081:8081
 
 
-![images](https://static.lovedata.net/zs/2019-05-31-071954.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-05-31-071954.jpg)
 然后访问 <http://localhost:8081> 就可以看到 Flink 自带的 UI 了：
 
-![images](https://static.lovedata.net/zs/2019-05-31-072103.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-05-31-072103.jpg)
 如果我们要提交 Job 的话，我们先用命令行来操作一下：
 
 
@@ -310,15 +310,15 @@ service、jobmanager-deployment、taskmanager-deployment，在利用 kubectl
     ./bin/flink run -d -m localhost:8081 ~/word-count.jar
 
 
-![images](https://static.lovedata.net/zs/2019-10-23-162109.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-162109.png)
 执行完命令后的话，就可以去页面看到刚才提交的 Job 了：
 
-![images](https://static.lovedata.net/zs/2019-10-23-162157.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-162157.png)
 另外你也可以通过 Flink UI 上传 Jar 包把 Job run 起来。这里再对上面这几个配置文件进行讲解：
 
-![images](https://static.lovedata.net/zs/2019-05-31-073347.jpg-wm)
-![images](https://static.lovedata.net/zs/2019-05-31-073411.jpg-wm)
-![images](https://static.lovedata.net/zs/2019-05-31-073434.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-05-31-073347.jpg)
+![images](https://static.lovedata.net/zs/2019-05-31-073411.jpg)
+![images](https://static.lovedata.net/zs/2019-05-31-073434.jpg)
 启动完了之后的话，如果你想删除就需要使用下面命令：
 
 
@@ -330,7 +330,7 @@ service、jobmanager-deployment、taskmanager-deployment，在利用 kubectl
     kubectl delete -f jobmanager-service.yaml
 
 
-![images](https://static.lovedata.net/zs/2019-05-31-075628.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-05-31-075628.jpg)
 ### 小结与反思
 
 这部分介绍了下 Flink 的所有配置文件及其配置文件中的参数的作用，然后讲解了 Flink 的多种部署方式，比如

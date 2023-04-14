@@ -43,7 +43,7 @@ private native void interrupt0();
 
 ### 线程状态转换
 
-![image](https://static.lovedata.net/20-11-10-e4595cfcccbe936fcf0f9030ad397382.png-wm)
+![image](https://static.lovedata.net/20-11-10-e4595cfcccbe936fcf0f9030ad397382.png)
 
 
 
@@ -77,7 +77,7 @@ Java 提供的一种**保存线程私有信息**的机制，因为其在整个**
 
 死锁是一种特定的程序状态，在实体之间，由于循环依赖导致彼此一直处于等待之中，没有任何个体可以继续前进。死锁不仅仅是在线程之间会发生，存在资源独占的进程之间同样也可能出现死锁。通常来说，我们大多是聚焦在多线程场景中的死锁，指两个或多个线程之间，由于互相持有对方需要的锁，而永久处于阻塞的状态。
 
-![image](https://static.lovedata.net/20-11-10-d59a0eed6e578bf4624dd61bdbfacf13.png-wm)
+![image](https://static.lovedata.net/20-11-10-d59a0eed6e578bf4624dd61bdbfacf13.png)
 
 定位问题四板斧
 
@@ -151,7 +151,7 @@ public class DeadLockSample extends Thread {
 - **CyclicBarrier** 的基本操作组合，则就是 **await**，当所有的伙伴（parties）都调用了 **await**，才会继续进行任务*，**并自动进行重置**。注意，正常情况下，CyclicBarrier 的重置都是自动发生的，如果我们调用 reset 方法，但还有线程在等待，就会导致等待线程被打扰，抛出 BrokenBarrierException 异常。
 - CyclicBarrier 侧重点是**线程**，而不是**调用事件**，它的典型应用场景是用来***等待并发线程结束**。
 
-![image](https://static.lovedata.net/20-11-10-8bb926900cc9db63c472e4e89d9ab60c.png-wm)
+![image](https://static.lovedata.net/20-11-10-8bb926900cc9db63c472e4e89d9ab60c.png)
 
 
 
@@ -167,7 +167,7 @@ Map 放入或者获取的速度，而不在乎顺序，大多推荐使用 **Conc
 
 这是因为 TreeMap 要实现**高效的线程安全**是非常困难的，它的实现基于复杂的红黑树。为保证访问效率，当我们**插入或删除节点时，会移动节点进行平衡操作**，这导致在并发场景中难以进行合理粒度的同步。而 **SkipList** 结构则要相对简单很多，通过**层次结构提高访问速度**，虽然不够紧凑，空间使用有一定提高（O(nlogn)），但是在增删元素时线程安全的开销要好很多
 
-![image](https://static.lovedata.net/20-11-10-c3dceb25c189ab256550fc6fb7896b39.png-wm)
+![image](https://static.lovedata.net/20-11-10-c3dceb25c189ab256550fc6fb7896b39.png)
 
 
 
@@ -209,7 +209,7 @@ java.util.concurrent 包提供的容器（Queue、List、Set）、Map，从命�
 - 弱一致性的另外一个体现是，size 等操作准确性是有限的 未必是 100% 准确。
 - 读取的性能具有一定的不确定性。
 
-![image](https://static.lovedata.net/20-11-11-f161aac8ce385005fdf088facbfcaed1.png-wm)
+![image](https://static.lovedata.net/20-11-11-f161aac8ce385005fdf088facbfcaed1.png)
 
 
 

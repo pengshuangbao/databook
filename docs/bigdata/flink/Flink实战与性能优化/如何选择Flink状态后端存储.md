@@ -42,7 +42,7 @@ flink-conf.yaml 配置文件中也有状态后端存储相关的配置，为此�
 ```
 
 
-![images](https://static.lovedata.net/zs/2019-10-17-141800.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-17-141800.png)
 上面三种方式取一种就好了。但是有三种方式，我们该如何去挑选用哪种去存储状态呢？下面讲讲这三种的特点以及该如何选择。
 
 ### 如何使用 MemoryStateBackend 及剖析
@@ -85,7 +85,7 @@ Managers 的内存（JVM 堆）中，当应用程序触发 checkpoint 时，会�
 无任何操作，我跟了下源码，当你没有配置任何的 state 时，它是会在 StateBackendLoader 类中通过
 MemoryStateBackendFactory 来创建的 state 的。
 
-![images](https://static.lovedata.net/zs/2019-10-17-142223.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-17-142223.png)
 继续跟进 MemoryStateBackendFactory 可以发现他这里创建了一个 MemoryStateBackend 实例并通过 configure
 方法进行配置，大概流程代码是：
 
@@ -147,7 +147,7 @@ checkpointPath 是写入 checkpoint 元数据的路径，savepointPath 是写入
 这个来看看 MemoryStateBackend 的继承关系图可以更明确的知道它是继承自 AbstractFileStateBackend，然后
 AbstractFileStateBackend 这个抽象类就是为了能够将状态存储中的数据或者元数据进行文件存储的。
 
-![images](https://static.lovedata.net/zs/2019-10-17-142403.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-17-142403.png)
 所以 FsStateBackend 和 MemoryStateBackend 都会继承该类。
 
 ### 如何使用 FsStateBackend 及剖析
@@ -186,7 +186,7 @@ checkpoint 的时候，会把整个 RocksDB 数据库复制到配置的文件系
 backends 下面，在后面的版本中可能还会加上 flink-statebackend-heap-spillable
 模块用来当作一种新的状态后端存储，感兴趣可以去官网的计划中查看。
 
-![images](https://static.lovedata.net/zs/2019-10-17-143057.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-17-143057.png)
 足以证明了官方其实也是推荐使用 RocksDB 来作为状态的后端存储，为什么呢：
 
   * state 直接存放在 RocksDB 中，不需要存在内存中，这样就可以减少 Task Manager 的内存压力，如果是存内存的话大状态的情况下会导致 GC 次数比较多，同时还能在 checkpoint 时将状态持久化到远端的文件系统，那么就比较适合在生产环境中使用
@@ -265,4 +265,4 @@ State、Operator State、Raw State、 Managed State、Broadcast State 等。还�
 
 下面一图来看看 State 在 Flink 中的整体结构：
 
-![images](https://static.lovedata.net/zs/2019-10-23-150510.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-150510.png)

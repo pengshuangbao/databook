@@ -14,5 +14,5 @@
 
 
 
-![image](https://static.lovedata.net/21-06-29-b8b61982e66da4e9fe8acb46a68d9834.png-wm)
+![image](https://static.lovedata.net/21-06-29-b8b61982e66da4e9fe8acb46a68d9834.png)
 

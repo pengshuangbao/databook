@@ -27,10 +27,10 @@
 4. 报错了怎么处理？
 
    * **语法错误**：只要有一个命令有语法错误，执行EXEC命令后Redis就会直接返回错误，连语法正确的命令也不会执行。
-     ![image](https://static.lovedata.net/jpg/2018/5/18/e58f5d71439a34699548842b85c9d413.jpg-wm)
+     ![image](https://static.lovedata.net/jpg/2018/5/18/e58f5d71439a34699548842b85c9d413.jpg)
 
    * **运行时错误**： 运行错误指在命令执行时出现的错误，比如使用散列类型的命令操作集合类型的键，这种错误在实际执行之前Redis是无法发现的，所以在事务里这样的命令是会被Redis接受并执行的。如果事务里的一条命令出现了运行错误，事务里其他的命令依然会继续执行（包括出错命令之后的命令）
-     ![image](https://static.lovedata.net/jpg/2018/5/18/6971ad099e1afbb9f65823c9749bc90b.jpg-wm)
+     ![image](https://static.lovedata.net/jpg/2018/5/18/6971ad099e1afbb9f65823c9749bc90b.jpg)
 
 > 参考
 >
@@ -46,7 +46,7 @@ CAS，Check and Set 。乐观锁实现使用Redis 自有的watch multi exec等�
 
 ## Redis持久化的几种方式
 
-  ![image](https://static.lovedata.net/jpg/2018/5/18/08b055b90a3f67829d73a2453a109c9d.jpg-wm)
+  ![image](https://static.lovedata.net/jpg/2018/5/18/08b055b90a3f67829d73a2453a109c9d.jpg)
 
 1. RDB持久化
    1. 原理是将Reids在内存中的数据库记录定时dump到磁盘上的RDB持久化
@@ -64,7 +64,7 @@ CAS，Check and Set 。乐观锁实现使用Redis 自有的watch multi exec等�
    二者选择的标准，就是看系统是愿意牺牲一些性能，换取更高的缓存一致性（aof），还是愿意写操作频繁的时候，不启用备份来换取更高的性能，待手动运行save的时候，再做备份（rdb）。rdb这个就更有些 eventually consistent的意思了。
 
 4. 常用配置
-   ![image](https://static.lovedata.net/jpg/2018/5/18/2bbde3193b3d168fa6e982c2416b2df7.jpg-wm)
+   ![image](https://static.lovedata.net/jpg/2018/5/18/2bbde3193b3d168fa6e982c2416b2df7.jpg)
 5. [redis持久化的几种方式](https://www.cnblogs.com/chenliangcl/p/7240350.html)
 
 ## Redis的缓存失效策略
@@ -72,7 +72,7 @@ CAS，Check and Set 。乐观锁实现使用Redis 自有的watch multi exec等�
 1. 通过DEL显示删除无用数据
 2. 通过过期时间（expiration）特性在给定的时限之后自动删除（自动删除）
 3. set hash 容器只能为整个键设置过期时间，而没法为单个元素设置
-4. ![image](https://static.lovedata.net/jpg/2018/5/20/0a668477aa07b7618904e1b4583ee8cf.jpg-wm)
+4. ![image](https://static.lovedata.net/jpg/2018/5/20/0a668477aa07b7618904e1b4583ee8cf.jpg)
 5. 如果同时很多缓存失效，则会有缓存穿透问题
 6. [Redis的缓存策略和主键失效机制](http://www.cnblogs.com/binyue/p/3726842.html)
 7. 失效的内部实现 Redis 删除失效主键的方法主要有两种：
@@ -85,7 +85,7 @@ CAS，Check and Set 。乐观锁实现使用Redis 自有的watch multi exec等�
 其默认值是noeviction。
 下面我将列出当可用内存不足时，删除redis键具有的淘汰规则。
 
-![image](https://static.lovedata.net/jpg/2018/6/22/ef00eec0c7f656b24f0e120aa54a6e78.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/22/ef00eec0c7f656b24f0e120aa54a6e78.jpg)
 
 [Redis所需内存 超过可用内存怎么办 - 坦荡 - 博客园](https://www.cnblogs.com/tdws/p/5727633.html)
 
@@ -95,6 +95,6 @@ CAS，Check and Set 。乐观锁实现使用Redis 自有的watch multi exec等�
 官方信息:
 A String value can be at max 512 Megabytes in length.
 
-![image](https://static.lovedata.net/jpg/2018/7/12/94588e9b96f8967a7b201047166c54af.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/12/94588e9b96f8967a7b201047166c54af.jpg)
 
 [Redis 中 String 类型可以容纳的最大数据长度 - CSDN博客](

@@ -26,7 +26,7 @@ gelly-scala_2.11-1.9.0.jar` 移动到 `lib` 中，接着运行下面的命令就
 
 接下来可以在 UI 上看到运行的结果：
 
-![images](https://static.lovedata.net/zs/2019-10-19-155600.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-19-155600.png)
 如果是自己创建的 Gelly Java 应用程序，则需要添加如下依赖：
 
 
@@ -184,14 +184,14 @@ DataSet<Triplet<K, VV, EV>> getTriplets()
 
   * Filter：Gelly 支持在图中的顶点上或边上执行一个用户指定的 filter 转换。filterOnEdges 会根据提供的在边上的断言在原图的基础上生成一个新的子图，注意，顶点的数据不会被修改。同样的 filterOnVertices 在原图的顶点上进行 filter 转换，不满足断言条件的源节点或目标节点会在新的子图中移除。该子图方法支持同时对顶点和边应用 filter 函数。
 
-![images](https://static.lovedata.net/zs/2019-10-19-165050.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-10-19-165050.jpg)
   * Reverse：Gelly中得reverse()方法用于在原图的基础上，生成一个所有边方向与原图相反的新图。
 
   * Undirected：在前面的内容中，我们提到过，Gelly中的图通常都是有向的，而无向图可以通过对所有边添加反向的边来实现，出于这个目的，Gelly提供了getUndirected()方法，用于获取原图的无向图。
 
   * Union：Gelly的union()操作用于联合当前图和指定的输入图，并生成一个新图，在输出的新图中，相同的节点只保留一份，但是重复的边会保留。如下图所示：
 
-![images](https://static.lovedata.net/zs/2019-10-19-165224.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-10-19-165224.jpg)
   * Difference：Gelly提供了difference()方法用于发现当前图与指定的输入图之间的差异。
 
   * Intersect：Gelly提供了intersect()方法用于发现两个图中共同存在的边，并将相同的边以新图的方式返回。相同的边指的是具有相同的源顶点，相同的目标顶点和相同的边值。返回的新图中，所有的节点没有任何值，如果需要节点值，可以使用joinWithVertices()方法去任何一个输入图中检索。
@@ -222,7 +222,7 @@ Graph<K, VV, EV> removeEdges(List<Edge<K, EV>> edgesToBeRemoved)
 来确定，它有三个枚举值，分别是：IN/OUT/ALL，其中 IN 只考虑所有入的邻接边和顶点，OUT 只考虑所有出的邻接边和顶点，而 ALL
 考虑所有的邻接边和顶点。举个例子，如下图所示，假设我们想要知道图中出度最小的边权重。
 
-![images](https://static.lovedata.net/zs/2019-10-19-170332.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-10-19-170332.jpg)
 下列代码会为每个节点找到出的边集合，然后在集合的基础上执行一个用户定义的方法 SelectMinWeight()。
 
 
@@ -243,7 +243,7 @@ static final class SelectMinWeight implements ReduceEdgesFunction<Double> {
 ```
 
 
-![images](https://static.lovedata.net/zs/2019-10-19-170430.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-10-19-170430.jpg)
 同样的，假设我们需要知道每个顶点的所有邻接边上的权重的值之和，不考虑方向。可以用下面的代码来实现：
 
 
@@ -266,7 +266,7 @@ static final class SumValues implements ReduceNeighborsFunction<Long> {
 
 结果如下图所示：
 
-![images](https://static.lovedata.net/zs/2019-10-19-170601.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-10-19-170601.jpg)
 #### Graph 验证
 
 Gelly

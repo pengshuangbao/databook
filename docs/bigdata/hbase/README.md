@@ -2,11 +2,11 @@
 
 [toc]
 
-![知识图谱](https://static.lovedata.net/jpg/2018/6/20/7620334c24d3e79d5ec4954bd5003e87.jpg-wm)
+![知识图谱](https://static.lovedata.net/jpg/2018/6/20/7620334c24d3e79d5ec4954bd5003e87.jpg)
 
 ## hbase 架构讲解
 
-![image](https://static.lovedata.net/jpg/2018/6/20/08bd66f5cd400fe609a745de9bd16dab.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/6/20/08bd66f5cd400fe609a745de9bd16dab.jpg)
 
 参考
 [深入HBase架构解析（一） - 上善若水 - BlogJava](http://www.blogjava.net/DLevin/archive/2015/08/22/426877.html)
@@ -25,15 +25,15 @@ rowkey的设计原则：各个列簇数据平衡，长度原则、相邻原则�
 
 ### 一条数据的HBase之旅
 
-![image](https://static.lovedata.net/21-06-24-6ced89348e9fe3f935d157b2155109d8.png-wm)
+![image](https://static.lovedata.net/21-06-24-6ced89348e9fe3f935d157b2155109d8.png)
 
 **RowKey Format 1**： Mobile1 + StartTime
 
-![image](https://static.lovedata.net/21-06-24-9f309ead4a06ecbc6055c002379a2a93.png-wm)
+![image](https://static.lovedata.net/21-06-24-9f309ead4a06ecbc6055c002379a2a93.png)
 
 **RowKey Format 2**： StartTime + Mobile1
 
-![image](https://static.lovedata.net/21-06-24-b81236fc6bcef828f71cb20c7e34e7c8.png-wm)
+![image](https://static.lovedata.net/21-06-24-b81236fc6bcef828f71cb20c7e34e7c8.png)
 
 
 
@@ -59,7 +59,7 @@ rowkey的设计原则：各个列簇数据平衡，长度原则、相邻原则�
 
   11110000431^201803010800
 
-![image](https://static.lovedata.net/21-06-24-f1baaad1a12c4c16b45dcb8a495fcd11.png-wm)
+![image](https://static.lovedata.net/21-06-24-f1baaad1a12c4c16b45dcb8a495fcd11.png)
 
 RowKey应该为： **66660000431^201803011300**
 
@@ -67,7 +67,7 @@ RowKey应该为： **66660000431^201803011300**
 
 假设，Region分割点为"1,2,3,4,5,6,7,8,9"，基于这9个分割点，可以预先创建10个Region，这10个Region的StartKey和StopKey如下所示：
 
-![image](https://static.lovedata.net/21-06-24-99a3b4a08e693548868500ce05dae1c9.png-wm)
+![image](https://static.lovedata.net/21-06-24-99a3b4a08e693548868500ce05dae1c9.png)
 
 由于Mobile1字段的最后一位是0~9之间的随机数字，因此，可以均匀打散到这10个Region中
 
@@ -77,7 +77,7 @@ Salting的原理是在RowKey的前面添加固定长度的随机Bytes，随机By
 
 能够分散，但是对于读取不是很友好，查询并不知道前面添加的是什么，所以包含 A B C的regions都得去查一下
 
-![image](https://static.lovedata.net/21-06-24-1f2837243b460dbf3189a0af48211485.png-wm)
+![image](https://static.lovedata.net/21-06-24-1f2837243b460dbf3189a0af48211485.png)
 
 **Hashing**
 
@@ -100,13 +100,13 @@ BlockCache也称为读缓存，HBase会将一次文件查找的Block块缓存到
 ## Hbase 二级索引实现
 
 1. [技术分享 | HBase二级索引实现方案 - 后端 - 掘金](https://juejin.im/entry/5bae42f7f265da0aa5291913)
-   1. ![image](https://static.lovedata.net/20-06-30-d0a62c86d8017f664384df7850ea85c9.png-wm)
+   1. ![image](https://static.lovedata.net/20-06-30-d0a62c86d8017f664384df7850ea85c9.png)
    2. **IndexTable的创建过程如下：**
       1. 获取DataTable的所有RegionInfo，得到所有DataTable Region的StartKey。
       2. 结合索引定义和DataTable Region的StartKey信息，调用HBaseAdmin的createTable(final HTableDescriptor desc, byte [][] splitKeys)方法创建索引表。
       3. 通过以上两步便建立了IndexTable Region和DataTable Region的以StartKey为依据的一一对应关系。
    3.   **IndexTable RowKey**
-      1. ![image](https://static.lovedata.net/20-06-30-a687eca5fb78d81e08f143ba69b47dc6.png-wm)
+      1. ![image](https://static.lovedata.net/20-06-30-a687eca5fb78d81e08f143ba69b47dc6.png)
 
 
 
@@ -167,7 +167,7 @@ HBase的rowkey在底层是HFile存储数据的，以键值对存放到SortedMap�
 
    1. > [HBase BulkLoad批量写入数据实战 - 哥不是小萝莉 - 博客园](https://www.cnblogs.com/smartloli/p/9501887.html)
 
-   2. ![image](https://static.lovedata.net/21-06-17-ae9f2d5008d9edfbf10bec552bc9e0b7.png-wm)
+   2. ![image](https://static.lovedata.net/21-06-17-ae9f2d5008d9edfbf10bec552bc9e0b7.png)
 
    3. hbase底层文件夹格式 " /hbase/data/default/<tbl_name>/<region_id>/\<cf\>/<hfile_id>"
 

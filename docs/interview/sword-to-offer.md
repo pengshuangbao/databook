@@ -31,7 +31,7 @@
 2. 中序遍历：中序遍历，线访问左子节点，在访问根子节点，最后访问右子节点
 3. 后叙遍历：后序遍历，线访问左子节点，在访问右子节点，最后访问根节点
 
-![image](https://static.lovedata.net/21-02-08-7cc69540689f61c1094474bbfa3bd540.png-wm)
+![image](https://static.lovedata.net/21-02-08-7cc69540689f61c1094474bbfa3bd540.png)
 
 | 遍历方式  | 结果                    |
 | --------- | ----------------------- |
@@ -67,11 +67,11 @@
 
 题目:输入某二叉树的前序遍历和中序遍历的结果，请重建该二叉树，假设输入的前序遍历和中序遍历都不包含重复的数字，例如，输入前序遍历 {1,2,4,7,3,5,6,8} 和中序遍历 {4,7,2,1,5,3,8,6}
 
-![image](https://static.lovedata.net/21-02-08-a58c634c665e5595350fec2c4e21e535.png-wm)
+![image](https://static.lovedata.net/21-02-08-a58c634c665e5595350fec2c4e21e535.png)
 
 
 
-![image](https://static.lovedata.net/21-02-08-0461dc7d2511bd733c917bd394202c86.png-wm)
+![image](https://static.lovedata.net/21-02-08-0461dc7d2511bd733c917bd394202c86.png)
 
 
 
@@ -174,7 +174,7 @@ public class ConstructBinaryTree {
 
 中序遍历序列是{d,b,h,,e,i,a,f,c,g}
 
-![image](https://static.lovedata.net/21-02-08-dac0d1b042dc3145fa83eb9688a72cea.png-wm)
+![image](https://static.lovedata.net/21-02-08-dac0d1b042dc3145fa83eb9688a72cea.png)
 
 
 
@@ -231,7 +231,7 @@ public class NextNodeInBinaryTrees {
 
 使用两个 先进后出的栈 实现一个先进先出的队列 
 
-![image](https://static.lovedata.net/21-02-08-3eb954a32237a287dc05b2e9941450cc.png-wm)
+![image](https://static.lovedata.net/21-02-08-3eb954a32237a287dc05b2e9941450cc.png)
 
 
 
@@ -340,7 +340,7 @@ public class AddFromToN {
 
 写一个函数，输入n，求斐波那契额(Fibonacci)数列的第n项。定义如下
 
-![image](https://static.lovedata.net/21-02-08-437cfe4b303d95af5e24d7353b98fe73.png-wm)
+![image](https://static.lovedata.net/21-02-08-437cfe4b303d95af5e24d7353b98fe73.png)
 
 
 
@@ -434,7 +434,7 @@ public class Fibonacci {
 
 [十大经典排序算法动画，看我就够了！ - 云+社区 - 腾讯云](https://cloud.tencent.com/developer/article/1367620)
 
-![快速排序动图](http://static.lovedata.net/quick_sort_w.gif-wm)
+![快速排序动图](http://static.lovedata.net/quick_sort_w.gif)
 
 
 
@@ -536,7 +536,7 @@ j d e h
 
 包含一条字符串"bfce"的路径，但是矩阵中不包含"abfb"路径，因为字符串的第一个字符b占据了矩阵中的第一行第二个格子之后，路径不能再次进入该格子
 
-![image](https://static.lovedata.net/21-02-09-6137e12552afc22330c300d6d75545c1.png-wm)
+![image](https://static.lovedata.net/21-02-09-6137e12552afc22330c300d6d75545c1.png)
 
 
 
@@ -710,7 +710,7 @@ public class RobotMove {
 
 递归的思路
 
-![image](https://static.lovedata.net/21-02-09-cfe930632b2a14dd566e89a889125087.png-wm)
+![image](https://static.lovedata.net/21-02-09-cfe930632b2a14dd566e89a889125087.png)
 
 
 
@@ -792,17 +792,17 @@ public class CuttingRope {
 
 把数字用二进制表示，对每一位上面的 0 1 坐运算
 
-![image](https://static.lovedata.net/21-02-10-bfd729d6a03c878179d8384ec8da422a.png-wm)
+![image](https://static.lovedata.net/21-02-10-bfd729d6a03c878179d8384ec8da422a.png)
 
 左移运算符 m<<n 表示把 m 左移 n 位  最左边的n位将会被丢弃 右边的n位补0
 
-![image](https://static.lovedata.net/21-02-10-ce531267500a01982ee1ee043dab964a.png-wm)
+![image](https://static.lovedata.net/21-02-10-ce531267500a01982ee1ee043dab964a.png)
 
 
 
 右移比较复杂点，分有符号数和无符号数，如果是无符号数只，直接在最边补0，如果是有符号数，则用数字的符号位补最左边的n位
 
-![image](https://static.lovedata.net/21-02-10-9b92b9713ffc76436779424ee3c3c5e7.png-wm)
+![image](https://static.lovedata.net/21-02-10-9b92b9713ffc76436779424ee3c3c5e7.png)
 
 
 
@@ -939,7 +939,7 @@ public class CuttingRope {
 
 ### 代码规范性
 
-![image](https://static.lovedata.net/21-02-20-f9d1e350d71d35e63aec1566fa3059ce.png-wm)
+![image](https://static.lovedata.net/21-02-20-f9d1e350d71d35e63aec1566fa3059ce.png)
 
 
 
@@ -949,7 +949,7 @@ public class CuttingRope {
 
 #### 3个方面保证代码的完整性
 
-![image](https://static.lovedata.net/21-02-20-863737bf49722b59da21a7a9cae79b50.png-wm)
+![image](https://static.lovedata.net/21-02-20-863737bf49722b59da21a7a9cae79b50.png)
 
 1. 功能测试：正常的功能
 2. 边界测试： 边界值判断，最大数，最小数，循环的边界值，递归的终止边界值
@@ -959,7 +959,7 @@ public class CuttingRope {
 
 #### 3种错误处理的方法
 
-![image](https://static.lovedata.net/21-02-20-b075baea9466e71c4fdc093899c4d5e4.png-wm)
+![image](https://static.lovedata.net/21-02-20-b075baea9466e71c4fdc093899c4d5e4.png)
 
 
 
@@ -967,7 +967,7 @@ public class CuttingRope {
 
 给定一个double类型的浮点数base和int类型的整数exponent。求base的exponent次方。不得使用库函数直接实现，无需考虑大数问题。
 
-![image](https://static.lovedata.net/21-02-20-128f5d8d572ca9f3a80e8f304321acd7.png-wm)
+![image](https://static.lovedata.net/21-02-20-128f5d8d572ca9f3a80e8f304321acd7.png)
 
 ```java
 public class Power {
@@ -1101,7 +1101,7 @@ public class Print1ToMaxOfNDigits {
 
 给定单向链表的头指针和一个结点指针，定义一个函数在O(1)时间内删除该结点。假设要删除的结点确实在链表中。
 
-![image](https://static.lovedata.net/21-02-20-18e5ce52957f3a6597b4b1828ba80be5.png-wm)
+![image](https://static.lovedata.net/21-02-20-18e5ce52957f3a6597b4b1828ba80be5.png)
 
 ```java
 
@@ -1233,7 +1233,7 @@ class ListNode {
 
 #### 适合初级程序员
 
-![image](https://static.lovedata.net/21-02-20-1846a2d13ff69eae397801fa87a4bc27.png-wm)
+![image](https://static.lovedata.net/21-02-20-1846a2d13ff69eae397801fa87a4bc27.png)
 
 
 
@@ -1361,13 +1361,13 @@ public class ReorderArray {
 
 
 
-![image](https://static.lovedata.net/21-02-20-db668a2f0a7402b36399494e6bca5779.png-wm)
+![image](https://static.lovedata.net/21-02-20-db668a2f0a7402b36399494e6bca5779.png)
 
 
 
 三种方式让程序崩溃，不够鲁棒
 
-![image](https://static.lovedata.net/21-02-20-6e9cdabcfc5613002ef92e056bbcebe5.png-wm)
+![image](https://static.lovedata.net/21-02-20-6e9cdabcfc5613002ef92e056bbcebe5.png)
 
 ```java
 package com.lovedata.interview.N22_KthNodeFromEnd;
@@ -1440,11 +1440,11 @@ class ListNode {
 
 一个链表中包含环，请找出该链表的环的入口结点。
 
-![image](https://static.lovedata.net/21-02-22-410fd5d2d6af96115736903b07998cab.png-wm)
+![image](https://static.lovedata.net/21-02-22-410fd5d2d6af96115736903b07998cab.png)
 
 
 
-![image](https://static.lovedata.net/21-02-22-f572135ad08d4d1fad2af05dce876bb6.png-wm)
+![image](https://static.lovedata.net/21-02-22-f572135ad08d4d1fad2af05dce876bb6.png)
 
 #### 双指针法
 
@@ -1466,7 +1466,7 @@ $$a = (k-1)(b+c) + c, k \ge 1$$
 
 上面的等式说明：**X到Y的步数a等于从Z处开始在环内转k-1圈后，再从Z到Y的步数是一样的。现在将pFast移动到X，pSlow保持在Z处，两者同时每次走一步，pFast走a步，pSlow走(k-1)(b+c) + c步，它们刚好会在Y处相遇，由此找到了这个入口结点。**
 
-![image](https://static.lovedata.net/21-02-22-934d7ddb456c6f08f1d75118e99ed1d1.png-wm)
+![image](https://static.lovedata.net/21-02-22-934d7ddb456c6f08f1d75118e99ed1d1.png)
 
 ```java
 package com.lovedata.interview.N23_EntryNodeInListLoop;
@@ -1549,7 +1549,7 @@ class ListNode {
 
 输入一个链表的头结点，反转链表后，并返回反转链表的头结点。
 
-![image](https://static.lovedata.net/21-02-22-8a61cdaa772db95fc6d815f0da7eaf1a.png-wm)
+![image](https://static.lovedata.net/21-02-22-8a61cdaa772db95fc6d815f0da7eaf1a.png)
 
 ```java
 package com.lovedata.interview.N24_ReverseList;
@@ -1617,13 +1617,13 @@ class ListNode {
 
 输入两个单调递增的链表，输出两个链表合成后的链表，当然我们需要合成后的链表满足单调不减规则。
 
-![image](https://static.lovedata.net/21-02-22-ca265d98cf4d0277814284094130ee37.png-wm)
+![image](https://static.lovedata.net/21-02-22-ca265d98cf4d0277814284094130ee37.png)
 
-![image](https://static.lovedata.net/21-02-22-c357252e45ed2b3c98aac7ceb559a7d7.png-wm)
+![image](https://static.lovedata.net/21-02-22-c357252e45ed2b3c98aac7ceb559a7d7.png)
 
 
 
-![image](https://static.lovedata.net/21-02-22-2b39f01560a2b4261816199944d1f788.png-wm)
+![image](https://static.lovedata.net/21-02-22-2b39f01560a2b4261816199944d1f788.png)
 
 典型的**递归**的过程。
 
@@ -1700,18 +1700,18 @@ class ListNode {
 
 输入两棵二叉树A，B，判断B是不是A的子结构。（ps：我们约定空树不是任意一个树的子结构）
 
-![image](https://static.lovedata.net/21-02-22-20ee173aaa2e0608911ce2d05da406ca.png-wm)
+![image](https://static.lovedata.net/21-02-22-20ee173aaa2e0608911ce2d05da406ca.png)
 
 
 
 1. 第一步：在树A种找到和树B的根节点的值一样的节点R
 2. 第二部：判断树A种以R为根节点的子树是不是包含和树B一样的结构
 
-![image](https://static.lovedata.net/21-02-22-68443020bbc84f530c4b45c9d42765d2.png-wm)
+![image](https://static.lovedata.net/21-02-22-68443020bbc84f530c4b45c9d42765d2.png)
 
 
 
-![image](https://static.lovedata.net/21-02-22-fd12b46be94e48ccd2340dec2f0f7283.png-wm)
+![image](https://static.lovedata.net/21-02-22-fd12b46be94e48ccd2340dec2f0f7283.png)
 
 这就是对二叉树的遍历，一般使用递归，因为比较简洁，也可以用循环。
 
@@ -1790,7 +1790,7 @@ public class SubstructureInTree {
 
 
 
-![image](https://static.lovedata.net/21-02-22-b742dbebf33d592c77d3000f2478a291.png-wm)
+![image](https://static.lovedata.net/21-02-22-b742dbebf33d592c77d3000f2478a291.png)
 
 
 
@@ -1820,11 +1820,11 @@ public class SubstructureInTree {
 
 操作给定的二叉树，将其变换为原二叉树的镜像。
 
-![image](https://static.lovedata.net/21-02-22-9c710ff22a24e3760d94098cfa59657b.png-wm)
+![image](https://static.lovedata.net/21-02-22-9c710ff22a24e3760d94098cfa59657b.png)
 
 
 
-![image](https://static.lovedata.net/21-02-22-d7f48e115d58dc9556a3b9f709dcccb5.png-wm)
+![image](https://static.lovedata.net/21-02-22-d7f48e115d58dc9556a3b9f709dcccb5.png)
 
 
 
@@ -1887,13 +1887,13 @@ public class MirrorOfBinaryTree {
 
 请实现一个函数，用来判断一颗二叉树是不是对称的。注意，如果一个二叉树同此二叉树的镜像是同样的，定义其为对称的。
 
-![image](https://static.lovedata.net/21-02-22-b902289757c1701968927f112025ae33.png-wm)
+![image](https://static.lovedata.net/21-02-22-b902289757c1701968927f112025ae33.png)
 
 
 
 可以通过比较二叉树的前序遍历序列和对称谦虚遍历序列来判断二叉树是不是对称的，如果两个序列是一样的，则是对称的
 
-![image](https://static.lovedata.net/21-02-22-18e75875fcca963893aedf5dbe4ee7ce.png-wm)
+![image](https://static.lovedata.net/21-02-22-18e75875fcca963893aedf5dbe4ee7ce.png)
 
 
 
@@ -1966,15 +1966,15 @@ public class SymmetricalBinaryTree {
 
 
 
-![image](https://static.lovedata.net/21-02-22-1b74656bea9384dea1ba04472bcc861d.png-wm)
+![image](https://static.lovedata.net/21-02-22-1b74656bea9384dea1ba04472bcc861d.png)
 
 
 
-![image](https://static.lovedata.net/21-02-22-2c2f0742c717ce608658af4af40a409a.png-wm)
+![image](https://static.lovedata.net/21-02-22-2c2f0742c717ce608658af4af40a409a.png)
 
 
 
-![image](https://static.lovedata.net/21-02-22-bc753cad094ff899041d5a401fa552fc.png-wm)
+![image](https://static.lovedata.net/21-02-22-bc753cad094ff899041d5a401fa552fc.png)
 
 对于这种问题，从最简单的开始分析，比如 两行两列 三行三列。画一画图就清洗了
 
@@ -2071,7 +2071,7 @@ public class PrintMatrix {
 
 定义栈的数据结构，请在该类型中实现一个能够得到栈最小元素的min函数。要求push、pop、min方法的时间复杂度都为O(1)
 
-![image](https://static.lovedata.net/21-02-23-5a6b8a095b1c292f713e33091060f7ef.png-wm)
+![image](https://static.lovedata.net/21-02-23-5a6b8a095b1c292f713e33091060f7ef.png)
 
 
 
@@ -2128,11 +2128,11 @@ public class MinInStack {
 > 输入两个整数序列，第一个序列表示栈的压入顺序，请判断第二个序列是否为该栈的弹出顺序。假设压入栈的所有数字均不相等。例如序列1,2,3,4,5是某栈的压入顺序，序列4,5,3,2,1是该压栈序列对应的一个弹出序列，但4,3,5,1,2就不可能是该压栈序列的弹出序列
 > （注意：这两个序列的长度是相等的）
 
-![image](https://static.lovedata.net/21-02-23-8ea221ddf1146efad1076dad46203853.png-wm)
+![image](https://static.lovedata.net/21-02-23-8ea221ddf1146efad1076dad46203853.png)
 
 
 
-![image](https://static.lovedata.net/21-02-23-c9c2cf9407c77a7f217e368f8550c11f.png-wm)
+![image](https://static.lovedata.net/21-02-23-c9c2cf9407c77a7f217e368f8550c11f.png)
 
 假如入栈顺序是`[1, 2, 3, 4, 5]`举个出栈顺序正确的例子`[4, 5, 3, 2, 1]`：
 
@@ -2217,7 +2217,7 @@ public class StackPushPopOrder {
 
 #### 不分行，层序遍历
 
-![image](https://static.lovedata.net/21-02-23-a3380b45a1a9f4950212d3ba502bf21c.png-wm)
+![image](https://static.lovedata.net/21-02-23-a3380b45a1a9f4950212d3ba502bf21c.png)
 
 ```java
 
@@ -2352,9 +2352,9 @@ public class PrintTreesInLines {
   4   5  6   7
 ```
 
-![image](https://static.lovedata.net/21-02-23-c970de3513a1686f5dfaad7a8fc147b3.png-wm)
+![image](https://static.lovedata.net/21-02-23-c970de3513a1686f5dfaad7a8fc147b3.png)
 
-![image](https://static.lovedata.net/21-02-23-f3bb303e2591bcbb8c66bc2e91c1991c.png-wm)
+![image](https://static.lovedata.net/21-02-23-f3bb303e2591bcbb8c66bc2e91c1991c.png)
 
 ```java
 package com.lovedata.interview.N32_03_PrintTreesInZigzag;
@@ -2456,7 +2456,7 @@ public class PrintTreesInZigzag {
 
 
 
-![image](https://static.lovedata.net/21-02-23-f0d2c7aee53de9451fbe5a9f729affc2.png-wm)
+![image](https://static.lovedata.net/21-02-23-f0d2c7aee53de9451fbe5a9f729affc2.png)
 
 注意是二叉搜索（查找）树，特点是**父结点的左子树都比父结点小**，父结点的右子树都比父结点大。因此其后序遍历的序列有一定的规律：
 
@@ -2541,9 +2541,9 @@ public class SquenceOfBST {
 > 输入一颗二叉树和一个整数，打印出二叉树中结点值的和为输入整数的所有路径。路径定义为从树的根结点开始往下一直到叶结点所经过的结点形成一条路径。
 > ```
 
-![image](https://static.lovedata.net/21-02-23-0e044bccf4dfe4e7ba343aa9253dd5be.png-wm)
+![image](https://static.lovedata.net/21-02-23-0e044bccf4dfe4e7ba343aa9253dd5be.png)
 
-![image](https://static.lovedata.net/21-02-23-775593f946f55ed8bbef55f693145180.png-wm)
+![image](https://static.lovedata.net/21-02-23-775593f946f55ed8bbef55f693145180.png)
 
 
 
@@ -2640,15 +2640,15 @@ public class PathInTree {
 > 输入一个复杂链表（每个节点中有节点值，以及两个指针，一个指向下一个节点，另一个特殊指针指向任意一个节点），返回结果为复制后复杂链表的head。（注意，输出结果中请不要返回参数中的节点引用，否则判题程序会直接返回空）
 > ```
 
-![image](https://static.lovedata.net/21-02-23-adfeb9e72aa62662004d8bd75e73ec13.png-wm)
+![image](https://static.lovedata.net/21-02-23-adfeb9e72aa62662004d8bd75e73ec13.png)
 
 
 
-![image](https://static.lovedata.net/21-02-23-8f998e7646c976c37fa10e651fba56e0.png-wm)
+![image](https://static.lovedata.net/21-02-23-8f998e7646c976c37fa10e651fba56e0.png)
 
-![image](https://static.lovedata.net/21-02-23-8f5d36bcd3acd2073269704e468c31f2.png-wm)
+![image](https://static.lovedata.net/21-02-23-8f5d36bcd3acd2073269704e468c31f2.png)
 
-![image](https://static.lovedata.net/21-02-23-478e9b14fb5975d32b74105cfa5bc51d.png-wm)
+![image](https://static.lovedata.net/21-02-23-478e9b14fb5975d32b74105cfa5bc51d.png)
 
 ```java
 package com.lovedata.interview.N35_CopyComplexList;
@@ -2733,11 +2733,11 @@ class RandomListNode {
 
 看到这道题我第一反映就是，二叉树的线索化，不过还是有些区别的，下面会讨论。按照二叉搜索树的特点，最左边的结点是值最小的，而题目要求得到排序的双向链表，所以基本确定下来**中序遍历**的方法。
 
-![image](https://static.lovedata.net/21-02-23-4efabeaef9acacda98fa3ea2a839e8c2.png-wm)
+![image](https://static.lovedata.net/21-02-23-4efabeaef9acacda98fa3ea2a839e8c2.png)
 
 
 
-![image](https://static.lovedata.net/21-02-23-3ab36dc0262fdaed95bba8ae34420523.png-wm)
+![image](https://static.lovedata.net/21-02-23-3ab36dc0262fdaed95bba8ae34420523.png)
 
 
 
@@ -2791,7 +2791,7 @@ class RandomListNode {
 
 >   请实现两个函数，分别用来序列化和反序列化二叉树。
 
-![image](https://static.lovedata.net/21-02-24-7360cfc42cb61a9d9dd96159f6e1c4cb.png-wm)
+![image](https://static.lovedata.net/21-02-24-7360cfc42cb61a9d9dd96159f6e1c4cb.png)
 
 其实遇到空指针可以也用一个特殊的字符表示，比如“#”，**这样前序遍历序列就可以表示唯一的一棵二叉树了。**对于空指针也用一个字符表示，可称这样的序列为**扩展序列**。而二叉树的建立，必须先要建立根结点再建立左右子树（root为空怎么调用root.left是吧），所以必须前序建立二叉树，那么序列化时也应该用前序遍历，保证了根结点在序列前面。
 
@@ -2919,11 +2919,11 @@ public class SerializeBinaryTrees {
 
 第一个字符和其后的所有字符依次交换位置可以用一个for循环完成，对于循环中的每一次交换：在交换位置后要对除第一个字符外的字符序列进行递归。**这里一定要注意，第一个字符首先要和自己交换一下。**一次递归调用结束后，需要将之前的交换复原，以保证下次交换依然是和第一个字符交换。比如abcd，第一个字符和第二个字符交换后变成bacd，此后固定b对acd递归，递归结束后，需要将bacd复原成abcd，以便下次a和c交换位置变成cbad......
 
-![image](https://static.lovedata.net/21-02-24-d6a2c8480e09098c00b2a50663d76f93.png-wm)
+![image](https://static.lovedata.net/21-02-24-d6a2c8480e09098c00b2a50663d76f93.png)
 
 
 
-![image](https://static.lovedata.net/21-02-24-2d82150b9521e8c96aed47c1b96d0919.png-wm)
+![image](https://static.lovedata.net/21-02-24-2d82150b9521e8c96aed47c1b96d0919.png)
 
 | **Chars** | **Begin** | **List**  | **i** | **备注**                    |
 | --------- | --------- | --------- | ----- | --------------------------- |
@@ -3252,9 +3252,9 @@ public class KLeastNumbers {
 >   如何得到一个数据流中的中位数？如果从数据流中读出奇数个数值，那么中位数就是所有数值排序之后位于中间的数值。如果从数据流中读出偶数个数值，那么中位数就是所有数值排序之后中间两个数的平均值。
 >   ```
 
-![image](https://static.lovedata.net/21-02-24-65399ab03e615a1c9f88e0c5f9cf704e.png-wm)
+![image](https://static.lovedata.net/21-02-24-65399ab03e615a1c9f88e0c5f9cf704e.png)
 
-![image](https://static.lovedata.net/21-02-24-60c8975a1cba8503dfeec00c268fd3a0.png-wm)
+![image](https://static.lovedata.net/21-02-24-60c8975a1cba8503dfeec00c268fd3a0.png)
 
 
 
@@ -3362,7 +3362,7 @@ public class StreamMedian {
 >   输入一个整型数组，数组里正负数都可能有，数组中的一个或者连续的多个整数组成一个子数组。求所有子数组的和的最大值，要求时间复杂度为O(n)
 >   ```
 
-![image](https://static.lovedata.net/21-02-24-d4cf3307bfe3afbdf0be09109fee441a.png-wm)
+![image](https://static.lovedata.net/21-02-24-d4cf3307bfe3afbdf0be09109fee441a.png)
 
 
 
@@ -3524,7 +3524,7 @@ public class SortArrayForMinNumber {
 
 
 
-![image](https://static.lovedata.net/21-02-25-2288a3964e69f87453c2c8114d2579f5.png-wm)
+![image](https://static.lovedata.net/21-02-25-2288a3964e69f87453c2c8114d2579f5.png)
 
 ```java
 package com.lovedata.interview.N47_MaxValueOfGifts;
@@ -3656,7 +3656,7 @@ public class MaxValueOfGifts {
 
 
 
-![image](https://static.lovedata.net/21-02-25-d382f5258a7bf62da641285c40fa1a0c.png-wm)
+![image](https://static.lovedata.net/21-02-25-d382f5258a7bf62da641285c40fa1a0c.png)
 
 
 
@@ -4113,13 +4113,13 @@ public class FirstCommonNodesInLists {
 
 
 
-![image](https://static.lovedata.net/21-03-02-400fb5d2aa91ca02ce331fc1e5613dcb.png-wm)
+![image](https://static.lovedata.net/21-03-02-400fb5d2aa91ca02ce331fc1e5613dcb.png)
 
-![image](https://static.lovedata.net/21-03-02-8466bb0048d5c333e1dff70cd83f1827.png-wm)
+![image](https://static.lovedata.net/21-03-02-8466bb0048d5c333e1dff70cd83f1827.png)
 
 
 
-![image](https://static.lovedata.net/21-03-02-40e7dda401fa93e5d9605a386ad6f37a.png-wm)
+![image](https://static.lovedata.net/21-03-02-40e7dda401fa93e5d9605a386ad6f37a.png)
 
 
 
@@ -4158,7 +4158,7 @@ public class FirstCommonNodesInLists {
 
 面试官提出一个新概念，没听说过，于是在已有的理解上提出进一步的问题，在得到回复后，几个来回，掌握了这个概念。体现了学习能力
 
-![image](https://static.lovedata.net/21-03-02-8e6b4fe972f353f1110dc487c2111b11.png-wm)
+![image](https://static.lovedata.net/21-03-02-8e6b4fe972f353f1110dc487c2111b11.png)
 
 
 
@@ -4401,7 +4401,7 @@ public class IntegerIdenticalToIndex {
 >   给定一颗二叉搜索树，请找出排名第k的结点。
 >   ```
 
-![image](https://static.lovedata.net/21-03-05-90f7cfb7bc5e756417e98f63e2ac590e.png-wm)
+![image](https://static.lovedata.net/21-03-05-90f7cfb7bc5e756417e98f63e2ac590e.png)
 
 注意是二叉搜索树，这说明对于任何结点，有父结点大于其左子结点且小于右子结点。**如果中序遍历这棵树，就能得到递增排序的序列。**
 
@@ -4469,7 +4469,7 @@ public class KthNodeInBST {
 >   输入一棵二叉树，求该树的深度。从根结点到叶结点依次经过的结点（含根、叶结点）形成树的一条路径，最长路径的长度为树的深度。
 >   ```
 
-![image](https://static.lovedata.net/21-03-05-853713c9b950acf03fa04764e3703062.png-wm)
+![image](https://static.lovedata.net/21-03-05-853713c9b950acf03fa04764e3703062.png)
 
 ##### 递归版本
 
@@ -4691,7 +4691,7 @@ public class BalancedBinaryTree {
 >   输入一个递增排序的数组和一个数字S，在数组中查找两个数，使得他们的和正好是S；如果有多对数字的和等于S，输出两个数的乘积最小的。
 >   ```
 
-![image](https://static.lovedata.net/21-03-08-9605f56b6c3b58a67e37997de4cec7d9.png-wm)
+![image](https://static.lovedata.net/21-03-08-9605f56b6c3b58a67e37997de4cec7d9.png)
 
 **设置两个指针，一个指向数组的第一个元素，另一个指向数组的最后一个元素。即一开始将较小值设为数组的最小值，较大值设置为数组的最大值。**
 

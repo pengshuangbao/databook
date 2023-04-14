@@ -11,7 +11,7 @@
 行为日志，要计算各 app 的 PV，所以按照 app 进行 keyBy，相同 app 的数据发送到同一个 Operator 实例中处理，keyBy 后对
 app 的 PV 值进行累加来，最后将计算的 PV 结果输出到外部 Sink 端。
 
-![images](https://static.lovedata.net/zs/2019-11-12-004442.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-11-12-004442.jpg)
 可以看到在任务运行过程中，计算 Count 的算子有两个并行度，其中一个并行度处理 app1 的数据，另一个并行度处理 app2 的数据。由于 app1
 比较热门，所以 app1 的日志量远大于 app2 的日志量，造成计算 app1 PV 的并行度压力过大成为整个系统的瓶颈，而计算 app2 PV
 的并行度数据量较少所以 CPU、内存以及网络资源的使用率整体都比较低，这就是产生数据倾斜的案例。
@@ -33,14 +33,14 @@ Flink 中如何来判断是否发生了数据倾斜。
 页面展示的任务执行计划，可以看到任务经过 Operator Chain 后，总共有两个 Task，上游 Task 将数据 keyBy 后发送到下游
 Task，如何判断第二个 Task 计算的数据是否存在数据呢？
 
-![images](https://static.lovedata.net/zs/2019-11-12-004443.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-11-12-004443.jpg)
 如下图所示，通过 Flink Web UI 中 Job 页面的第一个 Subtasks 选项卡，可以看到任务的两个 Task，点击 Task，可以看到
 Task 相应的 Subtask 详情。例如 Subtask 的启动时间、结束时间、持续时长、接收数据量的字节数以及接收数据的个数。图中可以看到，相同
 Task 的多个 Subtask 中，有的 Subtask 接收到 1.69 TB 的数据量，有的 Subtask 接收到 17.6 TB 的数据量，通过
 Flink Web UI 可以精确地看到每个 Subtask 处理了多少数据，即可判断出 Flink 任务是否存在数据倾斜，接下来学习 Flink
 中如何来解决数据倾斜。
 
-![images](https://static.lovedata.net/zs/2019-11-12-004431.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-11-12-004431.jpg)
 ### 分析和解决数据倾斜问题
 
 在 Flink 中，很多因素都会导致数据倾斜，例如 9.6.1 节描述的 keyBy 后的聚合操作存在数据倾斜。keyBy
@@ -57,7 +57,7 @@ Flink 社区关于数据倾斜的解决方案炒得最热的也莫过于 LocalKe
 PV 的 Subtask 接收到 5 和 6，只需要将 5+6 即可计算出圆圈总 PV 值为 11，计算方块 PV 的 Subtask 接收到 2 和
 1，只需要将 2 +1 即可计算出方块总 PV 值为 3，最后将圆圈和方块的 PV 结果输出到 Sink 端即可。
 
-![images](https://static.lovedata.net/zs/2019-11-12-004439.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-11-12-004439.jpg)
 使用该方案计算 PV，带来了两个非常大的好处。
 
   * 在上游算子中对数据进行了预聚合，因此大大减少了上游往下游发送的数据量，从而减少了网络间的数据传输，节省了集群的带宽资源。上图案例中如果不聚合，上游需要往下游发送 14 条数据，聚合后仅仅需要发送 4 条数据即可。如果上游算子接收 1 万条数据后聚合一次，那么数据的压缩比会更大，优化效果会更加明显。
@@ -139,7 +139,7 @@ LocalKeyBy，此时 LocalKeyBy 0 的 Buffer 中只有 6 条数据、LocalKeyBy 1
 算子会对自身状态信息进行快照，Count 0 会将圆圈 PV=11 保存到状态后端、Count 1 会将圆圈 PV=3 保存到状态后端，各 task 向
 JobManager 反馈，最后 Checkpoint 成功了，紧接着数据正常开始处理。
 
-![images](https://static.lovedata.net/zs/2019-11-12-004433.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-11-12-004433.jpg)
 数据正常处理一段时间后，由于机器故障 Flink 任务突然挂了，如下图所示，Flink 任务会从状态恢复，Source Subtask 0 从 offset
 为 13 的位置开始消费 Kafka，Source Subtask 1 从 offset 为 12 的位置开始消费 Kafka。Count 0
 恢复后保存圆圈的 PV 为 11，Count 1 恢复后保存方块的 PV 为 3。此时任务从状态中恢复完成，正常开始处理数据，请问 Flink
@@ -149,7 +149,7 @@ JobManager 反馈，最后 Checkpoint 成功了，紧接着数据正常开始处
 0 的 Buffer 中没及时发送到下游，所以这 6 条数据丢了，同理 Source 1 对应的 offset 12 表示 Source 1 消费了 12
 条数据，其中还有 5 条数据缓存在 LocalKeyBy 1 的 Buffer 中没及时发送到下游，所以这 5 条数据也丢了。
 
-![images](https://static.lovedata.net/zs/2019-11-13-%E7%A7%AF%E6%94%92%E6%89%B9%E6%AC%A1%E7%9A%84%E8%BF%87%E7%A8%8B%E4%B8%AD%20Restore.png-wm)
+![images](https://static.lovedata.net/zs/2019-11-13-%E7%A7%AF%E6%94%92%E6%89%B9%E6%AC%A1%E7%9A%84%E8%BF%87%E7%A8%8B%E4%B8%AD%20Restore.png)
 通过上述详细案例分析，知道了我们设计的 LocalKeyBy 虽然能够提高性能，但存在丢数据的风险。读者也应该要知道， **Flink 虽然支持
 Exactly Once，但不是说你的代码随便瞎写 Flink 也能保证 Exactly Once，做为使用 Flink
 的一员，我们应该根据原理书写出能保证 Flink Exactly Once 的代码。**
@@ -159,11 +159,11 @@ Exactly Once，但不是说你的代码随便瞎写 Flink 也能保证 Exactly O
 中还未发送到下游的数据保存到 Flink 的状态中，这样当 Flink 任务从 Checkpoint 处恢复时，可以将那些在 Buffer
 中的数据从状态后端恢复。如下图所示，相比上述方案，Checkpoint 时会将 LocalKeyBy 算子 Buffer 中的数据也保存到状态后端。
 
-![images](https://static.lovedata.net/zs/2019-11-12-4434.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-11-12-4434.jpg)
 如下图所示，当 Flink 任务从 Checkpoint 处恢复时，不仅恢复 offset 信息和 PV 信息，还需要把 LocalKeyBy 算子
 Buffer 中的数据恢复，这样就可以保证不丢数据了。
 
-![images](https://static.lovedata.net/zs/2019-11-12-004436.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-11-12-004436.jpg)
 具体代码如何实现呢？Checkpoint 时 LocalKeyBy 算子可能还有缓冲的数据没发送到下游，为了保证 Exactly Once，这里需要将
 Buffer 中的数据保存在状态中。
 
@@ -259,7 +259,7 @@ Exactly Once，但是一旦修改并行度，还能保证 Exactly Once
 吗？当并行度降低后，getOperatorStateStore().getListState() 恢复 ListState 时，会把 ListState
 中的状态信息均匀分布到各个 Operator 实例中。当上述案例中 LocalKeyBy 的并行度从 2 调节为 1 时，数据恢复如下图所示：
 
-![images](https://static.lovedata.net/zs/2019-11-12-004441.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-11-12-004441.jpg)
 首先 Source 端 partition 0 和 partition 1 的 offset 信息恢复没有问题，Count 算子圆圈和方块的 PV
 信息恢复也没有问题。关键在于 LocalKeyBy 算子中 PV 信息恢复时会丢数据吗？状态恢复时，从状态中将 PV 信息恢复到 buffer
 中的核心代码如下所示：

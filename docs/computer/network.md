@@ -6,9 +6,9 @@
 
 ### I-tables常用参数
 
-![image](https://static.lovedata.net/21-01-21-7fff7d1b872ba63ab9a9a4375fd733a9.png-wm)
+![image](https://static.lovedata.net/21-01-21-7fff7d1b872ba63ab9a9a4375fd733a9.png)
 
-![image](https://static.lovedata.net/21-01-21-5373e11dfc760d54949dc30b425ec96a.png-wm)
+![image](https://static.lovedata.net/21-01-21-5373e11dfc760d54949dc30b425ec96a.png)
 
 ### 常用命令
 
@@ -84,11 +84,11 @@ service iptables save
 
 ### 常用区域
 
-![image](https://static.lovedata.net/21-01-22-6302aa42576353b0606bc6614d9368e6.png-wm)
+![image](https://static.lovedata.net/21-01-22-6302aa42576353b0606bc6614d9368e6.png)
 
 ### Firewall-cmd命令行参数和作用
 
-![image](https://static.lovedata.net/21-01-22-402a9c106b7897ef832d5d7a94a7ede8.png-wm)
+![image](https://static.lovedata.net/21-01-22-402a9c106b7897ef832d5d7a94a7ede8.png)
 
 ### 常用命令
 
@@ -142,7 +142,7 @@ firewall-cmd --get-default-zone
 
 对应到 TCP 的三次握手，也是需要确认双方的两样能力: `发送的能力`和`接收的能力`
 
-![image](https://static.lovedata.net/21-04-02-69b4951df2e7b1f9326e3671f251fb28.png-wm)
+![image](https://static.lovedata.net/21-04-02-69b4951df2e7b1f9326e3671f251fb28.png)
 
 从最开始双方都处于`CLOSED`状态。然后服务端开始监听某个端口，进入了`LISTEN`状态。
 
@@ -164,7 +164,7 @@ SYN 是需要消耗一个序列号的，下次发送对应的 ACK 序列号要�
 
 #### 四次挥手
 
-![image](https://static.lovedata.net/21-04-02-5946e08e1f8e0d944d23b165d9de23e6.png-wm)
+![image](https://static.lovedata.net/21-04-02-5946e08e1f8e0d944d23b165d9de23e6.png)
 
 
 
@@ -172,7 +172,7 @@ SYN 是需要消耗一个序列号的，下次发送对应的 ACK 序列号要�
 
 客户端要断开了，向服务器发送 `FIN` 报文，在 TCP 报文中的位置如下图:
 
-![image](https://static.lovedata.net/21-04-02-b49eb4eeecbc3af98841882e060817b9.png-wm)
+![image](https://static.lovedata.net/21-04-02-b49eb4eeecbc3af98841882e060817b9.png)
 
 发送后客户端变成了`FIN-WAIT-1`状态。注意, 这时候客户端同时也变成了`half-close(半关闭)`状态，即无法向服务端发送报文，只能接收。
 

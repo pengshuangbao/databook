@@ -89,7 +89,7 @@ IDEA 官网下载地址：[下载页面的地址](https://www.jetbrains.com/idea
 
 启动 MySQL，如下图：
 
-![images](https://static.lovedata.net/zs/56BgCn.jpg-wm)
+![images](https://static.lovedata.net/zs/56BgCn.jpg)
 出现绿色就证明 MySQL 服务启动成功了。后面我们操作数据库不会通过本地命令行来，而是会通过图形化软件，比如：Navicat、Sequel
 pro，这些图形化软件可比命令行的效率高太多，读者可以自行下载安装一下。
 
@@ -134,10 +134,10 @@ Elasticsearch 了：
 
 执行命令后的结果：
 
-![images](https://static.lovedata.net/zs/2019-10-17-144155.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-17-144155.png)
 从浏览器端打开地址：`http://localhost:9200/` 即可验证是否安装成功：
 
-![images](https://static.lovedata.net/zs/2019-04-25-003-es.png-wm)
+![images](https://static.lovedata.net/zs/2019-04-25-003-es.png)
 如果出现了如上图这样就代表 Elasticsearch 环境已经安装好了。
 
 ### 小结与反思

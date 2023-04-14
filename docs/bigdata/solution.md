@@ -10,21 +10,21 @@
 
 #### 架构
 
-![image](https://static.lovedata.net/21-04-02-ab0d9a731b82a6148c2ba11049d2f1d7.png-wm)
+![image](https://static.lovedata.net/21-04-02-ab0d9a731b82a6148c2ba11049d2f1d7.png)
 
 #### Druid替换kylin原因
 
-![image](https://static.lovedata.net/21-04-02-24afa1a4d3d5f28cbc57a9c8028e8112.png-wm)
+![image](https://static.lovedata.net/21-04-02-24afa1a4d3d5f28cbc57a9c8028e8112.png)
 
-![image](https://static.lovedata.net/21-04-02-15da3c7c9541a8c436e73b5a81f0fc56.png-wm)
+![image](https://static.lovedata.net/21-04-02-15da3c7c9541a8c436e73b5a81f0fc56.png)
 
-![image](https://static.lovedata.net/21-04-02-e2e0ef29339b61827aa6f7a2170c5bea.png-wm)
+![image](https://static.lovedata.net/21-04-02-e2e0ef29339b61827aa6f7a2170c5bea.png)
 
 
 
 #### Druid架构
 
-![image](https://static.lovedata.net/21-04-02-3a1f1e7b9cedb2222838c3e017005a2e.png-wm)
+![image](https://static.lovedata.net/21-04-02-3a1f1e7b9cedb2222838c3e017005a2e.png)
 
 
 
@@ -42,7 +42,7 @@ Kudu+Impala为实时数据仓库存储提供了良好的解决方案。这套架
 
 > [第16期实录：用户分群 -- 得到实时大数据运营探索](https://mp.weixin.qq.com/s/yz3GCgAY1t8cTbviaNtnFQ)
 
- ![image](https://static.lovedata.net/20-07-03-cd6ce673112f45040cb8aeb138acd3e3.png-wm)
+ ![image](https://static.lovedata.net/20-07-03-cd6ce673112f45040cb8aeb138acd3e3.png)
 
 ###  Merge流程
 
@@ -50,9 +50,9 @@ Kudu+Impala为实时数据仓库存储提供了良好的解决方案。这套架
 2. 对剩余Binlog数据进行二次筛选，按主键 **group by 取最新的Binlog**，无论是**insert或是update**；
 3. 将步骤2中生成的数据与存量数据合并，生成最新数据。如图中的黄色的1、2是受Binlog的update重放影响的，绿色的4是insert新增的。
 
-![image](https://static.lovedata.net/20-07-03-d99d464e7c25bea52f2cd0e3dfc879a5.png-wm)
+![image](https://static.lovedata.net/20-07-03-d99d464e7c25bea52f2cd0e3dfc879a5.png)
 
-![image](https://static.lovedata.net/20-07-03-174c85904728226c3d499924c23d9ef5.png-wm)
+![image](https://static.lovedata.net/20-07-03-174c85904728226c3d499924c23d9ef5.png)
 
 
 
@@ -70,7 +70,7 @@ Kudu+Impala为实时数据仓库存储提供了良好的解决方案。这套架
 
 [美团DB数据同步到数据仓库的架构与实践 - 美团技术团队](https://tech.meituan.com/2018/12/06/binlog-dw.html)
 
-![image](https://static.lovedata.net/21-03-30-cb3b5841fe59a7c647565c1c07d3f538.png-wm)
+![image](https://static.lovedata.net/21-03-30-cb3b5841fe59a7c647565c1c07d3f538.png)
 
 [Apache Flink 中文用户邮件列表 - flink mysql cdc + hive streaming疑问](http://apache-flink.147419.n8.nabble.com/flink-mysql-cdc-hive-streaming-td8223.html)
 

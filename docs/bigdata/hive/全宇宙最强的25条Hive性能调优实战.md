@@ -6,7 +6,7 @@
 
 ## Hive介绍
 
-![image](https://static.lovedata.net/21-05-28-542d36d9735162c96429d0463fbd6686.png-wm)
+![image](https://static.lovedata.net/21-05-28-542d36d9735162c96429d0463fbd6686.png)
 
 ### 总结
 
@@ -221,7 +221,7 @@ select * from student tab1esamp1e(5 M) ; #大小
 
 Hive语句最终是转化为MapReduce程序来执行的，而MapReduce的性能瓶颈在与网络I0和磁盘I0,要解决性能瓶颈，最主要的是减少数据量,对数据进行压缩是个好方式。压缩虽然是减少了数据量,但是压缩过程要消耗CPU,但是在Hadoop中，往往性能瓶颈不在于CPU, CPU力并不大，所以压缩充分利用了比较空闲的CPU。
 
-![image](https://static.lovedata.net/21-05-30-2b005d738b2001c5a0da88b373217b1e.png-wm)
+![image](https://static.lovedata.net/21-05-30-2b005d738b2001c5a0da88b373217b1e.png)
 
 
 
@@ -383,7 +383,7 @@ Map数太小:当输入文件都很大，任务逻辑复杂，MapTask 执行非�
 
 在MapReduce的编程案例中，我们得知，一个MapReduce Job 的MapTask数量是由输入分片InputSplit 决定的。而输入分片是由FilelnputFormat.getSplit()决定的。一个输入分片对应一个MapTask,而输入分片是由三个参数决定的:
 
-![image](https://static.lovedata.net/21-05-30-07754921f3973f963c64e326c4b12921.png-wm)
+![image](https://static.lovedata.net/21-05-30-07754921f3973f963c64e326c4b12921.png)
 
 
 
@@ -530,9 +530,9 @@ SELECT sma11Table.key， bigTable.value FROM smallTable JOIN bigTable ON smal1Ta
 
 
 
-![image](https://static.lovedata.net/21-05-30-5f48ce38ca2faa8b3075105fe68aa80a.png-wm)
+![image](https://static.lovedata.net/21-05-30-5f48ce38ca2faa8b3075105fe68aa80a.png)
 
-![image](https://static.lovedata.net/21-05-30-1b9ad2f97535fbfc2c5a41937c1e7411.png-wm)
+![image](https://static.lovedata.net/21-05-30-1b9ad2f97535fbfc2c5a41937c1e7411.png)
 
 
 
@@ -623,7 +623,7 @@ PS: Maploin在子查询中可能出现未知BUG。在大表和小表做笛卡尔
 
 精髓就在于复制几倍，最后就有几个reduce来做，而且大表的数据是前面小表扩张key值范围里面随机出来的，所以复制了几倍n,就相当于这个随机范围就有多大n,那么相应的，大表的数据就被随机的分为了n份。并且最后处理所用的reduce数量也是n,而且也不会出现数据倾斜。
 
-![image](https://static.lovedata.net/21-05-30-90acbd2bc260fd62abc8c7f7652f3eb0.png-wm)
+![image](https://static.lovedata.net/21-05-30-90acbd2bc260fd62abc8c7f7652f3eb0.png)
 
 
 
@@ -974,16 +974,16 @@ set mapreduce.reduce.speculative=true;
 建议:
 如果用户对于运行时的偏差非常敏感的话，那么可以将这些功能关闭掉。如果用户因为输入数据量很大而需要执行长时间的MapTask或者ReduceTask的话，那么启动推测执行造成的浪费是非常巨大大。设置开启推测执行参数: Hadoop的mapred-site.xml文件中进行配置
 
-![image](https://static.lovedata.net/21-05-31-6f5d157b9d75d216eab9ef74203b1ea8.png-wm)
+![image](https://static.lovedata.net/21-05-31-6f5d157b9d75d216eab9ef74203b1ea8.png)
 
-![image](https://static.lovedata.net/21-05-31-e7fbe3a63ccc34db02938de7984bcabd.png-wm)
+![image](https://static.lovedata.net/21-05-31-e7fbe3a63ccc34db02938de7984bcabd.png)
 
 
 
 
 关于调优这些推测执行变量，还很难给一个具体的建议。如果用户对于运行时的偏差非常敏您白，可以将这些功能关闭掉。如果用户因为输入数据量很大而需要执行长时间的mapTask或者reduceTask的话,那么启动推测执行造成的浪费是非常巨 大。
 
-![image](https://static.lovedata.net/21-05-31-c4fd79e89cd0be80b8b39aa77958815a.png-wm)
+![image](https://static.lovedata.net/21-05-31-c4fd79e89cd0be80b8b39aa77958815a.png)
 
 
 
@@ -1075,7 +1075,7 @@ select a.userid from table a join tab1e b on a.userid = b.userid;
 
 
 
-![image](https://static.lovedata.net/21-05-31-7d4cbbc91698e991793d2cfb1ccacb97.png-wm)
+![image](https://static.lovedata.net/21-05-31-7d4cbbc91698e991793d2cfb1ccacb97.png)
 
 
 

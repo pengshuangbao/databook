@@ -19,7 +19,7 @@ Flink 的官网地址是：<https://flink.apache.org/>
 这里我们选择 `Apache Flink 1.9.0 for Scala 2.11`
 版本，点击跳转到了一个镜像下载选择的地址，随便选择哪个就行，只是下载速度不一致而已。
 
-![images](https://static.lovedata.net/zs/2019-04-25-001-flink-mimor.png-wm)
+![images](https://static.lovedata.net/zs/2019-04-25-001-flink-mimor.png)
 下载完后，你就可以直接解压下载的 Flink 压缩包了。
 
 接下来我们可以启动一下 Flink，我们进入到 Flink 的安装目录下执行命令 `./bin/start-cluster.sh` 即可，产生的日志如下：
@@ -50,7 +50,7 @@ Flink 的官网地址是：<https://flink.apache.org/>
 
 那么它就会开始进行下载并安装好，安装后的目录应该是在 `/usr/local/Cellar/apache-flink` 下。
 
-![images](https://static.lovedata.net/zs/2019-10-23-030606.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-030606.png)
 你可以通过下面命令检查安装的 Flink 到底是什么版本的：
 
 
@@ -86,7 +86,7 @@ Flink 的官网地址是：<https://flink.apache.org/>
 
 启动成功后的话，我们可以通过访问地址`http://localhost:8081/` 查看 UI 长啥样了，如下图所示：
 
-![images](https://static.lovedata.net/zs/2019-10-23-021138.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-021138.png)
 你在通过 jps 命令可以查看到运行的进程有：
 
 
@@ -282,10 +282,10 @@ maven 编译的时候跳过这些检查，这样可以减少很多时间，还�
 
 看下图，因为我们已经下载好了源码，直接在 IDEA 里面 open 这个 maven 项目就行了：
 
-![images](https://static.lovedata.net/zs/1CP82X.jpg-wm)
+![images](https://static.lovedata.net/zs/1CP82X.jpg)
 导入后大概就是下面这样子：
 
-![images](https://static.lovedata.net/zs/olmtP4.jpg-wm)
+![images](https://static.lovedata.net/zs/olmtP4.jpg)
 很顺利，没多少报错，这里我已经把一些代码风格检查相关的 Maven 插件给注释掉了。
 
 ### 小结与反思

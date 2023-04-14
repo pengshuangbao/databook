@@ -554,7 +554,7 @@ void transfer(Entry[] newTable, boolean rehash) {
 }
 ```
 
-![image](https://static.lovedata.net/21-06-21-0ee10c9a2225dc65f6679d7903cb0aae.png-wm)
+![image](https://static.lovedata.net/21-06-21-0ee10c9a2225dc65f6679d7903cb0aae.png)
 
 - jdk1.8扩容：**先添加值，再扩容**
 
@@ -731,13 +731,13 @@ final Node<K,V> untreeify(HashMap<K,V> map) {
 }
 ```
 
-![image](https://static.lovedata.net/21-06-21-34400e5c58a1c9f61f842f29265c19b6.png-wm)
+![image](https://static.lovedata.net/21-06-21-34400e5c58a1c9f61f842f29265c19b6.png)
 
 #### 6、多线程下HashMap扩容的问题（1.7和1.8对比）
 
 - jdk1.7，**多线程扩容情况下，会导致循环引用**
 
-![image](https://static.lovedata.net/21-06-21-f2b0c9e016961f6aa26732f082896c41.png-wm)
+![image](https://static.lovedata.net/21-06-21-f2b0c9e016961f6aa26732f082896c41.png)
 
 - jdk1.8，**多线程环境下，会导致数据丢失问题**
 

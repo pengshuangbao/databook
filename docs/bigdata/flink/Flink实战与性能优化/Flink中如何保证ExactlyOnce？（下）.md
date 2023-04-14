@@ -71,7 +71,7 @@ partition 的对应关系如下图所示。
 assign 方法给 partition 分配 subtask 实际上是轮循的策略，首先计算一个起点 startIndex 分配给
 partition0，后续的 partition 轮循地分配给 subtask，从而使得每个 subtask 消费的 partition 得以均衡。
 
-![images](https://static.lovedata.net/zs/2019-10-19-122937.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-10-19-122937.jpg)
 
 每个 subtask 只负责一部分 partition，所以在维护 partition 的 offset 信息时，每个 subtask 只需要将自己消费的
 partition 的 offset 信息保存到状态中即可。
@@ -100,7 +100,7 @@ Kafka 成为瓶颈后，需要调大 Consumer 的并行度，使得每个 subtas
 实例的并行度增大到 6 以后，分配器对 partition 重新分配给 6 个 subtask，计算后的 startIndex 为 0，表示
 partition0 分配给 subtask0，后续的 partition 采用轮循策略，partition 与 subtask 的对应关系如下。
 
-![images](https://static.lovedata.net/zs/2019-10-19-122939.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-10-19-122939.jpg)
 
 之前 subtask0 消费 partition 4 和 9，并行度调大以后，subtask0 被分配消费 partition 0 和 6。但是 Flink
 任务从 Checkpoint 恢复后，能保证 subtask0 读取到 partition 0 和 6 的 offset 吗？这个就需要深入了解当
@@ -247,7 +247,7 @@ topic 创建了新的 partition，FlinkKafkaConsumer 如何实现动态发现新
 在使用 FlinkKafkaConsumer 时，可以通过 Properties
 传递一些配置参数，当配置了参数FlinkKafkaConsumerBase.KEY_PARTITION _DISCOVERY_INTERVAL_MILLIS 时，就会开启 partition 的动态发现，该参数表示间隔多久检测一次是否有新创建的 partition。那具体实现原理呢？相关源码的UML 图如下所示：
 
-![images](https://static.lovedata.net/zs/2019-11-15-132311.png-wm)
+![images](https://static.lovedata.net/zs/2019-11-15-132311.png)
 
 笔者生产环境使用的 FlinkKafkaConsumer011，FlinkKafkaConsumer011 继承
 FlinkKafkaConsumer09，FlinkKafkaConsumer09 继承 FlinkKafkaConsumerBase。将参数KEY_PARTITION _DISCOVERY_INTERVAL_MILLIS 传递给 FlinkKafkaConsumer011 时，在FlinkKafkaConsumer09 的构造器中会调用 getLong(checkNotNull(props, "props"),KEY_PARTITION_DISCOVERY_INTERVAL_ MILLIS, PARTITION_DISCOVERY_DISABLED)

@@ -12,7 +12,7 @@
 
 
 
-![image](https://static.lovedata.net/20-12-15-9cb05c9c084a86448e83b6a7ad4054a4.png-wm)
+![image](https://static.lovedata.net/20-12-15-9cb05c9c084a86448e83b6a7ad4054a4.png)
 
 ### 10.1.1. String在jdk9中存储结构变更
 
@@ -59,11 +59,11 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 
 
 
-![image](https://static.lovedata.net/20-12-15-0ca66266679c549286e3980fa5c32381.png-wm)
+![image](https://static.lovedata.net/20-12-15-0ca66266679c549286e3980fa5c32381.png)
 
 > 主要是使用char数组，会有一半的空间浪费，因为大部分只是存的是latin，也就是一个字节就能够表示，
 
-![image](https://static.lovedata.net/20-12-15-856ec17af512181f7b76ee925719857d.png-wm)
+![image](https://static.lovedata.net/20-12-15-856ec17af512181f7b76ee925719857d.png)
 
 
 
@@ -79,9 +79,9 @@ String：代表不可变的字符序列。简称：不可变性。
 
 
 
-![image](https://static.lovedata.net/20-12-15-e987d4bc85462e05f3fd3d5357f06e7f.png-wm)
+![image](https://static.lovedata.net/20-12-15-e987d4bc85462e05f3fd3d5357f06e7f.png)
 
-![image](https://static.lovedata.net/20-12-15-49c9d499e4a3251b0bfed9e7a0d81603.png-wm)
+![image](https://static.lovedata.net/20-12-15-49c9d499e4a3251b0bfed9e7a0d81603.png)
 
 
 
@@ -96,7 +96,7 @@ String的String Pool是一个固定大小的Hashtable，默认值大小长度是
 - 在JDK8中，设置StringTable长度的话，1009是可以设置的最小值
 - 
 
-![image](https://static.lovedata.net/20-12-15-adb106e0f2786a2820a1e9e902567937.png-wm)
+![image](https://static.lovedata.net/20-12-15-adb106e0f2786a2820a1e9e902567937.png)
 
 
 
@@ -123,9 +123,9 @@ Java8元空间，字符串常量在堆
 
 
 
-![image](https://static.lovedata.net/20-12-15-6fefacfa2dec8887347539f3e16222fe.png-wm)
+![image](https://static.lovedata.net/20-12-15-6fefacfa2dec8887347539f3e16222fe.png)
 
-![image](https://static.lovedata.net/20-12-15-2730251ccc3e4921b01f45521396c30e.png-wm)
+![image](https://static.lovedata.net/20-12-15-2730251ccc3e4921b01f45521396c30e.png)
 
 
 
@@ -141,7 +141,7 @@ Java8元空间，字符串常量在堆
 
 
 
-![image](https://static.lovedata.net/20-12-15-3f724061b313fdb0c93a6b48ecdb9a8d.png-wm)****
+![image](https://static.lovedata.net/20-12-15-3f724061b313fdb0c93a6b48ecdb9a8d.png)****
 
 ## String的基本操作
 
@@ -164,13 +164,13 @@ class Memory {
 
 
 
-![image](https://static.lovedata.net/20-12-15-97e9b2ad13a5f74bfbad3b07726f2251.png-wm)
+![image](https://static.lovedata.net/20-12-15-97e9b2ad13a5f74bfbad3b07726f2251.png)
 
 
 
-![image](https://static.lovedata.net/20-12-15-79ec8722f80da0502e628ca63082ee1b.png-wm)
+![image](https://static.lovedata.net/20-12-15-79ec8722f80da0502e628ca63082ee1b.png)
 
-![image](https://static.lovedata.net/20-12-15-001d740dd009938f5c867013360cfa26.png-wm)
+![image](https://static.lovedata.net/20-12-15-001d740dd009938f5c867013360cfa26.png)
 
 ## 字符串拼接操作
 
@@ -371,61 +371,61 @@ public StringBuilder(int capacity) {
 
 
 
-![image](https://static.lovedata.net/20-12-16-0963395a8646dac87950dd5f0c3e9ff7.png-wm)
+![image](https://static.lovedata.net/20-12-16-0963395a8646dac87950dd5f0c3e9ff7.png)
 
-![image](https://static.lovedata.net/20-12-16-f7397bcd214a7f585645fb18e4247f29.png-wm)
+![image](https://static.lovedata.net/20-12-16-f7397bcd214a7f585645fb18e4247f29.png)
 
 反编译后的代码：编译期优化
 
-![image](https://static.lovedata.net/20-12-16-390645547d1904a4c75edf6c84d5caeb.png-wm)
+![image](https://static.lovedata.net/20-12-16-390645547d1904a4c75edf6c84d5caeb.png)
 
-![image](https://static.lovedata.net/20-12-16-ae473b8c0adc5b7c30059cce5c4fed14.png-wm)
+![image](https://static.lovedata.net/20-12-16-ae473b8c0adc5b7c30059cce5c4fed14.png)
 
 ---
 
   因为拼接中有变量，则需要在堆空间new一个字符串，开辟了新空间，新的引用地址
 
-![image](https://static.lovedata.net/20-12-16-c78945933de6a4786acdad73a78ed362.png-wm)
+![image](https://static.lovedata.net/20-12-16-c78945933de6a4786acdad73a78ed362.png)
 
-![image](https://static.lovedata.net/20-12-16-105c700ade7b6b2a41f5e0df16b57d46.png-wm)
-
-
-
----
-
-![image](https://static.lovedata.net/20-12-16-2f8d71bf056e37c3f59e2e67fad0cea5.png-wm)
-
-![image](https://static.lovedata.net/20-12-16-b823d4082331ef7c8568ff34d969934a.png-wm)
+![image](https://static.lovedata.net/20-12-16-105c700ade7b6b2a41f5e0df16b57d46.png)
 
 
 
 ---
 
-![image](https://static.lovedata.net/20-12-16-6786c1191ece5be05d71a1fe9a91c50c.png-wm)
+![image](https://static.lovedata.net/20-12-16-2f8d71bf056e37c3f59e2e67fad0cea5.png)
+
+![image](https://static.lovedata.net/20-12-16-b823d4082331ef7c8568ff34d969934a.png)
+
+
+
+---
+
+![image](https://static.lovedata.net/20-12-16-6786c1191ece5be05d71a1fe9a91c50c.png)
 
 反编译后的
 
-![image](https://static.lovedata.net/20-12-16-47925aa4eb827ac883fc52bd91376534.png-wm)
+![image](https://static.lovedata.net/20-12-16-47925aa4eb827ac883fc52bd91376534.png)
 
 final修饰的不是变量，不一样
 
-![image](https://static.lovedata.net/20-12-16-cc532d8a2444998643d08e658568ef03.png-wm)
+![image](https://static.lovedata.net/20-12-16-cc532d8a2444998643d08e658568ef03.png)
 
 ---
 
-![image](https://static.lovedata.net/20-12-16-c9915ff8d30353bd01aebfc5edc3132b.png-wm)
+![image](https://static.lovedata.net/20-12-16-c9915ff8d30353bd01aebfc5edc3132b.png)
 
 ---
 
-![image](https://static.lovedata.net/20-12-16-20542d10d0c9fb7184839720e335c426.png-wm)
+![image](https://static.lovedata.net/20-12-16-20542d10d0c9fb7184839720e335c426.png)
 
-![image](https://static.lovedata.net/20-12-16-7f66ffa0359fcc6b0265c40a267c80b0.png-wm)
+![image](https://static.lovedata.net/20-12-16-7f66ffa0359fcc6b0265c40a267c80b0.png)
 
-![image](https://static.lovedata.net/20-12-16-f0c245145bc58a96e6b0f47a43e598d1.png-wm)
+![image](https://static.lovedata.net/20-12-16-f0c245145bc58a96e6b0f47a43e598d1.png)
 
-![image](https://static.lovedata.net/20-12-16-4786ee9ed1f06f1ad78b9cd0211d74ee.png-wm)
+![image](https://static.lovedata.net/20-12-16-4786ee9ed1f06f1ad78b9cd0211d74ee.png)
 
-![image](https://static.lovedata.net/20-12-16-5f3815c6341353137b02ad072be50cdb.png-wm)
+![image](https://static.lovedata.net/20-12-16-5f3815c6341353137b02ad072be50cdb.png)
 
 
 
@@ -481,13 +481,13 @@ String myInfo = new string("I love atguigu").intern();
 
 通俗点讲，Interned string就是确保字符串在内存里只有一份拷贝，这样可以节约内存空间，加快字符串操作任务的执行速度。注意，这个值会被存放在字符串内部池（String Intern Pool）
 
-![image](https://static.lovedata.net/21-06-03-a2d01bfa49b702261268790412f48ae3.png-wm)
+![image](https://static.lovedata.net/21-06-03-a2d01bfa49b702261268790412f48ae3.png)
 
-![image](https://static.lovedata.net/20-12-17-8002449cb26a1d40a57e25937664e134.png-wm)
+![image](https://static.lovedata.net/20-12-17-8002449cb26a1d40a57e25937664e134.png)
 
 
 
-![image](https://static.lovedata.net/20-12-17-7b8370015585530e3fed28153e542f32.png-wm)
+![image](https://static.lovedata.net/20-12-17-7b8370015585530e3fed28153e542f32.png)
 
 
 
@@ -612,7 +612,7 @@ System.out.println(s3==s4); //jdk1.6 false jdk7/8 true
 
 
 
-![image](https://static.lovedata.net/20-12-17-2f95b46ee088442ad68a12324f83936e.png-wm)
+![image](https://static.lovedata.net/20-12-17-2f95b46ee088442ad68a12324f83936e.png)
 
 
 
@@ -628,7 +628,7 @@ JDK1.7起，将这个字符串对象尝试放入串池。
 - 如果串池中有，则并不会放入。返回已有的串池中的对象的地址
 - 如果没有，则会把<mark>对象的引用地址</mark>复制一份，放入串池，并返回串池中的引用地址
 
-![image](https://static.lovedata.net/20-12-21-bface7dae5ae8c06e0fa90b8298a4e55.png-wm)
+![image](https://static.lovedata.net/20-12-21-bface7dae5ae8c06e0fa90b8298a4e55.png)
 
 
 
@@ -636,13 +636,13 @@ JDK1.7起，将这个字符串对象尝试放入串池。
 
 #### 练习1
 
-![image](https://static.lovedata.net/20-12-21-5122661dcd2a057562fc8933a92652b3.png-wm)
+![image](https://static.lovedata.net/20-12-21-5122661dcd2a057562fc8933a92652b3.png)
 
 
 
-![image](https://static.lovedata.net/20-12-21-02344d30354c99b94a60d80b78518104.png-wm)
+![image](https://static.lovedata.net/20-12-21-02344d30354c99b94a60d80b78518104.png)
 
-![image](https://static.lovedata.net/20-12-21-69f785092b7c3b39d20a6c19b5e6d8d2.png-wm)
+![image](https://static.lovedata.net/20-12-21-69f785092b7c3b39d20a6c19b5e6d8d2.png)
 
 
 
@@ -778,11 +778,11 @@ StringpeDuplicationAgeThreshold(uintx)
 
 
 
-![image](https://static.lovedata.net/20-12-21-02d17e619ed0b2a51b4584c0eaed7017.png-wm)
+![image](https://static.lovedata.net/20-12-21-02d17e619ed0b2a51b4584c0eaed7017.png)
 
-![image](https://static.lovedata.net/20-12-21-37e0450ace130a3f4548cb1dcfb78b57.png-wm)
+![image](https://static.lovedata.net/20-12-21-37e0450ace130a3f4548cb1dcfb78b57.png)
 
 
 
-![image](https://static.lovedata.net/20-12-21-e6d4dc4fb3569a5096c808583f693512.png-wm)
+![image](https://static.lovedata.net/20-12-21-e6d4dc4fb3569a5096c808583f693512.png)
 

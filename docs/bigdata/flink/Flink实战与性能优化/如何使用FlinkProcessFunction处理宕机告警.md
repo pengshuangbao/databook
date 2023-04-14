@@ -73,7 +73,7 @@ TimerService 会删除每个 Key 和时间戳重复的定时器，即每个 Key
 processElement() 方法，因此不必担心状态的并发修改问题。TimerService 不仅提供了注册和删除 Timer
 的功能，还可以通过它来获取当前的系统时间和 Watermark 的值。
 
-![images](https://static.lovedata.net/zs/2019-10-14-160008.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-14-160008.png)
 #### 容错
 
 定时器具有容错能力，并且会与应用程序的状态一起进行 Checkpoint，如果发生故障重启会从 Checkpoint／Savepoint

@@ -15,7 +15,7 @@
   3. **是否需要手动声明快照**（snapshot）**和恢复** (restore) **方法**：operator state 需要手动实现 snapshot 和 restore 方法；而 keyed state 则由 backend 自行实现，对用户透明。
   4. **数据大小**：一般而言，我们认为 operator state 的数据规模是比较小的；认为 keyed state 规模是相对比较大的。需要注意的是，这是一个经验判断，不是一个绝对的判断区分标准。
 
-- ![image](https://static.lovedata.net/20-08-12-3cf2b0941431e750bed467d0be92cdf5.png-wm)
+- ![image](https://static.lovedata.net/20-08-12-3cf2b0941431e750bed467d0be92cdf5.png)
 
 - 在生产中，我们会在 FsStateBackend 和 RocksDBStateBackend 间选择：
 
@@ -26,7 +26,7 @@
 
   - 在 RocksDB 中，每个 state 独享一个 Column Family，而每个 Column family 使用各自独享的 write buffer 和 block cache，上图中的 window state 和 value state实际上分属不同的 column family。
 
-  - ![image](https://static.lovedata.net/20-08-12-f05823758c252aec44dd11d1da0a768a.png-wm)
+  - ![image](https://static.lovedata.net/20-08-12-f05823758c252aec44dd11d1da0a768a.png)
 
   - 配置
 
@@ -43,13 +43,13 @@
       - 慎重使用长 list  job master 就会因为收到 task 发来的“巨大”的 offset 数组，而内存不断增长直到超用无法正常响应
       - 正确使用 UnionListState。
         - union list state 目前被广泛使用在 kafka connector 中，不过可能用户日常开发中较少遇到，**他的语义是从检查点恢复之后每个并发 task 内拿到的是原先所有operator 上的 state，如下图所示：**
-        - **![image](https://static.lovedata.net/20-08-12-85082be4bcaa670c407006efbf51102a.png-wm)**
+        - **![image](https://static.lovedata.net/20-08-12-85082be4bcaa670c407006efbf51102a.png)**
 
     - #### **Keyed state 使用建议**
 
       - **如何正确清空当前的 state**
         - **state.clear() 只能清理当前key的state，如果想要清空整个 state，需要借助于 applyToAllKeys 方法**
-        - **![image](https://static.lovedata.net/20-08-12-cc9d7e078ba46da002aba1cf665b0acf.png-wm)**
+        - **![image](https://static.lovedata.net/20-08-12-cc9d7e078ba46da002aba1cf665b0acf.png)**
         - **state 有过期需求，借助于 state TTL**  
 
     - #### **一些使用 checkpoint 的使用建议**

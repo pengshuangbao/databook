@@ -4,6 +4,37 @@
 
 
 
+## Class
+
+| 代码               | 分类     | 作用                                                         |
+| ------------------ | -------- | ------------------------------------------------------------ |
+| [Ljava/lang/String | 类描述   | 字符串数组                                                   |
+| iconst_n           | 整型指令 | 将数字压入到操作数栈                                         |
+| istore_n           | 整型指令 | 将数字从操作数栈存储到局部变量表 <br />后面的n代表到第几个位置 |
+| iload_n            | 整型指令 | 家在局部变量第n哥变量压入到操作数栈                          |
+| iadd               | 整型指令 | 操作数栈中的前两个变量相加，并将结果压入操作数栈顶           |
+| ireturn            | 指令     | 返回                                                         |
+| IF_ICMPEQ          | 对比指令 | 如果两者相等                                                 |
+| IAND               | 整型指令 | 按位与 &                                                     |
+
+
+
+### 代码
+
+#### 位运算
+
+```java
+A = 0101
+B = 1100
+-----------------
+A&B = 0100 
+A | B = 1101
+A ^ B = 1001
+~A= 1010
+```
+
+
+
 ## JVM基础
 
 ## CMS
@@ -40,15 +71,19 @@
 
 
 
+## ASM
 
+[Java ASM系列：（024）修改已有的方法（添加－进入和退出）](https://blog.51cto.com/lsieun/2955681)
 
+[史上最通俗易懂的ASM教程 - 知乎](https://zhuanlan.zhihu.com/p/94498015)
 
+[StringFog插件对Dex字符串加密原理解析_MegatronKing的博客-CSDN博客](https://blog.csdn.net/MegatronKings/article/details/63252266)
 
+[深入探索编译插桩技术（四、ASM 探秘） - 掘金](https://juejin.cn/post/6844904118700474375)
 
+[Java ASM系列：（017）frame介绍_修俟微渐的技术博客_51CTO博客](https://blog.51cto.com/lsieun/2949733)
 
-
-
-
+[Java ASM系列：（076）if和switch示例_修俟微渐的技术博客_51CTO博客](https://blog.51cto.com/lsieun/4231719)
 
 
 

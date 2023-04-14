@@ -45,10 +45,10 @@
 
 两个命令，执行 `redis-server` 可以打开服务端：
 
-![images](https://static.lovedata.net/zs/2019-04-29-081734.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-04-29-081734.jpg)
 然后另外开一个终端，运行 `redis-cli` 命令可以运行客户端：
 
-![images](https://static.lovedata.net/zs/2019-04-29-081942.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-04-29-081942.jpg)
 ### 准备商品数据发送至 Kafka
 
 这里我打算将从 Kafka 读取到所有到商品的信息，然后将商品信息中的 **商品ID** 和 **商品价格** 提取出来，然后写入到 Redis
@@ -209,7 +209,7 @@ public class Main {
 
 然后 IDEA 中启动运行 Job，再运行上面的 ProductUtil 发送 Kafka 数据的工具类，注意：也得提前启动 Kafka。
 
-![images](https://static.lovedata.net/zs/2019-04-28-Flink-time.png-wm)
+![images](https://static.lovedata.net/zs/2019-04-28-Flink-time.png)
 
 上图左半部分是工具类发送数据到 Kafka 打印的日志，右半部分是 Job 执行的结果，可以看到它已经将商品的 id 和 price 数据获取到了。
 
@@ -324,7 +324,7 @@ FlinkJedisConfigBase，这几个属性在 FlinkJedisConfigBase 抽象类的）�
 上面 RedisCommandDescription 中有两个属性 RedisCommand、key。RedisCommand 可以设置 Redis
 的数据结果类型，下面是 Redis 数据结构的类型对应着的 Redis Command 的类型：
 
-![images](https://static.lovedata.net/zs/2019-04-29-141529.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-04-29-141529.jpg)
 其对应的源码如下：
 
 
@@ -392,7 +392,7 @@ public static class RedisSinkMapper implements RedisMapper<Tuple2<String, String
 1、我们去终端 Cli 执行命令查看这个 zhisheng 的 key，然后查找某个商品 id (1 ~ 10000) 对应的商品价格，超过这个 id 则为
 nil。
 
-![images](https://static.lovedata.net/zs/2019-04-28-Flink-time.png-wm)
+![images](https://static.lovedata.net/zs/2019-04-28-Flink-time.png)
 
 2、另外一种验证的方式就是通过 Java 代码来操作 Redis 查询数据了。
 
@@ -424,7 +424,7 @@ public class RedisTest {
 ```
 
 
-![images](https://static.lovedata.net/zs/2019-04-29-144224.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-04-29-144224.jpg)
 这一行把所有的数据都打印出来了，所以我们的数据确实成功地插入到 Redis 中去了。
 
 ### 小结与反思

@@ -14,7 +14,7 @@
 
 Kafka 中数据出现重复后，各种解决方案都比较类似，一般需要一个全局 set集合来维护历史所有数据的主键。当处理新日志时，需要拿到当前日志的主键与历史数据的 set 集合按照规则进行比较，若 set集合中已经包含了当前日志的主键，说明当前日志在之前已经被处理过了，则当前日志应该被过滤掉，否则认为当前日志不应该被过滤应该被处理，而且处理完成后需要将新日志的主键加入到set 集合中，set 集合永远存放着所有已经被处理过的数据。程序流程图如下图所示：
 
-![image](https://static.lovedata.net/20-12-04-ff9594784d4da515203ba527d9faa870.png-wm)
+![image](https://static.lovedata.net/20-12-04-ff9594784d4da515203ba527d9faa870.png)
 
 处理流程很简单，关键在于如何维护这个 set 集合，可以简单估算一下这个 set 集合需要占用多大空间。本小节要解决的问题是百亿数据去重，所以就按照每天 1
 百亿的数据量来计算。
@@ -39,11 +39,11 @@ HyperLogLog 可以估算出 HyperLogLog 中插入了多少个不重复的元素�
 
 了解 BloomFilter，从 bitmap（位图）开始说起。现在有 1 千万个整数，数据范围在 0 到 2 千万之间。如何快速查找某个整数是否在这 1千万个整数中呢？可以将这 1 千万个数保存在 HashMap 中，不考虑对象头及其他空间，1000 万个 int 类型数据需要占用大约 1000 万 * 4字节 ≈ 40MB 存储空间。有没有其他方案呢？因为数据范围是 0 到 2 千万，所以如下图所示，可以申请一个长度为 2000 万、boolean类型的数组。将这 1 千万个整数作为数组下标，将其对应的数组值设置成 true，如下图所示，数组下标为 2、666、999 的位置存储的数据为true，表示 1 千万个数中包含了 2、666、999 等。当查询某个整数 K 是否在这 1 千万个整数中时，只需要将对应的数组值 array[K]取出来，看是否等于 true。如果等于 true，说明 1 千万整数中包含这个整数 K，否则表示不包含这个整数 K。
 
-![image](https://static.lovedata.net/20-12-04-3ab0f81971821abb5dea536299c59b6c.png-wm)
+![image](https://static.lovedata.net/20-12-04-3ab0f81971821abb5dea536299c59b6c.png)
 
 Java 的 boolean 基本类型占用一个字节（8bit）的内存空间，所以上述方案需要申请 2000万字节。如下图所示，可以通过编程语言用二进制位来模拟布尔类型，二进制的 1 表示 true、二进制的 0 表示false。通过二进制模拟布尔类型的方案，只需要申请 2000 万 bit 即可，相比 boolean 类型而言，存储空间占用仅为原来的 1/8。2000万 bit ≈ 2.4MB，相比存储原始数据的方案 40 MB 而言，占用的存储空间少了很多。
 
-![image](https://static.lovedata.net/20-12-04-f98a1a36b023418e26a017f2cc32116d.png-wm)
+![image](https://static.lovedata.net/20-12-04-f98a1a36b023418e26a017f2cc32116d.png)
 
 假如这 1 千万个整数的数据范围是 0 到 100 亿，那么就需要申请 100 亿个 bit 约等于 1200MB，比存储原始数据方案的 40MB还要大很多。该情况下，直接使用位图使用的存储空间更多了，怎么解决呢？可以只申请 1 亿 bit 的存储空间，对 1000 万个数求hash，映射到 1亿的二进制位上，最后大约占用 12 MB 的存储空间，但是可能存在 hash 冲突的情况。例如 3 和 100000003（一亿零三）这两个数对一亿求余都为3，所以映射到长度为 1 亿的位图上，这两个数会占用同一个 bit，就会导致一个问题：1 千万个整数中包含了一亿零三，所以位图中下标为 3的位置存储着二进制 1。当查询 1 千万个整数中是否包含数字 3 时，同样也是去位图中下标 3 的位置去查找，发现下标为 3 的位置存储着二进制1，所以误以为 1 千万个整数中包含数字 3。为了减少 hash 冲突，于是诞生了 BloomFilter。
 
@@ -53,11 +53,11 @@ hash 存在 hash 冲突（碰撞）的问题，两个不同的 key 通过同一�
 
 如下图所示，是往 BloomFilter 中插入元素 a、b 的过程，有 3 个 hash 函数，元素 a 经过 3 个 hash 函数后对应的2、8、10 这三个二进制位，所以将这三个二进制位置为 1，元素 b 经过 3 个 hash 函数后，对应的 5、10、14这三个二进制位，将这三个二进制位也置为 1，其中下标为 10 的二进制位被 a、b 元素都涉及到。
 
-![image](https://static.lovedata.net/20-12-04-f4cca6a07a42e159b124346b0d4fe7f3.png-wm)
+![image](https://static.lovedata.net/20-12-04-f4cca6a07a42e159b124346b0d4fe7f3.png)
 
 如下图所示，是从 BloomFilter 中查找元素 c、d 的过程，同样包含了 3 个 hash 函数，元素 c 经过 3 个 hash 函数后对应的2、6、9 这三个二进制位，其中下标 6 和 9 对应的二进制位为 0，所以会认为 BloomFilter 中不存在元素 c。元素 d 经过 3 个hash 函数后对应的 5、8、14 这三个二进制位，这三个位对应的二进制位都为 1，所以会认为 BloomFilter 中存在元素 d，但其实BloomFilter 中并不存在元素 d，是因为元素 a 和元素 b 也对应到了 5、8、14 这三个二进制位上，所以 BloomFilter会有误判。但是从实现原理来看，当 BloomFilter 告诉你不包含元素 c 时，BloomFilter 中 **肯定不包含** 元素 c，当BloomFilter 告诉你 BloomFilter 中包含元素 d 时，它只是 **可能包含** ，也有可能不包含。
 
-![image](https://static.lovedata.net/20-12-04-3bf649f42343749423480d7fdfbe2b26.png-wm)
+![image](https://static.lovedata.net/20-12-04-3bf649f42343749423480d7fdfbe2b26.png)
 
 #### 使用 BloomFilter 实现数据去重
 
@@ -85,13 +85,13 @@ Redis 4.0 之后 BloomFilter 以插件的形式加入到 Redis 中，关于 api 
 
 但由于 HBase 中的数据不是由 Flink 来维护，所以无法恢复到 Checkpoint 时的状态。所以 Flink 任务恢复后，PV = 2 且HBase 中 rowkey 为 a、b、c、d。此时 Flink 任务从日志 c 开始继续处理数据，当处理日志 c 和 d 时，Flink 任务会先查询HBase，发现 HBase 中已经保存了主键 c 和 d，所以认为日志 c 和 d 已经被处理了，会将日志 c 和 d过滤掉，于是就产生了丢数据的现象，日志 c 和 d 其实并没有参与 PV 的计算。
 
-![image](https://static.lovedata.net/20-12-04-0b43850e9742826b354b28047dceb31d.png-wm)
+![image](https://static.lovedata.net/20-12-04-0b43850e9742826b354b28047dceb31d.png)
 
 同学们可能会想，日志 c 和 d 已经被处理过了，此时就算从 Checkpoint 处恢复，PV 值也应该为 4，不应该是 2。请注意上述方案，笔者描述的是PV 信息维护在 Flink 的状态中，所以从 Checkpoint 处恢复任务时，会将 Checkpoint 时状态中保存的 PV 信息恢复，所以恢复为2。
 
 当然还有其他统计 PV 的方式，不需要将 PV 信息维护在 Flink 状态中，而是仅仅在 Redis 中保存 PV 结果，每处理一条数据，将 Redis中的 PV 值加一即可。如下图所示，PV 不维护在状态中，所以当处理完日志 b 进行 Checkpoint 时，只会将当前消费的 offset信息维护起来。处理完日志 d 以后，由于机器故障，Flink 任务挂掉，任务依然会从日志 b 之后开始消费，此时 Redis 中保存的 PV=4，且HBase 中保存的 rowkey 信息为 a、b、c、d。紧接着开始处理 c 和 d，因为 HBase 中保存了主键 c、d，因此不会重复处理日志c、d，因此 PV 值计算正确，也不会出现重复消费的问题。
 
-![image](https://static.lovedata.net/20-12-04-ce965d3bfb996659d576efb7fc3e626d.png-wm)
+![image](https://static.lovedata.net/20-12-04-ce965d3bfb996659d576efb7fc3e626d.png)
 
 这种策略貌似没有问题，但是问题百出。我们的任务处理元素 d 需要两个操作：
 
@@ -105,7 +105,7 @@ Redis 4.0 之后 BloomFilter 以插件的形式加入到 Redis 中，关于 api 
 
 Flink 的状态太强大了，可以使用状态 api 将我们要维护的 set 集合保存到 Flink 的状态中，当任务从 Checkpoint处恢复时，就可以拿到 Checkpoint 时的状态快照信息。如下图所示，可以将主键信息维护在 Flink 的状态中，当处理完日志 b 时，将 PV=2和状态中的主键信息：a、b 一块保存到状态后端。无论后续什么情况发生，只要从 chk-1 对应的 Checkpoint 处恢复，那么会将 PV=2和状态中的主键信息：a、b 做为一个整体来恢复。所以就可以保障 Exactly Once 了。
 
-![image](https://static.lovedata.net/20-12-04-4a2edae265ab9f6be99c3ce28922a8a3.png-wm)
+![image](https://static.lovedata.net/20-12-04-4a2edae265ab9f6be99c3ce28922a8a3.png)
 
 Flink 内置了三种状态后端，分别是 MemoryStateBackend、FsStateBackend 和 RocksDBStateBackend，其中MemoryStateBackend、FsStateBackend 都会将状态信息存储在 TaskManager的内存中，RocksDBStateBackend 将状态信息存储在 TaskManager 本地的 RocksDB数据库中，实际使用的是内存加磁盘的方式。set 集合较大，且集合中的数据都要维护在状态后端，所以这里只能选择内存加磁盘的RocksDBStateBackend。
 
@@ -379,14 +379,14 @@ IO 会成为 Flink 任务瓶颈。
 使用率，可以看出三个大状态算子的并行度分别对应了三块磁盘，这三块磁盘的 IO 平均使用率都保持在 45% 左右，IO 最高使用率几乎都是
 100%，而其他磁盘的 IO 平均使用率相对低很多。由此可见使用 RocksDB 做为状态后端且有大状态的频繁读取时，对磁盘 IO 性能消耗确实比较大。
 
-![image](https://static.lovedata.net/20-12-04-055c9d6fdca4daffe185140c71ada93b.png-wm)
+![image](https://static.lovedata.net/20-12-04-055c9d6fdca4daffe185140c71ada93b.png)
 
 上述属于理想情况，当设置多个 RocksDB 本地磁盘目录时，Flink
 会随机选择要使用的目录，所以就可能存在三个并行度共用同一目录的情况。如下图所示，其中两个并行度共用了 sdb 磁盘，一个并行度使用 sdj 磁盘。可以看到
 sdb 磁盘的 IO 使用率已经达到了 91.6%，就会导致 sdb 磁盘对应的两个并行度吞吐量大大降低，从而使得整个 Flink
 任务吞吐量降低。如果服务器磁盘数较多，一般不会出现该情况，但是如果任务重启后吞吐量较低，可以检查是否发生了多个并行度共用同一块磁盘的情况。
 
-![image](https://static.lovedata.net/20-12-04-2c54095da68bc3ef6b55e89c8b15b127.png-wm)
+![image](https://static.lovedata.net/20-12-04-2c54095da68bc3ef6b55e89c8b15b127.png)
 
 如果每个服务器上有一两块 SSD，强烈建议将 RocksDB 的本地磁盘目录配置到 SSD 的目录下，从 HDD 改为 SSD 对于性能的提升可能比你配置
 10 个优化参数更有效。

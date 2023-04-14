@@ -142,13 +142,13 @@ public class Main {
     nc -l 9000  
 
 
-![images](https://static.lovedata.net/zs/2019-10-17-154511.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-17-154511.png)
 然后右键运行 Main 类的 main 方法 (注意：需要传入运行参数 `127.0.0.1 9000`)：
 
-![images](https://static.lovedata.net/zs/2019-10-17-154701.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-17-154701.png)
 运行结果如下图：
 
-![images](https://static.lovedata.net/zs/2019-10-17-155011.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-17-155011.png)
 我在终端一个个输入下面的字符串：
 
 
@@ -188,10 +188,10 @@ examples-1.0-SNAPSHOT.jar) 然后将其上传到 Flink UI 上运行一下看下�
 examples-1.0-SNAPSHOT.jar 后，接着在 Main Class 填写运行的主函数，Program Arguments 填写参数
 `127.0.0.1 9000`，最后点击 Submit 后就可以运行了。
 
-![images](https://static.lovedata.net/zs/2019-10-17-160257.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-17-160257.png)
 UI 的运行详情如下图：
 
-![images](https://static.lovedata.net/zs/2019-10-17-162140.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-17-162140.png)
 我在终端一个个输入下面的字符串：
 
 
@@ -212,7 +212,7 @@ UI 的运行详情如下图：
 
 查看 Task Manager 的 Stdout 可以查看到输出：
 
-![images](https://static.lovedata.net/zs/2019-10-17-162642.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-17-162642.png)
 ### Flink Socket 应用程序代码分析
 
 1、参数检查，需要传入两个参数（hostname 和 port），符合条件就赋值给 hostname 和 port

@@ -26,13 +26,13 @@
 
 ### 磁盘结构
 
-![image](https://static.lovedata.net/21-06-07-4dc24c6f2bda17693df82ada49375934.png-wm)
+![image](https://static.lovedata.net/21-06-07-4dc24c6f2bda17693df82ada49375934.png)
 
 ### 结构组成
 
 LSM-Tree是由两个或以上的存储结构组成的，由一个驻存在内存中的树结构和多个位于磁盘的树结构组成。我们一般把在内存中的树结构称为C0-Tree（小树），具体结构可以是任何方便键值查找的数据结构，例如**红黑树，跳表等**；在磁盘中的树一开始为C1-Tree（大树），以后由于合并递增会有C2-Tree，C3-Tree……Ck-Tree，树从小到大依次递增。
 
-![image](https://static.lovedata.net/21-06-07-6149b08557d2a7eb0004748f036db23b.png-wm)
+![image](https://static.lovedata.net/21-06-07-6149b08557d2a7eb0004748f036db23b.png)
 
 
 
@@ -42,7 +42,7 @@ LSM-Tree是由两个或以上的存储结构组成的，由一个驻存在内存
 
 ### 合并
 
-![image](https://static.lovedata.net/21-06-07-4af8ac6f120a72a5b1f2ca6fe7686f49.png-wm)
+![image](https://static.lovedata.net/21-06-07-4af8ac6f120a72a5b1f2ca6fe7686f49.png)
 
 一开始数据会存放在C0-Tree中即内存中，当达到C0-Tree的阈值时会触发合并，将C0-Tree的数据合并写入到C1-Tree，过程类似于归并排序。C0-Tree和C1-Tree（old）会合并成为一个C1-Tree（new），C1-Tree（old）会被删除，用C1-Tree（new）代替。当C1-Tree达到一定大小，也会和下一层进行合并。
 
@@ -58,7 +58,7 @@ LSM-Tree是由两个或以上的存储结构组成的，由一个驻存在内存
 
 ### 合并过程
 
-![image](https://static.lovedata.net/21-06-07-90ce05c8ab77cfc7e27763d8d2a46055.png-wm)
+![image](https://static.lovedata.net/21-06-07-90ce05c8ab77cfc7e27763d8d2a46055.png)
 
 
 

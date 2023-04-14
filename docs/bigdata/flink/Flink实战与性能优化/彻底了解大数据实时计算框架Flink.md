@@ -41,16 +41,16 @@
 
 ### Flink 是什么？
 
-![images](https://static.lovedata.net/zs/pRMhfm.jpg-wm)
+![images](https://static.lovedata.net/zs/pRMhfm.jpg)
 Flink 是一个针对流数据和批数据的分布式处理引擎，代码主要是由 Java 实现，部分代码是Scala。它可以处理有界的批量数据集、也可以处理无界的实时数据集。对 Flink而言，其所要处理的主要场景就是流数据，批数据只是流数据的一个极限特例而已，所以 Flink 也是一款真正的流批统一的计算引擎。
 
-![images](https://static.lovedata.net/zs/vY6T3M.jpg-wm)
+![images](https://static.lovedata.net/zs/vY6T3M.jpg)
 
 Flink 提供了 State、Checkpoint、Time、Window 等，它们为 Flink提供了基石，本篇文章下面会稍作讲解，具体深度分析后面会有专门的文章来讲解。
 
 ### Flink 整体架构
 
-![images](https://static.lovedata.net/zs/Drsi9h.jpg-wm)
+![images](https://static.lovedata.net/zs/Drsi9h.jpg)
 从下至上：
 
   1. 部署：Flink 支持本地运行（IDE 中直接运行程序）、能在独立集群（Standalone 模式）或者在被 YARN、Mesos、K8s 管理的集群上运行，也能部署在云上。
@@ -63,7 +63,7 @@ Flink 提供了 State、Checkpoint、Time、Window 等，它们为 Flink提供�
 
 ### Flink 支持多种方式部署
 
-![images](https://static.lovedata.net/zs/2019-05-19-061658.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-05-19-061658.jpg)
 
 作为一个计算引擎，如果要做的足够完善，除了它自身的各种特点要包含，还得支持各种生态圈，比如部署的情况，Flink 是支持以Standalone、YARN、Kubernetes、Mesos 等形式部署的。
 
@@ -73,17 +73,17 @@ Flink 提供了 State、Checkpoint、Time、Window 等，它们为 Flink提供�
 
   * YARN：YARN 是 Hadoop 集群的资源管理系统，它可以在群集上运行各种分布式应用程序，Flink 可与其他应用并行于 YARN 中，Flink on YARN 的架构如下：
 
-![image](https://static.lovedata.net/21-04-20-0c46a406dfc4541245c061fbaeedfe0c.png-wm)
+![image](https://static.lovedata.net/21-04-20-0c46a406dfc4541245c061fbaeedfe0c.png)
   * Kubernetes：Kubernetes 是 Google 开源的容器集群管理系统，在 Docker 技术的基础上，为容器化的应用提供部署运行、资源调度、服务发现和动态伸缩等一系列完整功能，提高了大规模容器集群管理的便捷性，Flink 也支持部署在 Kubernetes 上，在 [GitHub](https://github.com/Aleksandr-Filichkin/flink-k8s/blob/master/flow.jpg) 看到有下面这种运行架构的。
 
-![images](https://static.lovedata.net/zs/2019-05-19-071249.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-05-19-071249.jpg)
 通常上面四种居多，另外还支持 AWS、MapR、Aliyun OSS 等。
 
 ### Flink 分布式运行
 
 Flink 作业提交架构流程可见下图：
 
-![images](https://static.lovedata.net/zs/p92UrK.jpg-wm)
+![images](https://static.lovedata.net/zs/p92UrK.jpg)
 1、Program Code：我们编写的 Flink 应用程序代码
 
 2、Job Client：Job Client 不是 Flink 程序执行的内部部分，但它是任务执行的起点。 Job Client负责接受用户的程序代码，然后创建数据流，将数据流提交给 Job Manager 以便进一步执行。 执行完成后，Job Client 将结果返回给用户
@@ -97,7 +97,7 @@ system、Scheduler、Check pointing 三个重要的组件
 
 ### Flink API
 
-![images](https://static.lovedata.net/zs/ozmU46.jpg-wm)
+![images](https://static.lovedata.net/zs/ozmU46.jpg)
 
 Flink 提供了不同的抽象级别的 API 以开发流式或批处理应用。
 
@@ -115,8 +115,8 @@ Flink 除了 DataStream 和 DataSet API，它还支持 Table/SQL API，Flink 也
 
 ### Flink 程序与数据流结构
 
-![images](https://static.lovedata.net/zs/u3RagR.jpg-wm)
-![images](https://static.lovedata.net/zs/2019-05-19-070817.jpg-wm)
+![images](https://static.lovedata.net/zs/u3RagR.jpg)
+![images](https://static.lovedata.net/zs/2019-05-19-070817.jpg)
 
 一个完整的 Flink 应用程序结构就是如上两图所示：
 
@@ -129,7 +129,7 @@ source。
 
 ### Flink 支持丰富的 Connector
 
-![images](https://static.lovedata.net/zs/2019-10-10-101956.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-10-101956.png)
 
 通过源码可以发现不同版本的 Kafka、不同版本的 ElasticSearch、Cassandra、HBase、Hive、HDFS、RabbitMQ都是支持的，除了流应用的 Connector 是支持的，另外还支持 SQL。再就是要考虑计算的数据来源和数据最终存储，因为 Flink 在大数据领域的的定位就是实时计算，它不做存储（虽然 Flink 中也有 State
 去存储状态数据，这里说的存储类似于 MySQL、ElasticSearch等存储），所以在计算的时候其实你需要考虑的是数据源来自哪里，计算后的结果又存储到哪里去。庆幸的是 Flink 目前已经支持大部分常用的组件了，比如在Flink 中已经支持了如下这些 Connector：
@@ -158,17 +158,17 @@ source。
 
 Flink 支持多种 Time，比如 Event time、Ingestion Time、Processing Time，后面的文章 [Flink 中Processing Time、Event Time、Ingestion Time 对比及其使用场景分析]() 中会很详细的讲解 Flink 中 Time的概念。
 
-![images](https://static.lovedata.net/zs/jvnREW.jpg-wm)
+![images](https://static.lovedata.net/zs/jvnREW.jpg)
 ### Flink 提供灵活的窗口机制
 
 Flink 支持多种 Window，比如 Time Window、Count Window、Session Window，还支持自定义Window。后面的文章 [如何使用 Flink Window 及 Window 基本概念与实现原理]() 中会很详细的讲解 Flink 中 Window的概念。
 
-![images](https://static.lovedata.net/zs/2019-05-19-074304.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-05-19-074304.jpg)
 ### Flink 并行的执行任务
 
 Flink 的程序内在是并行和分布式的，数据流可以被分区成 stream partitions，operators 被划分为 operatorsubtasks; 这些 subtasks 在不同的机器或容器中分不同的线程独立运行； operator subtasks 的数量在具体的 operator就是并行计算数，程序不同的 operator 阶段可能有不同的并行数；如下图所示，source operator 的并行数为 2，但最后的 sinkoperator 为 1：
 
-![images](https://static.lovedata.net/zs/ggMHCK.jpg-wm)
+![images](https://static.lovedata.net/zs/ggMHCK.jpg)
 ### Flink 支持状态存储和容错
 
 Flink 是一款有状态的流处理框架，它提供了丰富的状态访问接口，按照数据的划分方式，可以分为 Keyed State 和 Operator State，在Keyed State 中又提供了多种数据结构：

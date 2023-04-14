@@ -4,11 +4,11 @@
 
 ## JVM所处的位置
 
-![image](https://static.lovedata.net/20-11-08-515e0fbe2aa525b7861e3c837874abfc.png-wm)
+![image](https://static.lovedata.net/20-11-08-515e0fbe2aa525b7861e3c837874abfc.png)
 
 ## JDK构成
 
-![image](https://static.lovedata.net/20-11-08-0aa7fa5a5b4f691f142c87db5c4e7bf9.png-wm)
+![image](https://static.lovedata.net/20-11-08-0aa7fa5a5b4f691f142c87db5c4e7bf9.png)
 
 javac 前端编译器，是把java文件
 
@@ -16,9 +16,9 @@ javac 前端编译器，是把java文件
 
 ## JVM的整体结构
 
-![image](https://static.lovedata.net/20-11-08-5727a50d2e3c4c8e8f00ae903cfb078e.png-wm)
+![image](https://static.lovedata.net/20-11-08-5727a50d2e3c4c8e8f00ae903cfb078e.png)
 
-![image](https://static.lovedata.net/20-11-08-1f1723f4fedeb90bab21f8c81a7c6cfa.png-wm)
+![image](https://static.lovedata.net/20-11-08-1f1723f4fedeb90bab21f8c81a7c6cfa.png)
 
 
 
@@ -30,15 +30,15 @@ javac 前端编译器，是把java文件
 
 操作系统： 只能够识别机器指令，字节码不等同于机器指令。 需要执行引擎，充当一个高级语言和机器语言的翻译者
 
-![image](https://static.lovedata.net/20-11-08-8ceb134c94fdf0c49fdd1dfe53fd5ce2.png-wm)
+![image](https://static.lovedata.net/20-11-08-8ceb134c94fdf0c49fdd1dfe53fd5ce2.png)
 
 
 
 ## Java代码的执行流程
 
-![image](https://static.lovedata.net/20-11-08-9583d67ffab38e5ce486e43057864f4e.png-wm)
+![image](https://static.lovedata.net/20-11-08-9583d67ffab38e5ce486e43057864f4e.png)
 
-![image](https://static.lovedata.net/20-11-08-07273db5306a5fb062f8dd4218b97a62.png-wm)
+![image](https://static.lovedata.net/20-11-08-07273db5306a5fb062f8dd4218b97a62.png)
 
 
 
@@ -125,21 +125,21 @@ public int calc();
 
 时至今日，尽管嵌入式平台已经不是Java程序的主流运行平台了（准确来说应该是HotSpotVM的宿主环境已经不局限于嵌入式平台了），那么为什么不将架构更换为基于寄存器的架构呢？
 
-![image](https://static.lovedata.net/20-11-08-bfe554e99e1b3c07ec2cf7182ee1fab0.png-wm)
+![image](https://static.lovedata.net/20-11-08-bfe554e99e1b3c07ec2cf7182ee1fab0.png)
 
 ### 举例：
 
-![image](https://static.lovedata.net/20-11-08-77f15e3c29a7bec43e77b1df31fbe681.png-wm)
+![image](https://static.lovedata.net/20-11-08-77f15e3c29a7bec43e77b1df31fbe681.png)
 
-![image](https://static.lovedata.net/20-11-08-25d0d6f7689a955d0e2de240ba2aebd2.png-wm)
-
-
-
-![image](https://static.lovedata.net/20-11-08-bdb8332efb1e9afcfdf23eee9b4d8672.png-wm)
+![image](https://static.lovedata.net/20-11-08-25d0d6f7689a955d0e2de240ba2aebd2.png)
 
 
 
-![image](https://static.lovedata.net/20-11-08-9d276f4c9384bd6b9357316ca9458955.png-wm)
+![image](https://static.lovedata.net/20-11-08-bdb8332efb1e9afcfdf23eee9b4d8672.png)
+
+
+
+![image](https://static.lovedata.net/20-11-08-9d276f4c9384bd6b9357316ca9458955.png)
 
 
 

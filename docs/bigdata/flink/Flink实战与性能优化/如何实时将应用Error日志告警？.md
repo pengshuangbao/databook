@@ -24,7 +24,7 @@ ID、应用所属项目等）
 
 Logstash 是一个开源数据收集引擎，具有实时管道功能。Logstash 可以动态地将来自不同数据源的数据统一起来，并将数据标准化到你所选择的目的地。
 
-![images](https://static.lovedata.net/zs/2019-10-13-025214.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-10-13-025214.jpg)
 **优势** ：Logstash 主要的优点就是它的灵活性，它提供很多插件，详细的文档以及直白的配置格式让它可以在多种场景下应用。而且现在 ELK
 整个技术栈在很多公司应用的比较多，所以基本上可以在往上找到很多相关的学习资源。
 
@@ -37,7 +37,7 @@ Redis 或 Kafka 作为中心缓冲池：
 作为 Beats 家族的一员，Filebeat 是一个轻量级的日志传输工具，它的存在正弥补了 Logstash 的缺点，Filebeat
 作为一个轻量级的日志传输工具可以将日志推送到 Kafka、Logstash、ElasticSearch、Redis。
 
-![images](https://static.lovedata.net/zs/2019-10-13-030138.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-10-13-030138.jpg)
 **优势** ：Filebeat
 只是一个二进制文件没有任何依赖。它占用资源极少，尽管它还十分年轻，正式因为它简单，所以几乎没有什么可以出错的地方，所以它的可靠性还是很高的。它也为我们提供了很多可以调节的点，例如：它以何种方式搜索新的文件，以及当文件有一段时间没有发生变化时，何时选择关闭文件句柄。
 
@@ -50,7 +50,7 @@ Elasticsearch，而现在它可以将日志发送给 Kafka 和 Redis，在 5.x �
 Fluentd 创建的初衷主要是尽可能的使用 JSON
 作为日志输出，所以传输工具及其下游的传输线不需要猜测子字符串里面各个字段的类型。这样它为几乎所有的语言都提供库，这也意味着可以将它插入到自定义的程序中。
 
-![images](https://static.lovedata.net/zs/2019-10-13-031337.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-13-031337.png)
 **优势** ：和多数 Logstash 插件一样，Fluentd 插件是用 Ruby
 语言开发的非常易于编写维护。所以它数量很多，几乎所有的源和目标存储都有插件(各个插件的成熟度也不太一样)。这也意味这可以用 Fluentd
 来串联所有的东西。
@@ -126,7 +126,7 @@ public class LogEvent {
 Kafka 数据做一个异常告警计算处理。如果还想做日志的搜索分析，可以起另外一个作业去实时的将 Kafka 的日志数据写入进
 ElasticSearch，再通过 Kibana 页面做搜索和分析。
 
-![images](https://static.lovedata.net/zs/2019-10-13-035811.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-13-035811.png)
 ### 日志数据发到 Kafka
 
 上面已经讲了日志数据 LogEvent
@@ -294,7 +294,7 @@ public class LogSchema implements DeserializationSchema<LogEvent>, Serialization
 接下来先启动 Kafka，然后运行 BuildLogEventDataUtil 工具类，往 Kafka 中发送模拟的日志数据，接下来运行
 LogEventAlert 类，去消费将 Kafka 中的数据做一个验证，通过下图可以发现有日志数据打印出来了。
 
-![images](https://static.lovedata.net/zs/2019-10-13-072350.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-13-072350.png)
 ### 处理应用异常日志
 
 上面已经能够处理这些日志数据了，但是需求是要将应用的异常日志做告警，所以在消费到所有的数据后需要过滤出异常的日志，比如可以使用 filter 算子进行过滤。
@@ -304,10 +304,10 @@ LogEventAlert 类，去消费将 Kafka 中的数据做一个验证，通过下�
     .filter(logEvent -> "error".equals(logEvent.getLevel()))
 
 
-![images](https://static.lovedata.net/zs/2019-10-13-073245.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-13-073245.png)
 在将作业打包通过 UI 提交到集群运行的结果如下：
 
-![images](https://static.lovedata.net/zs/2019-10-13-080120.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-13-080120.png)
 再获取到这些 Error 类型的数据后，就可以根据这个数据构造成一个新的 Event，组装成告警消息，然后在 Sink
 处调用下游的通知策略进行告警通知，当然这些告警通知策略可能会很多，然后还有收敛策略。具体的通知策略和收敛策略在这节不做细讲，最后发出的应用异常日志告警消息中会携带一个链接，点击该链接可以跳转到对应的应用异常页面，这样就可以查看应用堆栈的详细日志，更加好定位问题。
 

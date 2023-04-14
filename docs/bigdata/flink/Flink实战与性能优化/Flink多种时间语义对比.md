@@ -50,14 +50,14 @@ Ingestion Time 在概念上位于 Event Time 和 Processing Time 之间。 与 P
 
 一张图概括上面说的三种 Time：
 
-![images](https://static.lovedata.net/zs/jvnREW.jpg-wm)
+![images](https://static.lovedata.net/zs/jvnREW.jpg)
   * Processing Time：事件被处理时机器的系统时间
   * Event Time：事件自身的时间
   * Ingestion Time：事件进入 Flink 的时间
 
 一张图形象描述上面说的三种 Time：
 
-![images](https://static.lovedata.net/zs/2019-04-28-Flink-time.png-wm)
+![images](https://static.lovedata.net/zs/2019-04-28-Flink-time.png)
 
 ### 使用场景分析
 

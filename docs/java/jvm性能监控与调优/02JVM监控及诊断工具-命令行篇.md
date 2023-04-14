@@ -18,8 +18,8 @@ Java 作为最流行的编程语言之一，其应用性能诊断一直受到业
 
 我们进入到安装jdk的bin目录，发现还有一系列辅助工具。这些辅助工具用来获取目标 JVM 不同方面、不同层次的信息，帮助开发人员很好地解决Java应用程序的一些疑难杂症。
 
-![image-20210504195803526](https://static.lovedata.net/zs/20210504195825.png-wm)
-![image-20210504195836342](https://static.lovedata.net/zs/20210504195838.png-wm)
+![image-20210504195803526](https://static.lovedata.net/zs/20210504195825.png)
+![image-20210504195836342](https://static.lovedata.net/zs/20210504195838.png)
 官方源码地址：[http://hg.openjdk.java.net/jdk/jdk11/file/1ddf9a99e4ad/src/jdk.jcmd/share/classes/sun/tools](http://hg.openjdk.java.net/jdk/jdk11/file/1ddf9a99e4ad/src/jdk.jcmd/share/classes/sun/tools)
 
 ## 2.2. jps：查看正在运行的Java进程
@@ -63,7 +63,7 @@ jstat（JVM Statistics Monitoring Tool）：用于监视虚拟机各种运行状
 
 其中vmid是进程id号，也就是jps之后看到的前面的号码，如下：
 
-![image-20210504201703222](https://static.lovedata.net/zs/20210504201704.png-wm)
+![image-20210504201703222](https://static.lovedata.net/zs/20210504201704.png)
 **option参数**
 
 选项option可以由以下值构成。
@@ -92,43 +92,43 @@ jstat（JVM Statistics Monitoring Tool）：用于监视虚拟机各种运行状
 
 **jstat -class**
 
-![img](https://static.lovedata.net/zs/20210504202501.png-wm)
+![img](https://static.lovedata.net/zs/20210504202501.png)
 **jstat -compiler**
 
-![img](https://static.lovedata.net/zs/20210504202507.png-wm)
+![img](https://static.lovedata.net/zs/20210504202507.png)
 **jstat -printcompilation**
 
-![img](https://static.lovedata.net/zs/20210504202510.png-wm)
+![img](https://static.lovedata.net/zs/20210504202510.png)
 **jstat -gc**
 
-![img](https://static.lovedata.net/zs/20210504202516.png-wm)
+![img](https://static.lovedata.net/zs/20210504202516.png)
 **jstat -gccapacity**
 
-![img](https://static.lovedata.net/zs/20210504202522.png-wm)
+![img](https://static.lovedata.net/zs/20210504202522.png)
 **jstat -gcutil**
 
-![img](https://static.lovedata.net/zs/20210504202524.png-wm)
+![img](https://static.lovedata.net/zs/20210504202524.png)
 **jstat -gccause**
 
-![img](https://static.lovedata.net/zs/20210504202527.png-wm)
+![img](https://static.lovedata.net/zs/20210504202527.png)
 **jstat -gcnew**
 
-![img](https://static.lovedata.net/zs/20210504202530.png-wm)
+![img](https://static.lovedata.net/zs/20210504202530.png)
 **jstat -gcnewcapacity**
 
-![img](https://static.lovedata.net/zs/20210504202532.png-wm)
+![img](https://static.lovedata.net/zs/20210504202532.png)
 **jstat -gcold**
 
-![img](https://static.lovedata.net/zs/20210504202534.png-wm)
+![img](https://static.lovedata.net/zs/20210504202534.png)
 **jstat -gcoldcapacity**
 
-![img](https://static.lovedata.net/zs/20210504202537.png-wm)
+![img](https://static.lovedata.net/zs/20210504202537.png)
 **jstat -t**
 
-![img](https://static.lovedata.net/zs/20210504202539.png-wm)
+![img](https://static.lovedata.net/zs/20210504202539.png)
 **jstat -t -h**
 
-![img](https://static.lovedata.net/zs/20210504202541.png-wm)
+![img](https://static.lovedata.net/zs/20210504202541.png)
 | 表头 | 含义（字节）                                    |
 | :--- | :---------------------------------------------- |
 | EC   | Eden区的大小                                    |
@@ -231,7 +231,7 @@ jinfo不仅可以查看运行时某一个Java虚拟机参数的实际取值，�
 #可以查看被标记为manageable的参 数
 **java -XX:+PrintFlagsFinal -version| grep manageable**
 
-![image](https://static.lovedata.net/21-06-12-3c241f9d5897eea2a67ea541b6891acd.png-wm)
+![image](https://static.lovedata.net/21-06-12-3c241f9d5897eea2a67ea541b6891acd.png)
 
 **jinfo -flag [+-]name**
 
@@ -358,13 +358,13 @@ jmap -dump:live,format=b,file=<filename.hprof> <pid>
 
 #### jap -heap pid
 
-![image](https://static.lovedata.net/21-06-12-2010586cc36dba251efbdfca8e5ba4a7.png-wm)
+![image](https://static.lovedata.net/21-06-12-2010586cc36dba251efbdfca8e5ba4a7.png)
 
-![image](https://static.lovedata.net/21-06-12-561aa1062c9b7f0e824606a9efa43b48.png-wm)
+![image](https://static.lovedata.net/21-06-12-561aa1062c9b7f0e824606a9efa43b48.png)
 
 #### jmap -histo pid
 
-![image](https://static.lovedata.net/21-06-12-589a5799041da9150161843c94932605.png-wm)
+![image](https://static.lovedata.net/21-06-12-589a5799041da9150161843c94932605.png)
 
 
 
@@ -440,7 +440,7 @@ jcmd拥有jmap的大部分功能，并且在Oracle的官方网站上也推荐使
 
 **jcmd 进程号 help：**针对指定的进程，列出支持的所有具体命令
 
-![image-20210504213044819](https://static.lovedata.net/zs/20210504213050.png-wm)
+![image-20210504213044819](https://static.lovedata.net/zs/20210504213050.png)
 **jcmd 进程号 具体命令：**显示指定进程的指令命令的数据
 
 - Thread.print 可以替换 jstack指令
@@ -455,4 +455,4 @@ jcmd拥有jmap的大部分功能，并且在Oracle的官方网站上也推荐使
 
 之前的指令只涉及到监控本机的Java应用程序，而在这些工具中，一些监控工具也支持对远程计算机的监控（如jps、jstat）。为了启用远程监控，则需要配合使用jstatd 工具。命令jstatd是一个RMI服务端程序，它的作用相当于代理服务器，建立本地计算机与远程监控工具的通信。jstatd服务器将本机的Java应用程序信息传递到远程计算机。
 
-![image-20210504213301077](https://static.lovedata.net/zs/20210504213302.png-wm)
+![image-20210504213301077](https://static.lovedata.net/zs/20210504213302.png)

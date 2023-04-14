@@ -8,11 +8,11 @@
 
 下图表示选择 Event Time 与 Process Time 的实际效果图：
 
-![images](https://static.lovedata.net/zs/2019-05-21-140842.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-05-21-140842.jpg)
 
 在理想的情况下，Event Time 和 Process Time是相等的，数据发生的时间与数据处理的时间没有延迟，但是现实却仍然这么骨感，会因为各种各样的问题（网络的抖动、设备的故障、应用的异常等原因)从而导致如图中曲线一样，ProcessTime 总是会与 Event Time 有一些延迟。所谓乱序，其实是指 Flink 接收到的事件的先后顺序并不是严格的按照事件的 Event Time顺序排列的。比如下图：
 
-![images](https://static.lovedata.net/zs/2019-05-21-152340.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-05-21-152340.jpg)
 
 然而在有些场景下，其实是特别依赖于事件时间而不是处理时间，比如：
 
@@ -32,18 +32,18 @@ Watermark 是一种衡量 Event Time 进展的机制，它是数据本身的一�
 
 下面通过几个图来了解一下 Watermark 是如何工作的！
 
-![images](https://static.lovedata.net/zs/2019-07-08-154340.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-07-08-154340.jpg)
 
 上图中的数据是 Flink 从消息队列中消费的，然后在 Flink 中有个 4s的时间窗口（根据事件时间定义的窗口)，消息队列中的数据是乱序过来的，数据上的数字代表着数据本身的 timestamp，`W(4)` 和 `W(9)`是水印。
 
-![images](https://static.lovedata.net/zs/2019-07-08-154747.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-07-08-154747.jpg)
 
 经过 Flink 的消费，数据 `1`、`3`、`2` 进入了第一个窗口，然后 `7` 会进入第二个窗口，接着 `3`依旧会进入第一个窗口，然后就有水印了，此时水印过来了，就会发现水印的 timestamp 和第一个窗口结束时间是一致的，那么它就表示在后面不会有比 `4`还小的数据过来了，接着就会触发第一个窗口的计算操作，如下图所示：
 
-![images](https://static.lovedata.net/zs/2019-07-08-155309.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-07-08-155309.jpg)
 那么接着后面的数据 `5` 和 `6` 会进入到第二个窗口里面，数据 `9` 会进入在第三个窗口里面。
 
-![images](https://static.lovedata.net/zs/2019-07-08-155558.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-07-08-155558.jpg)
 
 那么当遇到水印 `9` 时，发现水印比第二个窗口的结束时间 `8` 还大，所以第二个窗口也会触发进行计算，然后以此继续类推下去。
 
@@ -154,10 +154,10 @@ currentTimestamp。getCurrentWatermark() 方法是获取当前的水位线，这
 
 AssignerWithPeriodicWatermarks 这个接口有四个实现类，分别如下图：
 
-![images](https://static.lovedata.net/zs/2019-10-23-082804.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-082804.png)
   * BoundedOutOfOrdernessTimestampExtractor：该类用来发出滞后于数据时间的水印，它的目的其实就是和我们上面定义的那个类作用是类似的，你可以传入一个时间代表着可以允许数据延迟到来的时间是多长。该类内部实现如下：
 
-![images](https://static.lovedata.net/zs/2019-10-23-083043.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-23-083043.png)
 
 你可以像下面一样使用该类来分配时间和生成水印：    
 
@@ -242,7 +242,7 @@ DataStream<Event> stream = env.addSource(kafkaSource);
 
 下图表示水印在 Kafka 分区后如何通过流数据流传播：
 
-![images](https://static.lovedata.net/zs/2019-07-09-014107.jpg-wm)
+![images](https://static.lovedata.net/zs/2019-07-09-014107.jpg)
 ### Watermark 与 Window 结合来处理延迟数据
 
 其实在上文中已经提到的一点是在设置 Periodic Watermark时，是允许提供一个参数，表示数据最大的延迟时间。其实这个值要结合自己的业务以及数据的情况来设置，如果该值设置的太小会导致数据因为网络或者其他的原因从而导致乱序或者延迟的数据太多，那么最后窗口触发的时候，可能窗口里面的数据量很少，那么这样计算的结果很可能误差会很大，对于有的场景（要求正确性比较高）是不太符合需求的。但是如果该值设置的太大，那么就会导致很多窗口一直在等待延迟的数据，从而一直不触发，这样首先就会导致数据的实时性降低，另外将这么多窗口的数据存在内存中，也会增加作业的内存消耗，从而可能会导致作业发生OOM 的问题。

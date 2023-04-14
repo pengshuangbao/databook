@@ -6,7 +6,7 @@
 
 Hadoop平台上的开源OLAP引擎,多维立方体预计算技术，将sql提升到亚秒级别
 
-![image](https://static.lovedata.net/jpg/2018/7/4/4bb2dc72ea9e7c1ca0fe7f39b39ee58a.jpg-wm)
+![image](https://static.lovedata.net/jpg/2018/7/4/4bb2dc72ea9e7c1ca0fe7f39b39ee58a.jpg)
 
 空间换时间，线性增加的资源需求到线性降低的查询时间
 
@@ -16,9 +16,9 @@ Hadoop平台上的开源OLAP引擎,多维立方体预计算技术，将sql提升
 
    1. > [编程小梦|Apache Kylin Cube 构建原理](https://blog.bcmeng.com/post/kylin-cube.html)
 
-   2. ![image](https://static.lovedata.net/jpg/2018/7/10/05133de3b393e6366d11797a2386987b.jpg-wm)
+   2. ![image](https://static.lovedata.net/jpg/2018/7/10/05133de3b393e6366d11797a2386987b.jpg)
 
-   3. ![image](https://static.lovedata.net/jpg/2018/7/10/da963f940d5ec0716df33433d0d5811d.jpg-wm)
+   3. ![image](https://static.lovedata.net/jpg/2018/7/10/da963f940d5ec0716df33433d0d5811d.jpg)
 
 1. Apache Kylin On Druid Storage 原理与实践
 
@@ -34,7 +34,7 @@ Hadoop平台上的开源OLAP引擎,多维立方体预计算技术，将sql提升
 
    4. 将不同维度组合查询SQL，转换成基于RowKey的范围扫描，然后对指标进行汇总计算，以实现快速分析查询
 
-   5. ![image](https://static.lovedata.net/21-06-17-fae29d95e812359f8bce6d36a5c0b199.png-wm)
+   5. ![image](https://static.lovedata.net/21-06-17-fae29d95e812359f8bce6d36a5c0b199.png)
 
    6. 步骤：
 

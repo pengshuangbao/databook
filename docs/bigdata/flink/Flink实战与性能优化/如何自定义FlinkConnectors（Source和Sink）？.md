@@ -162,18 +162,18 @@ public class SourceFromMySQL extends RichSourceFunction<Student> {
 
 运行 Flink 程序，控制台日志中可以看见打印的 student 信息。
 
-![images](https://static.lovedata.net/zs/cY9WwK.jpg-wm)
+![images](https://static.lovedata.net/zs/cY9WwK.jpg)
 ### RichSourceFunction 使用及源码分析
 
 从上面自定义的 Source 可以看到我们继承的就是这个 RichSourceFunction 类，其实也是可以使用 SourceFunction
 函数来自定义 Source。 RichSourceFunction 函数比 SourceFunction 多了 open
 方法（可以用来初始化）和获取应用上下文的方法，那么来了解一下该类。
 
-![images](https://static.lovedata.net/zs/2019-10-11-020426.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-11-020426.png)
 它是一个抽象类，继承自 AbstractRichFunction，实现了 SourceFunction
 接口，其子类有三个，两个是抽象类，在此基础上提供了更具体的实现，另一个是 ContinuousFileMonitoringFunction。
 
-![images](https://static.lovedata.net/zs/2019-10-11-020702.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-11-020702.png)
   * MessageAcknowledgingSourceBase ：它针对的是数据源是消息队列的场景并且提供了基于 ID 的应答机制。
   * MultipleIdsMessageAcknowledgingSourceBase ： 在 MessageAcknowledgingSourceBase 的基础上针对 ID 应答机制进行了更为细分的处理，支持两种 ID 应答模型：session id 和 unique message id。
   * ContinuousFileMonitoringFunction：这是单个（非并行）监视任务，它接受 FileInputFormat，并且根据 FileProcessingMode 和 FilePathFilter，它负责监视用户提供的路径；决定应该进一步读取和处理哪些文件；创建与这些文件对应的 FileInputSplit 拆分，将它们分配给下游任务以进行进一步处理。
@@ -331,7 +331,7 @@ public class Main3 {
 
 如果数据插入成功了，那么查看下我们的数据库：
 
-![images](https://static.lovedata.net/zs/u1IzGT.jpg-wm)
+![images](https://static.lovedata.net/zs/u1IzGT.jpg)
 数据库中已经插入了 100 条我们从 Kafka 发送的数据了。证明我们的 SinkToMySQL 起作用了。
 
 ### RichSinkFunction 使用及源码分析
@@ -339,7 +339,7 @@ public class Main3 {
 通过上面的 demo 可以发现继承 RichSinkFunction 类，然后实现内部的 open、close、invoke 方法就可以实现自定义 Sink
 了，RichSinkFunction 的类图如下。
 
-![images](https://static.lovedata.net/zs/2019-10-10-165730.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-10-165730.png)
 该类继承了 AbstractRichFunction 抽象类，实现了 SinkFunction 接口，同样该类也是一个 Rich 函数，它比
 SinkFunction 多了 open（可以初始化数据） 和
 getRuntimeContext（可以获取上下文）方法，如果不需要这两个方法，同样也是可以实现 SinkFunction 接口来自定义 Sink 的。

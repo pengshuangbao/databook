@@ -106,13 +106,13 @@ Flink CEP 支持动态的更新规则，下面分享一下他们几家公司的�
 
   * A 公司：用户更新规则后，新规则会被翻译成 Java 代码，并编译打包成可执行 jar，停止作业并使用 Savepoint 将状态保存下来，启动新的作业并读取之前保存的状态，会根据规则文件中的数量和复杂度对作业的数量做一个规划，防止单作业负载过高，架构如下图所示。
 
-![images](https://static.lovedata.net/zs/2019-10-28-142601.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-28-142601.png)
   * B 公司：规则中心存储规则，规则里面直接存储了 Java 代码，加载这些规则后然后再用 Groovy 做动态编译解析，其架构如下图所示。
 
-![images](https://static.lovedata.net/zs/2019-10-28-143822.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-28-143822.png)
   * C 公司：增加函数，在函数方法中监听规则的变化，如果需要更新则通过 Groovy 加载 Pattern 类进行动态注入，采用 Zookeeper 和 MySQL 管理规则，如果规则发生变化，则从数据库中获取到新的规则，然后更新 Flink CEP 中的 NFA 逻辑，注意状态要根据业务需要选择是否重置，其架构设计如下图所示。
 
-![images](https://static.lovedata.net/zs/2019-10-28-150827.png-wm)
+![images](https://static.lovedata.net/zs/2019-10-28-150827.png)
 第一种方法，笔者不推荐，因为它这样的做法还是要将作业重启，无非就是做了一个自动化的操作，不是人为的手动重启，从 B 公司和 C 公司两种方法可以发现要实现
 Flink CEP 动态的更新规则无非要做的就是：
 

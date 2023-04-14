@@ -6,19 +6,19 @@
 
 ### React生命周期(旧的)
 
-![image](https://static.lovedata.net/21-10-08-51b81685ec2a804b35566bfe2dde9522.png-wm)
+![image](https://static.lovedata.net/21-10-08-51b81685ec2a804b35566bfe2dde9522.png)
 
 ### React生命周期(新的)
 
-![image](https://static.lovedata.net/21-10-08-5bd085c36697d58b0468fa0bb9aace7e.png-wm)
+![image](https://static.lovedata.net/21-10-08-5bd085c36697d58b0468fa0bb9aace7e.png)
 
 ### Redux原理图
 
-![image](https://static.lovedata.net/21-10-08-5e4745e18a788f320e2377b8ee09ff23.png-wm)
+![image](https://static.lovedata.net/21-10-08-5e4745e18a788f320e2377b8ee09ff23.png)
 
 ### react-redux模型图
 
-![image](https://static.lovedata.net/21-10-08-7b389a510383fb17c6cc684d8be44be5.png-wm)
+![image](https://static.lovedata.net/21-10-08-7b389a510383fb17c6cc684d8be44be5.png)
 
 
 

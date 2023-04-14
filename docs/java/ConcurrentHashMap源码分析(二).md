@@ -205,7 +205,7 @@ private final Node<K,V>[] initTable() {
 
 ##### 2.1、put加锁图解
 
-![image](https://static.lovedata.net/21-06-21-93d1907d3837e8c98c26ba9810a804c4.png-wm)
+![image](https://static.lovedata.net/21-06-21-93d1907d3837e8c98c26ba9810a804c4.png)
 
 
 
@@ -371,7 +371,7 @@ private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
 
 #### 2、图解
 
-![image](https://static.lovedata.net/21-06-21-fdac83092f5be9dfd3a451a61a68cea0.png-wm)
+![image](https://static.lovedata.net/21-06-21-fdac83092f5be9dfd3a451a61a68cea0.png)
 
 ### 四、jdk1.8多线程扩容效率改进
 
@@ -465,7 +465,7 @@ private final void addCount(long x, int check) {
 
 #### 2、图解
 
-![image](https://static.lovedata.net/21-06-21-4d39c9ee5022a6f7dfdc8385f4f2858e.png-wm)
+![image](https://static.lovedata.net/21-06-21-4d39c9ee5022a6f7dfdc8385f4f2858e.png)
 
 ### 五、集合长度的累计方式
 
@@ -656,7 +656,7 @@ private final void fullAddCount(long x, boolean wasUncontended) {
 
 > fullAddCount方法中，当as数组不为空的逻辑图解
 
-![image](https://static.lovedata.net/21-06-21-9e046f23b22a479afd8ceb0bba8187f6.png-wm)
+![image](https://static.lovedata.net/21-06-21-9e046f23b22a479afd8ceb0bba8187f6.png)
 
 
 
