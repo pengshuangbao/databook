@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>第十四章、垃圾回收概述 | 编程手册</title>
+    <meta name="generator" content="VuePress 1.7.1">
+    <link rel="icon" href="/logo.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon-152x152.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#3eaf7c">
+    <meta name="description" content="苍穹浩渺,取之须臾">
+    <meta name="theme-color" content="#3eaf7c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="msapplication-TileImage" content="/icons/msapplication-icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#000000">
+    
+    <link rel="preload" href="/assets/css/0.styles.225a8ff9.css" as="style"><link rel="preload" href="/assets/js/app.0f56a723.js" as="script"><link rel="preload" href="/assets/js/4.a8ef5668.js" as="script"><link rel="preload" href="/assets/js/161.8f694ed1.js" as="script"><link rel="preload" href="/assets/js/11.0473ae06.js" as="script"><link rel="prefetch" href="/assets/js/10.06cc4fbb.js"><link rel="prefetch" href="/assets/js/100.79e96d05.js"><link rel="prefetch" href="/assets/js/101.bcac0b9f.js"><link rel="prefetch" href="/assets/js/102.c5d92a95.js"><link rel="prefetch" href="/assets/js/103.697856ab.js"><link rel="prefetch" href="/assets/js/104.8f2db4d2.js"><link rel="prefetch" href="/assets/js/105.d4f2bb07.js"><link rel="prefetch" href="/assets/js/106.1a533c3f.js"><link rel="prefetch" href="/assets/js/107.b2845ea0.js"><link rel="prefetch" href="/assets/js/108.226e46ed.js"><link rel="prefetch" href="/assets/js/109.0de9c16c.js"><link rel="prefetch" href="/assets/js/110.4657c34b.js"><link rel="prefetch" href="/assets/js/111.3409d3a7.js"><link rel="prefetch" href="/assets/js/112.a46b486c.js"><link rel="prefetch" href="/assets/js/113.ba001fa9.js"><link rel="prefetch" href="/assets/js/114.ad1e6ba1.js"><link rel="prefetch" href="/assets/js/115.a0ac732f.js"><link rel="prefetch" href="/assets/js/116.4ee2a7b2.js"><link rel="prefetch" href="/assets/js/117.a76fd29a.js"><link rel="prefetch" href="/assets/js/118.83c5badf.js"><link rel="prefetch" href="/assets/js/119.09fec567.js"><link rel="prefetch" href="/assets/js/12.286e979d.js"><link rel="prefetch" href="/assets/js/120.42120fe1.js"><link rel="prefetch" href="/assets/js/121.9d79a9dd.js"><link rel="prefetch" href="/assets/js/122.f71a459c.js"><link rel="prefetch" href="/assets/js/123.b75308dc.js"><link rel="prefetch" href="/assets/js/124.e4d4643b.js"><link rel="prefetch" href="/assets/js/125.73fc990d.js"><link rel="prefetch" href="/assets/js/126.3b0eccd0.js"><link rel="prefetch" href="/assets/js/127.3eb3ab27.js"><link rel="prefetch" href="/assets/js/128.64ba68bb.js"><link rel="prefetch" href="/assets/js/129.82cfac7a.js"><link rel="prefetch" href="/assets/js/13.7207d991.js"><link rel="prefetch" href="/assets/js/130.42811f32.js"><link rel="prefetch" href="/assets/js/131.6f498e16.js"><link rel="prefetch" href="/assets/js/132.f0cc9ad2.js"><link rel="prefetch" href="/assets/js/133.325e755a.js"><link rel="prefetch" href="/assets/js/134.076a808c.js"><link rel="prefetch" href="/assets/js/135.fad7be83.js"><link rel="prefetch" href="/assets/js/136.042fc555.js"><link rel="prefetch" href="/assets/js/137.b67b55bc.js"><link rel="prefetch" href="/assets/js/138.6476c99f.js"><link rel="prefetch" href="/assets/js/139.ad07500f.js"><link rel="prefetch" href="/assets/js/14.a1cb7c1b.js"><link rel="prefetch" href="/assets/js/140.3edd2237.js"><link rel="prefetch" href="/assets/js/141.5181db27.js"><link rel="prefetch" href="/assets/js/142.67b4c4a2.js"><link rel="prefetch" href="/assets/js/143.9d249a3f.js"><link rel="prefetch" href="/assets/js/144.e6db5540.js"><link rel="prefetch" href="/assets/js/145.5b4305a7.js"><link rel="prefetch" href="/assets/js/146.bc674178.js"><link rel="prefetch" href="/assets/js/147.964ff3df.js"><link rel="prefetch" href="/assets/js/148.570b6864.js"><link rel="prefetch" href="/assets/js/149.4b9796c2.js"><link rel="prefetch" href="/assets/js/15.3cafda64.js"><link rel="prefetch" href="/assets/js/150.c677bf4b.js"><link rel="prefetch" href="/assets/js/151.b8977c93.js"><link rel="prefetch" href="/assets/js/152.535e2db4.js"><link rel="prefetch" href="/assets/js/153.754fc05e.js"><link rel="prefetch" href="/assets/js/154.5a5928b6.js"><link rel="prefetch" href="/assets/js/155.19893ca5.js"><link rel="prefetch" href="/assets/js/156.da1f2665.js"><link rel="prefetch" href="/assets/js/157.cb7b551f.js"><link rel="prefetch" href="/assets/js/158.f5d94a11.js"><link rel="prefetch" href="/assets/js/159.0b2b78d9.js"><link rel="prefetch" href="/assets/js/16.54ab9242.js"><link rel="prefetch" href="/assets/js/160.c2548b6c.js"><link rel="prefetch" href="/assets/js/162.1adc1aa4.js"><link rel="prefetch" href="/assets/js/163.5688827c.js"><link rel="prefetch" href="/assets/js/164.8442474f.js"><link rel="prefetch" href="/assets/js/165.d0e21e5c.js"><link rel="prefetch" href="/assets/js/166.2e90ae99.js"><link rel="prefetch" href="/assets/js/167.374185de.js"><link rel="prefetch" href="/assets/js/168.2426769f.js"><link rel="prefetch" href="/assets/js/169.829516d9.js"><link rel="prefetch" href="/assets/js/17.9cad59f9.js"><link rel="prefetch" href="/assets/js/170.db0c4609.js"><link rel="prefetch" href="/assets/js/171.7bdcc41b.js"><link rel="prefetch" href="/assets/js/172.7f7ab109.js"><link rel="prefetch" href="/assets/js/173.c1d51df9.js"><link rel="prefetch" href="/assets/js/174.afa4c5f6.js"><link rel="prefetch" href="/assets/js/175.b46d9dd8.js"><link rel="prefetch" href="/assets/js/176.c38ba756.js"><link rel="prefetch" href="/assets/js/177.ba85b912.js"><link rel="prefetch" href="/assets/js/178.af1a44e8.js"><link rel="prefetch" href="/assets/js/179.e097e164.js"><link rel="prefetch" href="/assets/js/18.3776b09c.js"><link rel="prefetch" href="/assets/js/180.d9d5d80c.js"><link rel="prefetch" href="/assets/js/181.79401f8c.js"><link rel="prefetch" href="/assets/js/182.343db47f.js"><link rel="prefetch" href="/assets/js/183.005841bb.js"><link rel="prefetch" href="/assets/js/19.d0ac1e7f.js"><link rel="prefetch" href="/assets/js/20.e0100fb2.js"><link rel="prefetch" href="/assets/js/21.f59cd52c.js"><link rel="prefetch" href="/assets/js/22.3ecf54da.js"><link rel="prefetch" href="/assets/js/23.2508850b.js"><link rel="prefetch" href="/assets/js/24.0ac10322.js"><link rel="prefetch" href="/assets/js/25.7c3ee156.js"><link rel="prefetch" href="/assets/js/26.7021c42c.js"><link rel="prefetch" href="/assets/js/27.d716476b.js"><link rel="prefetch" href="/assets/js/28.58ebf808.js"><link rel="prefetch" href="/assets/js/29.88c37f6c.js"><link rel="prefetch" href="/assets/js/30.87bc4a91.js"><link rel="prefetch" href="/assets/js/31.a69c2a35.js"><link rel="prefetch" href="/assets/js/32.89f74912.js"><link rel="prefetch" href="/assets/js/33.df886872.js"><link rel="prefetch" href="/assets/js/34.835d0785.js"><link rel="prefetch" href="/assets/js/35.5e38ab06.js"><link rel="prefetch" href="/assets/js/36.5b639051.js"><link rel="prefetch" href="/assets/js/37.bb32ead0.js"><link rel="prefetch" href="/assets/js/38.c2541da0.js"><link rel="prefetch" href="/assets/js/39.3c8f0f06.js"><link rel="prefetch" href="/assets/js/40.4cc077aa.js"><link rel="prefetch" href="/assets/js/41.cbcd81a7.js"><link rel="prefetch" href="/assets/js/42.6d002f78.js"><link rel="prefetch" href="/assets/js/43.3f67c882.js"><link rel="prefetch" href="/assets/js/44.58ce7a4d.js"><link rel="prefetch" href="/assets/js/45.bfb9d6e0.js"><link rel="prefetch" href="/assets/js/46.691097de.js"><link rel="prefetch" href="/assets/js/47.e6b5c9b5.js"><link rel="prefetch" href="/assets/js/48.38159f5c.js"><link rel="prefetch" href="/assets/js/49.e03ce66a.js"><link rel="prefetch" href="/assets/js/5.340b4b76.js"><link rel="prefetch" href="/assets/js/50.7df345cb.js"><link rel="prefetch" href="/assets/js/51.b3eed5d5.js"><link rel="prefetch" href="/assets/js/52.bb282842.js"><link rel="prefetch" href="/assets/js/53.6b21ec8f.js"><link rel="prefetch" href="/assets/js/54.bab98944.js"><link rel="prefetch" href="/assets/js/55.59437904.js"><link rel="prefetch" href="/assets/js/56.18b88131.js"><link rel="prefetch" href="/assets/js/57.b0cbba56.js"><link rel="prefetch" href="/assets/js/58.d9379002.js"><link rel="prefetch" href="/assets/js/59.e8663882.js"><link rel="prefetch" href="/assets/js/6.c48e1ddb.js"><link rel="prefetch" href="/assets/js/60.0a00b724.js"><link rel="prefetch" href="/assets/js/61.cd09980d.js"><link rel="prefetch" href="/assets/js/62.b092ff62.js"><link rel="prefetch" href="/assets/js/63.86482c79.js"><link rel="prefetch" href="/assets/js/64.3c1ee4d2.js"><link rel="prefetch" href="/assets/js/65.0621decf.js"><link rel="prefetch" href="/assets/js/66.cf7a6241.js"><link rel="prefetch" href="/assets/js/67.99e103bc.js"><link rel="prefetch" href="/assets/js/68.b3589f28.js"><link rel="prefetch" href="/assets/js/69.f0932a12.js"><link rel="prefetch" href="/assets/js/7.0f410b85.js"><link rel="prefetch" href="/assets/js/70.0a941773.js"><link rel="prefetch" href="/assets/js/71.3a6c6141.js"><link rel="prefetch" href="/assets/js/72.2299ff58.js"><link rel="prefetch" href="/assets/js/73.544fe8c6.js"><link rel="prefetch" href="/assets/js/74.98219c05.js"><link rel="prefetch" href="/assets/js/75.244a9d80.js"><link rel="prefetch" href="/assets/js/76.cefd9fe2.js"><link rel="prefetch" href="/assets/js/77.59793840.js"><link rel="prefetch" href="/assets/js/78.a7d9a079.js"><link rel="prefetch" href="/assets/js/79.f9ec013d.js"><link rel="prefetch" href="/assets/js/8.269955a4.js"><link rel="prefetch" href="/assets/js/80.b0f2cbe5.js"><link rel="prefetch" href="/assets/js/81.3d245e9a.js"><link rel="prefetch" href="/assets/js/82.061b170d.js"><link rel="prefetch" href="/assets/js/83.d2c42148.js"><link rel="prefetch" href="/assets/js/84.f6f487a4.js"><link rel="prefetch" href="/assets/js/85.c5305650.js"><link rel="prefetch" href="/assets/js/86.0c30a2ef.js"><link rel="prefetch" href="/assets/js/87.d9a99f2e.js"><link rel="prefetch" href="/assets/js/88.03792030.js"><link rel="prefetch" href="/assets/js/89.95684850.js"><link rel="prefetch" href="/assets/js/9.5c3462fb.js"><link rel="prefetch" href="/assets/js/90.185b012e.js"><link rel="prefetch" href="/assets/js/91.d19f0020.js"><link rel="prefetch" href="/assets/js/92.9e7855de.js"><link rel="prefetch" href="/assets/js/93.1ee902df.js"><link rel="prefetch" href="/assets/js/94.4bfab4ad.js"><link rel="prefetch" href="/assets/js/95.5f0b1d15.js"><link rel="prefetch" href="/assets/js/96.bd50a446.js"><link rel="prefetch" href="/assets/js/97.749fd671.js"><link rel="prefetch" href="/assets/js/98.bc09c746.js"><link rel="prefetch" href="/assets/js/99.40f98e75.js"><link rel="prefetch" href="/assets/js/vendors~flowchart.98d8c7d3.js"><link rel="prefetch" href="/assets/js/vendors~notification.5515ddcd.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.225a8ff9.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">编程手册</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/java/" class="nav-link router-link-active">
+  Java
+</a></div><div class="nav-item"><a href="/bigdata/" class="nav-link">
+  大数据
+</a></div><div class="nav-item"><a href="/algorithm/" class="nav-link">
+  算法 
+</a></div><div class="nav-item"><a href="/architecture/" class="nav-link">
+  架构 
+</a></div><div class="nav-item"><a href="/computer/" class="nav-link">
+  计算机 
+</a></div><div class="nav-item"><a href="/database/" class="nav-link">
+  数据库 
+</a></div><div class="nav-item"><a href="/fe/" class="nav-link">
+  前端
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="运维 " class="dropdown-title"><span class="title">运维 </span> <span class="arrow down"></span></button> <button type="button" aria-label="运维 " class="mobile-dropdown-title"><span class="title">运维 </span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/ops/" class="nav-link">
+  基础
+</a></li><li class="dropdown-item"><h4>
+          分类
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/ops/java.html" class="nav-link">
+  Java
+</a></li><li class="dropdown-subitem"><a href="/ops/bigdata.html" class="nav-link">
+  大数据
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="编程" class="dropdown-title"><span class="title">编程</span> <span class="arrow down"></span></button> <button type="button" aria-label="编程" class="mobile-dropdown-title"><span class="title">编程</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          语言
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/programming/python.html" class="nav-link">
+  Python
+</a></li><li class="dropdown-subitem"><a href="/programming/scala.html" class="nav-link">
+  Scala
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="资源" class="dropdown-title"><span class="title">资源</span> <span class="arrow down"></span></button> <button type="button" aria-label="资源" class="mobile-dropdown-title"><span class="title">资源</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          我的书单
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/tech.html" class="nav-link">
+  技术类
+</a></li><li class="dropdown-subitem"><a href="/book/growth.html" class="nav-link">
+  成长类
+</a></li></ul></li><li class="dropdown-item"><h4>
+          网课
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/geek.html" class="nav-link">
+  专栏
+</a></li><li class="dropdown-subitem"><a href="/book/video.html" class="nav-link">
+  视频
+</a></li></ul></li><li class="dropdown-item"><h4>
+          面经
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/tech.html" class="nav-link">
+  大厂面经
+</a></li><li class="dropdown-subitem"><a href="/interview/sword-to-offer.html" class="nav-link">
+  剑指Offer
+</a></li><li class="dropdown-subitem"><a href="/interview/fe.html" class="nav-link">
+  前端面经
+</a></li><li class="dropdown-subitem"><a href="/interview/interview_guide.html" class="nav-link">
+  面试导航
+</a></li></ul></li><li class="dropdown-item"><h4>
+          其他
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/study.html" class="nav-link">
+  学习笔记
+</a></li></ul></li></ul></div></div> <a href="https://github.com/pengshuangbao/databook" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/java/" class="nav-link router-link-active">
+  Java
+</a></div><div class="nav-item"><a href="/bigdata/" class="nav-link">
+  大数据
+</a></div><div class="nav-item"><a href="/algorithm/" class="nav-link">
+  算法 
+</a></div><div class="nav-item"><a href="/architecture/" class="nav-link">
+  架构 
+</a></div><div class="nav-item"><a href="/computer/" class="nav-link">
+  计算机 
+</a></div><div class="nav-item"><a href="/database/" class="nav-link">
+  数据库 
+</a></div><div class="nav-item"><a href="/fe/" class="nav-link">
+  前端
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="运维 " class="dropdown-title"><span class="title">运维 </span> <span class="arrow down"></span></button> <button type="button" aria-label="运维 " class="mobile-dropdown-title"><span class="title">运维 </span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/ops/" class="nav-link">
+  基础
+</a></li><li class="dropdown-item"><h4>
+          分类
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/ops/java.html" class="nav-link">
+  Java
+</a></li><li class="dropdown-subitem"><a href="/ops/bigdata.html" class="nav-link">
+  大数据
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="编程" class="dropdown-title"><span class="title">编程</span> <span class="arrow down"></span></button> <button type="button" aria-label="编程" class="mobile-dropdown-title"><span class="title">编程</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          语言
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/programming/python.html" class="nav-link">
+  Python
+</a></li><li class="dropdown-subitem"><a href="/programming/scala.html" class="nav-link">
+  Scala
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="资源" class="dropdown-title"><span class="title">资源</span> <span class="arrow down"></span></button> <button type="button" aria-label="资源" class="mobile-dropdown-title"><span class="title">资源</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          我的书单
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/tech.html" class="nav-link">
+  技术类
+</a></li><li class="dropdown-subitem"><a href="/book/growth.html" class="nav-link">
+  成长类
+</a></li></ul></li><li class="dropdown-item"><h4>
+          网课
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/geek.html" class="nav-link">
+  专栏
+</a></li><li class="dropdown-subitem"><a href="/book/video.html" class="nav-link">
+  视频
+</a></li></ul></li><li class="dropdown-item"><h4>
+          面经
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/tech.html" class="nav-link">
+  大厂面经
+</a></li><li class="dropdown-subitem"><a href="/interview/sword-to-offer.html" class="nav-link">
+  剑指Offer
+</a></li><li class="dropdown-subitem"><a href="/interview/fe.html" class="nav-link">
+  前端面经
+</a></li><li class="dropdown-subitem"><a href="/interview/interview_guide.html" class="nav-link">
+  面试导航
+</a></li></ul></li><li class="dropdown-item"><h4>
+          其他
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/study.html" class="nav-link">
+  学习笔记
+</a></li></ul></li></ul></div></div> <a href="https://github.com/pengshuangbao/databook" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <ul class="sidebar-links"><li><a href="/java/" aria-current="page" class="sidebar-link">Java</a></li><li><a href="/java/jvm.html" class="sidebar-link">JVM</a></li><li><a href="/java/coding.html" class="sidebar-link">编程</a></li><li><a href="/java/多线程.html" class="sidebar-link">多线程</a></li><li><a href="/java/java.html" class="sidebar-link">Java基础</a></li><li><a href="/java/java核心技术.html" class="sidebar-link">Java核心技术</a></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>jvm内存与垃圾回收</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>jvm字节码与类</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>jvm性能监控与调优</span> <span class="arrow right"></span></p> <!----></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="第十四章、垃圾回收概述"><a href="#第十四章、垃圾回收概述" class="header-anchor">#</a> 第十四章、垃圾回收概述</h1> <p></p><div class="table-of-contents"><ul><li><a href="#什么是gc">什么是GC</a><ul><li><a href="#什么是垃圾">什么是垃圾？</a></li></ul></li><li><a href="#为什么要gc">为什么要GC</a></li><li><a href="#早期垃圾回收">早期垃圾回收</a></li><li><a href="#java垃圾回收机制">Java垃圾回收机制</a><ul><li><a href="#忧">忧</a></li><li><a href="#gc主要关注的区域">GC主要关注的区域</a></li></ul></li></ul></div><p></p> <h2 id="什么是gc"><a href="#什么是gc" class="header-anchor">#</a> 什么是GC</h2> <p>垃圾收集，不是Java语言的伴生产物。早在1960年，第一门开始使用内存动态分配和垃圾收集技术的Lisp语言诞生。</p> <p>关于垃圾收集有三个经典问题：</p> <ul><li>哪些内存需要回收？</li> <li>什么时候回收？</li> <li>如何回收？</li></ul> <p>垃圾收集机制是Java的招牌能力，<mark>极大地提高了开发效率</mark>。如今，垃圾收集几乎成为现代语言的标配，即使经过如此长时间的发展，Java的垃圾收集机制仍然在不断的演进中，不同大小的设备、不同特征的应用场景，对垃圾收集提出了新的挑战，这当然也是面试的热点。</p> <p><strong>大厂面试题</strong></p> <blockquote><p><mark>蚂蚁金服</mark></p> <ul><li><p>你知道哪几种垃圾回收器，各自的优缺点，重点讲一下cms和G1？</p></li> <li><p>JVM GC算法有哪些，目前的JDK版本采用什么回收算法？</p></li> <li><p>G1回收器讲下回收过程GC是什么？为什么要有GC？</p></li> <li><p>GC的两种判定方法？CMS收集器与G1收集器的特点</p></li></ul> <p><mark>百度</mark></p> <ul><li><p>说一下GC算法，分代回收说下</p></li> <li><p>垃圾收集策略和算法</p></li></ul> <p><mark>天猫</mark></p> <ul><li><p>JVM GC原理，JVM怎么回收内存</p></li> <li><p>CMS特点，垃圾回收算法有哪些？各自的优缺点，他们共同的缺点是什么？</p></li></ul> <p><mark>滴滴</mark></p> <ul><li>Java的垃圾回收器都有哪些，说下g1的应用场景，平时你是如何搭配使用垃圾回收器的</li></ul> <p><mark>京东</mark></p> <ul><li><p>你知道哪几种垃圾收集器，各自的优缺点，重点讲下cms和G1，</p></li> <li><p>包括原理，流程，优缺点。垃圾回收算法的实现原理</p></li></ul> <p><mark>阿里</mark></p> <ul><li><p>讲一讲垃圾回收算法。</p></li> <li><p>什么情况下触发垃圾回收？</p></li> <li><p>如何选择合适的垃圾收集算法？</p></li> <li><p>JVM有哪三种垃圾回收器？</p></li></ul> <p><mark>字节跳动</mark></p> <ul><li>常见的垃圾回收器算法有哪些，各有什么优劣？</li> <li>System.gc（）和Runtime.gc（）会做什么事情？</li> <li>Java GC机制？GC Roots有哪些？</li> <li>Java对象的回收方式，回收算法。</li> <li>CMS和G1了解么，CMS解决什么问题，说一下回收的过程。</li> <li>CMS回收停顿了几次，为什么要停顿两次?</li></ul></blockquote> <p><img src="https://static.lovedata.net/20-12-21-1ab0f3026b8c630a52619c24e8c8cb5e.png" alt="image"></p> <p><img src="https://static.lovedata.net/20-12-21-e9d7ad74e2e98509c67e71253f8545df.png" alt="image"></p> <p><img src="https://static.lovedata.net/20-12-21-0c2faa40fd094d52e5d589fd5280de7d.png" alt="image"></p> <h4 id="什么是垃圾"><a href="#什么是垃圾" class="header-anchor">#</a> 什么是垃圾？</h4> <blockquote><p>An object is considered garbage when it can no longer be reached from any pointer in the running program</p></blockquote> <p>垃圾是指在运行程序中没有任何指针指向的对象，这个对象就是需要被回收的垃圾。</p> <p>如果不及时对内存中的垃圾进行清理，那么，这些垃圾对象所占的内存空间会一直保留到应用程序的结束，被保留的空间无法被其它对象使用，甚至可能导致内存溢出。</p> <p><img src="https://static.lovedata.net/20-12-21-11257f3482a1597917dd1f4ed2ea4957.png" alt="image"></p> <p><strong>磁盘碎片整理的日子</strong></p> <p>机械硬盘需要进行磁盘整理，同时还有坏道</p> <p><img src="https://static.lovedata.net/21-06-03-5ed2c6595e47f629eecf17e7f0ee54dd.png" alt="image"></p> <h2 id="为什么要gc"><a href="#为什么要gc" class="header-anchor">#</a> 为什么要GC</h2> <p><strong>想要学习GC，首先需要理解为什么需要GC？</strong></p> <p>对于高级语言来说，一个基本认知是如果不进行垃圾回收，<mark>内存迟早都会被消耗完</mark>，因为不断地分配内存空间而不进行回收，就好像不停地生产生活垃圾而从来不打扫一样。</p> <p>除了释放没用的对象，垃圾回收也可以清除内存里的记录碎片。碎片整理将所占用的堆内存移到堆的一端，以便<mark>JVM将整理出的内存分配给新的对象</mark>。</p> <p>随着应用程序所应付的业务越来越庞大、复杂，用户越来越多，<mark>没有GC就不能保证应用程序的正常进行</mark>。而经常造成STW的GC又跟不上实际的需求，所以才会不断地尝试对GC进行优化。</p> <p><img src="https://static.lovedata.net/20-12-21-72624153aca1f54994551e15730eaa87.png" alt="image"></p> <p><img src="https://static.lovedata.net/20-12-21-42d439929561c2a2090b071ff151723c.png" alt="image"></p> <h2 id="早期垃圾回收"><a href="#早期垃圾回收" class="header-anchor">#</a> 早期垃圾回收</h2> <p>在早期的C/C++时代，垃圾回收基本上是手工进行的。开发人员可以使用new关键字进行内存申请，并使用delete关键字进行内存释放。比如以下代码：</p> <div class="language-c++ extra-class"><pre class="language-text"><code>MibBridge *pBridge= new cmBaseGroupBridge();
+//如果注册失败，使用Delete释放该对象所占内存区域
+if (pBridge-&gt;Register(kDestroy) != NO ERROR）
+	delete pBridge;
+</code></pre></div><p>这种方式可以灵活控制内存释放的时间，但是会给开发人员带来<mark>频繁申请和释放内存的管理负担</mark>。倘若有一处内存区间由于程序员编码的问题忘记被回收，那么就会产生<mark>内存泄漏</mark>，垃圾对象永远无法被清除，随着系统运行时间的不断增长，垃圾对象所耗内存可能持续上升，直到出现内存溢出并造成<mark>应用程序崩溃</mark>。</p> <p>在有了垃圾回收机制后，上述代码极有可能变成这样</p> <div class="language-c++ extra-class"><pre class="language-text"><code>MibBridge *pBridge = new cmBaseGroupBridge(); 
+pBridge-&gt;Register(kDestroy);
+</code></pre></div><p>现在，除了Java以外，C#、Python、Ruby等语言都使用了自动垃圾回收的思想，也是未来发展趋势，可以说这种自动化的内存分配和来及回收方式已经成为了线代开发语言必备的标准。</p> <p><img src="https://static.lovedata.net/20-12-22-4ad6da22ecb58333f68b069dee342a11.png" alt="image"></p> <p><img src="https://static.lovedata.net/20-12-22-14581a9665a2fb073ddb2d5bd87cf9ac.png" alt="image"></p> <h2 id="java垃圾回收机制"><a href="#java垃圾回收机制" class="header-anchor">#</a> Java垃圾回收机制</h2> <p>自动内存管理，无需开发人员手动参与内存的分配与回收，这样<mark>降低内存泄漏和内存溢出的风险</mark></p> <ul><li>没有垃圾回收器，java也会和cpp一样，各种悬垂指针，野指针，泄露问题让你头疼不已。</li></ul> <p>自动内存管理机制，将程序员从繁重的内存管理中释放出来，可以更专心地<mark>专注于业务开发</mark></p> <p>oracle官网关于垃圾回收的介绍 [https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/toc.html](</p> <p><img src="https://static.lovedata.net/20-12-22-0c2b0573dfcf9aab8773184cb51fa2ec.png" alt="image"></p> <h4 id="忧"><a href="#忧" class="header-anchor">#</a> 忧</h4> <p>对于Java开发人员而言，自动内存管理就像是一个黑匣子，如果过度依赖于“自动”，那么这将会是一场灾难，最严重的就会<mark>弱化Java开发人员在程序出现内存溢出时定位问题和解决问题的能力</mark>。</p> <p>此时，了解JVM的自动内存分配和内存回收原理就显得非常重要，只有在真正了解JVM是如何管理内存后，我们才能够在遇见outofMemoryError时，快速地根据错误异常日志定位问题和解决问题。</p> <p>当需要排查各种内存溢出、内存泄漏问题时，当垃圾收集成为系统达到更高并发量的瓶颈时，我们就必须对这些“自动化”的技术<mark>实施必要的监控和调节</mark>。</p> <p><img src="https://static.lovedata.net/20-12-22-a89c153c41a69232e3a6faa623a88c9d.png" alt="image"></p> <h4 id="gc主要关注的区域"><a href="#gc主要关注的区域" class="header-anchor">#</a> GC主要关注的区域</h4> <p>GC主要关注于 方法区 和堆中的垃圾收集</p> <p><img src="https://static.lovedata.net/20-12-22-69f785092b7c3b39d20a6c19b5e6d8d2.png" alt="image"></p> <p>垃圾收集器可以对年轻代回收，也可以对老年代回收，甚至是全栈和方法区的回收。其中，<mark>Java堆是垃圾收集器的工作重点</mark></p> <p>从次数上讲：</p> <ul><li><mark>频繁收集Young区</mark></li> <li><mark>较少收集Old区</mark></li> <li><mark>基本不收集Perm区（元空间）</mark></li></ul> <p><img src="https://static.lovedata.net/20-12-22-6ba4dd9d1d7f2c8467160dd732f57aaf.png" alt="image"></p></div> <footer class="page-edit"><div class="edit-link"><a href="https://github.com/pengshuangbao/databook/edit/master/docs/java/jvm内存与垃圾回收/14垃圾回收概述.md" target="_blank" rel="noopener noreferrer">Edit this page on GitHub</a> <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></div> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">2023/4/14 16:56:47</span></div></footer> <!----> </main></div><div class="global-ui"><!----><!----></div></div>
+    <script src="/assets/js/app.0f56a723.js" defer></script><script src="/assets/js/4.a8ef5668.js" defer></script><script src="/assets/js/161.8f694ed1.js" defer></script><script src="/assets/js/11.0473ae06.js" defer></script>
+  </body>
+</html>

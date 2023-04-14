@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Flink配置详解及如何配置高可用？ | 编程手册</title>
+    <meta name="generator" content="VuePress 1.7.1">
+    <link rel="icon" href="/logo.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon-152x152.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#3eaf7c">
+    <meta name="description" content="苍穹浩渺,取之须臾">
+    <meta name="theme-color" content="#3eaf7c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="msapplication-TileImage" content="/icons/msapplication-icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#000000">
+    
+    <link rel="preload" href="/assets/css/0.styles.225a8ff9.css" as="style"><link rel="preload" href="/assets/js/app.0f56a723.js" as="script"><link rel="preload" href="/assets/js/4.a8ef5668.js" as="script"><link rel="preload" href="/assets/js/55.59437904.js" as="script"><link rel="preload" href="/assets/js/11.0473ae06.js" as="script"><link rel="prefetch" href="/assets/js/10.06cc4fbb.js"><link rel="prefetch" href="/assets/js/100.79e96d05.js"><link rel="prefetch" href="/assets/js/101.bcac0b9f.js"><link rel="prefetch" href="/assets/js/102.c5d92a95.js"><link rel="prefetch" href="/assets/js/103.697856ab.js"><link rel="prefetch" href="/assets/js/104.8f2db4d2.js"><link rel="prefetch" href="/assets/js/105.d4f2bb07.js"><link rel="prefetch" href="/assets/js/106.1a533c3f.js"><link rel="prefetch" href="/assets/js/107.b2845ea0.js"><link rel="prefetch" href="/assets/js/108.226e46ed.js"><link rel="prefetch" href="/assets/js/109.0de9c16c.js"><link rel="prefetch" href="/assets/js/110.4657c34b.js"><link rel="prefetch" href="/assets/js/111.3409d3a7.js"><link rel="prefetch" href="/assets/js/112.a46b486c.js"><link rel="prefetch" href="/assets/js/113.ba001fa9.js"><link rel="prefetch" href="/assets/js/114.ad1e6ba1.js"><link rel="prefetch" href="/assets/js/115.a0ac732f.js"><link rel="prefetch" href="/assets/js/116.4ee2a7b2.js"><link rel="prefetch" href="/assets/js/117.a76fd29a.js"><link rel="prefetch" href="/assets/js/118.83c5badf.js"><link rel="prefetch" href="/assets/js/119.09fec567.js"><link rel="prefetch" href="/assets/js/12.286e979d.js"><link rel="prefetch" href="/assets/js/120.42120fe1.js"><link rel="prefetch" href="/assets/js/121.9d79a9dd.js"><link rel="prefetch" href="/assets/js/122.f71a459c.js"><link rel="prefetch" href="/assets/js/123.b75308dc.js"><link rel="prefetch" href="/assets/js/124.e4d4643b.js"><link rel="prefetch" href="/assets/js/125.73fc990d.js"><link rel="prefetch" href="/assets/js/126.3b0eccd0.js"><link rel="prefetch" href="/assets/js/127.3eb3ab27.js"><link rel="prefetch" href="/assets/js/128.64ba68bb.js"><link rel="prefetch" href="/assets/js/129.82cfac7a.js"><link rel="prefetch" href="/assets/js/13.7207d991.js"><link rel="prefetch" href="/assets/js/130.42811f32.js"><link rel="prefetch" href="/assets/js/131.6f498e16.js"><link rel="prefetch" href="/assets/js/132.f0cc9ad2.js"><link rel="prefetch" href="/assets/js/133.325e755a.js"><link rel="prefetch" href="/assets/js/134.076a808c.js"><link rel="prefetch" href="/assets/js/135.fad7be83.js"><link rel="prefetch" href="/assets/js/136.042fc555.js"><link rel="prefetch" href="/assets/js/137.b67b55bc.js"><link rel="prefetch" href="/assets/js/138.6476c99f.js"><link rel="prefetch" href="/assets/js/139.ad07500f.js"><link rel="prefetch" href="/assets/js/14.a1cb7c1b.js"><link rel="prefetch" href="/assets/js/140.3edd2237.js"><link rel="prefetch" href="/assets/js/141.5181db27.js"><link rel="prefetch" href="/assets/js/142.67b4c4a2.js"><link rel="prefetch" href="/assets/js/143.9d249a3f.js"><link rel="prefetch" href="/assets/js/144.e6db5540.js"><link rel="prefetch" href="/assets/js/145.5b4305a7.js"><link rel="prefetch" href="/assets/js/146.bc674178.js"><link rel="prefetch" href="/assets/js/147.964ff3df.js"><link rel="prefetch" href="/assets/js/148.570b6864.js"><link rel="prefetch" href="/assets/js/149.4b9796c2.js"><link rel="prefetch" href="/assets/js/15.3cafda64.js"><link rel="prefetch" href="/assets/js/150.c677bf4b.js"><link rel="prefetch" href="/assets/js/151.b8977c93.js"><link rel="prefetch" href="/assets/js/152.535e2db4.js"><link rel="prefetch" href="/assets/js/153.754fc05e.js"><link rel="prefetch" href="/assets/js/154.5a5928b6.js"><link rel="prefetch" href="/assets/js/155.19893ca5.js"><link rel="prefetch" href="/assets/js/156.da1f2665.js"><link rel="prefetch" href="/assets/js/157.cb7b551f.js"><link rel="prefetch" href="/assets/js/158.f5d94a11.js"><link rel="prefetch" href="/assets/js/159.0b2b78d9.js"><link rel="prefetch" href="/assets/js/16.54ab9242.js"><link rel="prefetch" href="/assets/js/160.c2548b6c.js"><link rel="prefetch" href="/assets/js/161.8f694ed1.js"><link rel="prefetch" href="/assets/js/162.1adc1aa4.js"><link rel="prefetch" href="/assets/js/163.5688827c.js"><link rel="prefetch" href="/assets/js/164.8442474f.js"><link rel="prefetch" href="/assets/js/165.d0e21e5c.js"><link rel="prefetch" href="/assets/js/166.2e90ae99.js"><link rel="prefetch" href="/assets/js/167.374185de.js"><link rel="prefetch" href="/assets/js/168.2426769f.js"><link rel="prefetch" href="/assets/js/169.829516d9.js"><link rel="prefetch" href="/assets/js/17.9cad59f9.js"><link rel="prefetch" href="/assets/js/170.db0c4609.js"><link rel="prefetch" href="/assets/js/171.7bdcc41b.js"><link rel="prefetch" href="/assets/js/172.7f7ab109.js"><link rel="prefetch" href="/assets/js/173.c1d51df9.js"><link rel="prefetch" href="/assets/js/174.afa4c5f6.js"><link rel="prefetch" href="/assets/js/175.b46d9dd8.js"><link rel="prefetch" href="/assets/js/176.c38ba756.js"><link rel="prefetch" href="/assets/js/177.ba85b912.js"><link rel="prefetch" href="/assets/js/178.af1a44e8.js"><link rel="prefetch" href="/assets/js/179.e097e164.js"><link rel="prefetch" href="/assets/js/18.3776b09c.js"><link rel="prefetch" href="/assets/js/180.d9d5d80c.js"><link rel="prefetch" href="/assets/js/181.79401f8c.js"><link rel="prefetch" href="/assets/js/182.343db47f.js"><link rel="prefetch" href="/assets/js/183.005841bb.js"><link rel="prefetch" href="/assets/js/19.d0ac1e7f.js"><link rel="prefetch" href="/assets/js/20.e0100fb2.js"><link rel="prefetch" href="/assets/js/21.f59cd52c.js"><link rel="prefetch" href="/assets/js/22.3ecf54da.js"><link rel="prefetch" href="/assets/js/23.2508850b.js"><link rel="prefetch" href="/assets/js/24.0ac10322.js"><link rel="prefetch" href="/assets/js/25.7c3ee156.js"><link rel="prefetch" href="/assets/js/26.7021c42c.js"><link rel="prefetch" href="/assets/js/27.d716476b.js"><link rel="prefetch" href="/assets/js/28.58ebf808.js"><link rel="prefetch" href="/assets/js/29.88c37f6c.js"><link rel="prefetch" href="/assets/js/30.87bc4a91.js"><link rel="prefetch" href="/assets/js/31.a69c2a35.js"><link rel="prefetch" href="/assets/js/32.89f74912.js"><link rel="prefetch" href="/assets/js/33.df886872.js"><link rel="prefetch" href="/assets/js/34.835d0785.js"><link rel="prefetch" href="/assets/js/35.5e38ab06.js"><link rel="prefetch" href="/assets/js/36.5b639051.js"><link rel="prefetch" href="/assets/js/37.bb32ead0.js"><link rel="prefetch" href="/assets/js/38.c2541da0.js"><link rel="prefetch" href="/assets/js/39.3c8f0f06.js"><link rel="prefetch" href="/assets/js/40.4cc077aa.js"><link rel="prefetch" href="/assets/js/41.cbcd81a7.js"><link rel="prefetch" href="/assets/js/42.6d002f78.js"><link rel="prefetch" href="/assets/js/43.3f67c882.js"><link rel="prefetch" href="/assets/js/44.58ce7a4d.js"><link rel="prefetch" href="/assets/js/45.bfb9d6e0.js"><link rel="prefetch" href="/assets/js/46.691097de.js"><link rel="prefetch" href="/assets/js/47.e6b5c9b5.js"><link rel="prefetch" href="/assets/js/48.38159f5c.js"><link rel="prefetch" href="/assets/js/49.e03ce66a.js"><link rel="prefetch" href="/assets/js/5.340b4b76.js"><link rel="prefetch" href="/assets/js/50.7df345cb.js"><link rel="prefetch" href="/assets/js/51.b3eed5d5.js"><link rel="prefetch" href="/assets/js/52.bb282842.js"><link rel="prefetch" href="/assets/js/53.6b21ec8f.js"><link rel="prefetch" href="/assets/js/54.bab98944.js"><link rel="prefetch" href="/assets/js/56.18b88131.js"><link rel="prefetch" href="/assets/js/57.b0cbba56.js"><link rel="prefetch" href="/assets/js/58.d9379002.js"><link rel="prefetch" href="/assets/js/59.e8663882.js"><link rel="prefetch" href="/assets/js/6.c48e1ddb.js"><link rel="prefetch" href="/assets/js/60.0a00b724.js"><link rel="prefetch" href="/assets/js/61.cd09980d.js"><link rel="prefetch" href="/assets/js/62.b092ff62.js"><link rel="prefetch" href="/assets/js/63.86482c79.js"><link rel="prefetch" href="/assets/js/64.3c1ee4d2.js"><link rel="prefetch" href="/assets/js/65.0621decf.js"><link rel="prefetch" href="/assets/js/66.cf7a6241.js"><link rel="prefetch" href="/assets/js/67.99e103bc.js"><link rel="prefetch" href="/assets/js/68.b3589f28.js"><link rel="prefetch" href="/assets/js/69.f0932a12.js"><link rel="prefetch" href="/assets/js/7.0f410b85.js"><link rel="prefetch" href="/assets/js/70.0a941773.js"><link rel="prefetch" href="/assets/js/71.3a6c6141.js"><link rel="prefetch" href="/assets/js/72.2299ff58.js"><link rel="prefetch" href="/assets/js/73.544fe8c6.js"><link rel="prefetch" href="/assets/js/74.98219c05.js"><link rel="prefetch" href="/assets/js/75.244a9d80.js"><link rel="prefetch" href="/assets/js/76.cefd9fe2.js"><link rel="prefetch" href="/assets/js/77.59793840.js"><link rel="prefetch" href="/assets/js/78.a7d9a079.js"><link rel="prefetch" href="/assets/js/79.f9ec013d.js"><link rel="prefetch" href="/assets/js/8.269955a4.js"><link rel="prefetch" href="/assets/js/80.b0f2cbe5.js"><link rel="prefetch" href="/assets/js/81.3d245e9a.js"><link rel="prefetch" href="/assets/js/82.061b170d.js"><link rel="prefetch" href="/assets/js/83.d2c42148.js"><link rel="prefetch" href="/assets/js/84.f6f487a4.js"><link rel="prefetch" href="/assets/js/85.c5305650.js"><link rel="prefetch" href="/assets/js/86.0c30a2ef.js"><link rel="prefetch" href="/assets/js/87.d9a99f2e.js"><link rel="prefetch" href="/assets/js/88.03792030.js"><link rel="prefetch" href="/assets/js/89.95684850.js"><link rel="prefetch" href="/assets/js/9.5c3462fb.js"><link rel="prefetch" href="/assets/js/90.185b012e.js"><link rel="prefetch" href="/assets/js/91.d19f0020.js"><link rel="prefetch" href="/assets/js/92.9e7855de.js"><link rel="prefetch" href="/assets/js/93.1ee902df.js"><link rel="prefetch" href="/assets/js/94.4bfab4ad.js"><link rel="prefetch" href="/assets/js/95.5f0b1d15.js"><link rel="prefetch" href="/assets/js/96.bd50a446.js"><link rel="prefetch" href="/assets/js/97.749fd671.js"><link rel="prefetch" href="/assets/js/98.bc09c746.js"><link rel="prefetch" href="/assets/js/99.40f98e75.js"><link rel="prefetch" href="/assets/js/vendors~flowchart.98d8c7d3.js"><link rel="prefetch" href="/assets/js/vendors~notification.5515ddcd.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.225a8ff9.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">编程手册</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/java/" class="nav-link">
+  Java
+</a></div><div class="nav-item"><a href="/bigdata/" class="nav-link router-link-active">
+  大数据
+</a></div><div class="nav-item"><a href="/algorithm/" class="nav-link">
+  算法 
+</a></div><div class="nav-item"><a href="/architecture/" class="nav-link">
+  架构 
+</a></div><div class="nav-item"><a href="/computer/" class="nav-link">
+  计算机 
+</a></div><div class="nav-item"><a href="/database/" class="nav-link">
+  数据库 
+</a></div><div class="nav-item"><a href="/fe/" class="nav-link">
+  前端
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="运维 " class="dropdown-title"><span class="title">运维 </span> <span class="arrow down"></span></button> <button type="button" aria-label="运维 " class="mobile-dropdown-title"><span class="title">运维 </span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/ops/" class="nav-link">
+  基础
+</a></li><li class="dropdown-item"><h4>
+          分类
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/ops/java.html" class="nav-link">
+  Java
+</a></li><li class="dropdown-subitem"><a href="/ops/bigdata.html" class="nav-link">
+  大数据
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="编程" class="dropdown-title"><span class="title">编程</span> <span class="arrow down"></span></button> <button type="button" aria-label="编程" class="mobile-dropdown-title"><span class="title">编程</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          语言
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/programming/python.html" class="nav-link">
+  Python
+</a></li><li class="dropdown-subitem"><a href="/programming/scala.html" class="nav-link">
+  Scala
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="资源" class="dropdown-title"><span class="title">资源</span> <span class="arrow down"></span></button> <button type="button" aria-label="资源" class="mobile-dropdown-title"><span class="title">资源</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          我的书单
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/tech.html" class="nav-link">
+  技术类
+</a></li><li class="dropdown-subitem"><a href="/book/growth.html" class="nav-link">
+  成长类
+</a></li></ul></li><li class="dropdown-item"><h4>
+          网课
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/geek.html" class="nav-link">
+  专栏
+</a></li><li class="dropdown-subitem"><a href="/book/video.html" class="nav-link">
+  视频
+</a></li></ul></li><li class="dropdown-item"><h4>
+          面经
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/tech.html" class="nav-link">
+  大厂面经
+</a></li><li class="dropdown-subitem"><a href="/interview/sword-to-offer.html" class="nav-link">
+  剑指Offer
+</a></li><li class="dropdown-subitem"><a href="/interview/fe.html" class="nav-link">
+  前端面经
+</a></li><li class="dropdown-subitem"><a href="/interview/interview_guide.html" class="nav-link">
+  面试导航
+</a></li></ul></li><li class="dropdown-item"><h4>
+          其他
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/study.html" class="nav-link">
+  学习笔记
+</a></li></ul></li></ul></div></div> <a href="https://github.com/pengshuangbao/databook" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/java/" class="nav-link">
+  Java
+</a></div><div class="nav-item"><a href="/bigdata/" class="nav-link router-link-active">
+  大数据
+</a></div><div class="nav-item"><a href="/algorithm/" class="nav-link">
+  算法 
+</a></div><div class="nav-item"><a href="/architecture/" class="nav-link">
+  架构 
+</a></div><div class="nav-item"><a href="/computer/" class="nav-link">
+  计算机 
+</a></div><div class="nav-item"><a href="/database/" class="nav-link">
+  数据库 
+</a></div><div class="nav-item"><a href="/fe/" class="nav-link">
+  前端
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="运维 " class="dropdown-title"><span class="title">运维 </span> <span class="arrow down"></span></button> <button type="button" aria-label="运维 " class="mobile-dropdown-title"><span class="title">运维 </span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/ops/" class="nav-link">
+  基础
+</a></li><li class="dropdown-item"><h4>
+          分类
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/ops/java.html" class="nav-link">
+  Java
+</a></li><li class="dropdown-subitem"><a href="/ops/bigdata.html" class="nav-link">
+  大数据
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="编程" class="dropdown-title"><span class="title">编程</span> <span class="arrow down"></span></button> <button type="button" aria-label="编程" class="mobile-dropdown-title"><span class="title">编程</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          语言
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/programming/python.html" class="nav-link">
+  Python
+</a></li><li class="dropdown-subitem"><a href="/programming/scala.html" class="nav-link">
+  Scala
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="资源" class="dropdown-title"><span class="title">资源</span> <span class="arrow down"></span></button> <button type="button" aria-label="资源" class="mobile-dropdown-title"><span class="title">资源</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          我的书单
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/tech.html" class="nav-link">
+  技术类
+</a></li><li class="dropdown-subitem"><a href="/book/growth.html" class="nav-link">
+  成长类
+</a></li></ul></li><li class="dropdown-item"><h4>
+          网课
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/geek.html" class="nav-link">
+  专栏
+</a></li><li class="dropdown-subitem"><a href="/book/video.html" class="nav-link">
+  视频
+</a></li></ul></li><li class="dropdown-item"><h4>
+          面经
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/tech.html" class="nav-link">
+  大厂面经
+</a></li><li class="dropdown-subitem"><a href="/interview/sword-to-offer.html" class="nav-link">
+  剑指Offer
+</a></li><li class="dropdown-subitem"><a href="/interview/fe.html" class="nav-link">
+  前端面经
+</a></li><li class="dropdown-subitem"><a href="/interview/interview_guide.html" class="nav-link">
+  面试导航
+</a></li></ul></li><li class="dropdown-item"><h4>
+          其他
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/study.html" class="nav-link">
+  学习笔记
+</a></li></ul></li></ul></div></div> <a href="https://github.com/pengshuangbao/databook" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <ul class="sidebar-links"><li><a href="/bigdata/" aria-current="page" class="sidebar-link">大数据</a></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Hadoop</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Spark</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>Flink</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/bigdata/flink/" aria-current="page" class="sidebar-link">Flink</a></li><li><a href="/bigdata/flink/通关手册.html" class="sidebar-link">通关手册</a></li><li><a href="/bigdata/flink/学习资源.html" class="sidebar-link">学习资源</a></li><li><a href="/bigdata/flink/开源动态.html" class="sidebar-link">开源动态</a></li><li><a href="/bigdata/flink/Flink状态原理.html" class="sidebar-link">状态原理</a></li><li><section class="sidebar-group collapsable is-sub-group depth-1"><p class="sidebar-heading open"><span>Flink实战与性能优化</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/bigdata/flink/Flink实战与性能优化/公司到底需不需要引入实时计算引擎？.html" class="sidebar-link">公司到底需不需要引入实时计算引擎？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/彻底了解大数据实时计算框架Flink.html" class="sidebar-link">彻底了解大数据实时计算框架Flink</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/大数据框架Flink、Blink、SparkStreaming、StructuredStreaming和Storm之间的区别.html" class="sidebar-link">大数据框架Flink、Blink、SparkStreaming、StructuredStreaming和Storm之间的区别</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink环境准备.html" class="sidebar-link">Flink环境准备</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink环境搭建.html" class="sidebar-link">Flink环境搭建</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkWordCount应用程序.html" class="sidebar-link">FlinkWordCount应用程序</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink实时处理Socket数据.html" class="sidebar-link">Flink实时处理Socket数据</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink多种时间语义对比.html" class="sidebar-link">Flink多种时间语义对比</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkWindow基础概念与实现原理.html" class="sidebar-link">FlinkWindow基础概念与实现原理</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/数据转换必须熟悉的算子（Operator）.html" class="sidebar-link">数据转换必须熟悉的算子（Operator）</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何使用DataStreamAPI来处理数据？.html" class="sidebar-link">如何使用DataStreamAPI来处理数据？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkWaterMark详解及结合WaterMark处理延迟数据.html" class="sidebar-link">FlinkWaterMark详解及结合WaterMark处理延迟数据</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink常用的Source和SinkConnectors介绍.html" class="sidebar-link">Flink常用的Source和SinkConnectors介绍</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkConnectorKafka使用和剖析.html" class="sidebar-link">FlinkConnectorKafka使用和剖析</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何自定义FlinkConnectors（Source和Sink）？.html" class="sidebar-link">如何自定义FlinkConnectors（Source和Sink）？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何使用FlinkConnectors——ElasticSearch？.html" class="sidebar-link">如何使用FlinkConnectors——ElasticSearch？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何使用FlinkConnectors——HBase？.html" class="sidebar-link">如何使用FlinkConnectors——HBase？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何使用FlinkConnectors——Redis？.html" class="sidebar-link">如何使用FlinkConnectors——Redis？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何使用SideOutput来分流.html" class="sidebar-link">如何使用SideOutput来分流</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkState深度讲解.html" class="sidebar-link">FlinkState深度讲解</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何选择Flink状态后端存储.html" class="sidebar-link">如何选择Flink状态后端存储</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkCheckpoint和Savepoint区别及其如何配置使用？.html" class="sidebar-link">FlinkCheckpoint和Savepoint区别及其如何配置使用？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkTable&amp;SQL概念与通用API.html" class="sidebar-link">FlinkTable&amp;SQL概念与通用API</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkTableAPI&amp;SQL功能.html" class="sidebar-link">FlinkTableAPI&amp;SQL功能</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkCEP介绍及其使用场景.html" class="sidebar-link">FlinkCEP介绍及其使用场景</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkCEP如何处理复杂事件？.html" class="sidebar-link">FlinkCEP如何处理复杂事件？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink扩展库——StateProcessorAPI.html" class="sidebar-link">Flink扩展库——StateProcessorAPI</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink扩展库——MachineLearning.html" class="sidebar-link">Flink扩展库——MachineLearning</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink扩展库——Gelly.html" class="sidebar-link">Flink扩展库——Gelly</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink配置详解及如何配置高可用？.html" class="active sidebar-link">Flink配置详解及如何配置高可用？</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkJob如何在Standalone、YARN、Mesos、K8S上部署运行？.html" class="sidebar-link">FlinkJob如何在Standalone、YARN、Mesos、K8S上部署运行？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何实时监控Flink和你的Job？.html" class="sidebar-link">如何实时监控Flink和你的Job？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何搭建一套完整的Flink监控系统.html" class="sidebar-link">如何搭建一套完整的Flink监控系统</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何处理FlinkJobBackPressure（反压）问题？.html" class="sidebar-link">如何处理FlinkJobBackPressure（反压）问题？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何查看FlinkJob执行计划？.html" class="sidebar-link">如何查看FlinkJob执行计划？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkParallelism和Slot深度理解.html" class="sidebar-link">FlinkParallelism和Slot深度理解</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何合理的设置FlinkJob并行度？.html" class="sidebar-link">如何合理的设置FlinkJob并行度？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink中如何保证ExactlyOnce？（上）.html" class="sidebar-link">Flink中如何保证ExactlyOnce？（上）</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink中如何保证ExactlyOnce？（下）.html" class="sidebar-link">Flink中如何保证ExactlyOnce？（下）</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何处理Flink中数据倾斜问题？.html" class="sidebar-link">如何处理Flink中数据倾斜问题？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何设置FlinkJobRestartStrategy（重启策略）？.html" class="sidebar-link">如何设置FlinkJobRestartStrategy（重启策略）？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何使用FlinkParameterTool读取配置？.html" class="sidebar-link">如何使用FlinkParameterTool读取配置？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何统计网站各页面一天内的PV和UV？.html" class="sidebar-link">如何统计网站各页面一天内的PV和UV？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何使用FlinkProcessFunction处理宕机告警.html" class="sidebar-link">如何使用FlinkProcessFunction处理宕机告警</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何利用AsyncIO读取告警规则？.html" class="sidebar-link">如何利用AsyncIO读取告警规则？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何利用广播变量动态更新告警规则？.html" class="sidebar-link">如何利用广播变量动态更新告警规则？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何实时将应用Error日志告警？.html" class="sidebar-link">如何实时将应用Error日志告警？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/基于Flink的海量日志实时处理系统的实践.html" class="sidebar-link">基于Flink的海量日志实时处理系统的实践</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/基于Flink的百亿数据去重实践.html" class="sidebar-link">基于Flink的百亿数据去重实践</a></li></ul></section></li></ul></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Kylin</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Kafka</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Hbase</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>ClickHouse</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Impala</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Kudu</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Redis</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>hive</span> <span class="arrow right"></span></p> <!----></section></li><li><a href="/bigdata/zookeeper.html" class="sidebar-link">Zookeeper</a></li><li><a href="/bigdata/solution.html" class="sidebar-link">解决方案</a></li><li><a href="/bigdata/design.html" class="sidebar-link">编程设计</a></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="flink配置详解及如何配置高可用"><a href="#flink配置详解及如何配置高可用" class="header-anchor">#</a> Flink配置详解及如何配置高可用？</h1> <p></p><div class="table-of-contents"><ul><li><a href="#flink-配置详解">Flink 配置详解</a><ul><li><a href="#flink-conf-yaml">flink-conf.yaml</a></li><li><a href="#masters">masters</a></li><li><a href="#slaves">slaves</a></li></ul></li><li><a href="#log-配置">Log 配置</a></li><li><a href="#如何配置-jobmanager-高可用">如何配置 JobManager 高可用？</a><ul><li><a href="#搭建-standalone-集群高可用-jobmanager">搭建 Standalone 集群高可用 JobManager</a></li><li><a href="#搭建-yarn-集群高可用-jobmanager">搭建 YARN 集群高可用 JobManager</a></li></ul></li><li><a href="#小结与反思">小结与反思</a></li></ul></div><p></p> <p>在讲解 7.2 节中如何部署 Flink 作业之前，希望能够再细讲下 Flink 中的配置，虽然在 2.2 节中简单讲解过。</p> <h3 id="flink-配置详解"><a href="#flink-配置详解" class="header-anchor">#</a> Flink 配置详解</h3> <h4 id="flink-conf-yaml"><a href="#flink-conf-yaml" class="header-anchor">#</a> flink-conf.yaml</h4> <p><strong>基础配置</strong></p> <p>​</p> <div class="language-properties extra-class"><pre class="language-properties"><code><span class="token comment"># jobManager 的IP地址</span>
+<span class="token attr-name">jobmanager.rpc.address</span><span class="token punctuation">:</span> <span class="token attr-value">localhost</span>
+
+<span class="token comment"># JobManager 的端口号</span>
+<span class="token attr-name">jobmanager.rpc.port</span><span class="token punctuation">:</span> <span class="token attr-value">6123</span>
+
+<span class="token comment"># JobManager JVM heap 内存大小</span>
+<span class="token attr-name">jobmanager.heap.size</span><span class="token punctuation">:</span> <span class="token attr-value">1024m</span>
+
+<span class="token comment"># TaskManager JVM heap 内存大小</span>
+<span class="token attr-name">taskmanager.heap.size</span><span class="token punctuation">:</span> <span class="token attr-value">1024m</span>
+
+<span class="token comment"># 每个 TaskManager 提供的任务 slots 数量大小</span>
+
+<span class="token attr-name">taskmanager.numberOfTaskSlots</span><span class="token punctuation">:</span> <span class="token attr-value">1</span>
+
+<span class="token comment"># 程序默认并行计算的个数</span>
+<span class="token attr-name">parallelism.default</span><span class="token punctuation">:</span> <span class="token attr-value">1</span>
+
+<span class="token comment"># 文件系统来源</span>
+<span class="token comment"># fs.default-scheme  </span>
+</code></pre></div><p><strong>高可用性配置</strong></p> <p>​</p> <div class="language-properties extra-class"><pre class="language-properties"><code><span class="token comment"># 可以选择 'NONE' 或者 'zookeeper'.</span>
+<span class="token comment"># high-availability: zookeeper</span>
+
+<span class="token comment"># 文件系统路径，让 Flink 在高可用性设置中持久保存元数据</span>
+<span class="token comment"># high-availability.storageDir: hdfs:///flink/ha/</span>
+
+<span class="token comment"># zookeeper 集群中仲裁者的机器 ip 和 port 端口号</span>
+<span class="token comment"># high-availability.zookeeper.quorum: localhost:2181</span>
+
+<span class="token comment"># 默认是 open，如果 zookeeper security 启用了该值会更改成 creator</span>
+<span class="token comment"># high-availability.zookeeper.client.acl: open</span>
+</code></pre></div><p><strong>容错和检查点配置</strong></p> <p>​</p> <div class="language-properties extra-class"><pre class="language-properties"><code><span class="token comment"># 用于存储和检查点状态</span>
+<span class="token comment"># state.backend: filesystem</span>
+
+<span class="token comment"># 存储检查点的数据文件和元数据的默认目录</span>
+<span class="token comment"># state.checkpoints.dir: hdfs://namenode-host:port/flink-checkpoints</span>
+
+<span class="token comment"># savepoints 的默认目标目录(可选)</span>
+<span class="token comment"># state.savepoints.dir: hdfs://namenode-host:port/flink-checkpoints</span>
+
+<span class="token comment"># 用于启用/禁用增量 checkpoints 的标志</span>
+<span class="token comment"># state.backend.incremental: false</span>
+</code></pre></div><p><strong>Web 前端配置</strong></p> <p>​</p> <div class="language-properties extra-class"><pre class="language-properties"><code><span class="token comment"># 基于 Web 的运行时监视器侦听的地址.</span>
+<span class="token comment">#jobmanager.web.address: 0.0.0.0</span>
+
+<span class="token comment">#  Web 的运行时监视器端口</span>
+<span class="token attr-name">rest.port</span><span class="token punctuation">:</span> <span class="token attr-value">8081</span>
+
+<span class="token comment"># 是否从基于 Web 的 jobmanager 启用作业提交</span>
+<span class="token comment"># jobmanager.web.submit.enable: false</span>
+</code></pre></div><p><strong>高级配置</strong></p> <p>​</p> <div class="language-properties extra-class"><pre class="language-properties"><code><span class="token comment"># io.tmp.dirs: /tmp</span>
+
+<span class="token comment"># 是否应在 TaskManager 启动时预先分配 TaskManager 管理的内存</span>
+<span class="token comment"># taskmanager.memory.preallocate: false</span>
+
+<span class="token comment"># 类加载解析顺序，是先检查用户代码 jar（“child-first”）还是应用程序类路径（“parent-first”）。 默认设置指示首先从用户代码 jar 加载类</span>
+<span class="token comment"># classloader.resolve-order: child-first</span>
+</code></pre></div><p>​</p> <div class="language-properties extra-class"><pre class="language-properties"><code><span class="token comment"># 用于网络缓冲区的 JVM 内存的分数。 这决定了 TaskManager 可以同时拥有多少流数据交换通道以及通道缓冲的程度。 如果作业被拒绝或者您收到系统没有足够缓冲区的警告，请增加此值或下面的最小/最大值。 另请注意，“taskmanager.network.memory.min”和“taskmanager.network.memory.max”可能会覆盖此分数</span>
+
+<span class="token comment"># taskmanager.network.memory.fraction: 0.1</span>
+<span class="token comment"># taskmanager.network.memory.min: 67108864</span>
+<span class="token comment"># taskmanager.network.memory.max: 1073741824</span>
+</code></pre></div><p><strong>Flink 集群安全配置</strong></p> <p>​</p> <div class="language-properties extra-class"><pre class="language-properties"><code><span class="token comment"># 指示是否从 Kerberos ticket 缓存中读取</span>
+<span class="token comment"># security.kerberos.login.use-ticket-cache: true</span>
+
+<span class="token comment"># 包含用户凭据的 Kerberos 密钥表文件的绝对路径</span>
+<span class="token comment"># security.kerberos.login.keytab: /path/to/kerberos/keytab</span>
+
+<span class="token comment"># 与 keytab 关联的 Kerberos 主体名称</span>
+<span class="token comment"># security.kerberos.login.principal: flink-user</span>
+
+<span class="token comment"># 以逗号分隔的登录上下文列表，用于提供 Kerberos 凭据（例如，`Client，KafkaClient`使用凭证进行 ZooKeeper 身份验证和 Kafka 身份验证）</span>
+<span class="token comment"># security.kerberos.login.contexts: Client,KafkaClient</span>
+</code></pre></div><p><strong>ZooKeeper 安全配置</strong></p> <p>​</p> <div class="language-properties extra-class"><pre class="language-properties"><code><span class="token comment"># 覆盖以下配置以提供自定义 ZK 服务名称</span>
+<span class="token comment"># zookeeper.sasl.service-name: zookeeper</span>
+
+<span class="token comment"># 该配置必须匹配 &quot;security.kerberos.login.contexts&quot; 中的列表（含有一个）</span>
+<span class="token comment"># zookeeper.sasl.login-context-name: Client</span>
+</code></pre></div><p><strong>HistoryServer</strong></p> <p>​</p> <div class="language-properties extra-class"><pre class="language-properties"><code><span class="token comment"># 你可以通过 bin/historyserver.sh (start|stop) 命令启动和关闭 HistoryServer</span>
+
+<span class="token comment"># 将已完成的作业上传到的目录</span>
+<span class="token comment"># jobmanager.archive.fs.dir: hdfs:///completed-jobs/</span>
+
+<span class="token comment"># 基于 Web 的 HistoryServer 的地址</span>
+<span class="token comment"># historyserver.web.address: 0.0.0.0</span>
+
+<span class="token comment"># 基于 Web 的 HistoryServer 的端口号</span>
+<span class="token comment"># historyserver.web.port: 8082</span>
+
+<span class="token comment"># 以逗号分隔的目录列表，用于监视已完成的作业</span>
+<span class="token comment"># historyserver.archive.fs.dir: hdfs:///completed-jobs/</span>
+
+<span class="token comment"># 刷新受监控目录的时间间隔（以毫秒为单位）</span>
+<span class="token comment"># historyserver.archive.fs.refresh-interval: 10000</span>
+</code></pre></div><h4 id="masters"><a href="#masters" class="header-anchor">#</a> masters</h4> <p>以 host:port 构成</p> <p>​<br>
+localhost:8081</p> <h4 id="slaves"><a href="#slaves" class="header-anchor">#</a> slaves</h4> <p>里面是每个 worker 节点的 IP/Hostname，每一个 worker 结点之后都会运行一个 TaskManager，一个一行。</p> <p>​<br>
+localhost</p> <h3 id="log-配置"><a href="#log-配置" class="header-anchor">#</a> Log 配置</h3> <p>在 Flink 的日志配置文件（<code>logback.xml</code> 或 <code>log4j.properties</code>）中有配置日志存储的地方，<code>logback.xml</code>
+配置日志存储的路径是：</p> <p>​<br> <appender name="file" class="ch.qos.logback.core.FileAppender"><file>${log.file}</file> <append>false</append> <encoder><pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{60} %X{sourceThread} - %msg%n</pattern></encoder></appender></p> <p><code>log4j.properties</code> 和 <code>log4j-cli.properties</code> 的配置日志存储的路径是：</p> <p>​<br>
+log4j.appender.file.file=${log.file}</p> <p>从上面两个配置可以看到日志的路径都是由 <code>log.file</code> 变量控制的，如果系统变量没有配置的话，则会使用 <code>bin／flink</code> 脚本里配置的值。</p> <p>​<br>
+log=$FLINK_LOG_DIR/flink-$FLINK_IDENT_STRING-client-$HOSTNAME.log
+log_setting=(-Dlog.file=&quot;$log&quot; -Dlog4j.configuration=file:&quot;$FLINK_CONF_DIR&quot;/log4j-cli.properties -Dlogback.configurationFile=file:&quot;$FLINK_CONF_DIR&quot;/logback.xml)</p> <p>从上面可以看到 log 里配置的 FLINK <em>LOG</em> DIR 变量是在 bin 目录下的 config.sh 里初始化的。</p> <p>​<br>
+DEFAULT_FLINK_LOG_DIR=$FLINK_HOME_DIR_MANGLED/log
+KEY_ENV_LOG_DIR=&quot;env.log.dir&quot;</p> <div class="language- extra-class"><pre><code>if [ -z &quot;${FLINK_LOG_DIR}&quot; ]; then
+    FLINK_LOG_DIR=$(readFromConfig ${KEY_ENV_LOG_DIR} &quot;${DEFAULT_FLINK_LOG_DIR}&quot; &quot;${YAML_CONF}&quot;)
+fi
+</code></pre></div><p>从上面可以知道日志默认就是在 Flink 的 log 目录下，你可以通过在 <code>flink-conf.yaml</code> 配置文件中配置 <code>env.log.dir</code>
+参数来更改保存日志的目录。另外通过源码可以发现，如果找不到 <code>log.file</code> 环境变量，则会去找 <code>web.log.path</code> 的配置，但是该配置在
+Standalone 下是不起作用的，日志依旧是会在 <code>log</code> 目录，在 YARN 下是会起作用的。</p> <p>​</p> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">LogFileLocation</span> <span class="token function">find</span><span class="token punctuation">(</span><span class="token class-name">Configuration</span> config<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">final</span> <span class="token class-name">String</span> logEnv <span class="token operator">=</span> <span class="token string">&quot;log.file&quot;</span><span class="token punctuation">;</span>
+    <span class="token class-name">String</span> logFilePath <span class="token operator">=</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">getProperty</span><span class="token punctuation">(</span>logEnv<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>logFilePath <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">&quot;Log file environment variable '{}' is not set.&quot;</span><span class="token punctuation">,</span> logEnv<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        logFilePath <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span><span class="token class-name">WebOptions</span><span class="token punctuation">.</span>LOG_PATH<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//该值为 web.log.path</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// not configured, cannot serve log files</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>logFilePath <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> logFilePath<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">4</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        LOG<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">&quot;JobManager log files are unavailable in the web dashboard. &quot;</span> <span class="token operator">+</span>
+            <span class="token string">&quot;Log file location not found in environment variable '{}' or configuration key '{}'.&quot;</span><span class="token punctuation">,</span>
+            logEnv<span class="token punctuation">,</span> <span class="token class-name">WebOptions</span><span class="token punctuation">.</span>LOG_PATH<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">LogFileLocation</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token class-name">String</span> outFilePath <span class="token operator">=</span> logFilePath<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> logFilePath<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span><span class="token string">&quot;out&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">&quot;Determined location of main cluster component log file: {}&quot;</span><span class="token punctuation">,</span> logFilePath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    LOG<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">&quot;Determined location of main cluster component stdout file: {}&quot;</span><span class="token punctuation">,</span> outFilePath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">LogFileLocation</span><span class="token punctuation">(</span><span class="token function">resolveFileLocation</span><span class="token punctuation">(</span>logFilePath<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">resolveFileLocation</span><span class="token punctuation">(</span>outFilePath<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">/**
+ * The log file location (may be in /log for standalone but under log directory when using YARN).
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">ConfigOption</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> LOG_PATH <span class="token operator">=</span>
+    <span class="token function">key</span><span class="token punctuation">(</span><span class="token string">&quot;web.log.path&quot;</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">noDefaultValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">withDeprecatedKeys</span><span class="token punctuation">(</span><span class="token string">&quot;jobmanager.web.log.path&quot;</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">withDescription</span><span class="token punctuation">(</span><span class="token string">&quot;Path to the log file (may be in /log for standalone but under log directory when using YARN).&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><p>另外可能会在本地 IDE 中运行作业出不来日志的情况，这时请检查是否有添加日志的依赖。</p> <p>​</p> <div class="language-xml extra-class"><pre class="language-xml"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>org.slf4j<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>slf4j-api<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>1.7.25<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>org.slf4j<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>slf4j-simple<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>1.7.25<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span>
+</code></pre></div><h3 id="如何配置-jobmanager-高可用"><a href="#如何配置-jobmanager-高可用" class="header-anchor">#</a> 如何配置 JobManager 高可用？</h3> <p>JobManager 协调每个 Flink 作业的部署，它负责调度和资源管理。默认情况下，每个 Flink 集群只有一个 JobManager
+实例，这样就可能会产生单点故障，如果 JobManager 崩溃，则无法提交新作业且运行中的作业也会失败。如果保证 JobManager
+的高可用，则可以避免这个问题。下面分别下如何搭建 Standalone 集群和 YARN 集群高可用的 JobManager。</p> <h4 id="搭建-standalone-集群高可用-jobmanager"><a href="#搭建-standalone-集群高可用-jobmanager" class="header-anchor">#</a> 搭建 Standalone 集群高可用 JobManager</h4> <p>Standalone 集群的 JobManager 高可用性的概念是：任何时候只有一个主 JobManager 和多个备
+JobManager，以便在主节点失败时有新的 JobManager 接管集群。这样就保证了没有单点故障，一旦备 JobManager
+接管集群，作业就可以依旧正常运行。主备 JobManager 实例之间没有明确的区别，每个 JobManager 都可以充当主备节点。例如，请考虑以下三个
+JobManager 实例的设置。</p> <p><img src="https://static.lovedata.net/zs/lsiuRC.jpg" alt="images"> <strong>如何配置</strong></p> <p>要启用 JobManager 高可用性功能，首先必须在配置文件 flink-conf.yaml 中将高可用性模式设置为 ZooKeeper，配置
+ZooKeeper quorum，将所有 JobManager 主机及其 Web UI 端口写入配置文件。每个 ip:port 都是一个 ZooKeeper
+服务器的 ip 及其端口，Flink 可以通过指定的地址和端口访问 ZooKeeper。另外就是高可用存储目录，JobManager 元数据保存在
+<code>high-availability.storageDir</code> 指定的文件系统中，在 ZooKeeper 中仅保存了指向此状态的指针, 推荐这个目录是
+HDFS、S3、Ceph、NFS 等，该文件系统中保存了 JobManager 恢复状态需要的所有元数据。</p> <p>​<br>
+high-availability: zookeeper
+high-availability.zookeeper.quorum: ip1:2181 [,...],ip2:2181
+high-availability.storageDir: hdfs:///flink/ha/</p> <p>Flink 利用 ZooKeeper 在所有正在运行的 JobManager 实例之间进行分布式协调。ZooKeeper 是独立于 Flink 的服务，通过
+leader 选举和轻量级一致性状态存储提供高可靠的分布式协调服务。Flink 包含用于 Bootstrap ZooKeeper 安装的脚本。 它在我们的
+Flink 安装路径下面 /conf/zoo.cfg 。</p> <p>​<br>
+tickTime=2000
+initLimit=10
+syncLimit=5
+# dataDir=/tmp/zookeeper
+clientPort=2181
+# ZooKeeper quorum peers
+# 下面这个配置 ZK 地址
+server.1=localhost:2888:3888
+# server.2=host:peer-port:leader-port</p> <p>要启动 HA 集群，请配置 masters 文件，该文件包含启动 JobManager 的所有主机以及 Web 用户界面绑定的端口，一行写一个。</p> <p>​<br>
+localhost:8081
+xxx.xxx.xxx.xxx:8081</p> <p>默认情况下，JobManager 选一个随机端口作为进程通信端口，可以通过 high-availability.jobmanager.port
+更改此设置。此配置接受单个端口（例如
+<code>50010</code>），范围（<code>50000-50025</code>）或两者的组合（<code>50010,50011,50020-50025,50050-50075</code>）。</p> <p><strong>启动</strong></p> <p>配置好了之后的示例如下，假设是配置两个 JobManager 的 Standalone 的集群，在 flink-conf.yaml 中配置高可用模式和
+Zookeeper 如下：</p> <p>​<br>
+high-availability: zookeeper
+high-availability.zookeeper.quorum: localhost:2181
+high-availability.storageDir: hdfs:///flink/recovery</p> <p>masters 中配置如下：</p> <p>​<br>
+localhost:8081
+localhost:8082</p> <p>在 zoo.cfg 中配置 Zookeeper 服务如下：</p> <p>​<br>
+server.0=localhost:2888:3888</p> <p>启动 ZooKeeper 集群：</p> <p>​<br>
+$ bin/start-zookeeper-quorum.sh
+Starting zookeeper daemon on host localhost.</p> <p>启动一个 Flink HA 集群：</p> <p>​<br>
+$ bin/start-cluster.sh
+Starting HA cluster with 2 masters and 1 peers in ZooKeeper quorum.
+Starting jobmanager daemon on host localhost.
+Starting jobmanager daemon on host localhost.
+Starting taskmanager daemon on host localhost.</p> <p>停止 ZooKeeper 和集群：</p> <p>​<br>
+$ bin/stop-cluster.sh
+Stopping taskmanager daemon (pid: 7647) on localhost.
+Stopping jobmanager daemon (pid: 7495) on host localhost.
+Stopping jobmanager daemon (pid: 7349) on host localhost.</p> <div class="language- extra-class"><pre><code>$ bin/stop-zookeeper-quorum.sh
+Stopping zookeeper daemon (pid: 7101) on host localhost.
+</code></pre></div><h4 id="搭建-yarn-集群高可用-jobmanager"><a href="#搭建-yarn-集群高可用-jobmanager" class="header-anchor">#</a> 搭建 YARN 集群高可用 JobManager</h4> <p>当在 YARN 上配置高可用的 JobManager 时，它只会运行一个 JobManager 实例，不会运行多个，该 JobManager
+实例失败时，YARN 会将其重新启动。Yarn 的具体行为取决于使用的 YARN 版本。</p> <p><strong>如何配置</strong></p> <p>在 YARN 配置文件 yarn-site.xml 中，需要配置 application master 的最大重试次数：</p> <p>​<br> <property><name>yarn.resourcemanager.am.max-attempts</name> <value>4</value> <description>
+The maximum number of application master execution attempts.
+</description></property></p> <p>当前 YARN 版本的默认值为 2（表示允许单个 JobManager 失败两次）。除了上面可以配置最大重试次数外，还可以在 flink-conf.yaml
+配置如下：</p> <p>​<br>
+yarn.application-attempts: 10</p> <p>这意味着在如果程序启动失败，YARN 会再重试 9 次（9 次重试 + 1 次启动），如果启动 10 次作业还失败，YARN
+才会将该任务的状态置为失败。如果因为节点硬件故障或重启，NodeManager 重新同步等操作，需要 YARN 继续尝试启动应用。这些重启尝试不计入
+yarn.application-attempts 个数中。</p> <p><strong>容器关闭行为</strong></p> <ul><li>YARN 2.3.0 &lt; 版本 &lt; 2.4.0. 如果 application master 进程失败，则所有的 container 都会重启。</li> <li>YARN 2.4.0 &lt; 版本 &lt; 2.6.0. TaskManager container 在 application master 故障期间，会继续工作。这具有以下优点：作业恢复时间更快，且缩短所有 TaskManager 启动时申请资源的时间。</li> <li>YARN 2.6.0 &lt;= version: 将尝试失败有效性间隔设置为 Flink 的 Akka 超时值。尝试失败有效性间隔表示只有在系统在一个间隔期间看到最大应用程序尝试次数后才会终止应用程序，这避免了持久的工作会耗尽它的应用程序尝试。</li></ul> <p><strong>启动</strong></p> <p>配置好了的示例如下，首先在 flink-conf.yaml 配置 HA 模式和 Zookeeper 集群：</p> <p>​<br>
+high-availability: zookeeper
+high-availability.zookeeper.quorum: localhost:2181
+yarn.application-attempts: 10</p> <p>在 zoo.cfg 配置 ZooKeeper 服务：</p> <p>​<br>
+server.0=localhost:2888:3888</p> <p>启动 Zookeeper 集群：</p> <p>​<br>
+$ bin/start-zookeeper-quorum.sh
+Starting zookeeper daemon on host localhost.</p> <p>启动 HA 集群：</p> <p>​<br>
+$ bin/yarn-session.sh -n 2</p> <h3 id="小结与反思"><a href="#小结与反思" class="header-anchor">#</a> 小结与反思</h3> <p>本节一开始对 Flink 的所有配置文件做了一个详细的介绍，分析了每种配置的作用和使用场景，然后介绍了 Flink 中的日志配置，最后讲解了下
+JobManager 的高可用配置。</p></div> <footer class="page-edit"><div class="edit-link"><a href="https://github.com/pengshuangbao/databook/edit/master/docs/bigdata/flink/Flink实战与性能优化/Flink配置详解及如何配置高可用？.md" target="_blank" rel="noopener noreferrer">Edit this page on GitHub</a> <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></div> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">2023/4/14 16:56:47</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/bigdata/flink/Flink实战与性能优化/Flink扩展库——Gelly.html" class="prev">
+        Flink扩展库——Gelly
+      </a></span> <span class="next"><a href="/bigdata/flink/Flink实战与性能优化/FlinkJob如何在Standalone、YARN、Mesos、K8S上部署运行？.html">
+        FlinkJob如何在Standalone、YARN、Mesos、K8S上部署运行？
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"><!----><!----></div></div>
+    <script src="/assets/js/app.0f56a723.js" defer></script><script src="/assets/js/4.a8ef5668.js" defer></script><script src="/assets/js/55.59437904.js" defer></script><script src="/assets/js/11.0473ae06.js" defer></script>
+  </body>
+</html>

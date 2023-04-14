@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>CPU | 编程手册</title>
+    <meta name="generator" content="VuePress 1.7.1">
+    <link rel="icon" href="/logo.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon-152x152.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#3eaf7c">
+    <meta name="description" content="苍穹浩渺,取之须臾">
+    <meta name="theme-color" content="#3eaf7c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="msapplication-TileImage" content="/icons/msapplication-icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#000000">
+    
+    <link rel="preload" href="/assets/css/0.styles.225a8ff9.css" as="style"><link rel="preload" href="/assets/js/app.0f56a723.js" as="script"><link rel="preload" href="/assets/js/4.a8ef5668.js" as="script"><link rel="preload" href="/assets/js/129.82cfac7a.js" as="script"><link rel="preload" href="/assets/js/11.0473ae06.js" as="script"><link rel="prefetch" href="/assets/js/10.06cc4fbb.js"><link rel="prefetch" href="/assets/js/100.79e96d05.js"><link rel="prefetch" href="/assets/js/101.bcac0b9f.js"><link rel="prefetch" href="/assets/js/102.c5d92a95.js"><link rel="prefetch" href="/assets/js/103.697856ab.js"><link rel="prefetch" href="/assets/js/104.8f2db4d2.js"><link rel="prefetch" href="/assets/js/105.d4f2bb07.js"><link rel="prefetch" href="/assets/js/106.1a533c3f.js"><link rel="prefetch" href="/assets/js/107.b2845ea0.js"><link rel="prefetch" href="/assets/js/108.226e46ed.js"><link rel="prefetch" href="/assets/js/109.0de9c16c.js"><link rel="prefetch" href="/assets/js/110.4657c34b.js"><link rel="prefetch" href="/assets/js/111.3409d3a7.js"><link rel="prefetch" href="/assets/js/112.a46b486c.js"><link rel="prefetch" href="/assets/js/113.ba001fa9.js"><link rel="prefetch" href="/assets/js/114.ad1e6ba1.js"><link rel="prefetch" href="/assets/js/115.a0ac732f.js"><link rel="prefetch" href="/assets/js/116.4ee2a7b2.js"><link rel="prefetch" href="/assets/js/117.a76fd29a.js"><link rel="prefetch" href="/assets/js/118.83c5badf.js"><link rel="prefetch" href="/assets/js/119.09fec567.js"><link rel="prefetch" href="/assets/js/12.286e979d.js"><link rel="prefetch" href="/assets/js/120.42120fe1.js"><link rel="prefetch" href="/assets/js/121.9d79a9dd.js"><link rel="prefetch" href="/assets/js/122.f71a459c.js"><link rel="prefetch" href="/assets/js/123.b75308dc.js"><link rel="prefetch" href="/assets/js/124.e4d4643b.js"><link rel="prefetch" href="/assets/js/125.73fc990d.js"><link rel="prefetch" href="/assets/js/126.3b0eccd0.js"><link rel="prefetch" href="/assets/js/127.3eb3ab27.js"><link rel="prefetch" href="/assets/js/128.64ba68bb.js"><link rel="prefetch" href="/assets/js/13.7207d991.js"><link rel="prefetch" href="/assets/js/130.42811f32.js"><link rel="prefetch" href="/assets/js/131.6f498e16.js"><link rel="prefetch" href="/assets/js/132.f0cc9ad2.js"><link rel="prefetch" href="/assets/js/133.325e755a.js"><link rel="prefetch" href="/assets/js/134.076a808c.js"><link rel="prefetch" href="/assets/js/135.fad7be83.js"><link rel="prefetch" href="/assets/js/136.042fc555.js"><link rel="prefetch" href="/assets/js/137.b67b55bc.js"><link rel="prefetch" href="/assets/js/138.6476c99f.js"><link rel="prefetch" href="/assets/js/139.ad07500f.js"><link rel="prefetch" href="/assets/js/14.a1cb7c1b.js"><link rel="prefetch" href="/assets/js/140.3edd2237.js"><link rel="prefetch" href="/assets/js/141.5181db27.js"><link rel="prefetch" href="/assets/js/142.67b4c4a2.js"><link rel="prefetch" href="/assets/js/143.9d249a3f.js"><link rel="prefetch" href="/assets/js/144.e6db5540.js"><link rel="prefetch" href="/assets/js/145.5b4305a7.js"><link rel="prefetch" href="/assets/js/146.bc674178.js"><link rel="prefetch" href="/assets/js/147.964ff3df.js"><link rel="prefetch" href="/assets/js/148.570b6864.js"><link rel="prefetch" href="/assets/js/149.4b9796c2.js"><link rel="prefetch" href="/assets/js/15.3cafda64.js"><link rel="prefetch" href="/assets/js/150.c677bf4b.js"><link rel="prefetch" href="/assets/js/151.b8977c93.js"><link rel="prefetch" href="/assets/js/152.535e2db4.js"><link rel="prefetch" href="/assets/js/153.754fc05e.js"><link rel="prefetch" href="/assets/js/154.5a5928b6.js"><link rel="prefetch" href="/assets/js/155.19893ca5.js"><link rel="prefetch" href="/assets/js/156.da1f2665.js"><link rel="prefetch" href="/assets/js/157.cb7b551f.js"><link rel="prefetch" href="/assets/js/158.f5d94a11.js"><link rel="prefetch" href="/assets/js/159.0b2b78d9.js"><link rel="prefetch" href="/assets/js/16.54ab9242.js"><link rel="prefetch" href="/assets/js/160.c2548b6c.js"><link rel="prefetch" href="/assets/js/161.8f694ed1.js"><link rel="prefetch" href="/assets/js/162.1adc1aa4.js"><link rel="prefetch" href="/assets/js/163.5688827c.js"><link rel="prefetch" href="/assets/js/164.8442474f.js"><link rel="prefetch" href="/assets/js/165.d0e21e5c.js"><link rel="prefetch" href="/assets/js/166.2e90ae99.js"><link rel="prefetch" href="/assets/js/167.374185de.js"><link rel="prefetch" href="/assets/js/168.2426769f.js"><link rel="prefetch" href="/assets/js/169.829516d9.js"><link rel="prefetch" href="/assets/js/17.9cad59f9.js"><link rel="prefetch" href="/assets/js/170.db0c4609.js"><link rel="prefetch" href="/assets/js/171.7bdcc41b.js"><link rel="prefetch" href="/assets/js/172.7f7ab109.js"><link rel="prefetch" href="/assets/js/173.c1d51df9.js"><link rel="prefetch" href="/assets/js/174.afa4c5f6.js"><link rel="prefetch" href="/assets/js/175.b46d9dd8.js"><link rel="prefetch" href="/assets/js/176.c38ba756.js"><link rel="prefetch" href="/assets/js/177.ba85b912.js"><link rel="prefetch" href="/assets/js/178.af1a44e8.js"><link rel="prefetch" href="/assets/js/179.e097e164.js"><link rel="prefetch" href="/assets/js/18.3776b09c.js"><link rel="prefetch" href="/assets/js/180.d9d5d80c.js"><link rel="prefetch" href="/assets/js/181.79401f8c.js"><link rel="prefetch" href="/assets/js/182.343db47f.js"><link rel="prefetch" href="/assets/js/183.005841bb.js"><link rel="prefetch" href="/assets/js/19.d0ac1e7f.js"><link rel="prefetch" href="/assets/js/20.e0100fb2.js"><link rel="prefetch" href="/assets/js/21.f59cd52c.js"><link rel="prefetch" href="/assets/js/22.3ecf54da.js"><link rel="prefetch" href="/assets/js/23.2508850b.js"><link rel="prefetch" href="/assets/js/24.0ac10322.js"><link rel="prefetch" href="/assets/js/25.7c3ee156.js"><link rel="prefetch" href="/assets/js/26.7021c42c.js"><link rel="prefetch" href="/assets/js/27.d716476b.js"><link rel="prefetch" href="/assets/js/28.58ebf808.js"><link rel="prefetch" href="/assets/js/29.88c37f6c.js"><link rel="prefetch" href="/assets/js/30.87bc4a91.js"><link rel="prefetch" href="/assets/js/31.a69c2a35.js"><link rel="prefetch" href="/assets/js/32.89f74912.js"><link rel="prefetch" href="/assets/js/33.df886872.js"><link rel="prefetch" href="/assets/js/34.835d0785.js"><link rel="prefetch" href="/assets/js/35.5e38ab06.js"><link rel="prefetch" href="/assets/js/36.5b639051.js"><link rel="prefetch" href="/assets/js/37.bb32ead0.js"><link rel="prefetch" href="/assets/js/38.c2541da0.js"><link rel="prefetch" href="/assets/js/39.3c8f0f06.js"><link rel="prefetch" href="/assets/js/40.4cc077aa.js"><link rel="prefetch" href="/assets/js/41.cbcd81a7.js"><link rel="prefetch" href="/assets/js/42.6d002f78.js"><link rel="prefetch" href="/assets/js/43.3f67c882.js"><link rel="prefetch" href="/assets/js/44.58ce7a4d.js"><link rel="prefetch" href="/assets/js/45.bfb9d6e0.js"><link rel="prefetch" href="/assets/js/46.691097de.js"><link rel="prefetch" href="/assets/js/47.e6b5c9b5.js"><link rel="prefetch" href="/assets/js/48.38159f5c.js"><link rel="prefetch" href="/assets/js/49.e03ce66a.js"><link rel="prefetch" href="/assets/js/5.340b4b76.js"><link rel="prefetch" href="/assets/js/50.7df345cb.js"><link rel="prefetch" href="/assets/js/51.b3eed5d5.js"><link rel="prefetch" href="/assets/js/52.bb282842.js"><link rel="prefetch" href="/assets/js/53.6b21ec8f.js"><link rel="prefetch" href="/assets/js/54.bab98944.js"><link rel="prefetch" href="/assets/js/55.59437904.js"><link rel="prefetch" href="/assets/js/56.18b88131.js"><link rel="prefetch" href="/assets/js/57.b0cbba56.js"><link rel="prefetch" href="/assets/js/58.d9379002.js"><link rel="prefetch" href="/assets/js/59.e8663882.js"><link rel="prefetch" href="/assets/js/6.c48e1ddb.js"><link rel="prefetch" href="/assets/js/60.0a00b724.js"><link rel="prefetch" href="/assets/js/61.cd09980d.js"><link rel="prefetch" href="/assets/js/62.b092ff62.js"><link rel="prefetch" href="/assets/js/63.86482c79.js"><link rel="prefetch" href="/assets/js/64.3c1ee4d2.js"><link rel="prefetch" href="/assets/js/65.0621decf.js"><link rel="prefetch" href="/assets/js/66.cf7a6241.js"><link rel="prefetch" href="/assets/js/67.99e103bc.js"><link rel="prefetch" href="/assets/js/68.b3589f28.js"><link rel="prefetch" href="/assets/js/69.f0932a12.js"><link rel="prefetch" href="/assets/js/7.0f410b85.js"><link rel="prefetch" href="/assets/js/70.0a941773.js"><link rel="prefetch" href="/assets/js/71.3a6c6141.js"><link rel="prefetch" href="/assets/js/72.2299ff58.js"><link rel="prefetch" href="/assets/js/73.544fe8c6.js"><link rel="prefetch" href="/assets/js/74.98219c05.js"><link rel="prefetch" href="/assets/js/75.244a9d80.js"><link rel="prefetch" href="/assets/js/76.cefd9fe2.js"><link rel="prefetch" href="/assets/js/77.59793840.js"><link rel="prefetch" href="/assets/js/78.a7d9a079.js"><link rel="prefetch" href="/assets/js/79.f9ec013d.js"><link rel="prefetch" href="/assets/js/8.269955a4.js"><link rel="prefetch" href="/assets/js/80.b0f2cbe5.js"><link rel="prefetch" href="/assets/js/81.3d245e9a.js"><link rel="prefetch" href="/assets/js/82.061b170d.js"><link rel="prefetch" href="/assets/js/83.d2c42148.js"><link rel="prefetch" href="/assets/js/84.f6f487a4.js"><link rel="prefetch" href="/assets/js/85.c5305650.js"><link rel="prefetch" href="/assets/js/86.0c30a2ef.js"><link rel="prefetch" href="/assets/js/87.d9a99f2e.js"><link rel="prefetch" href="/assets/js/88.03792030.js"><link rel="prefetch" href="/assets/js/89.95684850.js"><link rel="prefetch" href="/assets/js/9.5c3462fb.js"><link rel="prefetch" href="/assets/js/90.185b012e.js"><link rel="prefetch" href="/assets/js/91.d19f0020.js"><link rel="prefetch" href="/assets/js/92.9e7855de.js"><link rel="prefetch" href="/assets/js/93.1ee902df.js"><link rel="prefetch" href="/assets/js/94.4bfab4ad.js"><link rel="prefetch" href="/assets/js/95.5f0b1d15.js"><link rel="prefetch" href="/assets/js/96.bd50a446.js"><link rel="prefetch" href="/assets/js/97.749fd671.js"><link rel="prefetch" href="/assets/js/98.bc09c746.js"><link rel="prefetch" href="/assets/js/99.40f98e75.js"><link rel="prefetch" href="/assets/js/vendors~flowchart.98d8c7d3.js"><link rel="prefetch" href="/assets/js/vendors~notification.5515ddcd.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.225a8ff9.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">编程手册</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/java/" class="nav-link">
+  Java
+</a></div><div class="nav-item"><a href="/bigdata/" class="nav-link">
+  大数据
+</a></div><div class="nav-item"><a href="/algorithm/" class="nav-link">
+  算法 
+</a></div><div class="nav-item"><a href="/architecture/" class="nav-link">
+  架构 
+</a></div><div class="nav-item"><a href="/computer/" class="nav-link router-link-active">
+  计算机 
+</a></div><div class="nav-item"><a href="/database/" class="nav-link">
+  数据库 
+</a></div><div class="nav-item"><a href="/fe/" class="nav-link">
+  前端
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="运维 " class="dropdown-title"><span class="title">运维 </span> <span class="arrow down"></span></button> <button type="button" aria-label="运维 " class="mobile-dropdown-title"><span class="title">运维 </span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/ops/" class="nav-link">
+  基础
+</a></li><li class="dropdown-item"><h4>
+          分类
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/ops/java.html" class="nav-link">
+  Java
+</a></li><li class="dropdown-subitem"><a href="/ops/bigdata.html" class="nav-link">
+  大数据
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="编程" class="dropdown-title"><span class="title">编程</span> <span class="arrow down"></span></button> <button type="button" aria-label="编程" class="mobile-dropdown-title"><span class="title">编程</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          语言
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/programming/python.html" class="nav-link">
+  Python
+</a></li><li class="dropdown-subitem"><a href="/programming/scala.html" class="nav-link">
+  Scala
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="资源" class="dropdown-title"><span class="title">资源</span> <span class="arrow down"></span></button> <button type="button" aria-label="资源" class="mobile-dropdown-title"><span class="title">资源</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          我的书单
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/tech.html" class="nav-link">
+  技术类
+</a></li><li class="dropdown-subitem"><a href="/book/growth.html" class="nav-link">
+  成长类
+</a></li></ul></li><li class="dropdown-item"><h4>
+          网课
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/geek.html" class="nav-link">
+  专栏
+</a></li><li class="dropdown-subitem"><a href="/book/video.html" class="nav-link">
+  视频
+</a></li></ul></li><li class="dropdown-item"><h4>
+          面经
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/tech.html" class="nav-link">
+  大厂面经
+</a></li><li class="dropdown-subitem"><a href="/interview/sword-to-offer.html" class="nav-link">
+  剑指Offer
+</a></li><li class="dropdown-subitem"><a href="/interview/fe.html" class="nav-link">
+  前端面经
+</a></li><li class="dropdown-subitem"><a href="/interview/interview_guide.html" class="nav-link">
+  面试导航
+</a></li></ul></li><li class="dropdown-item"><h4>
+          其他
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/study.html" class="nav-link">
+  学习笔记
+</a></li></ul></li></ul></div></div> <a href="https://github.com/pengshuangbao/databook" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/java/" class="nav-link">
+  Java
+</a></div><div class="nav-item"><a href="/bigdata/" class="nav-link">
+  大数据
+</a></div><div class="nav-item"><a href="/algorithm/" class="nav-link">
+  算法 
+</a></div><div class="nav-item"><a href="/architecture/" class="nav-link">
+  架构 
+</a></div><div class="nav-item"><a href="/computer/" class="nav-link router-link-active">
+  计算机 
+</a></div><div class="nav-item"><a href="/database/" class="nav-link">
+  数据库 
+</a></div><div class="nav-item"><a href="/fe/" class="nav-link">
+  前端
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="运维 " class="dropdown-title"><span class="title">运维 </span> <span class="arrow down"></span></button> <button type="button" aria-label="运维 " class="mobile-dropdown-title"><span class="title">运维 </span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/ops/" class="nav-link">
+  基础
+</a></li><li class="dropdown-item"><h4>
+          分类
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/ops/java.html" class="nav-link">
+  Java
+</a></li><li class="dropdown-subitem"><a href="/ops/bigdata.html" class="nav-link">
+  大数据
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="编程" class="dropdown-title"><span class="title">编程</span> <span class="arrow down"></span></button> <button type="button" aria-label="编程" class="mobile-dropdown-title"><span class="title">编程</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          语言
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/programming/python.html" class="nav-link">
+  Python
+</a></li><li class="dropdown-subitem"><a href="/programming/scala.html" class="nav-link">
+  Scala
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="资源" class="dropdown-title"><span class="title">资源</span> <span class="arrow down"></span></button> <button type="button" aria-label="资源" class="mobile-dropdown-title"><span class="title">资源</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          我的书单
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/tech.html" class="nav-link">
+  技术类
+</a></li><li class="dropdown-subitem"><a href="/book/growth.html" class="nav-link">
+  成长类
+</a></li></ul></li><li class="dropdown-item"><h4>
+          网课
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/geek.html" class="nav-link">
+  专栏
+</a></li><li class="dropdown-subitem"><a href="/book/video.html" class="nav-link">
+  视频
+</a></li></ul></li><li class="dropdown-item"><h4>
+          面经
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/tech.html" class="nav-link">
+  大厂面经
+</a></li><li class="dropdown-subitem"><a href="/interview/sword-to-offer.html" class="nav-link">
+  剑指Offer
+</a></li><li class="dropdown-subitem"><a href="/interview/fe.html" class="nav-link">
+  前端面经
+</a></li><li class="dropdown-subitem"><a href="/interview/interview_guide.html" class="nav-link">
+  面试导航
+</a></li></ul></li><li class="dropdown-item"><h4>
+          其他
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/study.html" class="nav-link">
+  学习笔记
+</a></li></ul></li></ul></div></div> <a href="https://github.com/pengshuangbao/databook" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <ul class="sidebar-links"><li><a href="/computer/" aria-current="page" class="sidebar-link">计算机</a></li><li><a href="/computer/network.html" class="sidebar-link">网络</a></li><li><a href="/computer/cpu.html" aria-current="page" class="active sidebar-link">CPU</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/computer/cpu.html#numa" class="sidebar-link">NUMA</a></li><li class="sidebar-sub-header"><a href="/computer/cpu.html#cpu拓扑" class="sidebar-link">CPU拓扑</a></li><li class="sidebar-sub-header"><a href="/computer/cpu.html#上下文切换" class="sidebar-link">上下文切换</a></li></ul></li><li><a href="/computer/disk.html" class="sidebar-link">磁盘</a></li><li><a href="/computer/memory.html" class="sidebar-link">内存</a></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="cpu"><a href="#cpu" class="header-anchor">#</a> CPU</h1> <p></p><div class="table-of-contents"><ul><li><a href="#numa">NUMA</a><ul><li><a href="#概述">概述</a></li><li><a href="#cpu-拓扑-从-smp-谈到-numa-理论篇">CPU 拓扑：从 SMP 谈到 NUMA （理论篇）</a></li></ul></li><li><a href="#cpu拓扑">CPU拓扑</a></li><li><a href="#上下文切换">上下文切换</a></li></ul></div><p></p> <h2 id="numa"><a href="#numa" class="header-anchor">#</a> NUMA</h2> <h3 id="概述"><a href="#概述" class="header-anchor">#</a> 概述</h3> <p><a href="https://zh.wikipedia.org/wiki/%E9%9D%9E%E5%9D%87%E5%8C%80%E8%AE%BF%E5%AD%98%E6%A8%A1%E5%9E%8B" target="_blank" rel="noopener noreferrer">Wiki<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <blockquote><p><strong>非统一内存访问架构</strong>（英语：<strong>Non-uniform memory access</strong>，简称NUMA）是一种为<a href="https://zh.wikipedia.org/wiki/%E5%A4%9A%E8%99%95%E7%90%86%E5%99%A8" target="_blank" rel="noopener noreferrer">多处理器<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>的电脑设计的内存架构，内存访问时间取决于内存相对于处理器的位置。在NUMA下，处理器访问它自己的本地内存的速度比非本地内存（内存位于另一个处理器，或者是处理器之间共享的内存）快一些。</p> <p>非统一内存访问架构的特点是：被共享的内存物理上是分布式的，所有这些内存的集合就是全局<a href="https://zh.wikipedia.org/wiki/%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4" target="_blank" rel="noopener noreferrer">地址空间<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。所以处理器访问这些内存的时间是不一样的，显然访问本地内存的速度要比访问全局共享内存或远程访问外地内存要快些。另外，NUMA中内存可能是分层的：本地内存，群内共享内存，全局共享内存。</p></blockquote> <h3 id="cpu-拓扑-从-smp-谈到-numa-理论篇"><a href="#cpu-拓扑-从-smp-谈到-numa-理论篇" class="header-anchor">#</a> CPU 拓扑：从 SMP 谈到 NUMA （理论篇）</h3> <p><a href="https://ctimbai.github.io/2018/05/10/tech/CPU%E6%8B%93%E6%89%91%EF%BC%9A%E4%BB%8ESMP%E8%B0%88%E5%88%B0NUMA%EF%BC%88%E5%AE%9E%E8%B7%B5%E7%AF%87%EF%BC%89/" target="_blank" rel="noopener noreferrer">CPU 拓扑：从 SMP 谈到 NUMA （理论篇） | 长亭的网志空间<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <p><a href="https://ctimbai.github.io/2018/05/03/tech/CPU%E6%8B%93%E6%89%91%E4%BB%8ESMP%E8%B0%88%E5%88%B0NUMA%EF%BC%88%E7%90%86%E8%AE%BA%E7%AF%87%EF%BC%89/" target="_blank" rel="noopener noreferrer">CPU 拓扑：从 SMP 谈到 NUMA （理论篇） | 长亭的网志空间<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <p>几个概念：Node，Socket，Core，Thread</p> <p>NUMA 技术的主要思想是将 CPU 进行<strong>分组</strong>，Node 即是分组的抽象，一个 Node 表示一个分组，一个分组可以由多个 CPU 组成。每个 Node 都有自己的<strong>本地资源，包括内存、IO 等</strong>。</p> <p>每个 Node 之间通过互联模块（<strong>QPI</strong>）进行通信，Node之间可以互相访问，性能会差些，一般用 <strong>distance</strong> 这个抽象的概念来表示各个 Node 之间互访资源的开销。</p> <p><img src="https://static.lovedata.net/20-12-24-70779e16caf99a72384a2a5c70ab1267.png" alt="image"></p> <p><strong>Node</strong> 逻辑概念，Socket 物理概念，代表一个CPU封装，主板上的吃草</p> <p>Core 就是socket里独立的一组程序执行单元， <strong>物理核</strong></p> <p>Thread就是<strong>逻辑核</strong>，或者称之为超线程，提升CPU的处理能力，将Core划分为多个逻辑核(<strong>一般是两个</strong>)，有独立寄存器和终端逻辑。 多个逻辑核共享Core内的<strong>执行单元</strong>和<strong>Cache</strong></p> <p><img src="https://static.lovedata.net/20-12-24-c722fec48014089d49c39b55440406ca.png" alt="image"></p> <p><strong>一个</strong> <strong>NUMA Node</strong> 可以有一个或者多个 <strong>Socket</strong>，每个 Socket 也可以有一个（单核）或者多个（多核）Core，一个 Core 如果打开超线程，则会变成两个逻辑核（Logical Processor，简称 Processor）。</p> <p><strong>Node &gt; Socket &gt; Core &gt; Processor</strong>。</p> <h2 id="cpu拓扑"><a href="#cpu拓扑" class="header-anchor">#</a> CPU拓扑</h2> <p><a href="https://kodango.com/cpu-topology" target="_blank" rel="noopener noreferrer">CPU Topology - 团子的小窝<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token shebang important">#!/bin/bash</span>
+<span class="token keyword">function</span> <span class="token function-name function">get_nr_processor</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">grep</span> <span class="token string">'^processor'</span> /proc/cpuinfo <span class="token operator">|</span> <span class="token function">wc</span> -l
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span> <span class="token function-name function">get_nr_socket</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">grep</span> <span class="token string">'physical id'</span> /proc/cpuinfo <span class="token operator">|</span> <span class="token function">awk</span> -F: <span class="token string">'{
+            print <span class="token variable">$2</span> | &quot;sort -un&quot;}'</span> <span class="token operator">|</span> <span class="token function">wc</span> -l
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span> <span class="token function-name function">get_nr_siblings</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">grep</span> <span class="token string">'siblings'</span> /proc/cpuinfo <span class="token operator">|</span> <span class="token function">awk</span> -F: <span class="token string">'{
+            print <span class="token variable">$2</span> | &quot;sort -un&quot;}'</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span> <span class="token function-name function">get_nr_cores_of_socket</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">grep</span> <span class="token string">'cpu cores'</span> /proc/cpuinfo <span class="token operator">|</span> <span class="token function">awk</span> -F: <span class="token string">'{
+            print <span class="token variable">$2</span> | &quot;sort -un&quot;}'</span>
+<span class="token punctuation">}</span>
+
+<span class="token builtin class-name">echo</span> <span class="token string">'===== CPU Topology Table ====='</span>
+<span class="token builtin class-name">echo</span>
+
+<span class="token builtin class-name">echo</span> <span class="token string">'+--------------+---------+-----------+'</span>
+<span class="token builtin class-name">echo</span> <span class="token string">'| Processor ID | Core ID | Socket ID |'</span>
+<span class="token builtin class-name">echo</span> <span class="token string">'+--------------+---------+-----------+'</span>
+
+<span class="token keyword">while</span> <span class="token builtin class-name">read</span> line<span class="token punctuation">;</span> <span class="token keyword">do</span>
+    <span class="token keyword">if</span> <span class="token punctuation">[</span> -z <span class="token string">&quot;<span class="token variable">$line</span>&quot;</span> <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+        <span class="token builtin class-name">printf</span> <span class="token string">'| %-12s | %-7s | %-9s |<span class="token entity" title="\n">\n</span>'</span> <span class="token variable">$p_id</span> <span class="token variable">$c_id</span> <span class="token variable">$s_id</span>
+        <span class="token builtin class-name">echo</span> <span class="token string">'+--------------+---------+-----------+'</span>
+        <span class="token builtin class-name">continue</span>
+    <span class="token keyword">fi</span>
+
+    <span class="token keyword">if</span> <span class="token builtin class-name">echo</span> <span class="token string">&quot;<span class="token variable">$line</span>&quot;</span> <span class="token operator">|</span> <span class="token function">grep</span> -q <span class="token string">&quot;^processor&quot;</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+        <span class="token assign-left variable">p_id</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token builtin class-name">echo</span> <span class="token string">&quot;<span class="token variable">$line</span>&quot;</span> <span class="token operator">|</span> <span class="token function">awk</span> -F: <span class="token string">'{print <span class="token variable">$2</span>}'</span> <span class="token operator">|</span> <span class="token function">tr</span> -d <span class="token string">' '</span><span class="token variable">`</span></span> 
+    <span class="token keyword">fi</span>
+
+    <span class="token keyword">if</span> <span class="token builtin class-name">echo</span> <span class="token string">&quot;<span class="token variable">$line</span>&quot;</span> <span class="token operator">|</span> <span class="token function">grep</span> -q <span class="token string">&quot;^core id&quot;</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+        <span class="token assign-left variable">c_id</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token builtin class-name">echo</span> <span class="token string">&quot;<span class="token variable">$line</span>&quot;</span> <span class="token operator">|</span> <span class="token function">awk</span> -F: <span class="token string">'{print <span class="token variable">$2</span>}'</span> <span class="token operator">|</span> <span class="token function">tr</span> -d <span class="token string">' '</span><span class="token variable">`</span></span> 
+    <span class="token keyword">fi</span>
+
+    <span class="token keyword">if</span> <span class="token builtin class-name">echo</span> <span class="token string">&quot;<span class="token variable">$line</span>&quot;</span> <span class="token operator">|</span> <span class="token function">grep</span> -q <span class="token string">&quot;^physical id&quot;</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+        <span class="token assign-left variable">s_id</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token builtin class-name">echo</span> <span class="token string">&quot;<span class="token variable">$line</span>&quot;</span> <span class="token operator">|</span> <span class="token function">awk</span> -F: <span class="token string">'{print <span class="token variable">$2</span>}'</span> <span class="token operator">|</span> <span class="token function">tr</span> -d <span class="token string">' '</span><span class="token variable">`</span></span> 
+    <span class="token keyword">fi</span>
+<span class="token keyword">done</span> <span class="token operator">&lt;</span> /proc/cpuinfo
+
+<span class="token builtin class-name">echo</span>
+
+<span class="token function">awk</span> -F: <span class="token string">'{ 
+    if (<span class="token variable">$1</span> ~ /processor/) {
+        gsub(/ /,&quot;&quot;,<span class="token variable">$2</span>);
+        p_id=<span class="token variable">$2</span>;
+    } else if (<span class="token variable">$1</span> ~ /physical id/){
+        gsub(/ /,&quot;&quot;,<span class="token variable">$2</span>);
+        s_id=<span class="token variable">$2</span>;
+        arr[s_id]=arr[s_id] &quot; &quot; p_id
+    }
+} 
+
+END{
+    for (i in arr) 
+        printf &quot;Socket %s:%s<span class="token entity" title="\n">\n</span>&quot;, i, arr[i];
+}'</span> /proc/cpuinfo
+
+<span class="token builtin class-name">echo</span>
+<span class="token builtin class-name">echo</span> <span class="token string">'===== CPU Info Summary ====='</span>
+<span class="token builtin class-name">echo</span>
+
+<span class="token assign-left variable">nr_processor</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span>get_nr_processor<span class="token variable">`</span></span>
+<span class="token builtin class-name">echo</span> <span class="token string">&quot;Logical processors: <span class="token variable">$nr_processor</span>&quot;</span>
+
+<span class="token assign-left variable">nr_socket</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span>get_nr_socket<span class="token variable">`</span></span>
+<span class="token builtin class-name">echo</span> <span class="token string">&quot;Physical socket: <span class="token variable">$nr_socket</span>&quot;</span>
+
+<span class="token assign-left variable">nr_siblings</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span>get_nr_siblings<span class="token variable">`</span></span>
+<span class="token builtin class-name">echo</span> <span class="token string">&quot;Siblings in one socket: <span class="token variable">$nr_siblings</span>&quot;</span>
+
+<span class="token assign-left variable">nr_cores</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span>get_nr_cores_of_socket<span class="token variable">`</span></span>
+<span class="token builtin class-name">echo</span> <span class="token string">&quot;Cores in one socket: <span class="token variable">$nr_cores</span>&quot;</span>
+
+<span class="token builtin class-name">let</span> nr_cores*<span class="token operator">=</span>nr_socket
+<span class="token builtin class-name">echo</span> <span class="token string">&quot;Cores in total: <span class="token variable">$nr_cores</span>&quot;</span>
+
+<span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token string">&quot;<span class="token variable">$nr_cores</span>&quot;</span> <span class="token operator">=</span> <span class="token string">&quot;<span class="token variable">$nr_processor</span>&quot;</span> <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+    <span class="token builtin class-name">echo</span> <span class="token string">&quot;Hyper-Threading: off&quot;</span>
+<span class="token keyword">else</span>
+    <span class="token builtin class-name">echo</span> <span class="token string">&quot;Hyper-Threading: on&quot;</span>
+<span class="token keyword">fi</span>
+
+<span class="token builtin class-name">echo</span>
+<span class="token builtin class-name">echo</span> <span class="token string">'===== END ====='</span>
+</code></pre></div><div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">=</span> CPU Topology Table <span class="token operator">==</span><span class="token operator">==</span><span class="token operator">=</span>
+
++--------------+---------+-----------+
+<span class="token operator">|</span> Processor ID <span class="token operator">|</span> Core ID <span class="token operator">|</span> Socket ID <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">0</span>            <span class="token operator">|</span> <span class="token number">0</span>       <span class="token operator">|</span> <span class="token number">0</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">1</span>            <span class="token operator">|</span> <span class="token number">0</span>       <span class="token operator">|</span> <span class="token number">1</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">2</span>            <span class="token operator">|</span> <span class="token number">1</span>       <span class="token operator">|</span> <span class="token number">0</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">3</span>            <span class="token operator">|</span> <span class="token number">1</span>       <span class="token operator">|</span> <span class="token number">1</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">4</span>            <span class="token operator">|</span> <span class="token number">2</span>       <span class="token operator">|</span> <span class="token number">0</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">5</span>            <span class="token operator">|</span> <span class="token number">2</span>       <span class="token operator">|</span> <span class="token number">1</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">6</span>            <span class="token operator">|</span> <span class="token number">3</span>       <span class="token operator">|</span> <span class="token number">0</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">7</span>            <span class="token operator">|</span> <span class="token number">3</span>       <span class="token operator">|</span> <span class="token number">1</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">8</span>            <span class="token operator">|</span> <span class="token number">4</span>       <span class="token operator">|</span> <span class="token number">0</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">9</span>            <span class="token operator">|</span> <span class="token number">4</span>       <span class="token operator">|</span> <span class="token number">1</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">10</span>           <span class="token operator">|</span> <span class="token number">8</span>       <span class="token operator">|</span> <span class="token number">0</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">11</span>           <span class="token operator">|</span> <span class="token number">8</span>       <span class="token operator">|</span> <span class="token number">1</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">12</span>           <span class="token operator">|</span> <span class="token number">9</span>       <span class="token operator">|</span> <span class="token number">0</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">13</span>           <span class="token operator">|</span> <span class="token number">9</span>       <span class="token operator">|</span> <span class="token number">1</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">14</span>           <span class="token operator">|</span> <span class="token number">10</span>      <span class="token operator">|</span> <span class="token number">0</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">15</span>           <span class="token operator">|</span> <span class="token number">10</span>      <span class="token operator">|</span> <span class="token number">1</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">16</span>           <span class="token operator">|</span> <span class="token number">11</span>      <span class="token operator">|</span> <span class="token number">0</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">17</span>           <span class="token operator">|</span> <span class="token number">11</span>      <span class="token operator">|</span> <span class="token number">1</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">18</span>           <span class="token operator">|</span> <span class="token number">12</span>      <span class="token operator">|</span> <span class="token number">0</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">19</span>           <span class="token operator">|</span> <span class="token number">12</span>      <span class="token operator">|</span> <span class="token number">1</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">20</span>           <span class="token operator">|</span> <span class="token number">0</span>       <span class="token operator">|</span> <span class="token number">0</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">21</span>           <span class="token operator">|</span> <span class="token number">0</span>       <span class="token operator">|</span> <span class="token number">1</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">22</span>           <span class="token operator">|</span> <span class="token number">1</span>       <span class="token operator">|</span> <span class="token number">0</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">23</span>           <span class="token operator">|</span> <span class="token number">1</span>       <span class="token operator">|</span> <span class="token number">1</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">24</span>           <span class="token operator">|</span> <span class="token number">2</span>       <span class="token operator">|</span> <span class="token number">0</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">25</span>           <span class="token operator">|</span> <span class="token number">2</span>       <span class="token operator">|</span> <span class="token number">1</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">26</span>           <span class="token operator">|</span> <span class="token number">3</span>       <span class="token operator">|</span> <span class="token number">0</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">27</span>           <span class="token operator">|</span> <span class="token number">3</span>       <span class="token operator">|</span> <span class="token number">1</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">28</span>           <span class="token operator">|</span> <span class="token number">4</span>       <span class="token operator">|</span> <span class="token number">0</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">29</span>           <span class="token operator">|</span> <span class="token number">4</span>       <span class="token operator">|</span> <span class="token number">1</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">30</span>           <span class="token operator">|</span> <span class="token number">8</span>       <span class="token operator">|</span> <span class="token number">0</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">31</span>           <span class="token operator">|</span> <span class="token number">8</span>       <span class="token operator">|</span> <span class="token number">1</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">32</span>           <span class="token operator">|</span> <span class="token number">9</span>       <span class="token operator">|</span> <span class="token number">0</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">33</span>           <span class="token operator">|</span> <span class="token number">9</span>       <span class="token operator">|</span> <span class="token number">1</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">34</span>           <span class="token operator">|</span> <span class="token number">10</span>      <span class="token operator">|</span> <span class="token number">0</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">35</span>           <span class="token operator">|</span> <span class="token number">10</span>      <span class="token operator">|</span> <span class="token number">1</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">36</span>           <span class="token operator">|</span> <span class="token number">11</span>      <span class="token operator">|</span> <span class="token number">0</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">37</span>           <span class="token operator">|</span> <span class="token number">11</span>      <span class="token operator">|</span> <span class="token number">1</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">38</span>           <span class="token operator">|</span> <span class="token number">12</span>      <span class="token operator">|</span> <span class="token number">0</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+<span class="token operator">|</span> <span class="token number">39</span>           <span class="token operator">|</span> <span class="token number">12</span>      <span class="token operator">|</span> <span class="token number">1</span>         <span class="token operator">|</span>
++--------------+---------+-----------+
+
+Socket <span class="token number">0</span>: <span class="token number">0</span> <span class="token number">2</span> <span class="token number">4</span> <span class="token number">6</span> <span class="token number">8</span> <span class="token number">10</span> <span class="token number">12</span> <span class="token number">14</span> <span class="token number">16</span> <span class="token number">18</span> <span class="token number">20</span> <span class="token number">22</span> <span class="token number">24</span> <span class="token number">26</span> <span class="token number">28</span> <span class="token number">30</span> <span class="token number">32</span> <span class="token number">34</span> <span class="token number">36</span> <span class="token number">38</span>
+Socket <span class="token number">1</span>: <span class="token number">1</span> <span class="token number">3</span> <span class="token number">5</span> <span class="token number">7</span> <span class="token number">9</span> <span class="token number">11</span> <span class="token number">13</span> <span class="token number">15</span> <span class="token number">17</span> <span class="token number">19</span> <span class="token number">21</span> <span class="token number">23</span> <span class="token number">25</span> <span class="token number">27</span> <span class="token number">29</span> <span class="token number">31</span> <span class="token number">33</span> <span class="token number">35</span> <span class="token number">37</span> <span class="token number">39</span>
+
+<span class="token operator">==</span><span class="token operator">==</span><span class="token operator">=</span> CPU Info Summary <span class="token operator">==</span><span class="token operator">==</span><span class="token operator">=</span>
+
+Logical processors: <span class="token number">40</span>
+Physical socket: <span class="token number">2</span>
+Siblings <span class="token keyword">in</span> one socket:  <span class="token number">20</span>
+Cores <span class="token keyword">in</span> one socket:  <span class="token number">10</span>
+Cores <span class="token keyword">in</span> total: <span class="token number">20</span>
+Hyper-Threading: on
+
+<span class="token operator">==</span><span class="token operator">==</span><span class="token operator">=</span> END <span class="token operator">==</span><span class="token operator">==</span><span class="token operator">=</span>
+</code></pre></div><h2 id="上下文切换"><a href="#上下文切换" class="header-anchor">#</a> 上下文切换</h2> <ol><li><p>[03 - 基础篇：经常说的 CPU 上下文切换是什么意思？（上）](http://index.lovedata.net/03 - 基础篇：经常说的 CPU 上下文切换是什么意思？（上）.pdf)</p></li> <li><p>[04 - 基础篇：经常说的 CPU 上下文切换是什么意思？（下）(1)](http://index.lovedata.net/04 - 基础篇：经常说的 CPU 上下文切换是什么意思？（下）(1).pdf)</p></li> <li><p><a href="https://cloud.tencent.com/developer/article/1710837" target="_blank" rel="noopener noreferrer">深入理解Linux内核进程上下文切换 - 云+社区 - 腾讯云<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <ol><li><blockquote><p>进程上下文是进程执行活动全过程的静态描述。我们把已执行过的进程指令和数据在相关寄存器与堆栈中的内容称为进程上文，把正在执行的指令和数据在寄存器与堆栈中的内容称为进程正文，把待执行的指令和数据在寄存器与堆栈中的内容称为进程下文。</p></blockquote></li> <li><p>实际上linux内核中，进程上下文包括进程的虚拟地址空间和硬件上下文</p></li></ol></li> <li><p><a href="https://zhuanlan.zhihu.com/p/52845869" target="_blank" rel="noopener noreferrer">一文让你明白CPU上下文切换 - 知乎<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <ol><li><p>什么是 CPU 上下文</p> <ol><li><blockquote><p><strong>CPU 寄存器和程序计数器</strong>就是 CPU 上下文，因为它们都是 CPU 在运行任何任务前，必须的依赖环境。</p> <ul><li>CPU 寄存器是 CPU 内置的容量小、但<strong>速度极快的内存</strong>。</li> <li>程序计数器则是用来存储 <strong>CPU 正在执行</strong>的指令位置、或者即<strong>将执行的下一条指令</strong>位置。</li></ul></blockquote></li></ol></li> <li><p>什么是 CPU 上下文切换</p> <ol><li><blockquote><p>先把前一个任务的 CPU 上下文（也就是 <strong>CPU 寄存器和程序计数器</strong>）保存起来，然后加载新任务的上下文到这些寄存器和程序计数器，最后再跳转到程序计数器所指的<strong>新位置</strong>，运行新任务。</p></blockquote></li></ol></li> <li><p>CPU 上下文切换的类型</p> <ol><li>进程上下文切换</li> <li>线程上下文切换</li> <li>中断上下文切换</li></ol></li> <li><p>进程上下文切换</p> <ol><li><img src="https://static.lovedata.net/21-06-17-2dd8952ff3e90a72e2db45933457f4f3.png" alt="image"></li> <li>内核空间（Ring 0）具有最高权限，可以直接访问所有资源</li> <li>用户空间（Ring 3）只能访问受限资源，不能直接访问内存等硬件设备，必须通过系统调用陷入到内核中，才能访问这些特权资源。</li> <li>进程在用户空间运行时，被称为进程的用户态，而陷入内核空间的时候，被称为进程的内核态。</li></ol></li> <li><p>系统调用</p> <ol><li>从用户态到内核态的转变，需要通过<strong>系统调用</strong>来完成。</li> <li><strong>一次系统调用的过程，其实是发生了两次 CPU 上下文切换</strong>。（用户态-内核态-用户态）</li> <li><strong>进程上下文切换，是指从一个进程切换到另一个进程运行；而系统调用过程中一直是同一个进程在运行。</strong></li> <li><strong>系统调用过程通常称为特权模式切换，而不是上下文切换。系统调用属于同进程内的 CPU 上下文切换</strong></li></ol></li> <li><p>进程上下文切换跟系统调用又有什么区别呢</p> <ol><li>进程的上下文切换就比系统调用时多了一步：在保存内核态资源（当前进程的内核状态和 CPU 寄存器）之前，需要先把该进程的用户态资源（虚拟内存、栈等）保存下来；而加载了下一进程的内核态后，还需要刷新进程的虚拟内存和用户栈。</li></ol></li> <li><p>发生进程上下文切换的场景</p> <ol><li>时间片耗尽了</li> <li>资源不足</li> <li>sleep函数</li> <li>优先级更高的进程运行</li> <li>发生硬件中断时，CPU 上的进程会被中断挂起，转而执行内核中的中断服务程序</li></ol></li> <li><p>线程上下文切换</p> <ol><li>线程与进程最大的区别在于：<strong>线程是调度的基本单位，而进程则是资源拥有的基本单位</strong></li> <li>内核任务调度，就是调度线程 进程只是给线程提供了虚拟内存、全局变量等资源。</li> <li>当进程只有一个线程时，可以认为进程就等于线程。 - 当进程拥有多个线程时，这些线程会共享相同的虚拟内存和全局变量等资源 （上下文切换时不需要修改）</li> <li>线程也有私有数据 寄存器和栈</li></ol></li> <li><p>发生线程上下文切换的场景</p> <ol><li>线程属于不同进程。资源不共享，所以切换过程就跟进程上下文切换是一样。</li> <li>线程属于同一个进程。虚拟内存是共享的，虚拟内存这些资源就保持不动，切换线程的私有数据、寄存器等不共享的数据</li></ol></li> <li><p>中断上下文切换</p> <ol><li>为了快速响应硬件的事件，<strong>中断处理会打断进程的正常调度和执行，转而调用中断处理程序，响应设备事件</strong>打断其他进程时，就需要将进程当前的状态保存下来，这样在中断结束后，进程仍然可以从原来的状态恢复运行。</li> <li><strong>跟进程上下文不同，中断上下文切换并不涉及到进程的用户态</strong>  中断上下文，其实只包括内核态中断服务程序执行所必需的状态，包括 CPU 寄存器、内核堆栈、硬件中断参数等。</li> <li><strong>中断处理比进程拥有更高的优先级</strong></li></ol></li></ol></li> <li><p><a href="https://yang-docs.readthedocs.io/en/latest/linux/contextswitch.html" target="_blank" rel="noopener noreferrer">CPU上下文切换 — yang docs  documentation<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <ol><li><p>什么是CPU上下文</p> <ol><li><blockquote><p>CPU 寄存器，是 CPU 内置的容量小、但速度极快的内存。而程序计数器，则是用来存储 CPU 正在执行的指令位置、或者即将执行的下一条指令位置。它们都是 CPU 在运行任何任务前，必须的依赖环境，因此也被叫做 <strong>CPU上下文</strong>。</p></blockquote></li></ol></li> <li><p><strong>CPU 上下文切换</strong></p> <ol><li>就是先把前一个任务的 CPU 上下文（也就是 CPU 寄存器和程序计数器）保存起来，然后加载新任务的上下文到这些寄存器和程序计数器，最后再跳转到程序计数器所指的新位置，运行新任务。 而这些保存下来的上下文，会存储在系统内核中，并在任务重新调度执行时再次加载进来。这样就能保证任务原来的状态不受影响，让任务看起来还是连续运行。</li></ol></li></ol></li></ol></div> <footer class="page-edit"><div class="edit-link"><a href="https://github.com/pengshuangbao/databook/edit/master/docs/computer/cpu.md" target="_blank" rel="noopener noreferrer">Edit this page on GitHub</a> <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></div> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">2023/4/14 16:56:47</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/computer/network.html" class="prev">
+        网络
+      </a></span> <span class="next"><a href="/computer/disk.html">
+        磁盘
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"><!----><!----></div></div>
+    <script src="/assets/js/app.0f56a723.js" defer></script><script src="/assets/js/4.a8ef5668.js" defer></script><script src="/assets/js/129.82cfac7a.js" defer></script><script src="/assets/js/11.0473ae06.js" defer></script>
+  </body>
+</html>

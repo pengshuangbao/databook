@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>运维 | 编程手册</title>
+    <meta name="generator" content="VuePress 1.7.1">
+    <link rel="icon" href="/logo.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon-152x152.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#3eaf7c">
+    <meta name="description" content="苍穹浩渺,取之须臾">
+    <meta name="theme-color" content="#3eaf7c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="msapplication-TileImage" content="/icons/msapplication-icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#000000">
+    
+    <link rel="preload" href="/assets/css/0.styles.225a8ff9.css" as="style"><link rel="preload" href="/assets/js/app.0f56a723.js" as="script"><link rel="preload" href="/assets/js/4.a8ef5668.js" as="script"><link rel="preload" href="/assets/js/178.af1a44e8.js" as="script"><link rel="preload" href="/assets/js/11.0473ae06.js" as="script"><link rel="prefetch" href="/assets/js/10.06cc4fbb.js"><link rel="prefetch" href="/assets/js/100.79e96d05.js"><link rel="prefetch" href="/assets/js/101.bcac0b9f.js"><link rel="prefetch" href="/assets/js/102.c5d92a95.js"><link rel="prefetch" href="/assets/js/103.697856ab.js"><link rel="prefetch" href="/assets/js/104.8f2db4d2.js"><link rel="prefetch" href="/assets/js/105.d4f2bb07.js"><link rel="prefetch" href="/assets/js/106.1a533c3f.js"><link rel="prefetch" href="/assets/js/107.b2845ea0.js"><link rel="prefetch" href="/assets/js/108.226e46ed.js"><link rel="prefetch" href="/assets/js/109.0de9c16c.js"><link rel="prefetch" href="/assets/js/110.4657c34b.js"><link rel="prefetch" href="/assets/js/111.3409d3a7.js"><link rel="prefetch" href="/assets/js/112.a46b486c.js"><link rel="prefetch" href="/assets/js/113.ba001fa9.js"><link rel="prefetch" href="/assets/js/114.ad1e6ba1.js"><link rel="prefetch" href="/assets/js/115.a0ac732f.js"><link rel="prefetch" href="/assets/js/116.4ee2a7b2.js"><link rel="prefetch" href="/assets/js/117.a76fd29a.js"><link rel="prefetch" href="/assets/js/118.83c5badf.js"><link rel="prefetch" href="/assets/js/119.09fec567.js"><link rel="prefetch" href="/assets/js/12.286e979d.js"><link rel="prefetch" href="/assets/js/120.42120fe1.js"><link rel="prefetch" href="/assets/js/121.9d79a9dd.js"><link rel="prefetch" href="/assets/js/122.f71a459c.js"><link rel="prefetch" href="/assets/js/123.b75308dc.js"><link rel="prefetch" href="/assets/js/124.e4d4643b.js"><link rel="prefetch" href="/assets/js/125.73fc990d.js"><link rel="prefetch" href="/assets/js/126.3b0eccd0.js"><link rel="prefetch" href="/assets/js/127.3eb3ab27.js"><link rel="prefetch" href="/assets/js/128.64ba68bb.js"><link rel="prefetch" href="/assets/js/129.82cfac7a.js"><link rel="prefetch" href="/assets/js/13.7207d991.js"><link rel="prefetch" href="/assets/js/130.42811f32.js"><link rel="prefetch" href="/assets/js/131.6f498e16.js"><link rel="prefetch" href="/assets/js/132.f0cc9ad2.js"><link rel="prefetch" href="/assets/js/133.325e755a.js"><link rel="prefetch" href="/assets/js/134.076a808c.js"><link rel="prefetch" href="/assets/js/135.fad7be83.js"><link rel="prefetch" href="/assets/js/136.042fc555.js"><link rel="prefetch" href="/assets/js/137.b67b55bc.js"><link rel="prefetch" href="/assets/js/138.6476c99f.js"><link rel="prefetch" href="/assets/js/139.ad07500f.js"><link rel="prefetch" href="/assets/js/14.a1cb7c1b.js"><link rel="prefetch" href="/assets/js/140.3edd2237.js"><link rel="prefetch" href="/assets/js/141.5181db27.js"><link rel="prefetch" href="/assets/js/142.67b4c4a2.js"><link rel="prefetch" href="/assets/js/143.9d249a3f.js"><link rel="prefetch" href="/assets/js/144.e6db5540.js"><link rel="prefetch" href="/assets/js/145.5b4305a7.js"><link rel="prefetch" href="/assets/js/146.bc674178.js"><link rel="prefetch" href="/assets/js/147.964ff3df.js"><link rel="prefetch" href="/assets/js/148.570b6864.js"><link rel="prefetch" href="/assets/js/149.4b9796c2.js"><link rel="prefetch" href="/assets/js/15.3cafda64.js"><link rel="prefetch" href="/assets/js/150.c677bf4b.js"><link rel="prefetch" href="/assets/js/151.b8977c93.js"><link rel="prefetch" href="/assets/js/152.535e2db4.js"><link rel="prefetch" href="/assets/js/153.754fc05e.js"><link rel="prefetch" href="/assets/js/154.5a5928b6.js"><link rel="prefetch" href="/assets/js/155.19893ca5.js"><link rel="prefetch" href="/assets/js/156.da1f2665.js"><link rel="prefetch" href="/assets/js/157.cb7b551f.js"><link rel="prefetch" href="/assets/js/158.f5d94a11.js"><link rel="prefetch" href="/assets/js/159.0b2b78d9.js"><link rel="prefetch" href="/assets/js/16.54ab9242.js"><link rel="prefetch" href="/assets/js/160.c2548b6c.js"><link rel="prefetch" href="/assets/js/161.8f694ed1.js"><link rel="prefetch" href="/assets/js/162.1adc1aa4.js"><link rel="prefetch" href="/assets/js/163.5688827c.js"><link rel="prefetch" href="/assets/js/164.8442474f.js"><link rel="prefetch" href="/assets/js/165.d0e21e5c.js"><link rel="prefetch" href="/assets/js/166.2e90ae99.js"><link rel="prefetch" href="/assets/js/167.374185de.js"><link rel="prefetch" href="/assets/js/168.2426769f.js"><link rel="prefetch" href="/assets/js/169.829516d9.js"><link rel="prefetch" href="/assets/js/17.9cad59f9.js"><link rel="prefetch" href="/assets/js/170.db0c4609.js"><link rel="prefetch" href="/assets/js/171.7bdcc41b.js"><link rel="prefetch" href="/assets/js/172.7f7ab109.js"><link rel="prefetch" href="/assets/js/173.c1d51df9.js"><link rel="prefetch" href="/assets/js/174.afa4c5f6.js"><link rel="prefetch" href="/assets/js/175.b46d9dd8.js"><link rel="prefetch" href="/assets/js/176.c38ba756.js"><link rel="prefetch" href="/assets/js/177.ba85b912.js"><link rel="prefetch" href="/assets/js/179.e097e164.js"><link rel="prefetch" href="/assets/js/18.3776b09c.js"><link rel="prefetch" href="/assets/js/180.d9d5d80c.js"><link rel="prefetch" href="/assets/js/181.79401f8c.js"><link rel="prefetch" href="/assets/js/182.343db47f.js"><link rel="prefetch" href="/assets/js/183.005841bb.js"><link rel="prefetch" href="/assets/js/19.d0ac1e7f.js"><link rel="prefetch" href="/assets/js/20.e0100fb2.js"><link rel="prefetch" href="/assets/js/21.f59cd52c.js"><link rel="prefetch" href="/assets/js/22.3ecf54da.js"><link rel="prefetch" href="/assets/js/23.2508850b.js"><link rel="prefetch" href="/assets/js/24.0ac10322.js"><link rel="prefetch" href="/assets/js/25.7c3ee156.js"><link rel="prefetch" href="/assets/js/26.7021c42c.js"><link rel="prefetch" href="/assets/js/27.d716476b.js"><link rel="prefetch" href="/assets/js/28.58ebf808.js"><link rel="prefetch" href="/assets/js/29.88c37f6c.js"><link rel="prefetch" href="/assets/js/30.87bc4a91.js"><link rel="prefetch" href="/assets/js/31.a69c2a35.js"><link rel="prefetch" href="/assets/js/32.89f74912.js"><link rel="prefetch" href="/assets/js/33.df886872.js"><link rel="prefetch" href="/assets/js/34.835d0785.js"><link rel="prefetch" href="/assets/js/35.5e38ab06.js"><link rel="prefetch" href="/assets/js/36.5b639051.js"><link rel="prefetch" href="/assets/js/37.bb32ead0.js"><link rel="prefetch" href="/assets/js/38.c2541da0.js"><link rel="prefetch" href="/assets/js/39.3c8f0f06.js"><link rel="prefetch" href="/assets/js/40.4cc077aa.js"><link rel="prefetch" href="/assets/js/41.cbcd81a7.js"><link rel="prefetch" href="/assets/js/42.6d002f78.js"><link rel="prefetch" href="/assets/js/43.3f67c882.js"><link rel="prefetch" href="/assets/js/44.58ce7a4d.js"><link rel="prefetch" href="/assets/js/45.bfb9d6e0.js"><link rel="prefetch" href="/assets/js/46.691097de.js"><link rel="prefetch" href="/assets/js/47.e6b5c9b5.js"><link rel="prefetch" href="/assets/js/48.38159f5c.js"><link rel="prefetch" href="/assets/js/49.e03ce66a.js"><link rel="prefetch" href="/assets/js/5.340b4b76.js"><link rel="prefetch" href="/assets/js/50.7df345cb.js"><link rel="prefetch" href="/assets/js/51.b3eed5d5.js"><link rel="prefetch" href="/assets/js/52.bb282842.js"><link rel="prefetch" href="/assets/js/53.6b21ec8f.js"><link rel="prefetch" href="/assets/js/54.bab98944.js"><link rel="prefetch" href="/assets/js/55.59437904.js"><link rel="prefetch" href="/assets/js/56.18b88131.js"><link rel="prefetch" href="/assets/js/57.b0cbba56.js"><link rel="prefetch" href="/assets/js/58.d9379002.js"><link rel="prefetch" href="/assets/js/59.e8663882.js"><link rel="prefetch" href="/assets/js/6.c48e1ddb.js"><link rel="prefetch" href="/assets/js/60.0a00b724.js"><link rel="prefetch" href="/assets/js/61.cd09980d.js"><link rel="prefetch" href="/assets/js/62.b092ff62.js"><link rel="prefetch" href="/assets/js/63.86482c79.js"><link rel="prefetch" href="/assets/js/64.3c1ee4d2.js"><link rel="prefetch" href="/assets/js/65.0621decf.js"><link rel="prefetch" href="/assets/js/66.cf7a6241.js"><link rel="prefetch" href="/assets/js/67.99e103bc.js"><link rel="prefetch" href="/assets/js/68.b3589f28.js"><link rel="prefetch" href="/assets/js/69.f0932a12.js"><link rel="prefetch" href="/assets/js/7.0f410b85.js"><link rel="prefetch" href="/assets/js/70.0a941773.js"><link rel="prefetch" href="/assets/js/71.3a6c6141.js"><link rel="prefetch" href="/assets/js/72.2299ff58.js"><link rel="prefetch" href="/assets/js/73.544fe8c6.js"><link rel="prefetch" href="/assets/js/74.98219c05.js"><link rel="prefetch" href="/assets/js/75.244a9d80.js"><link rel="prefetch" href="/assets/js/76.cefd9fe2.js"><link rel="prefetch" href="/assets/js/77.59793840.js"><link rel="prefetch" href="/assets/js/78.a7d9a079.js"><link rel="prefetch" href="/assets/js/79.f9ec013d.js"><link rel="prefetch" href="/assets/js/8.269955a4.js"><link rel="prefetch" href="/assets/js/80.b0f2cbe5.js"><link rel="prefetch" href="/assets/js/81.3d245e9a.js"><link rel="prefetch" href="/assets/js/82.061b170d.js"><link rel="prefetch" href="/assets/js/83.d2c42148.js"><link rel="prefetch" href="/assets/js/84.f6f487a4.js"><link rel="prefetch" href="/assets/js/85.c5305650.js"><link rel="prefetch" href="/assets/js/86.0c30a2ef.js"><link rel="prefetch" href="/assets/js/87.d9a99f2e.js"><link rel="prefetch" href="/assets/js/88.03792030.js"><link rel="prefetch" href="/assets/js/89.95684850.js"><link rel="prefetch" href="/assets/js/9.5c3462fb.js"><link rel="prefetch" href="/assets/js/90.185b012e.js"><link rel="prefetch" href="/assets/js/91.d19f0020.js"><link rel="prefetch" href="/assets/js/92.9e7855de.js"><link rel="prefetch" href="/assets/js/93.1ee902df.js"><link rel="prefetch" href="/assets/js/94.4bfab4ad.js"><link rel="prefetch" href="/assets/js/95.5f0b1d15.js"><link rel="prefetch" href="/assets/js/96.bd50a446.js"><link rel="prefetch" href="/assets/js/97.749fd671.js"><link rel="prefetch" href="/assets/js/98.bc09c746.js"><link rel="prefetch" href="/assets/js/99.40f98e75.js"><link rel="prefetch" href="/assets/js/vendors~flowchart.98d8c7d3.js"><link rel="prefetch" href="/assets/js/vendors~notification.5515ddcd.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.225a8ff9.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">编程手册</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/java/" class="nav-link">
+  Java
+</a></div><div class="nav-item"><a href="/bigdata/" class="nav-link">
+  大数据
+</a></div><div class="nav-item"><a href="/algorithm/" class="nav-link">
+  算法 
+</a></div><div class="nav-item"><a href="/architecture/" class="nav-link">
+  架构 
+</a></div><div class="nav-item"><a href="/computer/" class="nav-link">
+  计算机 
+</a></div><div class="nav-item"><a href="/database/" class="nav-link">
+  数据库 
+</a></div><div class="nav-item"><a href="/fe/" class="nav-link">
+  前端
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="运维 " class="dropdown-title"><span class="title">运维 </span> <span class="arrow down"></span></button> <button type="button" aria-label="运维 " class="mobile-dropdown-title"><span class="title">运维 </span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/ops/" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  基础
+</a></li><li class="dropdown-item"><h4>
+          分类
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/ops/java.html" class="nav-link">
+  Java
+</a></li><li class="dropdown-subitem"><a href="/ops/bigdata.html" class="nav-link">
+  大数据
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="编程" class="dropdown-title"><span class="title">编程</span> <span class="arrow down"></span></button> <button type="button" aria-label="编程" class="mobile-dropdown-title"><span class="title">编程</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          语言
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/programming/python.html" class="nav-link">
+  Python
+</a></li><li class="dropdown-subitem"><a href="/programming/scala.html" class="nav-link">
+  Scala
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="资源" class="dropdown-title"><span class="title">资源</span> <span class="arrow down"></span></button> <button type="button" aria-label="资源" class="mobile-dropdown-title"><span class="title">资源</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          我的书单
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/tech.html" class="nav-link">
+  技术类
+</a></li><li class="dropdown-subitem"><a href="/book/growth.html" class="nav-link">
+  成长类
+</a></li></ul></li><li class="dropdown-item"><h4>
+          网课
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/geek.html" class="nav-link">
+  专栏
+</a></li><li class="dropdown-subitem"><a href="/book/video.html" class="nav-link">
+  视频
+</a></li></ul></li><li class="dropdown-item"><h4>
+          面经
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/tech.html" class="nav-link">
+  大厂面经
+</a></li><li class="dropdown-subitem"><a href="/interview/sword-to-offer.html" class="nav-link">
+  剑指Offer
+</a></li><li class="dropdown-subitem"><a href="/interview/fe.html" class="nav-link">
+  前端面经
+</a></li><li class="dropdown-subitem"><a href="/interview/interview_guide.html" class="nav-link">
+  面试导航
+</a></li></ul></li><li class="dropdown-item"><h4>
+          其他
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/study.html" class="nav-link">
+  学习笔记
+</a></li></ul></li></ul></div></div> <a href="https://github.com/pengshuangbao/databook" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/java/" class="nav-link">
+  Java
+</a></div><div class="nav-item"><a href="/bigdata/" class="nav-link">
+  大数据
+</a></div><div class="nav-item"><a href="/algorithm/" class="nav-link">
+  算法 
+</a></div><div class="nav-item"><a href="/architecture/" class="nav-link">
+  架构 
+</a></div><div class="nav-item"><a href="/computer/" class="nav-link">
+  计算机 
+</a></div><div class="nav-item"><a href="/database/" class="nav-link">
+  数据库 
+</a></div><div class="nav-item"><a href="/fe/" class="nav-link">
+  前端
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="运维 " class="dropdown-title"><span class="title">运维 </span> <span class="arrow down"></span></button> <button type="button" aria-label="运维 " class="mobile-dropdown-title"><span class="title">运维 </span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/ops/" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  基础
+</a></li><li class="dropdown-item"><h4>
+          分类
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/ops/java.html" class="nav-link">
+  Java
+</a></li><li class="dropdown-subitem"><a href="/ops/bigdata.html" class="nav-link">
+  大数据
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="编程" class="dropdown-title"><span class="title">编程</span> <span class="arrow down"></span></button> <button type="button" aria-label="编程" class="mobile-dropdown-title"><span class="title">编程</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          语言
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/programming/python.html" class="nav-link">
+  Python
+</a></li><li class="dropdown-subitem"><a href="/programming/scala.html" class="nav-link">
+  Scala
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="资源" class="dropdown-title"><span class="title">资源</span> <span class="arrow down"></span></button> <button type="button" aria-label="资源" class="mobile-dropdown-title"><span class="title">资源</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          我的书单
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/tech.html" class="nav-link">
+  技术类
+</a></li><li class="dropdown-subitem"><a href="/book/growth.html" class="nav-link">
+  成长类
+</a></li></ul></li><li class="dropdown-item"><h4>
+          网课
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/geek.html" class="nav-link">
+  专栏
+</a></li><li class="dropdown-subitem"><a href="/book/video.html" class="nav-link">
+  视频
+</a></li></ul></li><li class="dropdown-item"><h4>
+          面经
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/tech.html" class="nav-link">
+  大厂面经
+</a></li><li class="dropdown-subitem"><a href="/interview/sword-to-offer.html" class="nav-link">
+  剑指Offer
+</a></li><li class="dropdown-subitem"><a href="/interview/fe.html" class="nav-link">
+  前端面经
+</a></li><li class="dropdown-subitem"><a href="/interview/interview_guide.html" class="nav-link">
+  面试导航
+</a></li></ul></li><li class="dropdown-item"><h4>
+          其他
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/study.html" class="nav-link">
+  学习笔记
+</a></li></ul></li></ul></div></div> <a href="https://github.com/pengshuangbao/databook" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <ul class="sidebar-links"><li><a href="/ops/" aria-current="page" class="active sidebar-link">运维</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/ops/#性能工具图" class="sidebar-link">性能工具图</a></li><li class="sidebar-sub-header"><a href="/ops/#基本" class="sidebar-link">基本</a></li><li class="sidebar-sub-header"><a href="/ops/#mac" class="sidebar-link">Mac</a></li><li class="sidebar-sub-header"><a href="/ops/#磁盘" class="sidebar-link">磁盘</a></li><li class="sidebar-sub-header"><a href="/ops/#网络" class="sidebar-link">网络</a></li><li class="sidebar-sub-header"><a href="/ops/#内存" class="sidebar-link">内存</a></li><li class="sidebar-sub-header"><a href="/ops/#cpu" class="sidebar-link">CPU</a></li><li class="sidebar-sub-header"><a href="/ops/#ssh" class="sidebar-link">SSH</a></li><li class="sidebar-sub-header"><a href="/ops/#程序" class="sidebar-link">程序</a></li><li class="sidebar-sub-header"><a href="/ops/#docker" class="sidebar-link">docker</a></li><li class="sidebar-sub-header"><a href="/ops/#git" class="sidebar-link">Git</a></li><li class="sidebar-sub-header"><a href="/ops/#fq" class="sidebar-link">FQ</a></li></ul></li><li><a href="/ops/java.html" class="sidebar-link">Java</a></li><li><a href="/ops/bigdata.html" class="sidebar-link">大数据</a></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="运维"><a href="#运维" class="header-anchor">#</a> 运维</h1> <p></p><div class="table-of-contents"><ul><li><a href="#性能工具图">性能工具图</a></li><li><a href="#基本">基本</a><ul><li><a href="#查看系统信息">查看系统信息</a></li><li><a href="#查看系统版本信息">查看系统版本信息</a></li><li><a href="#查看cpu配置">查看CPU配置</a></li><li><a href="#top">top</a><ul><li><a href="#查看进程下的线程信息">查看进程下的线程信息</a></li></ul></li><li><a href="#查看内存大小">查看内存大小</a><ul><li><a href="#输出便于理解的内存信息">输出便于理解的内存信息</a></li><li><a href="#定时输出">定时输出</a></li></ul></li><li><a href="#硬盘大小">硬盘大小</a></li><li><a href="#ssh-copy-id远程登录">ssh-copy-id远程登录</a></li><li><a href="#新建软连接">新建软连接</a></li><li><a href="#代理隧道">代理隧道</a></li><li><a href="#find">find</a><ul><li><a href="#find-命令找到大于100m文件">find 命令找到大于100M文件</a></li><li><a href="#find-指定的文件并打包">find 指定的文件并打包</a></li></ul></li><li><a href="#sed">sed</a></li><li><a href="#rsysc">Rsysc</a><ul><li><a href="#复制文件夹并且排除某一些文件">复制文件夹并且排除某一些文件</a></li></ul></li><li><a href="#dmesg">dmesg</a></li><li><a href="#lsof">lsof</a></li><li><a href="#crontab">crontab</a><ul><li><a href="#crontab批量修改替换">crontab批量修改替换</a></li><li><a href="#基于cron定时删除日志">基于cron定时删除日志</a></li></ul></li><li><a href="#scp">SCP</a><ul><li><a href="#scp指定端口">scp指定端口</a></li></ul></li></ul></li><li><a href="#mac">Mac</a><ul><li><a href="#定时任务相关">定时任务相关</a></li><li><a href="#批量杀死同名进程">批量杀死同名进程</a></li><li><a href="#安装程序显示文件已经损坏">安装程序显示文件已经损坏</a></li><li><a href="#item2-pem文件登陆">Item2 Pem文件登陆</a></li><li><a href="#mac关闭sip">Mac关闭SIP</a></li></ul></li><li><a href="#磁盘">磁盘</a><ul><li><a href="#du">du</a><ul><li><a href="#查看某个目录-大小">查看某个目录 大小</a></li><li><a href="#查看当前目录下各个文件占用情况">查看当前目录下各个文件占用情况</a></li><li><a href="#按照mb来显示单位并排序">按照MB来显示单位并排序</a></li><li><a href="#查看文件夹占用-查看根目录下所有文件的大小">查看文件夹占用(查看根目录下所有文件的大小)</a></li><li><a href="#查看文件占用大小">查看文件占用大小</a></li></ul></li><li><a href="#io测试">IO测试</a><ul><li><a href="#粗略测试磁盘速度">粗略测试磁盘速度</a></li><li><a href="#生成大文件">生成大文件</a></li><li><a href="#随机生成10个小文件">随机生成10个小文件</a></li></ul></li></ul></li><li><a href="#网络">网络</a><ul><li><a href="#查看监听端口">查看监听端口</a></li><li><a href="#查看-某一个端口的占用情况">查看 某一个端口的占用情况</a></li><li><a href="#关闭防火墙">关闭防火墙</a></li></ul></li><li><a href="#内存">内存</a><ul><li><a href="#清除pagecache">清除PageCache</a><ul><li><a href="#仅清除页面缓存pagecache方法">仅清除页面缓存PageCache方法：</a></li><li><a href="#清除目录项和inode节点">清除目录项和inode节点：</a></li><li><a href="#清除页面缓存、目录项和inode节点">清除页面缓存、目录项和inode节点：</a></li></ul></li></ul></li><li><a href="#cpu">CPU</a><ul><li><a href="#cpu概览">CPU概览</a></li><li><a href="#查看当前系统的-numa-node">查看当前系统的 NUMA Node</a></li><li><a href="#查看socket信息">查看Socket信息</a></li><li><a href="#查看有几个socket">查看有几个Socket</a></li><li><a href="#查看每个-socket-有几个-processor">查看每个 Socket 有几个 Processor</a></li><li><a href="#在-proc-cpuinfo-中查看-core-信息">在 /proc/cpuinfo 中查看 Core 信息</a></li><li><a href="#获取总的-processor-数">获取总的 Processor 数</a></li><li><a href="#获取每个-socket-的-processor-数">获取每个 Socket 的 Processor 数</a></li><li><a href="#性能cpu监控-淘宝监控">性能CPU监控 淘宝监控</a></li></ul></li><li><a href="#ssh">SSH</a><ul><li><a href="#ssh匿名登陆">ssh匿名登陆</a></li></ul></li><li><a href="#程序">程序</a><ul><li><a href="#循环干掉job">循环干掉job</a></li><li><a href="#杀死一个程序">杀死一个程序</a></li><li><a href="#tmux">tmux</a><ul><li><a href="#新建窗口">新建窗口</a></li><li><a href="#打开窗">打开窗</a></li><li><a href="#支持滚动条">支持滚动条</a></li></ul></li><li><a href="#文件输入">文件输入</a></li></ul></li><li><a href="#docker">docker</a><ul><li><a href="#docker查看日志">docker查看日志</a></li><li><a href="#docker日志过大-清空日志">docker日志过大，清空日志</a></li><li><a href="#批量杀死删除容器">批量杀死删除容器</a></li><li><a href="#docker镜像加速">Docker镜像加速</a></li><li><a href="#docker杀死所有容器">Docker杀死所有容器</a></li><li><a href="#docker定时清理日志">Docker定时清理日志</a></li></ul></li><li><a href="#git">Git</a><ul><li><a href="#恢复修改">恢复修改</a><ul><li><a href="#未使用-git-add-缓存代码">未使用 git add 缓存代码</a></li><li><a href="#已经使用了-git-add-缓存了代码">已经使用了 git add 缓存了代码</a></li><li><a href="#已经用-git-commit-提交了代码">已经用 git commit 提交了代码</a></li></ul></li></ul></li><li><a href="#fq">FQ</a><ul><li><a href="#linux离线安装v2ray客户端">Linux离线安装v2ray客户端</a></li><li><a href="#linux下离线安装proxychains4">Linux下离线安装proxychains4</a></li></ul></li></ul></div><p></p> <h2 id="性能工具图"><a href="#性能工具图" class="header-anchor">#</a> 性能工具图</h2> <p><img src="https://static.lovedata.net/20-11-11-7ceebb617ce3ee156789b652255df844.png" alt="image"></p> <h2 id="基本"><a href="#基本" class="header-anchor">#</a> 基本</h2> <h3 id="查看系统信息"><a href="#查看系统信息" class="header-anchor">#</a> 查看系统信息</h3> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token comment"># 方法1</span>
+<span class="token function">cat</span> /proc/version
+
+<span class="token comment"># 方法2</span>
+<span class="token function">uname</span> -a
+</code></pre></div><h3 id="查看系统版本信息"><a href="#查看系统版本信息" class="header-anchor">#</a> 查看系统版本信息</h3> <div class="language-shell extra-class"><pre class="language-shell"><code>lsb_release -a
+</code></pre></div><h3 id="查看cpu配置"><a href="#查看cpu配置" class="header-anchor">#</a> 查看CPU配置</h3> <div class="language-shelll extra-class"><pre class="language-text"><code>lscpu
+</code></pre></div><h3 id="top"><a href="#top" class="header-anchor">#</a> top</h3> <p><a href="https://drive.google.com/file/d/1C9HxJDVXc3F6Wr4mlxBpmEFFizDW_MsI/view" target="_blank" rel="noopener noreferrer">top图解PDF<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <p><img src="https://static.lovedata.net/top.gif" alt="top"></p> <h4 id="查看进程下的线程信息"><a href="#查看进程下的线程信息" class="header-anchor">#</a> 查看进程下的线程信息</h4> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">top</span> -Hp pid
+</code></pre></div><h3 id="查看内存大小"><a href="#查看内存大小" class="header-anchor">#</a> 查看内存大小</h3> <p><img src="https://static.lovedata.net/20-12-25-d5d85be0e48724a26aa85d9cc9c2e860.png" alt="image"></p> <h4 id="输出便于理解的内存信息"><a href="#输出便于理解的内存信息" class="header-anchor">#</a> 输出便于理解的内存信息</h4> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">free</span> -h
+</code></pre></div><div class="language-bash extra-class"><pre class="language-bash"><code>              total        used        <span class="token function">free</span>      shared  buff/cache   available
+Mem:           125G         71G        <span class="token number">5</span>.1G        <span class="token number">4</span>.0G         49G         49G
+Swap:          127G        <span class="token number">2</span>.0G        126G
+</code></pre></div><h4 id="定时输出"><a href="#定时输出" class="header-anchor">#</a> 定时输出</h4> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">free</span> -h -s <span class="token number">3</span>
+</code></pre></div><div class="language-bash extra-class"><pre class="language-bash"><code> total        used        <span class="token function">free</span>      shared  buff/cache   available
+Mem:           125G         71G        <span class="token number">6</span>.3G        <span class="token number">4</span>.0G         48G         49G
+Swap:          127G        <span class="token number">2</span>.0G        126G
+
+              total        used        <span class="token function">free</span>      shared  buff/cache   available
+Mem:           125G         71G        <span class="token number">6</span>.3G        <span class="token number">4</span>.0G         48G         49G
+Swap:          127G        <span class="token number">2</span>.0G        126G
+
+              total        used        <span class="token function">free</span>      shared  buff/cache   available
+Mem:           125G         71G        <span class="token number">6</span>.3G        <span class="token number">4</span>.0G         48G         49G
+Swap:          127G        <span class="token number">2</span>.0G        126G
+
+              total        used        <span class="token function">free</span>      shared  buff/cache   available
+Mem:           125G         71G        <span class="token number">6</span>.3G        <span class="token number">4</span>.0G         48G         49G
+Swap:          127G        <span class="token number">2</span>.0G        126G
+</code></pre></div><h3 id="硬盘大小"><a href="#硬盘大小" class="header-anchor">#</a> 硬盘大小</h3> <div class="language-shell extra-class"><pre class="language-shell"><code>lsblk
+</code></pre></div><h3 id="ssh-copy-id远程登录"><a href="#ssh-copy-id远程登录" class="header-anchor">#</a> ssh-copy-id远程登录</h3> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token comment">#生成公钥</span>
+ssh-keygen  
+<span class="token comment">#用ssh-copy-id将公钥复制到远程机器中</span>
+ssh-copy-id -i .ssh/id_rsa.pub  root@192.168.x.xxx
+<span class="token comment">#登录到远程机器不用输入密码</span>
+<span class="token function">ssh</span> root@192.168.x.xxx
+</code></pre></div><h3 id="新建软连接"><a href="#新建软连接" class="header-anchor">#</a> 新建软连接</h3> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">ln</span> -s <span class="token builtin class-name">source</span> <span class="token function">link</span>
+</code></pre></div><h3 id="代理隧道"><a href="#代理隧道" class="header-anchor">#</a> 代理隧道</h3> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token comment"># 如果以前有这个用户，删除</span>
+<span class="token function">userdel</span> sshproxyuser
+<span class="token function">rm</span> -rf  /home/sshproxyuser
+
+<span class="token comment"># 添加用户</span>
+<span class="token function">useradd</span> --create-home sshproxyuser
+
+<span class="token comment"># 转至用户</span>
+<span class="token function">su</span> - sshproxyuser
+ssh-keygen 
+<span class="token function">vim</span> /home/sshproxyuser/.ssh/authorized_keys
+
+<span class="token comment"># 修改shell，改为不能登陆</span>
+chsh -s /sbin/nologin sshproxyuser
+<span class="token comment"># 删除密码</span>
+<span class="token function">passwd</span> --delete sshproxyuser
+
+</code></pre></div><p>问题</p> <p>使用 下面命令登陆会提示输入密码</p> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">ssh</span> -D <span class="token number">1078</span> -f -C -q -N sshproxyuser@120.77.38.170 -p <span class="token number">65022</span>
+</code></pre></div><p>查看authorized_keys权限，如果除了自己的其他人可以修改，那么ssh会跳过认证，还是要求输入密码，所以需要修改权限</p> <div class="language-shell extra-class"><pre class="language-shell"><code>-rw-rw-r-- <span class="token number">1</span> sshproxyuser sshproxyuser  <span class="token number">398</span> Mar  <span class="token number">4</span> <span class="token number">15</span>:46 authorized_keys
+</code></pre></div><p>修改权限</p> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">chmod</span> g-w /home/sshproxyuser/.ssh/authorized_keys
+<span class="token comment">#修改完成后</span>
+-rw-r--r-- <span class="token number">1</span> sshproxyuser sshproxyuser  <span class="token number">398</span> Mar  <span class="token number">4</span> <span class="token number">15</span>:46 authorized_keys
+</code></pre></div><h3 id="find"><a href="#find" class="header-anchor">#</a> find</h3> <h4 id="find-命令找到大于100m文件"><a href="#find-命令找到大于100m文件" class="header-anchor">#</a> find 命令找到大于100M文件</h4> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">find</span> <span class="token builtin class-name">.</span> -size +100M
+</code></pre></div><h4 id="find-指定的文件并打包"><a href="#find-指定的文件并打包" class="header-anchor">#</a> find 指定的文件并打包</h4> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token comment"># 找到小于1M的文件并打包</span>
+<span class="token function">find</span> ./ -type f -size -1024k <span class="token operator">|</span> <span class="token function">grep</span> -v  logs <span class="token operator">|</span> <span class="token function">xargs</span> <span class="token function">tar</span> jcvf sdk-backend.tar.gz
+<span class="token comment"># 找到指定文件并打包</span>
+<span class="token function">find</span> ./ -type f -name <span class="token string">'rabbit-*.jar'</span> <span class="token operator">|</span>  <span class="token function">xargs</span> <span class="token function">tar</span> jcvf sdk-backend.tar.gz
+<span class="token comment"># 打包指定文件并排除一些文件</span>
+<span class="token function">tar</span> -jcvf /tmp/sdk-backend.tar.gz /data/server/ --exclude<span class="token operator">=</span><span class="token string">'*.([log]|[txt]|[out])'</span> --include<span class="token operator">=</span><span class="token string">'./rabbit-app-center-server-36030'</span>
+</code></pre></div><h3 id="sed"><a href="#sed" class="header-anchor">#</a> sed</h3> <p><a href="https://juejin.cn/post/6844903926756704269" target="_blank" rel="noopener noreferrer">如何使用 sed 命令删除文件中的行<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <h3 id="rsysc"><a href="#rsysc" class="header-anchor">#</a> Rsysc</h3> <h4 id="复制文件夹并且排除某一些文件"><a href="#复制文件夹并且排除某一些文件" class="header-anchor">#</a> 复制文件夹并且排除某一些文件</h4> <blockquote><p><code>-a</code>参数表示archive模式，<code>-v</code>表示详细链模式输出，<code>-z</code>表示传输文件时使用压缩传输的模式</p> <p><code>--exclude</code>后面的路径不能为绝对路径，必须为相对路径才可以，否则出错</p></blockquote> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">rsync</span> -av --exclude<span class="token operator">=</span>theme-default/README.md --exclude<span class="token operator">=</span>theme-default/__tests__  --exclude<span class="token operator">=</span>theme-default/package.json theme-default /Applications/projects/databook/
+</code></pre></div><p><a href="https://www.cnblogs.com/reggieqiao/p/13268584.html" target="_blank" rel="noopener noreferrer">Linux下tar、cp命令排除某个目录或文件 - ReggieQiao - 博客园<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <h3 id="dmesg"><a href="#dmesg" class="header-anchor">#</a> dmesg</h3> <p>查看系统消息</p> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">dmesg</span> -T <span class="token operator">|</span> <span class="token function">less</span>
+</code></pre></div><h3 id="lsof"><a href="#lsof" class="header-anchor">#</a> lsof</h3> <p><a href="https://www.cnblogs.com/sparkbj/p/7161669.html" target="_blank" rel="noopener noreferrer">linux lsof命令详解 - 星火spark - 博客园<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token comment"># 1.列出所有打开的文件:</span>
+<span class="token function">lsof</span>
+备注: 如果不加任何参数，就会打开所有被打开的文件，建议加上一下参数来具体定位
+
+<span class="token comment"># 2. 查看谁正在使用某个文件</span>
+<span class="token function">lsof</span>   /filepath/file
+
+<span class="token comment"># 3.递归查看某个目录的文件信息 备注: 使用了+D，对应目录下的所有子目录和文件都会被列出</span>
+<span class="token function">lsof</span> +D /filepath/filepath2/
+
+<span class="token comment"># 4. 比使用+D选项，遍历查看某个目录的所有文件信息 的方法</span>
+<span class="token function">lsof</span> <span class="token operator">|</span> <span class="token function">grep</span> ‘/filepath/filepath2/’
+
+<span class="token comment"># 5. 列出某个用户打开的文件信息</span>
+<span class="token function">lsof</span>  -u username
+
+<span class="token comment">#6. 列出某个程序所打开的文件信息</span>
+<span class="token function">lsof</span> -c mysql
+
+<span class="token comment">#7. 列出多个程序多打开的文件信息</span>
+<span class="token function">lsof</span> -c mysql -c apache
+
+<span class="token comment">#8. 列出某个用户以及某个程序所打开的文件信息</span>
+<span class="token function">lsof</span> -u <span class="token builtin class-name">test</span> -c mysql
+
+<span class="token comment"># 9. 列出除了某个用户外的被打开的文件信息</span>
+
+<span class="token function">lsof</span>   -u ^root
+
+<span class="token comment"># 10. 通过某个进程号显示该进行打开的文件</span>
+<span class="token function">lsof</span> -p <span class="token number">1</span>
+
+<span class="token comment"># 11. 列出多个进程号对应的文件信息</span>
+<span class="token function">lsof</span> -p <span class="token number">123,456</span>,789
+
+<span class="token comment"># 12. 列出除了某个进程号，其他进程号所打开的文件信息</span>
+<span class="token function">lsof</span> -p ^1
+
+<span class="token comment"># 13 . 列出所有的网络连接</span>
+<span class="token function">lsof</span> -i
+
+<span class="token comment"># 14. 列出所有tcp 网络连接信息</span>
+<span class="token function">lsof</span>  -i tcp
+
+<span class="token comment"># 15. 列出所有udp网络连接信息</span>
+<span class="token function">lsof</span>  -i udp
+
+<span class="token comment"># 16. 列出谁在使用某个端口</span>
+<span class="token function">lsof</span> -i :3306
+
+<span class="token comment"># 17. 列出谁在使用某个特定的udp端口</span>
+<span class="token function">lsof</span> -i udp:55
+
+<span class="token comment"># 特定的tcp端口</span>
+<span class="token function">lsof</span> -i tcp:80
+
+<span class="token comment"># 18. 列出某个用户的所有活跃的网络端口</span>
+<span class="token function">lsof</span>  -a -u <span class="token builtin class-name">test</span> -i
+
+<span class="token comment"># 19. 列出所有网络文件系统</span>
+<span class="token function">lsof</span> -N
+
+<span class="token comment"># 20.域名socket文件</span>
+<span class="token function">lsof</span> -u
+
+<span class="token comment"># 21.某个用户组所打开的文件信息</span>
+<span class="token function">lsof</span> -g <span class="token number">5555</span>
+
+<span class="token comment"># 22. 根据文件描述列出对应的文件信息</span>
+<span class="token function">lsof</span> -d description<span class="token punctuation">(</span>like <span class="token number">2</span><span class="token punctuation">)</span>
+
+<span class="token comment"># 23. 根据文件描述范围列出文件信息</span>
+<span class="token function">lsof</span> -d <span class="token number">2</span>-3
+</code></pre></div><h3 id="crontab"><a href="#crontab" class="header-anchor">#</a> crontab</h3> <h4 id="crontab批量修改替换"><a href="#crontab批量修改替换" class="header-anchor">#</a> crontab批量修改替换</h4> <p>比如之前有这些 ，每周五执行clearLog.sh</p> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token number">30</span> <span class="token number">3</span> * * * /bin/find /var/log/kudu/ -mtime +60 -type f -name <span class="token string">&quot;*invalid-user.log*&quot;</span> -exec /bin/rm -f <span class="token punctuation">{</span><span class="token punctuation">}</span> <span class="token punctuation">\</span><span class="token punctuation">;</span>
+00 <span class="token number">19</span> * * <span class="token number">5</span> <span class="token function">sh</span> /root/clearLog.sh
+</code></pre></div><p>现在想修改一下，改为每天执行</p> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token punctuation">(</span>crontab -l <span class="token operator">|</span> <span class="token function">sed</span> <span class="token string">'s/5 sh/* sh/'</span><span class="token punctuation">)</span> <span class="token operator">|</span> <span class="token function">crontab</span>
+</code></pre></div><h4 id="基于cron定时删除日志"><a href="#基于cron定时删除日志" class="header-anchor">#</a> 基于cron定时删除日志</h4> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token number">30</span> <span class="token number">3</span> * * * /bin/find /root/zbmy/realtime/logs/error/ -mtime +60 -type f -name <span class="token string">&quot;error*.*.log&quot;</span> -exec /bin/rm -f <span class="token punctuation">{</span><span class="token punctuation">}</span> <span class="token punctuation">\</span><span class="token punctuation">;</span>
+
+<span class="token number">30</span> <span class="token number">3</span> * * * /bin/find /var/log/kudu/ -mtime +60 -type f -name <span class="token string">&quot;*invalid-user.log*&quot;</span> -exec /bin/rm -f <span class="token punctuation">{</span><span class="token punctuation">}</span> <span class="token punctuation">\</span><span class="token punctuation">;</span>
+</code></pre></div><h3 id="scp"><a href="#scp" class="header-anchor">#</a> SCP</h3> <h4 id="scp指定端口"><a href="#scp指定端口" class="header-anchor">#</a> scp指定端口</h4> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">scp</span> -P <span class="token number">65532</span> /Users/apple/Downloads/install-release.sh root@lovedata:/data/
+</code></pre></div><h2 id="mac"><a href="#mac" class="header-anchor">#</a> Mac</h2> <h3 id="定时任务相关"><a href="#定时任务相关" class="header-anchor">#</a> 定时任务相关</h3> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token comment">#加载定时任务</span>
+launchctl load  com.lovedata.checktoken.plist 
+
+<span class="token comment">#卸载</span>
+launchctl unload  com.lovedata.checktoken.plist 
+
+<span class="token comment">#执行</span>
+launchctl start  com.lovedata.checktoken.plist
+</code></pre></div><h3 id="批量杀死同名进程"><a href="#批量杀死同名进程" class="header-anchor">#</a> 批量杀死同名进程</h3> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">kill</span> <span class="token variable"><span class="token variable">$(</span><span class="token function">ps</span> -ef<span class="token operator">|</span><span class="token function">grep</span> chromedriver <span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'<span class="token variable">$0</span> !~/grep/ {print <span class="token variable">$2</span>}'</span> <span class="token operator">|</span><span class="token function">tr</span> -s <span class="token string">'<span class="token entity" title="\n">\n</span>'</span> <span class="token string">' '</span><span class="token variable">)</span></span>
+<span class="token function">kill</span> <span class="token variable"><span class="token variable">$(</span><span class="token function">ps</span> -ef<span class="token operator">|</span><span class="token function">grep</span> <span class="token string">'Google Chrome Helper'</span> <span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'<span class="token variable">$0</span> !~/grep/ {print <span class="token variable">$2</span>}'</span> <span class="token operator">|</span><span class="token function">tr</span> -s <span class="token string">'<span class="token entity" title="\n">\n</span>'</span> <span class="token string">' '</span><span class="token variable">)</span></span>
+</code></pre></div><h3 id="安装程序显示文件已经损坏"><a href="#安装程序显示文件已经损坏" class="header-anchor">#</a> 安装程序显示文件已经损坏</h3> <p><img src="https://static.lovedata.net/21-07-02-b3e29bc9fc4882b794e8040b012fd048.png" alt="image"></p> <p>1、打开任何来源。
+2、打开终端，执行下面的命令。</p> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">sudo</span> xattr -r -d com.apple.quarantine /Applications/Sublime<span class="token punctuation">\</span> Text.app 
+</code></pre></div><h3 id="item2-pem文件登陆"><a href="#item2-pem文件登陆" class="header-anchor">#</a> Item2 Pem文件登陆</h3> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">sudo</span> <span class="token function">chmod</span> 0600 pem文件名.pem
+<span class="token function">ssh</span> -i pem文件名.pem 用户名@登陆的IP
+</code></pre></div><h3 id="mac关闭sip"><a href="#mac关闭sip" class="header-anchor">#</a> Mac关闭SIP</h3> <p>重启Mac，按住⌘ + R进入Recovery模式。 实用工具（Utilities）-&gt; 终端（Terminal）。 输入命令csrutil disable运行。 重启进入系统后，终端里输入 csrutil status，结果中如果有 System Integrity Protection status:disabled. 则说明关闭成功。</p> <div class="language-shell extra-class"><pre class="language-shell"><code>➜  ~ csrutil status
+System Integrity Protection status: disabled.
+</code></pre></div><h2 id="磁盘"><a href="#磁盘" class="header-anchor">#</a> 磁盘</h2> <h3 id="du"><a href="#du" class="header-anchor">#</a> du</h3> <h4 id="查看某个目录-大小"><a href="#查看某个目录-大小" class="header-anchor">#</a> 查看某个目录 大小</h4> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">du</span> -bsh /usr/
+</code></pre></div><h4 id="查看当前目录下各个文件占用情况"><a href="#查看当前目录下各个文件占用情况" class="header-anchor">#</a> 查看当前目录下各个文件占用情况</h4> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">du</span> -ah --max-depth<span class="token operator">=</span><span class="token number">1</span> <span class="token builtin class-name">.</span>
+</code></pre></div><h4 id="按照mb来显示单位并排序"><a href="#按照mb来显示单位并排序" class="header-anchor">#</a> 按照MB来显示单位并排序</h4> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">du</span> -ahm --max-depth<span class="token operator">=</span><span class="token number">1</span>  ./<span class="token operator">|</span><span class="token function">sort</span> -n
+</code></pre></div><h4 id="查看文件夹占用-查看根目录下所有文件的大小"><a href="#查看文件夹占用-查看根目录下所有文件的大小" class="header-anchor">#</a> 查看文件夹占用(查看根目录下所有文件的大小)</h4> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">du</span> -sm /*
+</code></pre></div><h4 id="查看文件占用大小"><a href="#查看文件占用大小" class="header-anchor">#</a> 查看文件占用大小</h4> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">du</span> -h --max-depth<span class="token operator">=</span><span class="token number">1</span> /usr/hdp/2.6.5.0-292
+</code></pre></div><h3 id="io测试"><a href="#io测试" class="header-anchor">#</a> IO测试</h3> <h4 id="粗略测试磁盘速度"><a href="#粗略测试磁盘速度" class="header-anchor">#</a> 粗略测试磁盘速度</h4> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">dd</span> <span class="token assign-left variable">if</span><span class="token operator">=</span>cm6.3.1-redhat7.tar.gz  <span class="token assign-left variable">bs</span><span class="token operator">=</span>8k <span class="token assign-left variable">count</span><span class="token operator">=</span><span class="token number">300000</span> <span class="token assign-left variable">of</span><span class="token operator">=</span>/dev/null
+</code></pre></div><h4 id="生成大文件"><a href="#生成大文件" class="header-anchor">#</a> 生成大文件</h4> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">dd</span> <span class="token assign-left variable">if</span><span class="token operator">=</span>/dev/zero <span class="token assign-left variable">of</span><span class="token operator">=</span>test <span class="token assign-left variable">bs</span><span class="token operator">=</span>1M <span class="token assign-left variable">count</span><span class="token operator">=</span><span class="token number">1000</span>
+</code></pre></div><h4 id="随机生成10个小文件"><a href="#随机生成10个小文件" class="header-anchor">#</a> 随机生成10个小文件</h4> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">seq</span> <span class="token number">10</span> <span class="token operator">|</span> <span class="token function">xargs</span> -i <span class="token function">dd</span> <span class="token assign-left variable">if</span><span class="token operator">=</span>/dev/zero <span class="token assign-left variable">of</span><span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">}</span>.dat <span class="token assign-left variable">bs</span><span class="token operator">=</span><span class="token number">1024</span> <span class="token assign-left variable">count</span><span class="token operator">=</span><span class="token number">1</span>
+</code></pre></div><h2 id="网络"><a href="#网络" class="header-anchor">#</a> 网络</h2> <h4 id="查看监听端口"><a href="#查看监听端口" class="header-anchor">#</a> 查看监听端口</h4> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token comment"># netstat</span>
+<span class="token function">netstat</span> -atunlp <span class="token operator">|</span> <span class="token function">grep</span> LISTEN
+<span class="token comment"># lsof</span>
+yum <span class="token function">install</span> <span class="token function">lsof</span>
+<span class="token function">lsof</span> -i:9001
+</code></pre></div><h4 id="查看-某一个端口的占用情况"><a href="#查看-某一个端口的占用情况" class="header-anchor">#</a> 查看 某一个端口的占用情况</h4> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token comment"># 查看 某一个端口的占用情况，去重要先排序才能去重计数</span>
+<span class="token function">netstat</span> -atunlp <span class="token operator">|</span> <span class="token function">grep</span> <span class="token number">2181</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'{ print <span class="token variable">$5</span>&quot; : &quot;<span class="token variable">$7</span> }'</span> <span class="token operator">|</span> <span class="token function">sort</span> <span class="token operator">|</span> <span class="token function">uniq</span> -c
+</code></pre></div><h4 id="关闭防火墙"><a href="#关闭防火墙" class="header-anchor">#</a> 关闭防火墙</h4> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token comment"># 查看防火墙状态</span>
+firewall-cmd --state
+
+<span class="token comment"># 停止防火墙</span>
+systemctl stop firewalld.service
+
+<span class="token comment"># 新增开放端口</span>
+firewall-cmd --zone<span class="token operator">=</span>public --add-port<span class="token operator">=</span>端口号/tcp --permanent
+
+<span class="token comment"># 移除开放端口</span>
+firewall-cmd --zone<span class="token operator">=</span>public --remove-port<span class="token operator">=</span>端口号/tcp --permanent
+
+<span class="token comment"># 查看开放的端口</span>
+firewall-cmd --zone<span class="token operator">=</span>public --list-ports
+
+<span class="token comment"># 刷新防火墙</span>
+firewall-cmd --reload
+</code></pre></div><h2 id="内存"><a href="#内存" class="header-anchor">#</a> 内存</h2> <h3 id="清除pagecache"><a href="#清除pagecache" class="header-anchor">#</a> 清除PageCache</h3> <h4 id="仅清除页面缓存pagecache方法"><a href="#仅清除页面缓存pagecache方法" class="header-anchor">#</a> 仅清除页面缓存PageCache方法：</h4> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token builtin class-name">echo</span> <span class="token number">1</span> <span class="token operator">&gt;</span> /proc/sys/vm/drop_caches
+</code></pre></div><h4 id="清除目录项和inode节点"><a href="#清除目录项和inode节点" class="header-anchor">#</a> 清除目录项和inode节点：</h4> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token builtin class-name">echo</span> <span class="token number">2</span> <span class="token operator">&gt;</span> /proc/sys/vm/drop_caches
+</code></pre></div><h4 id="清除页面缓存、目录项和inode节点"><a href="#清除页面缓存、目录项和inode节点" class="header-anchor">#</a> 清除页面缓存、目录项和inode节点：</h4> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token builtin class-name">echo</span> <span class="token number">3</span> <span class="token operator">&gt;</span> /proc/sys/vm/drop_caches
+</code></pre></div><h2 id="cpu"><a href="#cpu" class="header-anchor">#</a> CPU</h2> <h3 id="cpu概览"><a href="#cpu概览" class="header-anchor">#</a> CPU概览</h3> <div class="language-shell extra-class"><pre class="language-shell"><code>lscpu
+</code></pre></div><div class="language-bash extra-class"><pre class="language-bash"><code>Architecture:          x86_64
+CPU op-mode<span class="token punctuation">(</span>s<span class="token punctuation">)</span>:        <span class="token number">32</span>-bit, <span class="token number">64</span>-bit
+Byte Order:            Little Endian
+CPU<span class="token punctuation">(</span>s<span class="token punctuation">)</span>:                <span class="token number">40</span> <span class="token comment">#总的逻辑CPU个数</span>
+On-line CPU<span class="token punctuation">(</span>s<span class="token punctuation">)</span> list:   <span class="token number">0</span>-39 <span class="token comment">#在线CPU编号列表</span>
+Thread<span class="token punctuation">(</span>s<span class="token punctuation">)</span> per core:    <span class="token number">2</span> <span class="token comment">#每个Core的逻辑CPU个数</span>
+Core<span class="token punctuation">(</span>s<span class="token punctuation">)</span> per socket:    <span class="token number">10</span> <span class="token comment">#每个Socket上的Core个数</span>
+Socket<span class="token punctuation">(</span>s<span class="token punctuation">)</span>:             <span class="token number">2</span><span class="token comment">#多少个Socket(插槽,物理CPU)</span>
+NUMA node<span class="token punctuation">(</span>s<span class="token punctuation">)</span>:          <span class="token number">2</span><span class="token comment">#多少个node</span>
+Vendor ID:             GenuineIntel
+CPU family:            <span class="token number">6</span>
+Model:                 <span class="token number">79</span>
+Model name:            Intel<span class="token punctuation">(</span>R<span class="token punctuation">)</span> Xeon<span class="token punctuation">(</span>R<span class="token punctuation">)</span> CPU E5-2630 v4 @ <span class="token number">2</span>.20GHz
+Stepping:              <span class="token number">1</span>
+CPU MHz:               <span class="token number">1319.484</span>
+BogoMIPS:              <span class="token number">4399.44</span>
+Virtualization:        VT-x
+L1d cache:             32K
+L1i cache:             32K
+L2 cache:              256K
+L3 cache:              25600K
+NUMA node0 CPU<span class="token punctuation">(</span>s<span class="token punctuation">)</span>:     <span class="token number">0,2</span>,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38
+NUMA node1 CPU<span class="token punctuation">(</span>s<span class="token punctuation">)</span>:     <span class="token number">1,3</span>,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39
+</code></pre></div><h3 id="查看当前系统的-numa-node"><a href="#查看当前系统的-numa-node" class="header-anchor">#</a> 查看当前系统的 NUMA Node</h3> <p><a href="https://databook.lovedata.net/computer/cpu.html#cpu%E6%8B%93%E6%89%91%E6%89%93%E5%8D%B0%E8%84%9A%E6%9C%AC" target="_blank" rel="noopener noreferrer">打印CPU拓扑<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <div class="language-shell extra-class"><pre class="language-shell"><code>numactl --hardware
+</code></pre></div><div class="language-bash extra-class"><pre class="language-bash"><code>available: <span class="token number">2</span> nodes <span class="token punctuation">(</span><span class="token number">0</span>-1<span class="token punctuation">)</span>
+node <span class="token number">0</span> cpus: <span class="token number">0</span> <span class="token number">2</span> <span class="token number">4</span> <span class="token number">6</span> <span class="token number">8</span> <span class="token number">10</span> <span class="token number">12</span> <span class="token number">14</span> <span class="token number">16</span> <span class="token number">18</span> <span class="token number">20</span> <span class="token number">22</span> <span class="token number">24</span> <span class="token number">26</span> <span class="token number">28</span> <span class="token number">30</span> <span class="token number">32</span> <span class="token number">34</span> <span class="token number">36</span> <span class="token number">38</span>
+node <span class="token number">0</span> size: <span class="token number">65442</span> MB
+node <span class="token number">0</span> free: <span class="token number">294</span> MB
+node <span class="token number">1</span> cpus: <span class="token number">1</span> <span class="token number">3</span> <span class="token number">5</span> <span class="token number">7</span> <span class="token number">9</span> <span class="token number">11</span> <span class="token number">13</span> <span class="token number">15</span> <span class="token number">17</span> <span class="token number">19</span> <span class="token number">21</span> <span class="token number">23</span> <span class="token number">25</span> <span class="token number">27</span> <span class="token number">29</span> <span class="token number">31</span> <span class="token number">33</span> <span class="token number">35</span> <span class="token number">37</span> <span class="token number">39</span>
+node <span class="token number">1</span> size: <span class="token number">65536</span> MB
+node <span class="token number">1</span> free: <span class="token number">4251</span> MB
+node distances:
+node   <span class="token number">0</span>   <span class="token number">1</span>
+  <span class="token number">0</span>:  <span class="token number">10</span>  <span class="token number">21</span>
+  <span class="token number">1</span>:  <span class="token number">21</span>  <span class="token number">10</span>
+</code></pre></div><h3 id="查看socket信息"><a href="#查看socket信息" class="header-anchor">#</a> 查看Socket信息</h3> <blockquote><p>一个Socket对应主板上面的一个插槽，也指一个CPU封装，在/proc/cpuinfo中，physical id就是Socket的ID</p></blockquote> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">cat</span> /proc/cpuinfo <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">&quot;physical id&quot;</span>
+</code></pre></div><div class="language-bash extra-class"><pre class="language-bash"><code>physical <span class="token function">id</span>	<span class="token builtin class-name">:</span> <span class="token number">0</span>
+physical <span class="token function">id</span>	<span class="token builtin class-name">:</span> <span class="token number">1</span>
+physical <span class="token function">id</span>	<span class="token builtin class-name">:</span> <span class="token number">0</span>
+physical <span class="token function">id</span>	<span class="token builtin class-name">:</span> <span class="token number">1</span>
+<span class="token comment">#...后面省略了36行，都是0，1</span>
+</code></pre></div><h3 id="查看有几个socket"><a href="#查看有几个socket" class="header-anchor">#</a> 查看有几个Socket</h3> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">grep</span> <span class="token string">'physical id'</span> /proc/cpuinfo <span class="token operator">|</span> <span class="token function">awk</span> -F: <span class="token string">'{print <span class="token variable">$2</span> | &quot;sort -un&quot;}'</span>
+</code></pre></div><div class="language-bash extra-class"><pre class="language-bash"><code> <span class="token number">0</span>
+ <span class="token number">1</span>
+</code></pre></div><h3 id="查看每个-socket-有几个-processor"><a href="#查看每个-socket-有几个-processor" class="header-anchor">#</a> 查看每个 Socket 有几个 Processor</h3> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">grep</span> <span class="token string">'physical id'</span> /proc/cpuinfo <span class="token operator">|</span> <span class="token function">awk</span> -F: <span class="token string">'{print <span class="token variable">$2</span>}'</span> <span class="token operator">|</span> <span class="token function">sort</span> <span class="token operator">|</span> <span class="token function">uniq</span> -c
+</code></pre></div><div class="language-bash extra-class"><pre class="language-bash"><code> <span class="token number">20</span>  <span class="token number">0</span>
+ <span class="token number">20</span>  <span class="token number">1</span>
+</code></pre></div><p>查看Socket对应哪些Processor</p> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">awk</span> -F: <span class="token string">'{ 
+    if (<span class="token variable">$1</span> ~ /processor/) {
+        gsub(/ /,&quot;&quot;,<span class="token variable">$2</span>);
+        p_id=<span class="token variable">$2</span>;
+    } else if (<span class="token variable">$1</span> ~ /physical id/){
+        gsub(/ /,&quot;&quot;,<span class="token variable">$2</span>);
+        s_id=<span class="token variable">$2</span>;
+        arr[s_id]=arr[s_id] &quot; &quot; p_id
+    }
+} 
+
+END{
+    for (i in arr) 
+        print arr[i];
+}'</span> /proc/cpuinfo <span class="token operator">|</span> <span class="token function">cut</span> -c2-
+</code></pre></div><div class="language-bash extra-class"><pre class="language-bash"><code><span class="token number">0</span> <span class="token number">2</span> <span class="token number">4</span> <span class="token number">6</span> <span class="token number">8</span> <span class="token number">10</span> <span class="token number">12</span> <span class="token number">14</span> <span class="token number">16</span> <span class="token number">18</span> <span class="token number">20</span> <span class="token number">22</span> <span class="token number">24</span> <span class="token number">26</span> <span class="token number">28</span> <span class="token number">30</span> <span class="token number">32</span> <span class="token number">34</span> <span class="token number">36</span> <span class="token number">38</span>
+<span class="token number">1</span> <span class="token number">3</span> <span class="token number">5</span> <span class="token number">7</span> <span class="token number">9</span> <span class="token number">11</span> <span class="token number">13</span> <span class="token number">15</span> <span class="token number">17</span> <span class="token number">19</span> <span class="token number">21</span> <span class="token number">23</span> <span class="token number">25</span> <span class="token number">27</span> <span class="token number">29</span> <span class="token number">31</span> <span class="token number">33</span> <span class="token number">35</span> <span class="token number">37</span> <span class="token number">39</span>
+</code></pre></div><h3 id="在-proc-cpuinfo-中查看-core-信息"><a href="#在-proc-cpuinfo-中查看-core-信息" class="header-anchor">#</a> 在 /proc/cpuinfo 中查看 Core 信息</h3> <blockquote><p>表明一个Socket有10个Core，他们的id分别是 0,1,10,11,12,2,3,4,8,9</p> <p>前面的查到机器有2个socket，所以总共有20个Core，每个Core有两个Processor，总共四十个</p></blockquote> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">cat</span> /proc/cpuinfo <span class="token operator">|</span><span class="token function">grep</span> <span class="token string">&quot;core id&quot;</span> <span class="token operator">|</span> <span class="token function">sort</span> -u
+</code></pre></div><div class="language-bash extra-class"><pre class="language-bash"><code>core <span class="token function">id</span>		<span class="token builtin class-name">:</span> <span class="token number">0</span>
+core <span class="token function">id</span>		<span class="token builtin class-name">:</span> <span class="token number">1</span>
+core <span class="token function">id</span>		<span class="token builtin class-name">:</span> <span class="token number">10</span>
+core <span class="token function">id</span>		<span class="token builtin class-name">:</span> <span class="token number">11</span>
+core <span class="token function">id</span>		<span class="token builtin class-name">:</span> <span class="token number">12</span>
+core <span class="token function">id</span>		<span class="token builtin class-name">:</span> <span class="token number">2</span>
+core <span class="token function">id</span>		<span class="token builtin class-name">:</span> <span class="token number">3</span>
+core <span class="token function">id</span>		<span class="token builtin class-name">:</span> <span class="token number">4</span>
+core <span class="token function">id</span>		<span class="token builtin class-name">:</span> <span class="token number">8</span>
+core <span class="token function">id</span>		<span class="token builtin class-name">:</span> <span class="token number">9</span>
+cpu cores	<span class="token builtin class-name">:</span> <span class="token number">10</span>
+</code></pre></div><h3 id="获取总的-processor-数"><a href="#获取总的-processor-数" class="header-anchor">#</a> 获取总的 Processor 数</h3> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">cat</span> /proc/cpuinfo <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">&quot;processor&quot;</span> <span class="token operator">|</span> <span class="token function">wc</span> -l
+</code></pre></div><div class="language-bash extra-class"><pre class="language-bash"><code><span class="token number">40</span>
+</code></pre></div><h3 id="获取每个-socket-的-processor-数"><a href="#获取每个-socket-的-processor-数" class="header-anchor">#</a> 获取每个 Socket 的 Processor 数</h3> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">cat</span> /proc/cpuinfo <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">&quot;siblings&quot;</span> <span class="token operator">|</span> <span class="token function">sort</span> -u
+</code></pre></div><div class="language-bash extra-class"><pre class="language-bash"><code>siblings	<span class="token builtin class-name">:</span> <span class="token number">20</span>
+</code></pre></div><h3 id="性能cpu监控-淘宝监控"><a href="#性能cpu监控-淘宝监控" class="header-anchor">#</a> 性能CPU监控 淘宝监控</h3> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">git</span> clone https://github.com/oldratlee/useful-scripts.git
+
+<span class="token function">scp</span> -r useful-scripts root@server3:/data3/test/
+</code></pre></div><h2 id="ssh"><a href="#ssh" class="header-anchor">#</a> SSH</h2> <h3 id="ssh匿名登陆"><a href="#ssh匿名登陆" class="header-anchor">#</a> ssh匿名登陆</h3> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">ssh</span> -T root@lovedata -p65532 /bin/bash -i
+</code></pre></div><h2 id="程序"><a href="#程序" class="header-anchor">#</a> 程序</h2> <h3 id="循环干掉job"><a href="#循环干掉job" class="header-anchor">#</a> 循环干掉job</h3> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">ps</span> -ef <span class="token operator">|</span> <span class="token function">grep</span> flume  <span class="token operator">|</span> <span class="token function">grep</span> -v <span class="token function">grep</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'{print <span class="token variable">$2</span>}'</span> <span class="token operator">|</span> <span class="token function">xargs</span> <span class="token function">kill</span> -9
+</code></pre></div><h3 id="杀死一个程序"><a href="#杀死一个程序" class="header-anchor">#</a> 杀死一个程序</h3> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">kill</span> -9 <span class="token variable"><span class="token variable">`</span><span class="token function">ps</span> aux<span class="token operator">|</span><span class="token function">grep</span> redis<span class="token operator">|</span><span class="token function">grep</span> -v <span class="token function">grep</span><span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'{print <span class="token variable">$2</span>}'</span><span class="token variable">`</span></span>
+</code></pre></div><h3 id="tmux"><a href="#tmux" class="header-anchor">#</a> tmux</h3> <h4 id="新建窗口"><a href="#新建窗口" class="header-anchor">#</a> 新建窗口</h4> <div class="language-shell extra-class"><pre class="language-shell"><code>tmux   new -s peng
+</code></pre></div><h4 id="打开窗"><a href="#打开窗" class="header-anchor">#</a> 打开窗</h4> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token comment">#Ctrl+B  然后按一下D  就可以退出这个窗口，进入外部shell</span>
+tmux a -t peng
+</code></pre></div><h4 id="支持滚动条"><a href="#支持滚动条" class="header-anchor">#</a> 支持滚动条</h4> <p>在 tmux里面，因为每个窗口(tmux window)的历史内容已经被tmux接管了，所以原来console/terminal提供的Shift+PgUp/PgDn所显示的内容并不是当前窗口的历史内容，所以要用C-b [ 进入copy-mode，然后才能用PgUp/PgDn/光标/Ctrl-S等键在copy-mode中移动。</p> <p>如果要启用鼠标滚轮来卷动窗口内容的话，可以按C-b :然后输入</p> <div class="language-bash extra-class"><pre class="language-bash"><code> setw mode-mouse on
+</code></pre></div><p>这就可以了。如果要对所有窗口开启的话:
+<code>setw -g mode-mouse on</code></p> <p>(这种情况下，Vi/Emacs等全屏程序并不受影响，还可以自己接管滚轮事件)</p> <p>也可以加到~/.tmux.conf里面
+set-window-option -g mode-mouse on
+(setw其实是set-window-option的别名)</p> <h3 id="文件输入"><a href="#文件输入" class="header-anchor">#</a> 文件输入</h3> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">cat</span> <span class="token operator">&gt;</span><span class="token number">1</span>.txt<span class="token operator">&lt;&lt;</span><span class="token string">EOF  
+Hello,world!  
+EOF</span>  
+
+<span class="token function">cat</span> <span class="token operator">&lt;&lt;</span> <span class="token string">EOF<span class="token bash punctuation"> <span class="token operator">&gt;</span> <span class="token number">1</span>.txt</span>
+Hello,world! 
+EOF</span>
+</code></pre></div><h2 id="docker"><a href="#docker" class="header-anchor">#</a> docker</h2> <h3 id="docker查看日志"><a href="#docker查看日志" class="header-anchor">#</a> docker查看日志</h3> <div class="language-shell extra-class"><pre class="language-shell"><code>docker logs  -f -t --tail <span class="token number">100</span>  pushgateway
+</code></pre></div><h3 id="docker日志过大-清空日志"><a href="#docker日志过大-清空日志" class="header-anchor">#</a> docker日志过大，清空日志</h3> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token builtin class-name">cd</span> /var/lib/docker/containers/ab3424fef89b061abce15854402d125afb59558c6aced9088d7bc2c588abb101
+<span class="token function">cat</span> /dev/null <span class="token operator">&gt;</span> *-json.log
+</code></pre></div><h3 id="批量杀死删除容器"><a href="#批量杀死删除容器" class="header-anchor">#</a> 批量杀死删除容器</h3> <div class="language-shell extra-class"><pre class="language-shell"><code>docker <span class="token function">kill</span> <span class="token variable"><span class="token variable">`</span>docker <span class="token function">ps</span> -a <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">'xxx'</span> <span class="token operator">|</span> <span class="token function">grep</span> -v <span class="token function">grep</span><span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'{print <span class="token variable">$1</span>}'</span><span class="token variable">`</span></span>
+docker <span class="token function">rm</span> <span class="token variable"><span class="token variable">`</span>docker <span class="token function">ps</span> -a <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">'xxx'</span> <span class="token operator">|</span> <span class="token function">grep</span> -v <span class="token function">grep</span><span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'{print <span class="token variable">$1</span>}'</span><span class="token variable">`</span></span>
+</code></pre></div><h3 id="docker镜像加速"><a href="#docker镜像加速" class="header-anchor">#</a> Docker镜像加速</h3> <p>创建或修改 /etc/docker/daemon.json 文件，修改为如下形式</p> <div class="language-json extra-class"><pre class="language-json"><code><span class="token punctuation">{</span>
+  <span class="token property">&quot;registry-mirrors&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">&quot;https://registry.docker-cn.com&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;http://hub-mirror.c.163.com&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;https://docker.mirrors.ustc.edu.cn&quot;</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="docker杀死所有容器"><a href="#docker杀死所有容器" class="header-anchor">#</a> Docker杀死所有容器</h3> <div class="language-shell extra-class"><pre class="language-shell"><code> docker <span class="token function">ps</span> -a -q <span class="token operator">|</span> <span class="token function">xargs</span> docker <span class="token function">rm</span> -f
+</code></pre></div><h3 id="docker定时清理日志"><a href="#docker定时清理日志" class="header-anchor">#</a> Docker定时清理日志</h3> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token shebang important">#!/bin/sh</span>
+
+<span class="token assign-left variable">DockerLogPath</span><span class="token operator">=</span><span class="token string">'/var/lib/docker/containers/'</span>
+<span class="token keyword">if</span> <span class="token builtin class-name">test</span> -e <span class="token variable">$DockerLogPath</span> <span class="token operator">&amp;&amp;</span> <span class="token builtin class-name">test</span> -d <span class="token variable">$DockerLogPath</span><span class="token punctuation">;</span> 
+<span class="token keyword">then</span>
+    <span class="token assign-left variable">dockerList</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">ls</span> $DockerLogPath<span class="token variable">`</span></span>
+    <span class="token keyword">for</span> <span class="token for-or-select variable">fileName</span> <span class="token keyword">in</span> <span class="token variable">$dockerList</span><span class="token punctuation">;</span>
+    <span class="token keyword">do</span>
+    <span class="token assign-left variable">wholeFolderPath</span><span class="token operator">=</span><span class="token variable">$DockerLogPath</span><span class="token variable">$fileName</span>
+    <span class="token comment">#if test -f $fileName; then</span>
+    <span class="token keyword">if</span> <span class="token builtin class-name">test</span> -f <span class="token variable">$wholeFolderPath</span><span class="token punctuation">;</span> 
+    <span class="token keyword">then</span>
+        <span class="token builtin class-name">echo</span> <span class="token variable">$wholeFolderPath</span><span class="token punctuation">;</span>
+    <span class="token keyword">elif</span> <span class="token builtin class-name">test</span> -d <span class="token variable">$wholeFolderPath</span><span class="token punctuation">;</span> 
+    <span class="token keyword">then</span>
+        <span class="token builtin class-name">cd</span> <span class="token variable">$wholeFolderPath</span><span class="token punctuation">;</span>
+        <span class="token assign-left variable">jsonFile</span><span class="token operator">=</span><span class="token variable">$wholeFolderPath</span><span class="token string">'/'</span><span class="token variable">$fileName</span>-json.log
+        <span class="token keyword">if</span> <span class="token builtin class-name">test</span> -e  <span class="token variable">$jsonFile</span> <span class="token operator">&amp;&amp;</span> <span class="token builtin class-name">test</span> -f <span class="token variable">$jsonFile</span><span class="token punctuation">;</span>
+        <span class="token keyword">then</span>
+            <span class="token builtin class-name">echo</span> <span class="token string">'Clean '</span><span class="token variable">$jsonFile</span>
+            <span class="token function">cat</span> /dev/null <span class="token operator">&gt;</span> <span class="token variable">$jsonFile</span><span class="token punctuation">;</span>
+        <span class="token keyword">else</span>
+            <span class="token builtin class-name">echo</span> <span class="token variable">$jsonFile</span><span class="token string">' not exists!'</span>
+        <span class="token keyword">fi</span>
+    <span class="token keyword">else</span>
+        <span class="token builtin class-name">echo</span>  <span class="token string">&quot;<span class="token variable">$DockerLogPath</span> is a invalid path&quot;</span><span class="token punctuation">;</span>
+    <span class="token keyword">fi</span> 
+    <span class="token keyword">done</span>
+
+    <span class="token builtin class-name">echo</span> <span class="token string">&quot;Done&quot;</span>
+<span class="token keyword">else</span>
+   <span class="token builtin class-name">echo</span>  <span class="token string">&quot;<span class="token variable">$DockerLogPath</span> is a invalid path&quot;</span><span class="token punctuation">;</span>
+<span class="token keyword">fi</span>
+</code></pre></div><div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">crontab</span> -e
+00 <span class="token number">19</span> * * * <span class="token function">sh</span> /root/clean_docker_log.sh
+</code></pre></div><h2 id="git"><a href="#git" class="header-anchor">#</a> Git</h2> <h3 id="恢复修改"><a href="#恢复修改" class="header-anchor">#</a> 恢复修改</h3> <h4 id="未使用-git-add-缓存代码"><a href="#未使用-git-add-缓存代码" class="header-anchor">#</a> 未使用 git add 缓存代码</h4> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token comment">#放弃修改某一个文件(注意加上&quot;--&quot;)</span>
+<span class="token function">git</span> checkout -- readme.md
+<span class="token comment">#放弃所有的文件修改</span>
+<span class="token function">git</span> checkout <span class="token builtin class-name">.</span> 
+</code></pre></div><h4 id="已经使用了-git-add-缓存了代码"><a href="#已经使用了-git-add-缓存了代码" class="header-anchor">#</a> 已经使用了 git add 缓存了代码</h4> <div class="language-shell extra-class"><pre class="language-shell"><code> <span class="token comment">#放弃某个文件</span>
+ <span class="token function">git</span> reset HEAD readme.md
+ <span class="token comment">#放弃所有缓存</span>
+ <span class="token function">git</span> reset HEAD <span class="token builtin class-name">.</span>
+</code></pre></div><h4 id="已经用-git-commit-提交了代码"><a href="#已经用-git-commit-提交了代码" class="header-anchor">#</a> 已经用 git commit 提交了代码</h4> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token comment">#来回退到上一次commit的状态</span>
+<span class="token function">git</span> reset --hard HEAD^
+<span class="token comment">#回退到任何一个版本</span>
+<span class="token function">git</span> reset --hard  commitid 
+</code></pre></div><h2 id="fq"><a href="#fq" class="header-anchor">#</a> FQ</h2> <h3 id="linux离线安装v2ray客户端"><a href="#linux离线安装v2ray客户端" class="header-anchor">#</a> Linux离线安装v2ray客户端</h3> <blockquote><p>参考</p> <ol><li><a href="https://www.jansora.com/notes/166" target="_blank" rel="noopener noreferrer">v2ray离线安装<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ol></blockquote> <ol><li><p>先在有外网的环境下在下面两个文件</p> <ol><li>https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh</li> <li>https://github.com/v2fly/v2ray-core/releases/download/v4.40.1/v2ray-linux-64.zip</li> <li><a href="https://www.junz.org/post/v2_in_linux/" target="_blank" rel="noopener noreferrer">Linux下使用v2ray - Jun's Blog<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ol></li> <li><p>将文件传到机器上面</p></li> <li><div class="language-shell extra-class"><pre class="language-shell"><code><span class="token function">sudo</span> <span class="token function">bash</span> install-release.sh --local ./v2ray-linux-64.zip --version v4.40.1
+<span class="token function">vim</span> /usr/local/etc/v2ray/config.json
+<span class="token comment"># 粘贴config.json的内容到这里</span>
+systemctl <span class="token builtin class-name">enable</span> v2ray
+systemctl restart v2ray
+<span class="token comment"># 产看是否能返回数据</span>
+<span class="token function">curl</span> -x https://127.0.0.1:1087 https://www.google.com  -v
+</code></pre></div></li> <li><p><img src="https://static.lovedata.net/21-07-21-dc84bf457bb8c73fffbd315197fdb58e.png" alt="image"></p></li></ol> <h3 id="linux下离线安装proxychains4"><a href="#linux下离线安装proxychains4" class="header-anchor">#</a> Linux下离线安装proxychains4</h3> <blockquote><p>参考</p> <ol><li>https://github.com/rofl0r/proxychains-ng</li> <li><a href="https://www.cnblogs.com/BOHB-yunying/articles/12205099.html" target="_blank" rel="noopener noreferrer">Centos 7安装Proxychains实现Linux 代理 - yunying - 博客园<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ol></blockquote> <ol><li><div class="language-shell extra-class"><pre class="language-shell"><code><span class="token comment"># 下载，如果下载不了，浏览器下载</span>
+<span class="token function">git</span> clone https://github.com/rofl0r/proxychains-ng
+<span class="token builtin class-name">cd</span> proxychains-ng
+./configure --prefix<span class="token operator">=</span>/usr --sysconfdir<span class="token operator">=</span>/etc
+<span class="token function">make</span> 
+<span class="token function">make</span> <span class="token function">install</span>
+<span class="token function">make</span> install-config
+<span class="token builtin class-name">cd</span> <span class="token punctuation">..</span> <span class="token operator">&amp;&amp;</span> <span class="token function">rm</span> -rf proxychains-ng
+<span class="token comment"># make: cc: Command not found  使用</span>
+yum  <span class="token function">install</span>  gcc
+</code></pre></div></li> <li><div class="language-shell extra-class"><pre class="language-shell"><code><span class="token comment"># 添加配置 </span>
+<span class="token function">vim</span> /etc/proxychains.conf
+socks5          <span class="token number">127.0</span>.0.1 <span class="token number">1080</span>
+</code></pre></div></li></ol></div> <footer class="page-edit"><div class="edit-link"><a href="https://github.com/pengshuangbao/databook/edit/master/docs/ops/README.md" target="_blank" rel="noopener noreferrer">Edit this page on GitHub</a> <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></div> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">2023/4/14 16:56:47</span></div></footer> <div class="page-nav"><p class="inner"><!----> <span class="next"><a href="/ops/java.html">
+        Java
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"><!----><!----></div></div>
+    <script src="/assets/js/app.0f56a723.js" defer></script><script src="/assets/js/4.a8ef5668.js" defer></script><script src="/assets/js/178.af1a44e8.js" defer></script><script src="/assets/js/11.0473ae06.js" defer></script>
+  </body>
+</html>

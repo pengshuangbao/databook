@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>JVM运行时参数 | 编程手册</title>
+    <meta name="generator" content="VuePress 1.7.1">
+    <link rel="icon" href="/logo.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon-152x152.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#3eaf7c">
+    <meta name="description" content="苍穹浩渺,取之须臾">
+    <meta name="theme-color" content="#3eaf7c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="msapplication-TileImage" content="/icons/msapplication-icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#000000">
+    
+    <link rel="preload" href="/assets/css/0.styles.225a8ff9.css" as="style"><link rel="preload" href="/assets/js/app.0f56a723.js" as="script"><link rel="preload" href="/assets/js/4.a8ef5668.js" as="script"><link rel="preload" href="/assets/js/172.7f7ab109.js" as="script"><link rel="preload" href="/assets/js/11.0473ae06.js" as="script"><link rel="prefetch" href="/assets/js/10.06cc4fbb.js"><link rel="prefetch" href="/assets/js/100.79e96d05.js"><link rel="prefetch" href="/assets/js/101.bcac0b9f.js"><link rel="prefetch" href="/assets/js/102.c5d92a95.js"><link rel="prefetch" href="/assets/js/103.697856ab.js"><link rel="prefetch" href="/assets/js/104.8f2db4d2.js"><link rel="prefetch" href="/assets/js/105.d4f2bb07.js"><link rel="prefetch" href="/assets/js/106.1a533c3f.js"><link rel="prefetch" href="/assets/js/107.b2845ea0.js"><link rel="prefetch" href="/assets/js/108.226e46ed.js"><link rel="prefetch" href="/assets/js/109.0de9c16c.js"><link rel="prefetch" href="/assets/js/110.4657c34b.js"><link rel="prefetch" href="/assets/js/111.3409d3a7.js"><link rel="prefetch" href="/assets/js/112.a46b486c.js"><link rel="prefetch" href="/assets/js/113.ba001fa9.js"><link rel="prefetch" href="/assets/js/114.ad1e6ba1.js"><link rel="prefetch" href="/assets/js/115.a0ac732f.js"><link rel="prefetch" href="/assets/js/116.4ee2a7b2.js"><link rel="prefetch" href="/assets/js/117.a76fd29a.js"><link rel="prefetch" href="/assets/js/118.83c5badf.js"><link rel="prefetch" href="/assets/js/119.09fec567.js"><link rel="prefetch" href="/assets/js/12.286e979d.js"><link rel="prefetch" href="/assets/js/120.42120fe1.js"><link rel="prefetch" href="/assets/js/121.9d79a9dd.js"><link rel="prefetch" href="/assets/js/122.f71a459c.js"><link rel="prefetch" href="/assets/js/123.b75308dc.js"><link rel="prefetch" href="/assets/js/124.e4d4643b.js"><link rel="prefetch" href="/assets/js/125.73fc990d.js"><link rel="prefetch" href="/assets/js/126.3b0eccd0.js"><link rel="prefetch" href="/assets/js/127.3eb3ab27.js"><link rel="prefetch" href="/assets/js/128.64ba68bb.js"><link rel="prefetch" href="/assets/js/129.82cfac7a.js"><link rel="prefetch" href="/assets/js/13.7207d991.js"><link rel="prefetch" href="/assets/js/130.42811f32.js"><link rel="prefetch" href="/assets/js/131.6f498e16.js"><link rel="prefetch" href="/assets/js/132.f0cc9ad2.js"><link rel="prefetch" href="/assets/js/133.325e755a.js"><link rel="prefetch" href="/assets/js/134.076a808c.js"><link rel="prefetch" href="/assets/js/135.fad7be83.js"><link rel="prefetch" href="/assets/js/136.042fc555.js"><link rel="prefetch" href="/assets/js/137.b67b55bc.js"><link rel="prefetch" href="/assets/js/138.6476c99f.js"><link rel="prefetch" href="/assets/js/139.ad07500f.js"><link rel="prefetch" href="/assets/js/14.a1cb7c1b.js"><link rel="prefetch" href="/assets/js/140.3edd2237.js"><link rel="prefetch" href="/assets/js/141.5181db27.js"><link rel="prefetch" href="/assets/js/142.67b4c4a2.js"><link rel="prefetch" href="/assets/js/143.9d249a3f.js"><link rel="prefetch" href="/assets/js/144.e6db5540.js"><link rel="prefetch" href="/assets/js/145.5b4305a7.js"><link rel="prefetch" href="/assets/js/146.bc674178.js"><link rel="prefetch" href="/assets/js/147.964ff3df.js"><link rel="prefetch" href="/assets/js/148.570b6864.js"><link rel="prefetch" href="/assets/js/149.4b9796c2.js"><link rel="prefetch" href="/assets/js/15.3cafda64.js"><link rel="prefetch" href="/assets/js/150.c677bf4b.js"><link rel="prefetch" href="/assets/js/151.b8977c93.js"><link rel="prefetch" href="/assets/js/152.535e2db4.js"><link rel="prefetch" href="/assets/js/153.754fc05e.js"><link rel="prefetch" href="/assets/js/154.5a5928b6.js"><link rel="prefetch" href="/assets/js/155.19893ca5.js"><link rel="prefetch" href="/assets/js/156.da1f2665.js"><link rel="prefetch" href="/assets/js/157.cb7b551f.js"><link rel="prefetch" href="/assets/js/158.f5d94a11.js"><link rel="prefetch" href="/assets/js/159.0b2b78d9.js"><link rel="prefetch" href="/assets/js/16.54ab9242.js"><link rel="prefetch" href="/assets/js/160.c2548b6c.js"><link rel="prefetch" href="/assets/js/161.8f694ed1.js"><link rel="prefetch" href="/assets/js/162.1adc1aa4.js"><link rel="prefetch" href="/assets/js/163.5688827c.js"><link rel="prefetch" href="/assets/js/164.8442474f.js"><link rel="prefetch" href="/assets/js/165.d0e21e5c.js"><link rel="prefetch" href="/assets/js/166.2e90ae99.js"><link rel="prefetch" href="/assets/js/167.374185de.js"><link rel="prefetch" href="/assets/js/168.2426769f.js"><link rel="prefetch" href="/assets/js/169.829516d9.js"><link rel="prefetch" href="/assets/js/17.9cad59f9.js"><link rel="prefetch" href="/assets/js/170.db0c4609.js"><link rel="prefetch" href="/assets/js/171.7bdcc41b.js"><link rel="prefetch" href="/assets/js/173.c1d51df9.js"><link rel="prefetch" href="/assets/js/174.afa4c5f6.js"><link rel="prefetch" href="/assets/js/175.b46d9dd8.js"><link rel="prefetch" href="/assets/js/176.c38ba756.js"><link rel="prefetch" href="/assets/js/177.ba85b912.js"><link rel="prefetch" href="/assets/js/178.af1a44e8.js"><link rel="prefetch" href="/assets/js/179.e097e164.js"><link rel="prefetch" href="/assets/js/18.3776b09c.js"><link rel="prefetch" href="/assets/js/180.d9d5d80c.js"><link rel="prefetch" href="/assets/js/181.79401f8c.js"><link rel="prefetch" href="/assets/js/182.343db47f.js"><link rel="prefetch" href="/assets/js/183.005841bb.js"><link rel="prefetch" href="/assets/js/19.d0ac1e7f.js"><link rel="prefetch" href="/assets/js/20.e0100fb2.js"><link rel="prefetch" href="/assets/js/21.f59cd52c.js"><link rel="prefetch" href="/assets/js/22.3ecf54da.js"><link rel="prefetch" href="/assets/js/23.2508850b.js"><link rel="prefetch" href="/assets/js/24.0ac10322.js"><link rel="prefetch" href="/assets/js/25.7c3ee156.js"><link rel="prefetch" href="/assets/js/26.7021c42c.js"><link rel="prefetch" href="/assets/js/27.d716476b.js"><link rel="prefetch" href="/assets/js/28.58ebf808.js"><link rel="prefetch" href="/assets/js/29.88c37f6c.js"><link rel="prefetch" href="/assets/js/30.87bc4a91.js"><link rel="prefetch" href="/assets/js/31.a69c2a35.js"><link rel="prefetch" href="/assets/js/32.89f74912.js"><link rel="prefetch" href="/assets/js/33.df886872.js"><link rel="prefetch" href="/assets/js/34.835d0785.js"><link rel="prefetch" href="/assets/js/35.5e38ab06.js"><link rel="prefetch" href="/assets/js/36.5b639051.js"><link rel="prefetch" href="/assets/js/37.bb32ead0.js"><link rel="prefetch" href="/assets/js/38.c2541da0.js"><link rel="prefetch" href="/assets/js/39.3c8f0f06.js"><link rel="prefetch" href="/assets/js/40.4cc077aa.js"><link rel="prefetch" href="/assets/js/41.cbcd81a7.js"><link rel="prefetch" href="/assets/js/42.6d002f78.js"><link rel="prefetch" href="/assets/js/43.3f67c882.js"><link rel="prefetch" href="/assets/js/44.58ce7a4d.js"><link rel="prefetch" href="/assets/js/45.bfb9d6e0.js"><link rel="prefetch" href="/assets/js/46.691097de.js"><link rel="prefetch" href="/assets/js/47.e6b5c9b5.js"><link rel="prefetch" href="/assets/js/48.38159f5c.js"><link rel="prefetch" href="/assets/js/49.e03ce66a.js"><link rel="prefetch" href="/assets/js/5.340b4b76.js"><link rel="prefetch" href="/assets/js/50.7df345cb.js"><link rel="prefetch" href="/assets/js/51.b3eed5d5.js"><link rel="prefetch" href="/assets/js/52.bb282842.js"><link rel="prefetch" href="/assets/js/53.6b21ec8f.js"><link rel="prefetch" href="/assets/js/54.bab98944.js"><link rel="prefetch" href="/assets/js/55.59437904.js"><link rel="prefetch" href="/assets/js/56.18b88131.js"><link rel="prefetch" href="/assets/js/57.b0cbba56.js"><link rel="prefetch" href="/assets/js/58.d9379002.js"><link rel="prefetch" href="/assets/js/59.e8663882.js"><link rel="prefetch" href="/assets/js/6.c48e1ddb.js"><link rel="prefetch" href="/assets/js/60.0a00b724.js"><link rel="prefetch" href="/assets/js/61.cd09980d.js"><link rel="prefetch" href="/assets/js/62.b092ff62.js"><link rel="prefetch" href="/assets/js/63.86482c79.js"><link rel="prefetch" href="/assets/js/64.3c1ee4d2.js"><link rel="prefetch" href="/assets/js/65.0621decf.js"><link rel="prefetch" href="/assets/js/66.cf7a6241.js"><link rel="prefetch" href="/assets/js/67.99e103bc.js"><link rel="prefetch" href="/assets/js/68.b3589f28.js"><link rel="prefetch" href="/assets/js/69.f0932a12.js"><link rel="prefetch" href="/assets/js/7.0f410b85.js"><link rel="prefetch" href="/assets/js/70.0a941773.js"><link rel="prefetch" href="/assets/js/71.3a6c6141.js"><link rel="prefetch" href="/assets/js/72.2299ff58.js"><link rel="prefetch" href="/assets/js/73.544fe8c6.js"><link rel="prefetch" href="/assets/js/74.98219c05.js"><link rel="prefetch" href="/assets/js/75.244a9d80.js"><link rel="prefetch" href="/assets/js/76.cefd9fe2.js"><link rel="prefetch" href="/assets/js/77.59793840.js"><link rel="prefetch" href="/assets/js/78.a7d9a079.js"><link rel="prefetch" href="/assets/js/79.f9ec013d.js"><link rel="prefetch" href="/assets/js/8.269955a4.js"><link rel="prefetch" href="/assets/js/80.b0f2cbe5.js"><link rel="prefetch" href="/assets/js/81.3d245e9a.js"><link rel="prefetch" href="/assets/js/82.061b170d.js"><link rel="prefetch" href="/assets/js/83.d2c42148.js"><link rel="prefetch" href="/assets/js/84.f6f487a4.js"><link rel="prefetch" href="/assets/js/85.c5305650.js"><link rel="prefetch" href="/assets/js/86.0c30a2ef.js"><link rel="prefetch" href="/assets/js/87.d9a99f2e.js"><link rel="prefetch" href="/assets/js/88.03792030.js"><link rel="prefetch" href="/assets/js/89.95684850.js"><link rel="prefetch" href="/assets/js/9.5c3462fb.js"><link rel="prefetch" href="/assets/js/90.185b012e.js"><link rel="prefetch" href="/assets/js/91.d19f0020.js"><link rel="prefetch" href="/assets/js/92.9e7855de.js"><link rel="prefetch" href="/assets/js/93.1ee902df.js"><link rel="prefetch" href="/assets/js/94.4bfab4ad.js"><link rel="prefetch" href="/assets/js/95.5f0b1d15.js"><link rel="prefetch" href="/assets/js/96.bd50a446.js"><link rel="prefetch" href="/assets/js/97.749fd671.js"><link rel="prefetch" href="/assets/js/98.bc09c746.js"><link rel="prefetch" href="/assets/js/99.40f98e75.js"><link rel="prefetch" href="/assets/js/vendors~flowchart.98d8c7d3.js"><link rel="prefetch" href="/assets/js/vendors~notification.5515ddcd.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.225a8ff9.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">编程手册</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/java/" class="nav-link router-link-active">
+  Java
+</a></div><div class="nav-item"><a href="/bigdata/" class="nav-link">
+  大数据
+</a></div><div class="nav-item"><a href="/algorithm/" class="nav-link">
+  算法 
+</a></div><div class="nav-item"><a href="/architecture/" class="nav-link">
+  架构 
+</a></div><div class="nav-item"><a href="/computer/" class="nav-link">
+  计算机 
+</a></div><div class="nav-item"><a href="/database/" class="nav-link">
+  数据库 
+</a></div><div class="nav-item"><a href="/fe/" class="nav-link">
+  前端
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="运维 " class="dropdown-title"><span class="title">运维 </span> <span class="arrow down"></span></button> <button type="button" aria-label="运维 " class="mobile-dropdown-title"><span class="title">运维 </span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/ops/" class="nav-link">
+  基础
+</a></li><li class="dropdown-item"><h4>
+          分类
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/ops/java.html" class="nav-link">
+  Java
+</a></li><li class="dropdown-subitem"><a href="/ops/bigdata.html" class="nav-link">
+  大数据
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="编程" class="dropdown-title"><span class="title">编程</span> <span class="arrow down"></span></button> <button type="button" aria-label="编程" class="mobile-dropdown-title"><span class="title">编程</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          语言
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/programming/python.html" class="nav-link">
+  Python
+</a></li><li class="dropdown-subitem"><a href="/programming/scala.html" class="nav-link">
+  Scala
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="资源" class="dropdown-title"><span class="title">资源</span> <span class="arrow down"></span></button> <button type="button" aria-label="资源" class="mobile-dropdown-title"><span class="title">资源</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          我的书单
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/tech.html" class="nav-link">
+  技术类
+</a></li><li class="dropdown-subitem"><a href="/book/growth.html" class="nav-link">
+  成长类
+</a></li></ul></li><li class="dropdown-item"><h4>
+          网课
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/geek.html" class="nav-link">
+  专栏
+</a></li><li class="dropdown-subitem"><a href="/book/video.html" class="nav-link">
+  视频
+</a></li></ul></li><li class="dropdown-item"><h4>
+          面经
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/tech.html" class="nav-link">
+  大厂面经
+</a></li><li class="dropdown-subitem"><a href="/interview/sword-to-offer.html" class="nav-link">
+  剑指Offer
+</a></li><li class="dropdown-subitem"><a href="/interview/fe.html" class="nav-link">
+  前端面经
+</a></li><li class="dropdown-subitem"><a href="/interview/interview_guide.html" class="nav-link">
+  面试导航
+</a></li></ul></li><li class="dropdown-item"><h4>
+          其他
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/study.html" class="nav-link">
+  学习笔记
+</a></li></ul></li></ul></div></div> <a href="https://github.com/pengshuangbao/databook" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/java/" class="nav-link router-link-active">
+  Java
+</a></div><div class="nav-item"><a href="/bigdata/" class="nav-link">
+  大数据
+</a></div><div class="nav-item"><a href="/algorithm/" class="nav-link">
+  算法 
+</a></div><div class="nav-item"><a href="/architecture/" class="nav-link">
+  架构 
+</a></div><div class="nav-item"><a href="/computer/" class="nav-link">
+  计算机 
+</a></div><div class="nav-item"><a href="/database/" class="nav-link">
+  数据库 
+</a></div><div class="nav-item"><a href="/fe/" class="nav-link">
+  前端
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="运维 " class="dropdown-title"><span class="title">运维 </span> <span class="arrow down"></span></button> <button type="button" aria-label="运维 " class="mobile-dropdown-title"><span class="title">运维 </span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/ops/" class="nav-link">
+  基础
+</a></li><li class="dropdown-item"><h4>
+          分类
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/ops/java.html" class="nav-link">
+  Java
+</a></li><li class="dropdown-subitem"><a href="/ops/bigdata.html" class="nav-link">
+  大数据
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="编程" class="dropdown-title"><span class="title">编程</span> <span class="arrow down"></span></button> <button type="button" aria-label="编程" class="mobile-dropdown-title"><span class="title">编程</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          语言
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/programming/python.html" class="nav-link">
+  Python
+</a></li><li class="dropdown-subitem"><a href="/programming/scala.html" class="nav-link">
+  Scala
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="资源" class="dropdown-title"><span class="title">资源</span> <span class="arrow down"></span></button> <button type="button" aria-label="资源" class="mobile-dropdown-title"><span class="title">资源</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          我的书单
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/tech.html" class="nav-link">
+  技术类
+</a></li><li class="dropdown-subitem"><a href="/book/growth.html" class="nav-link">
+  成长类
+</a></li></ul></li><li class="dropdown-item"><h4>
+          网课
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/geek.html" class="nav-link">
+  专栏
+</a></li><li class="dropdown-subitem"><a href="/book/video.html" class="nav-link">
+  视频
+</a></li></ul></li><li class="dropdown-item"><h4>
+          面经
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/tech.html" class="nav-link">
+  大厂面经
+</a></li><li class="dropdown-subitem"><a href="/interview/sword-to-offer.html" class="nav-link">
+  剑指Offer
+</a></li><li class="dropdown-subitem"><a href="/interview/fe.html" class="nav-link">
+  前端面经
+</a></li><li class="dropdown-subitem"><a href="/interview/interview_guide.html" class="nav-link">
+  面试导航
+</a></li></ul></li><li class="dropdown-item"><h4>
+          其他
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/study.html" class="nav-link">
+  学习笔记
+</a></li></ul></li></ul></div></div> <a href="https://github.com/pengshuangbao/databook" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <ul class="sidebar-links"><li><a href="/java/" aria-current="page" class="sidebar-link">Java</a></li><li><a href="/java/jvm.html" class="sidebar-link">JVM</a></li><li><a href="/java/coding.html" class="sidebar-link">编程</a></li><li><a href="/java/多线程.html" class="sidebar-link">多线程</a></li><li><a href="/java/java.html" class="sidebar-link">Java基础</a></li><li><a href="/java/java核心技术.html" class="sidebar-link">Java核心技术</a></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>jvm内存与垃圾回收</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>jvm字节码与类</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>jvm性能监控与调优</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/java/jvm性能监控与调优/01概述篇.html" class="sidebar-link">1. 概述篇</a></li><li><a href="/java/jvm性能监控与调优/02JVM监控及诊断工具-命令行篇.html" class="sidebar-link">2. JVM监控及诊断工具-命令行篇</a></li><li><a href="/java/jvm性能监控与调优/03JVM监控及诊断工具-GUI篇.html" class="sidebar-link">JVM监控及诊断工具-GUI篇</a></li><li><a href="/java/jvm性能监控与调优/04JVM运行时参数.html" class="active sidebar-link">JVM运行时参数</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/java/jvm性能监控与调优/04JVM运行时参数.html#_4-1-jvm参数选项" class="sidebar-link">4.1. JVM参数选项</a></li><li class="sidebar-sub-header"><a href="/java/jvm性能监控与调优/04JVM运行时参数.html#_4-2-添加jvm参数选项" class="sidebar-link">4.2. 添加JVM参数选项</a></li><li class="sidebar-sub-header"><a href="/java/jvm性能监控与调优/04JVM运行时参数.html#_4-3-常用的jvm参数选项" class="sidebar-link">4.3. 常用的JVM参数选项</a></li><li class="sidebar-sub-header"><a href="/java/jvm性能监控与调优/04JVM运行时参数.html#_4-4-通过java代码获取jvm参数" class="sidebar-link">4.4. 通过Java代码获取JVM参数</a></li></ul></li><li><a href="/java/jvm性能监控与调优/05分析GC日志.html" class="sidebar-link">5. 分析GC日志</a></li><li><a href="/java/jvm性能监控与调优/补充-使用OQL语言查询对象信息.html" class="sidebar-link">补充：使用OQL语言查询对象信息</a></li><li><a href="/java/jvm性能监控与调优/补充-浅堆深堆与内存泄露.html" class="sidebar-link">补充：浅堆深堆与内存泄露</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="jvm运行时参数"><a href="#jvm运行时参数" class="header-anchor">#</a> JVM运行时参数</h1> <p></p><div class="table-of-contents"><ul><li><a href="#_4-1-jvm参数选项">4.1. JVM参数选项</a><ul><li><a href="#_4-1-1-类型一-标准参数选项">4.1.1. 类型一：标准参数选项</a></li><li><a href="#_4-1-2-类型二-x参数选项">4.1.2. 类型二：-X参数选项</a></li><li><a href="#_4-1-3-类型三-xx参数选项">4.1.3. 类型三：-XX参数选项</a></li></ul></li><li><a href="#_4-2-添加jvm参数选项">4.2. 添加JVM参数选项</a></li><li><a href="#_4-3-常用的jvm参数选项">4.3. 常用的JVM参数选项</a><ul><li><a href="#_4-3-1-打印设置的xx选项及值">4.3.1. 打印设置的XX选项及值</a></li><li><a href="#_4-3-2-堆、栈、方法区等内存大小设置">4.3.2. 堆、栈、方法区等内存大小设置</a></li><li><a href="#_4-3-3-outofmemory相关的选项">4.3.3. OutOfMemory相关的选项</a></li><li><a href="#_4-3-4-垃圾收集器相关选项">4.3.4. 垃圾收集器相关选项</a></li><li><a href="#_4-3-5-gc日志相关选项">4.3.5. GC日志相关选项</a></li><li><a href="#_4-3-6-其他参数">4.3.6. 其他参数</a></li></ul></li><li><a href="#_4-4-通过java代码获取jvm参数">4.4. 通过Java代码获取JVM参数</a></li></ul></div><p></p> <h2 id="_4-1-jvm参数选项"><a href="#_4-1-jvm参数选项" class="header-anchor">#</a> 4.1. JVM参数选项</h2> <p>官网地址：<a href="https://docs.oracle.com/javase/8/docs/technotes/tools/windows/java.html" target="_blank" rel="noopener noreferrer">https://docs.oracle.com/javase/8/docs/technotes/tools/windows/java.html<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <h3 id="_4-1-1-类型一-标准参数选项"><a href="#_4-1-1-类型一-标准参数选项" class="header-anchor">#</a> 4.1.1. 类型一：标准参数选项</h3> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token operator">&gt;</span> java -help
+用法: java <span class="token punctuation">[</span>-options<span class="token punctuation">]</span> class <span class="token punctuation">[</span>args<span class="token punctuation">..</span>.<span class="token punctuation">]</span>
+           <span class="token punctuation">(</span>执行类<span class="token punctuation">)</span>
+   或  java <span class="token punctuation">[</span>-options<span class="token punctuation">]</span> -jar jarfile <span class="token punctuation">[</span>args<span class="token punctuation">..</span>.<span class="token punctuation">]</span>
+           <span class="token punctuation">(</span>执行 jar 文件<span class="token punctuation">)</span>
+其中选项包括:
+    -d32          使用 <span class="token number">32</span> 位数据模型 <span class="token punctuation">(</span>如果可用<span class="token punctuation">)</span>
+    -d64          使用 <span class="token number">64</span> 位数据模型 <span class="token punctuation">(</span>如果可用<span class="token punctuation">)</span>
+    -server       选择 <span class="token string">&quot;server&quot;</span> VM
+                  默认 VM 是 server.
+
+    -cp <span class="token operator">&lt;</span>目录和 zip/jar 文件的类搜索路径<span class="token operator">&gt;</span>
+    -classpath <span class="token operator">&lt;</span>目录和 zip/jar 文件的类搜索路径<span class="token operator">&gt;</span>
+                  用 <span class="token punctuation">;</span> 分隔的目录, JAR 档案
+                  和 ZIP 档案列表, 用于搜索类文件。
+    -D<span class="token operator">&lt;</span>名称<span class="token operator">&gt;</span><span class="token operator">=</span><span class="token operator">&lt;</span>值<span class="token operator">&gt;</span>
+                  设置系统属性
+    -verbose:<span class="token punctuation">[</span>class<span class="token operator">|</span>gc<span class="token operator">|</span>jni<span class="token punctuation">]</span>
+                  启用详细输出
+    -version      输出产品版本并退出
+    -version:<span class="token operator">&lt;</span>值<span class="token operator">&gt;</span>
+                  警告: 此功能已过时, 将在
+                  未来发行版中删除。
+                  需要指定的版本才能运行
+    -showversion  输出产品版本并继续
+    -jre-restrict-search <span class="token operator">|</span> -no-jre-restrict-search
+                  警告: 此功能已过时, 将在
+                  未来发行版中删除。
+                  在版本搜索中包括/排除用户专用 JRE
+    -? -help      输出此帮助消息
+    -X            输出非标准选项的帮助
+    -ea<span class="token punctuation">[</span>:<span class="token operator">&lt;</span>packagename<span class="token operator">&gt;</span><span class="token punctuation">..</span>.<span class="token operator">|</span>:<span class="token operator">&lt;</span>classname<span class="token operator">&gt;</span><span class="token punctuation">]</span>
+    -enableassertions<span class="token punctuation">[</span>:<span class="token operator">&lt;</span>packagename<span class="token operator">&gt;</span><span class="token punctuation">..</span>.<span class="token operator">|</span>:<span class="token operator">&lt;</span>classname<span class="token operator">&gt;</span><span class="token punctuation">]</span>
+                  按指定的粒度启用断言
+    -da<span class="token punctuation">[</span>:<span class="token operator">&lt;</span>packagename<span class="token operator">&gt;</span><span class="token punctuation">..</span>.<span class="token operator">|</span>:<span class="token operator">&lt;</span>classname<span class="token operator">&gt;</span><span class="token punctuation">]</span>
+    -disableassertions<span class="token punctuation">[</span>:<span class="token operator">&lt;</span>packagename<span class="token operator">&gt;</span><span class="token punctuation">..</span>.<span class="token operator">|</span>:<span class="token operator">&lt;</span>classname<span class="token operator">&gt;</span><span class="token punctuation">]</span>
+                  禁用具有指定粒度的断言
+    -esa <span class="token operator">|</span> -enablesystemassertions
+                  启用系统断言
+    -dsa <span class="token operator">|</span> -disablesystemassertions
+                  禁用系统断言
+    -agentlib:<span class="token operator">&lt;</span>libname<span class="token operator">&gt;</span><span class="token punctuation">[</span><span class="token operator">=</span><span class="token operator">&lt;</span>选项<span class="token operator">&gt;</span><span class="token punctuation">]</span>
+                  加载本机代理库 <span class="token operator">&lt;</span>libname<span class="token operator">&gt;</span>, 例如 -agentlib:hprof
+                  另请参阅 -agentlib:jdwp<span class="token operator">=</span>help 和 -agentlib:hprof<span class="token operator">=</span>help
+    -agentpath:<span class="token operator">&lt;</span>pathname<span class="token operator">&gt;</span><span class="token punctuation">[</span><span class="token operator">=</span><span class="token operator">&lt;</span>选项<span class="token operator">&gt;</span><span class="token punctuation">]</span>
+                  按完整路径名加载本机代理库
+    -javaagent:<span class="token operator">&lt;</span>jarpath<span class="token operator">&gt;</span><span class="token punctuation">[</span><span class="token operator">=</span><span class="token operator">&lt;</span>选项<span class="token operator">&gt;</span><span class="token punctuation">]</span>
+                  加载 Java 编程语言代理, 请参阅 java.lang.instrument
+    -splash:<span class="token operator">&lt;</span>imagepath<span class="token operator">&gt;</span>
+                  使用指定的图像显示启动屏幕
+有关详细信息, 请参阅 http://www.oracle.com/technetwork/java/javase/documentation/index.html。
+</code></pre></div><p><strong>Server模式和Client模式</strong></p> <p>Hotspot JVM有两种模式，分别是server和client，分别通过-server和-client模式设置</p> <ul><li>32位系统上，默认使用Client类型的JVM。要想使用Server模式，机器配置至少有2个以上的CPU和2G以上的物理内存。client模式适用于对内存要求较小的桌面应用程序，默认使用Serial串行垃圾收集器</li> <li>64位系统上，只支持server模式的JVM，适用于需要大内存的应用程序，默认使用并行垃圾收集器</li></ul> <p>官网地址：<a href="https://docs.oracle.com/javase/8/docs/technotes/guides/vm/server-class.html" target="_blank" rel="noopener noreferrer">https://docs.oracle.com/javase/8/docs/technotes/guides/vm/server-class.html<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <p>如何知道系统默认使用的是那种模式呢？</p> <p>通过java -version命令：可以看到Server VM字样，代表当前系统使用是Server模式</p> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token operator">&gt;</span> java -version
+java version <span class="token string">&quot;1.8.0_201&quot;</span>
+Java<span class="token punctuation">(</span>TM<span class="token punctuation">)</span> SE Runtime Environment <span class="token punctuation">(</span>build <span class="token number">1.8</span>.0_201-b09<span class="token punctuation">)</span>
+Java HotSpot<span class="token punctuation">(</span>TM<span class="token punctuation">)</span> <span class="token number">64</span>-Bit Server VM <span class="token punctuation">(</span>build <span class="token number">25.201</span>-b09, mixed mode<span class="token punctuation">)</span>
+</code></pre></div><h3 id="_4-1-2-类型二-x参数选项"><a href="#_4-1-2-类型二-x参数选项" class="header-anchor">#</a> 4.1.2. 类型二：-X参数选项</h3> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token operator">&gt;</span> java -X
+    -Xmixed           混合模式执行 <span class="token punctuation">(</span>默认<span class="token punctuation">)</span>
+    -Xint             仅解释模式执行
+    -Xbootclasspath:<span class="token operator">&lt;</span>用 <span class="token punctuation">;</span> 分隔的目录和 zip/jar 文件<span class="token operator">&gt;</span>
+                      设置搜索路径以引导类和资源
+    -Xbootclasspath/a:<span class="token operator">&lt;</span>用 <span class="token punctuation">;</span> 分隔的目录和 zip/jar 文件<span class="token operator">&gt;</span>
+                      附加在引导类路径末尾
+    -Xbootclasspath/p:<span class="token operator">&lt;</span>用 <span class="token punctuation">;</span> 分隔的目录和 zip/jar 文件<span class="token operator">&gt;</span>
+                      置于引导类路径之前
+    -Xdiag            显示附加诊断消息
+    -Xnoclassgc       禁用类垃圾收集
+    -Xincgc           启用增量垃圾收集
+    -Xloggc:<span class="token operator">&lt;</span>file<span class="token operator">&gt;</span>    将 GC 状态记录在文件中 <span class="token punctuation">(</span>带时间戳<span class="token punctuation">)</span>
+    -Xbatch           禁用后台编译
+    -Xms<span class="token operator">&lt;</span>size<span class="token operator">&gt;</span>        设置初始 Java 堆大小
+    -Xmx<span class="token operator">&lt;</span>size<span class="token operator">&gt;</span>        设置最大 Java 堆大小
+    -Xss<span class="token operator">&lt;</span>size<span class="token operator">&gt;</span>        设置 Java 线程堆栈大小
+    -Xprof            输出 cpu 配置文件数据
+    -Xfuture          启用最严格的检查, 预期将来的默认值
+    -Xrs              减少 Java/VM 对操作系统信号的使用 <span class="token punctuation">(</span>请参阅文档<span class="token punctuation">)</span>
+    -Xcheck:jni       对 JNI 函数执行其他检查
+    -Xshare:off       不尝试使用共享类数据
+    -Xshare:auto      在可能的情况下使用共享类数据 <span class="token punctuation">(</span>默认<span class="token punctuation">)</span>
+    -Xshare:on        要求使用共享类数据, 否则将失败。
+    -XshowSettings    显示所有设置并继续
+    -XshowSettings:all
+                      显示所有设置并继续
+    -XshowSettings:vm 显示所有与 vm 相关的设置并继续
+    -XshowSettings:properties
+                      显示所有属性设置并继续
+    -XshowSettings:locale
+                      显示所有与区域设置相关的设置并继续
+
+-X 选项是非标准选项, 如有更改, 恕不另行通知。
+</code></pre></div><p>如何知道JVM默认使用的是混合模式呢？</p> <p>同样地，通过java -version命令：可以看到 mixed mode 字样，代表当前系统使用的是混合模式</p> <h3 id="_4-1-3-类型三-xx参数选项"><a href="#_4-1-3-类型三-xx参数选项" class="header-anchor">#</a> 4.1.3. 类型三：-XX参数选项</h3> <p><strong>Boolean类型格式</strong></p> <div class="language-shell extra-class"><pre class="language-shell"><code>-XX:+<span class="token operator">&lt;</span>option<span class="token operator">&gt;</span>  启用option属性
+-XX:-<span class="token operator">&lt;</span>option<span class="token operator">&gt;</span>  禁用option属性
+</code></pre></div><p><strong>非Boolean类型格式</strong></p> <div class="language-shell extra-class"><pre class="language-shell"><code>-XX:<span class="token operator">&lt;</span>option<span class="token operator">&gt;</span><span class="token operator">=</span><span class="token operator">&lt;</span>number<span class="token operator">&gt;</span>  设置option数值，可以带单位如k/K/m/M/g/G
+-XX:<span class="token operator">&lt;</span>option<span class="token operator">&gt;</span><span class="token operator">=</span><span class="token operator">&lt;</span>string<span class="token operator">&gt;</span>  设置option字符值
+</code></pre></div><h2 id="_4-2-添加jvm参数选项"><a href="#_4-2-添加jvm参数选项" class="header-anchor">#</a> 4.2. 添加JVM参数选项</h2> <p>eclipse和idea中配置不必多说，在Run Configurations中VM Options中配置即可，大同小异</p> <p><strong>运行jar包</strong></p> <div class="language-shell extra-class"><pre class="language-shell"><code>java -Xms100m -Xmx100m -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -jar demo.jar
+</code></pre></div><p><strong>Tomcat运行war包</strong></p> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token comment"># linux下catalina.sh添加</span>
+<span class="token assign-left variable">JAVA_OPTS</span><span class="token operator">=</span><span class="token string">&quot;-Xms512M -Xmx1024M&quot;</span>
+<span class="token comment"># windows下catalina.bat添加</span>
+<span class="token builtin class-name">set</span> <span class="token string">&quot;JAVA_OPTS=-Xms512M -Xmx1024M&quot;</span>
+</code></pre></div><p><strong>程序运行中</strong></p> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token comment"># 设置Boolean类型参数</span>
+jinfo -flag <span class="token punctuation">[</span>+<span class="token operator">|</span>-<span class="token punctuation">]</span><span class="token operator">&lt;</span>name<span class="token operator">&gt;</span> <span class="token operator">&lt;</span>pid<span class="token operator">&gt;</span>
+<span class="token comment"># 设置非Boolean类型参数</span>
+jinfo -flag <span class="token operator">&lt;</span>name<span class="token operator">&gt;</span><span class="token operator">=</span><span class="token operator">&lt;</span>value<span class="token operator">&gt;</span> <span class="token operator">&lt;</span>pid<span class="token operator">&gt;</span>
+</code></pre></div><h2 id="_4-3-常用的jvm参数选项"><a href="#_4-3-常用的jvm参数选项" class="header-anchor">#</a> 4.3. 常用的JVM参数选项</h2> <h3 id="_4-3-1-打印设置的xx选项及值"><a href="#_4-3-1-打印设置的xx选项及值" class="header-anchor">#</a> 4.3.1. 打印设置的XX选项及值</h3> <div class="language-shell extra-class"><pre class="language-shell"><code>-XX:+PrintCommandLineFlags 程序运行时JVM默认设置或用户手动设置的XX选项
+-XX:+PrintFlagsInitial 打印所有XX选项的默认值
+-XX:+PrintFlagsFinal 打印所有XX选项的实际值
+-XX:+PrintVMOptions 打印JVM的参数
+</code></pre></div><h3 id="_4-3-2-堆、栈、方法区等内存大小设置"><a href="#_4-3-2-堆、栈、方法区等内存大小设置" class="header-anchor">#</a> 4.3.2. 堆、栈、方法区等内存大小设置</h3> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token comment"># 栈</span>
+-Xss128k <span class="token operator">&lt;</span><span class="token operator">==</span><span class="token operator">&gt;</span> -XX:ThreadStackSize<span class="token operator">=</span>128k 设置线程栈的大小为128K
+
+<span class="token comment"># 堆</span>
+-Xms2048m <span class="token operator">&lt;</span><span class="token operator">==</span><span class="token operator">&gt;</span> -XX:InitialHeapSize<span class="token operator">=</span>2048m 设置JVM初始堆内存为2048M
+-Xmx2048m <span class="token operator">&lt;</span><span class="token operator">==</span><span class="token operator">&gt;</span> -XX:MaxHeapSize<span class="token operator">=</span>2048m 设置JVM最大堆内存为2048M
+-Xmn2g <span class="token operator">&lt;</span><span class="token operator">==</span><span class="token operator">&gt;</span> -XX:NewSize<span class="token operator">=</span>2g -XX:MaxNewSize<span class="token operator">=</span>2g 设置年轻代大小为2G
+-XX:SurvivorRatio<span class="token operator">=</span><span class="token number">8</span> 设置Eden区与Survivor区的比值，默认为8
+-XX:NewRatio<span class="token operator">=</span><span class="token number">2</span> 设置老年代与年轻代的比例，默认为2
+-XX:+UseAdaptiveSizePolicy 设置大小比例自适应，默认开启
+-XX:PretenureSizeThreadshold<span class="token operator">=</span><span class="token number">1024</span> 设置让大于此阈值的对象直接分配在老年代，只对Serial、ParNew收集器有效
+-XX:MaxTenuringThreshold<span class="token operator">=</span><span class="token number">15</span> 设置新生代晋升老年代的年龄限制，默认为15
+-XX:TargetSurvivorRatio 设置MinorGC结束后Survivor区占用空间的期望比例
+
+<span class="token comment"># 方法区</span>
+-XX:MetaspaceSize / -XX:PermSize<span class="token operator">=</span>256m 设置元空间/永久代初始值为256M
+-XX:MaxMetaspaceSize / -XX:MaxPermSize<span class="token operator">=</span>256m 设置元空间/永久代最大值为256M
+-XX:+UseCompressedOops 使用压缩对象
+-XX:+UseCompressedClassPointers 使用压缩类指针
+-XX:CompressedClassSpaceSize 设置Klass Metaspace的大小，默认1G
+
+<span class="token comment"># 直接内存</span>
+-XX:MaxDirectMemorySize 指定DirectMemory容量，默认等于Java堆最大值
+</code></pre></div><h3 id="_4-3-3-outofmemory相关的选项"><a href="#_4-3-3-outofmemory相关的选项" class="header-anchor">#</a> 4.3.3. OutOfMemory相关的选项</h3> <div class="language-shell extra-class"><pre class="language-shell"><code>-XX:+HeapDumpOnOutMemoryError 内存出现OOM时生成Heap转储文件，两者互斥
+-XX:+HeapDumpBeforeFullGC 出现FullGC时生成Heap转储文件，两者互斥
+-XX:HeapDumpPath<span class="token operator">=</span><span class="token operator">&lt;</span>path<span class="token operator">&gt;</span> 指定heap转储文件的存储路径，默认当前目录
+-XX:OnOutOfMemoryError<span class="token operator">=</span><span class="token operator">&lt;</span>path<span class="token operator">&gt;</span> 指定可行性程序或脚本的路径，当发生OOM时执行脚本
+</code></pre></div><h3 id="_4-3-4-垃圾收集器相关选项"><a href="#_4-3-4-垃圾收集器相关选项" class="header-anchor">#</a> 4.3.4. 垃圾收集器相关选项</h3> <p>首先需了解垃圾收集器之间的搭配使用关系</p> <ul><li>红色虚线表示在jdk8时被Deprecate，jdk9时被删除</li> <li>绿色虚线表示在jdk14时被Deprecate</li> <li>绿色虚框表示在jdk9时被Deprecate，jdk14时被删除</li></ul> <p><img src="https://static.lovedata.net/zs/20210506182504.png" alt="image-20210506182458663"></p> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token comment"># Serial回收器</span>
+-XX:+UseSerialGC  年轻代使用Serial GC， 老年代使用Serial Old GC
+<span class="token comment"># ParNew回收器</span>
+-XX:+UseParNewGC  年轻代使用ParNew GC
+-XX:ParallelGCThreads  设置年轻代并行收集器的线程数。
+	一般地，最好与CPU数量相等，以避免过多的线程数影响垃圾收集性能。
+</code></pre></div><p>$$
+ParallelGCThreads =
+\begin{cases}
+CPU_Count &amp; \text (CPU_Count &lt;= 8) \
+3 + (5 * CPU＿Count / 8) &amp; \text (CPU_Count &gt; 8)
+\end{cases}
+$$</p> <div class="language-shell extra-class"><pre class="language-shell"><code><span class="token comment"># Parallel回收器</span>
+-XX:+UseParallelGC  年轻代使用 Parallel Scavenge GC，互相激活
+-XX:+UseParallelOldGC  老年代使用 Parallel Old GC，互相激活
+-XX:ParallelGCThreads
+-XX:MaxGCPauseMillis  设置垃圾收集器最大停顿时间（即STW的时间），单位是毫秒。
+	为了尽可能地把停顿时间控制在MaxGCPauseMills以内，收集器在工作时会调整Java堆大小或者其他一些参数。
+	对于用户来讲，停顿时间越短体验越好；但是服务器端注重高并发，整体的吞吐量。
+	所以服务器端适合Parallel，进行控制。该参数使用需谨慎。
+-XX:GCTimeRatio  垃圾收集时间占总时间的比例（1 / <span class="token punctuation">(</span>N＋1<span class="token punctuation">)</span>），用于衡量吞吐量的大小
+	取值范围（0,100），默认值99，也就是垃圾回收时间不超过1％。
+	与前一个-XX：MaxGCPauseMillis参数有一定矛盾性。暂停时间越长，Radio参数就容易超过设定的比例。
+-XX:+UseAdaptiveSizePolicy  设置Parallel Scavenge收集器具有自适应调节策略。
+	在这种模式下，年轻代的大小、Eden和Survivor的比例、晋升老年代的对象年龄等参数会被自动调整，以达到在堆大小、吞吐量和停顿时间之间的平衡点。
+	在手动调优比较困难的场合，可以直接使用这种自适应的方式，仅指定虚拟机的最大堆、目标的吞吐量（GCTimeRatio）和停顿时间（MaxGCPauseMills），让虚拟机自己完成调优工作。
+</code></pre></div><div class="language-shell extra-class"><pre class="language-shell"><code><span class="token comment"># CMS回收器</span>
+-XX:+UseConcMarkSweepGC  年轻代使用CMS GC。
+	开启该参数后会自动将-XX：＋UseParNewGC打开。即：ParNew（Young区）+ CMS（Old区）+ Serial Old的组合
+-XX:CMSInitiatingOccupanyFraction  设置堆内存使用率的阈值，一旦达到该阈值，便开始进行回收。JDK5及以前版本的默认值为68，DK6及以上版本默认值为92％。
+	如果内存增长缓慢，则可以设置一个稍大的值，大的阈值可以有效降低CMS的触发频率，减少老年代回收的次数可以较为明显地改善应用程序性能。
+	反之，如果应用程序内存使用率增长很快，则应该降低这个阈值，以避免频繁触发老年代串行收集器。
+	因此通过该选项便可以有效降低Fu1l GC的执行次数。
+-XX:+UseCMSInitiatingOccupancyOnly  是否动态可调，使CMS一直按CMSInitiatingOccupancyFraction设定的值启动
+-XX:+UseCMSCompactAtFullCollection  用于指定在执行完Full GC后对内存空间进行压缩整理
+	以此避免内存碎片的产生。不过由于内存压缩整理过程无法并发执行，所带来的问题就是停顿时间变得更长了。
+-XX:CMSFullGCsBeforeCompaction  设置在执行多少次Full GC后对内存空间进行压缩整理。
+-XX:ParallelCMSThreads  设置CMS的线程数量。
+	CMS 默认启动的线程数是<span class="token punctuation">(</span>ParallelGCThreads＋3<span class="token punctuation">)</span>/4，ParallelGCThreads 是年轻代并行收集器的线程数。
+	当CPU 资源比较紧张时，受到CMS收集器线程的影响，应用程序的性能在垃圾回收阶段可能会非常糟糕。
+-XX:ConcGCThreads  设置并发垃圾收集的线程数，默认该值是基于ParallelGCThreads计算出来的
+-XX:+CMSScavengeBeforeRemark  强制hotspot在cms remark阶段之前做一次minor gc，用于提高remark阶段的速度
+-XX:+CMSClassUnloadingEnable  如果有的话，启用回收Perm 区（JDK8之前）
+-XX:+CMSParallelInitialEnabled  用于开启CMS initial-mark阶段采用多线程的方式进行标记
+	用于提高标记速度，在Java8开始已经默认开启
+-XX:+CMSParallelRemarkEnabled  用户开启CMS remark阶段采用多线程的方式进行重新标记，默认开启
+-XX:+ExplicitGCInvokesConcurrent
+-XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses
+	这两个参数用户指定hotspot虚拟在执行System.gc<span class="token punctuation">(</span><span class="token punctuation">)</span>时使用CMS周期
+-XX:+CMSPrecleaningEnabled  指定CMS是否需要进行Pre cleaning阶段	
+</code></pre></div><div class="language-shell extra-class"><pre class="language-shell"><code><span class="token comment"># G1回收器</span>
+-XX:+UseG1GC 手动指定使用G1收集器执行内存回收任务。
+-XX:G1HeapRegionSize 设置每个Region的大小。
+	值是2的幂，范围是1MB到32MB之间，目标是根据最小的Java堆大小划分出约2048个区域。默认是堆内存的1/2000。
+-XX:MaxGCPauseMillis  设置期望达到的最大GC停顿时间指标（JVM会尽力实现，但不保证达到）。默认值是200ms
+-XX:ParallelGCThread  设置STW时GC线程数的值。最多设置为8
+-XX:ConcGCThreads  设置并发标记的线程数。将n设置为并行垃圾回收线程数（ParallelGCThreads）的1/4左右。
+-XX:InitiatingHeapOccupancyPercent 设置触发并发GC周期的Java堆占用率阈值。超过此值，就触发GC。默认值是45。
+-XX:G1NewSizePercent  新生代占用整个堆内存的最小百分比（默认5％）
+-XX:G1MaxNewSizePercent  新生代占用整个堆内存的最大百分比（默认60％）
+-XX:G1ReservePercent<span class="token operator">=</span><span class="token number">10</span>  保留内存区域，防止 to space（Survivor中的to区）溢出
+</code></pre></div><p>怎么选择垃圾回收器？</p> <ul><li>优先让JVM自适应，调整堆的大小</li> <li>串行收集器：内存小于100M；单核、单机程序，并且没有停顿时间的要求</li> <li>并行收集器：多CPU、高吞吐量、允许停顿时间超过1秒</li> <li>并发收集器：多CPU、追求低停顿时间、快速响应（比如延迟不能超过1秒，如互联网应用）</li> <li>官方推荐G1，性能高。现在互联网的项目，基本都是使用G1</li></ul> <p>特别说明：</p> <ul><li>没有最好的收集器，更没有万能的收集器</li> <li>调优永远是针对特定场景、特定需求，不存在一劳永逸的收集器</li></ul> <h3 id="_4-3-5-gc日志相关选项"><a href="#_4-3-5-gc日志相关选项" class="header-anchor">#</a> 4.3.5. GC日志相关选项</h3> <div class="language-shell extra-class"><pre class="language-shell"><code>-XX:+PrintGC <span class="token operator">&lt;</span><span class="token operator">==</span><span class="token operator">&gt;</span> -verbose:gc  打印简要日志信息
+-XX:+PrintGCDetails            打印详细日志信息
+-XX:+PrintGCTimeStamps  打印程序启动到GC发生的时间，搭配-XX:+PrintGCDetails使用
+-XX:+PrintGCDateStamps  打印GC发生时的时间戳，搭配-XX:+PrintGCDetails使用
+-XX:+PrintHeapAtGC  打印GC前后的堆信息，如下图
+-Xloggc:<span class="token operator">&lt;</span>file<span class="token operator">&gt;</span> 输出GC导指定路径下的文件中
+</code></pre></div><p><img src="https://static.lovedata.net/zs/20210506195202.png" alt="image-20210506195156935"></p> <div class="language-shell extra-class"><pre class="language-shell"><code>-XX:+TraceClassLoading  监控类的加载
+-XX:+PrintGCApplicationStoppedTime  打印GC时线程的停顿时间
+-XX:+PrintGCApplicationConcurrentTime  打印垃圾收集之前应用未中断的执行时间
+-XX:+PrintReferenceGC 打印回收了多少种不同引用类型的引用
+-XX:+PrintTenuringDistribution  打印JVM在每次MinorGC后当前使用的Survivor中对象的年龄分布
+-XX:+UseGCLogFileRotation 启用GC日志文件的自动转储
+-XX:NumberOfGCLogFiles<span class="token operator">=</span><span class="token number">1</span>  设置GC日志文件的循环数目
+-XX:GCLogFileSize<span class="token operator">=</span>1M  设置GC日志文件的大小
+</code></pre></div><h3 id="_4-3-6-其他参数"><a href="#_4-3-6-其他参数" class="header-anchor">#</a> 4.3.6. 其他参数</h3> <div class="language-shell extra-class"><pre class="language-shell"><code>-XX:+DisableExplicitGC  禁用hotspot执行System.gc<span class="token punctuation">(</span><span class="token punctuation">)</span>，默认禁用
+-XX:ReservedCodeCacheSize<span class="token operator">=</span><span class="token operator">&lt;</span>n<span class="token operator">&gt;</span><span class="token punctuation">[</span>g<span class="token operator">|</span>m<span class="token operator">|</span>k<span class="token punctuation">]</span>、-XX:InitialCodeCacheSize<span class="token operator">=</span><span class="token operator">&lt;</span>n<span class="token operator">&gt;</span><span class="token punctuation">[</span>g<span class="token operator">|</span>m<span class="token operator">|</span>k<span class="token punctuation">]</span>  指定代码缓存的大小
+-XX:+UseCodeCacheFlushing  放弃一些被编译的代码，避免代码缓存被占满时JVM切换到interpreted-only的情况
+-XX:+DoEscapeAnalysis  开启逃逸分析
+-XX:+UseBiasedLocking  开启偏向锁
+-XX:+UseLargePages  开启使用大页面
+-XX:+PrintTLAB  打印TLAB的使用情况
+-XX:TLABSize  设置TLAB大小  
+</code></pre></div><h2 id="_4-4-通过java代码获取jvm参数"><a href="#_4-4-通过java代码获取jvm参数" class="header-anchor">#</a> 4.4. 通过Java代码获取JVM参数</h2> <p>Java提供了java.lang.management包用于监视和管理Java虚拟机和Java运行时中的其他组件，它允许本地或远程监控和管理运行的Java虚拟机。其中ManagementFactory类较为常用，另外Runtime类可获取内存、CPU核数等相关的数据。通过使用这些api，可以监控应用服务器的堆内存使用情况，设置一些阈值进行报警等处理。</p> <div class="language- extra-class"><pre class="language-text"><code>public class MemoryMonitor {
+    public static void main(String[] args) {
+        MemoryMXBean memorymbean = ManagementFactory.getMemoryMXBean();
+        MemoryUsage usage = memorymbean.getHeapMemoryUsage();
+        System.out.println(&quot;INIT HEAP: &quot; + usage.getInit() / 1024 / 1024 + &quot;m&quot;);
+        System.out.println(&quot;MAX HEAP: &quot; + usage.getMax() / 1024 / 1024 + &quot;m&quot;);
+        System.out.println(&quot;USE HEAP: &quot; + usage.getUsed() / 1024 / 1024 + &quot;m&quot;);
+        System.out.println(&quot;\nFull Information:&quot;);
+        System.out.println(&quot;Heap Memory Usage: &quot; + memorymbean.getHeapMemoryUsage());
+        System.out.println(&quot;Non-Heap Memory Usage: &quot; + memorymbean.getNonHeapMemoryUsage());
+
+        System.out.println(&quot;=======================通过java来获取相关系统状态============================ &quot;);
+        System.out.println(&quot;当前堆内存大小totalMemory &quot; + (int) Runtime.getRuntime().totalMemory() / 1024 / 1024 + &quot;m&quot;);// 当前堆内存大小
+        System.out.println(&quot;空闲堆内存大小freeMemory &quot; + (int) Runtime.getRuntime().freeMemory() / 1024 / 1024 + &quot;m&quot;);// 空闲堆内存大小
+        System.out.println(&quot;最大可用总堆内存maxMemory &quot; + Runtime.getRuntime().maxMemory() / 1024 / 1024 + &quot;m&quot;);// 最大可用总堆内存大小
+
+    }
+}
+</code></pre></div></div> <footer class="page-edit"><div class="edit-link"><a href="https://github.com/pengshuangbao/databook/edit/master/docs/java/jvm性能监控与调优/04JVM运行时参数.md" target="_blank" rel="noopener noreferrer">Edit this page on GitHub</a> <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></div> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">2023/4/14 16:56:47</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/java/jvm性能监控与调优/03JVM监控及诊断工具-GUI篇.html" class="prev">
+        JVM监控及诊断工具-GUI篇
+      </a></span> <span class="next"><a href="/java/jvm性能监控与调优/05分析GC日志.html">
+        5. 分析GC日志
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"><!----><!----></div></div>
+    <script src="/assets/js/app.0f56a723.js" defer></script><script src="/assets/js/4.a8ef5668.js" defer></script><script src="/assets/js/172.7f7ab109.js" defer></script><script src="/assets/js/11.0473ae06.js" defer></script>
+  </body>
+</html>

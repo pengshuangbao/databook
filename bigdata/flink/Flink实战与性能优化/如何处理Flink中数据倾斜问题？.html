@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>如何处理Flink中数据倾斜问题？ | 编程手册</title>
+    <meta name="generator" content="VuePress 1.7.1">
+    <link rel="icon" href="/logo.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon-152x152.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#3eaf7c">
+    <meta name="description" content="苍穹浩渺,取之须臾">
+    <meta name="theme-color" content="#3eaf7c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="msapplication-TileImage" content="/icons/msapplication-icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#000000">
+    
+    <link rel="preload" href="/assets/css/0.styles.225a8ff9.css" as="style"><link rel="preload" href="/assets/js/app.0f56a723.js" as="script"><link rel="preload" href="/assets/js/4.a8ef5668.js" as="script"><link rel="preload" href="/assets/js/71.3a6c6141.js" as="script"><link rel="preload" href="/assets/js/11.0473ae06.js" as="script"><link rel="prefetch" href="/assets/js/10.06cc4fbb.js"><link rel="prefetch" href="/assets/js/100.79e96d05.js"><link rel="prefetch" href="/assets/js/101.bcac0b9f.js"><link rel="prefetch" href="/assets/js/102.c5d92a95.js"><link rel="prefetch" href="/assets/js/103.697856ab.js"><link rel="prefetch" href="/assets/js/104.8f2db4d2.js"><link rel="prefetch" href="/assets/js/105.d4f2bb07.js"><link rel="prefetch" href="/assets/js/106.1a533c3f.js"><link rel="prefetch" href="/assets/js/107.b2845ea0.js"><link rel="prefetch" href="/assets/js/108.226e46ed.js"><link rel="prefetch" href="/assets/js/109.0de9c16c.js"><link rel="prefetch" href="/assets/js/110.4657c34b.js"><link rel="prefetch" href="/assets/js/111.3409d3a7.js"><link rel="prefetch" href="/assets/js/112.a46b486c.js"><link rel="prefetch" href="/assets/js/113.ba001fa9.js"><link rel="prefetch" href="/assets/js/114.ad1e6ba1.js"><link rel="prefetch" href="/assets/js/115.a0ac732f.js"><link rel="prefetch" href="/assets/js/116.4ee2a7b2.js"><link rel="prefetch" href="/assets/js/117.a76fd29a.js"><link rel="prefetch" href="/assets/js/118.83c5badf.js"><link rel="prefetch" href="/assets/js/119.09fec567.js"><link rel="prefetch" href="/assets/js/12.286e979d.js"><link rel="prefetch" href="/assets/js/120.42120fe1.js"><link rel="prefetch" href="/assets/js/121.9d79a9dd.js"><link rel="prefetch" href="/assets/js/122.f71a459c.js"><link rel="prefetch" href="/assets/js/123.b75308dc.js"><link rel="prefetch" href="/assets/js/124.e4d4643b.js"><link rel="prefetch" href="/assets/js/125.73fc990d.js"><link rel="prefetch" href="/assets/js/126.3b0eccd0.js"><link rel="prefetch" href="/assets/js/127.3eb3ab27.js"><link rel="prefetch" href="/assets/js/128.64ba68bb.js"><link rel="prefetch" href="/assets/js/129.82cfac7a.js"><link rel="prefetch" href="/assets/js/13.7207d991.js"><link rel="prefetch" href="/assets/js/130.42811f32.js"><link rel="prefetch" href="/assets/js/131.6f498e16.js"><link rel="prefetch" href="/assets/js/132.f0cc9ad2.js"><link rel="prefetch" href="/assets/js/133.325e755a.js"><link rel="prefetch" href="/assets/js/134.076a808c.js"><link rel="prefetch" href="/assets/js/135.fad7be83.js"><link rel="prefetch" href="/assets/js/136.042fc555.js"><link rel="prefetch" href="/assets/js/137.b67b55bc.js"><link rel="prefetch" href="/assets/js/138.6476c99f.js"><link rel="prefetch" href="/assets/js/139.ad07500f.js"><link rel="prefetch" href="/assets/js/14.a1cb7c1b.js"><link rel="prefetch" href="/assets/js/140.3edd2237.js"><link rel="prefetch" href="/assets/js/141.5181db27.js"><link rel="prefetch" href="/assets/js/142.67b4c4a2.js"><link rel="prefetch" href="/assets/js/143.9d249a3f.js"><link rel="prefetch" href="/assets/js/144.e6db5540.js"><link rel="prefetch" href="/assets/js/145.5b4305a7.js"><link rel="prefetch" href="/assets/js/146.bc674178.js"><link rel="prefetch" href="/assets/js/147.964ff3df.js"><link rel="prefetch" href="/assets/js/148.570b6864.js"><link rel="prefetch" href="/assets/js/149.4b9796c2.js"><link rel="prefetch" href="/assets/js/15.3cafda64.js"><link rel="prefetch" href="/assets/js/150.c677bf4b.js"><link rel="prefetch" href="/assets/js/151.b8977c93.js"><link rel="prefetch" href="/assets/js/152.535e2db4.js"><link rel="prefetch" href="/assets/js/153.754fc05e.js"><link rel="prefetch" href="/assets/js/154.5a5928b6.js"><link rel="prefetch" href="/assets/js/155.19893ca5.js"><link rel="prefetch" href="/assets/js/156.da1f2665.js"><link rel="prefetch" href="/assets/js/157.cb7b551f.js"><link rel="prefetch" href="/assets/js/158.f5d94a11.js"><link rel="prefetch" href="/assets/js/159.0b2b78d9.js"><link rel="prefetch" href="/assets/js/16.54ab9242.js"><link rel="prefetch" href="/assets/js/160.c2548b6c.js"><link rel="prefetch" href="/assets/js/161.8f694ed1.js"><link rel="prefetch" href="/assets/js/162.1adc1aa4.js"><link rel="prefetch" href="/assets/js/163.5688827c.js"><link rel="prefetch" href="/assets/js/164.8442474f.js"><link rel="prefetch" href="/assets/js/165.d0e21e5c.js"><link rel="prefetch" href="/assets/js/166.2e90ae99.js"><link rel="prefetch" href="/assets/js/167.374185de.js"><link rel="prefetch" href="/assets/js/168.2426769f.js"><link rel="prefetch" href="/assets/js/169.829516d9.js"><link rel="prefetch" href="/assets/js/17.9cad59f9.js"><link rel="prefetch" href="/assets/js/170.db0c4609.js"><link rel="prefetch" href="/assets/js/171.7bdcc41b.js"><link rel="prefetch" href="/assets/js/172.7f7ab109.js"><link rel="prefetch" href="/assets/js/173.c1d51df9.js"><link rel="prefetch" href="/assets/js/174.afa4c5f6.js"><link rel="prefetch" href="/assets/js/175.b46d9dd8.js"><link rel="prefetch" href="/assets/js/176.c38ba756.js"><link rel="prefetch" href="/assets/js/177.ba85b912.js"><link rel="prefetch" href="/assets/js/178.af1a44e8.js"><link rel="prefetch" href="/assets/js/179.e097e164.js"><link rel="prefetch" href="/assets/js/18.3776b09c.js"><link rel="prefetch" href="/assets/js/180.d9d5d80c.js"><link rel="prefetch" href="/assets/js/181.79401f8c.js"><link rel="prefetch" href="/assets/js/182.343db47f.js"><link rel="prefetch" href="/assets/js/183.005841bb.js"><link rel="prefetch" href="/assets/js/19.d0ac1e7f.js"><link rel="prefetch" href="/assets/js/20.e0100fb2.js"><link rel="prefetch" href="/assets/js/21.f59cd52c.js"><link rel="prefetch" href="/assets/js/22.3ecf54da.js"><link rel="prefetch" href="/assets/js/23.2508850b.js"><link rel="prefetch" href="/assets/js/24.0ac10322.js"><link rel="prefetch" href="/assets/js/25.7c3ee156.js"><link rel="prefetch" href="/assets/js/26.7021c42c.js"><link rel="prefetch" href="/assets/js/27.d716476b.js"><link rel="prefetch" href="/assets/js/28.58ebf808.js"><link rel="prefetch" href="/assets/js/29.88c37f6c.js"><link rel="prefetch" href="/assets/js/30.87bc4a91.js"><link rel="prefetch" href="/assets/js/31.a69c2a35.js"><link rel="prefetch" href="/assets/js/32.89f74912.js"><link rel="prefetch" href="/assets/js/33.df886872.js"><link rel="prefetch" href="/assets/js/34.835d0785.js"><link rel="prefetch" href="/assets/js/35.5e38ab06.js"><link rel="prefetch" href="/assets/js/36.5b639051.js"><link rel="prefetch" href="/assets/js/37.bb32ead0.js"><link rel="prefetch" href="/assets/js/38.c2541da0.js"><link rel="prefetch" href="/assets/js/39.3c8f0f06.js"><link rel="prefetch" href="/assets/js/40.4cc077aa.js"><link rel="prefetch" href="/assets/js/41.cbcd81a7.js"><link rel="prefetch" href="/assets/js/42.6d002f78.js"><link rel="prefetch" href="/assets/js/43.3f67c882.js"><link rel="prefetch" href="/assets/js/44.58ce7a4d.js"><link rel="prefetch" href="/assets/js/45.bfb9d6e0.js"><link rel="prefetch" href="/assets/js/46.691097de.js"><link rel="prefetch" href="/assets/js/47.e6b5c9b5.js"><link rel="prefetch" href="/assets/js/48.38159f5c.js"><link rel="prefetch" href="/assets/js/49.e03ce66a.js"><link rel="prefetch" href="/assets/js/5.340b4b76.js"><link rel="prefetch" href="/assets/js/50.7df345cb.js"><link rel="prefetch" href="/assets/js/51.b3eed5d5.js"><link rel="prefetch" href="/assets/js/52.bb282842.js"><link rel="prefetch" href="/assets/js/53.6b21ec8f.js"><link rel="prefetch" href="/assets/js/54.bab98944.js"><link rel="prefetch" href="/assets/js/55.59437904.js"><link rel="prefetch" href="/assets/js/56.18b88131.js"><link rel="prefetch" href="/assets/js/57.b0cbba56.js"><link rel="prefetch" href="/assets/js/58.d9379002.js"><link rel="prefetch" href="/assets/js/59.e8663882.js"><link rel="prefetch" href="/assets/js/6.c48e1ddb.js"><link rel="prefetch" href="/assets/js/60.0a00b724.js"><link rel="prefetch" href="/assets/js/61.cd09980d.js"><link rel="prefetch" href="/assets/js/62.b092ff62.js"><link rel="prefetch" href="/assets/js/63.86482c79.js"><link rel="prefetch" href="/assets/js/64.3c1ee4d2.js"><link rel="prefetch" href="/assets/js/65.0621decf.js"><link rel="prefetch" href="/assets/js/66.cf7a6241.js"><link rel="prefetch" href="/assets/js/67.99e103bc.js"><link rel="prefetch" href="/assets/js/68.b3589f28.js"><link rel="prefetch" href="/assets/js/69.f0932a12.js"><link rel="prefetch" href="/assets/js/7.0f410b85.js"><link rel="prefetch" href="/assets/js/70.0a941773.js"><link rel="prefetch" href="/assets/js/72.2299ff58.js"><link rel="prefetch" href="/assets/js/73.544fe8c6.js"><link rel="prefetch" href="/assets/js/74.98219c05.js"><link rel="prefetch" href="/assets/js/75.244a9d80.js"><link rel="prefetch" href="/assets/js/76.cefd9fe2.js"><link rel="prefetch" href="/assets/js/77.59793840.js"><link rel="prefetch" href="/assets/js/78.a7d9a079.js"><link rel="prefetch" href="/assets/js/79.f9ec013d.js"><link rel="prefetch" href="/assets/js/8.269955a4.js"><link rel="prefetch" href="/assets/js/80.b0f2cbe5.js"><link rel="prefetch" href="/assets/js/81.3d245e9a.js"><link rel="prefetch" href="/assets/js/82.061b170d.js"><link rel="prefetch" href="/assets/js/83.d2c42148.js"><link rel="prefetch" href="/assets/js/84.f6f487a4.js"><link rel="prefetch" href="/assets/js/85.c5305650.js"><link rel="prefetch" href="/assets/js/86.0c30a2ef.js"><link rel="prefetch" href="/assets/js/87.d9a99f2e.js"><link rel="prefetch" href="/assets/js/88.03792030.js"><link rel="prefetch" href="/assets/js/89.95684850.js"><link rel="prefetch" href="/assets/js/9.5c3462fb.js"><link rel="prefetch" href="/assets/js/90.185b012e.js"><link rel="prefetch" href="/assets/js/91.d19f0020.js"><link rel="prefetch" href="/assets/js/92.9e7855de.js"><link rel="prefetch" href="/assets/js/93.1ee902df.js"><link rel="prefetch" href="/assets/js/94.4bfab4ad.js"><link rel="prefetch" href="/assets/js/95.5f0b1d15.js"><link rel="prefetch" href="/assets/js/96.bd50a446.js"><link rel="prefetch" href="/assets/js/97.749fd671.js"><link rel="prefetch" href="/assets/js/98.bc09c746.js"><link rel="prefetch" href="/assets/js/99.40f98e75.js"><link rel="prefetch" href="/assets/js/vendors~flowchart.98d8c7d3.js"><link rel="prefetch" href="/assets/js/vendors~notification.5515ddcd.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.225a8ff9.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">编程手册</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/java/" class="nav-link">
+  Java
+</a></div><div class="nav-item"><a href="/bigdata/" class="nav-link router-link-active">
+  大数据
+</a></div><div class="nav-item"><a href="/algorithm/" class="nav-link">
+  算法 
+</a></div><div class="nav-item"><a href="/architecture/" class="nav-link">
+  架构 
+</a></div><div class="nav-item"><a href="/computer/" class="nav-link">
+  计算机 
+</a></div><div class="nav-item"><a href="/database/" class="nav-link">
+  数据库 
+</a></div><div class="nav-item"><a href="/fe/" class="nav-link">
+  前端
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="运维 " class="dropdown-title"><span class="title">运维 </span> <span class="arrow down"></span></button> <button type="button" aria-label="运维 " class="mobile-dropdown-title"><span class="title">运维 </span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/ops/" class="nav-link">
+  基础
+</a></li><li class="dropdown-item"><h4>
+          分类
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/ops/java.html" class="nav-link">
+  Java
+</a></li><li class="dropdown-subitem"><a href="/ops/bigdata.html" class="nav-link">
+  大数据
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="编程" class="dropdown-title"><span class="title">编程</span> <span class="arrow down"></span></button> <button type="button" aria-label="编程" class="mobile-dropdown-title"><span class="title">编程</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          语言
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/programming/python.html" class="nav-link">
+  Python
+</a></li><li class="dropdown-subitem"><a href="/programming/scala.html" class="nav-link">
+  Scala
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="资源" class="dropdown-title"><span class="title">资源</span> <span class="arrow down"></span></button> <button type="button" aria-label="资源" class="mobile-dropdown-title"><span class="title">资源</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          我的书单
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/tech.html" class="nav-link">
+  技术类
+</a></li><li class="dropdown-subitem"><a href="/book/growth.html" class="nav-link">
+  成长类
+</a></li></ul></li><li class="dropdown-item"><h4>
+          网课
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/geek.html" class="nav-link">
+  专栏
+</a></li><li class="dropdown-subitem"><a href="/book/video.html" class="nav-link">
+  视频
+</a></li></ul></li><li class="dropdown-item"><h4>
+          面经
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/tech.html" class="nav-link">
+  大厂面经
+</a></li><li class="dropdown-subitem"><a href="/interview/sword-to-offer.html" class="nav-link">
+  剑指Offer
+</a></li><li class="dropdown-subitem"><a href="/interview/fe.html" class="nav-link">
+  前端面经
+</a></li><li class="dropdown-subitem"><a href="/interview/interview_guide.html" class="nav-link">
+  面试导航
+</a></li></ul></li><li class="dropdown-item"><h4>
+          其他
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/study.html" class="nav-link">
+  学习笔记
+</a></li></ul></li></ul></div></div> <a href="https://github.com/pengshuangbao/databook" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/java/" class="nav-link">
+  Java
+</a></div><div class="nav-item"><a href="/bigdata/" class="nav-link router-link-active">
+  大数据
+</a></div><div class="nav-item"><a href="/algorithm/" class="nav-link">
+  算法 
+</a></div><div class="nav-item"><a href="/architecture/" class="nav-link">
+  架构 
+</a></div><div class="nav-item"><a href="/computer/" class="nav-link">
+  计算机 
+</a></div><div class="nav-item"><a href="/database/" class="nav-link">
+  数据库 
+</a></div><div class="nav-item"><a href="/fe/" class="nav-link">
+  前端
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="运维 " class="dropdown-title"><span class="title">运维 </span> <span class="arrow down"></span></button> <button type="button" aria-label="运维 " class="mobile-dropdown-title"><span class="title">运维 </span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/ops/" class="nav-link">
+  基础
+</a></li><li class="dropdown-item"><h4>
+          分类
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/ops/java.html" class="nav-link">
+  Java
+</a></li><li class="dropdown-subitem"><a href="/ops/bigdata.html" class="nav-link">
+  大数据
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="编程" class="dropdown-title"><span class="title">编程</span> <span class="arrow down"></span></button> <button type="button" aria-label="编程" class="mobile-dropdown-title"><span class="title">编程</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          语言
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/programming/python.html" class="nav-link">
+  Python
+</a></li><li class="dropdown-subitem"><a href="/programming/scala.html" class="nav-link">
+  Scala
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="资源" class="dropdown-title"><span class="title">资源</span> <span class="arrow down"></span></button> <button type="button" aria-label="资源" class="mobile-dropdown-title"><span class="title">资源</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          我的书单
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/tech.html" class="nav-link">
+  技术类
+</a></li><li class="dropdown-subitem"><a href="/book/growth.html" class="nav-link">
+  成长类
+</a></li></ul></li><li class="dropdown-item"><h4>
+          网课
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/geek.html" class="nav-link">
+  专栏
+</a></li><li class="dropdown-subitem"><a href="/book/video.html" class="nav-link">
+  视频
+</a></li></ul></li><li class="dropdown-item"><h4>
+          面经
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/tech.html" class="nav-link">
+  大厂面经
+</a></li><li class="dropdown-subitem"><a href="/interview/sword-to-offer.html" class="nav-link">
+  剑指Offer
+</a></li><li class="dropdown-subitem"><a href="/interview/fe.html" class="nav-link">
+  前端面经
+</a></li><li class="dropdown-subitem"><a href="/interview/interview_guide.html" class="nav-link">
+  面试导航
+</a></li></ul></li><li class="dropdown-item"><h4>
+          其他
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/study.html" class="nav-link">
+  学习笔记
+</a></li></ul></li></ul></div></div> <a href="https://github.com/pengshuangbao/databook" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <ul class="sidebar-links"><li><a href="/bigdata/" aria-current="page" class="sidebar-link">大数据</a></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Hadoop</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Spark</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>Flink</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/bigdata/flink/" aria-current="page" class="sidebar-link">Flink</a></li><li><a href="/bigdata/flink/通关手册.html" class="sidebar-link">通关手册</a></li><li><a href="/bigdata/flink/学习资源.html" class="sidebar-link">学习资源</a></li><li><a href="/bigdata/flink/开源动态.html" class="sidebar-link">开源动态</a></li><li><a href="/bigdata/flink/Flink状态原理.html" class="sidebar-link">状态原理</a></li><li><section class="sidebar-group collapsable is-sub-group depth-1"><p class="sidebar-heading open"><span>Flink实战与性能优化</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/bigdata/flink/Flink实战与性能优化/公司到底需不需要引入实时计算引擎？.html" class="sidebar-link">公司到底需不需要引入实时计算引擎？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/彻底了解大数据实时计算框架Flink.html" class="sidebar-link">彻底了解大数据实时计算框架Flink</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/大数据框架Flink、Blink、SparkStreaming、StructuredStreaming和Storm之间的区别.html" class="sidebar-link">大数据框架Flink、Blink、SparkStreaming、StructuredStreaming和Storm之间的区别</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink环境准备.html" class="sidebar-link">Flink环境准备</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink环境搭建.html" class="sidebar-link">Flink环境搭建</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkWordCount应用程序.html" class="sidebar-link">FlinkWordCount应用程序</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink实时处理Socket数据.html" class="sidebar-link">Flink实时处理Socket数据</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink多种时间语义对比.html" class="sidebar-link">Flink多种时间语义对比</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkWindow基础概念与实现原理.html" class="sidebar-link">FlinkWindow基础概念与实现原理</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/数据转换必须熟悉的算子（Operator）.html" class="sidebar-link">数据转换必须熟悉的算子（Operator）</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何使用DataStreamAPI来处理数据？.html" class="sidebar-link">如何使用DataStreamAPI来处理数据？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkWaterMark详解及结合WaterMark处理延迟数据.html" class="sidebar-link">FlinkWaterMark详解及结合WaterMark处理延迟数据</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink常用的Source和SinkConnectors介绍.html" class="sidebar-link">Flink常用的Source和SinkConnectors介绍</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkConnectorKafka使用和剖析.html" class="sidebar-link">FlinkConnectorKafka使用和剖析</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何自定义FlinkConnectors（Source和Sink）？.html" class="sidebar-link">如何自定义FlinkConnectors（Source和Sink）？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何使用FlinkConnectors——ElasticSearch？.html" class="sidebar-link">如何使用FlinkConnectors——ElasticSearch？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何使用FlinkConnectors——HBase？.html" class="sidebar-link">如何使用FlinkConnectors——HBase？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何使用FlinkConnectors——Redis？.html" class="sidebar-link">如何使用FlinkConnectors——Redis？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何使用SideOutput来分流.html" class="sidebar-link">如何使用SideOutput来分流</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkState深度讲解.html" class="sidebar-link">FlinkState深度讲解</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何选择Flink状态后端存储.html" class="sidebar-link">如何选择Flink状态后端存储</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkCheckpoint和Savepoint区别及其如何配置使用？.html" class="sidebar-link">FlinkCheckpoint和Savepoint区别及其如何配置使用？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkTable&amp;SQL概念与通用API.html" class="sidebar-link">FlinkTable&amp;SQL概念与通用API</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkTableAPI&amp;SQL功能.html" class="sidebar-link">FlinkTableAPI&amp;SQL功能</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkCEP介绍及其使用场景.html" class="sidebar-link">FlinkCEP介绍及其使用场景</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkCEP如何处理复杂事件？.html" class="sidebar-link">FlinkCEP如何处理复杂事件？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink扩展库——StateProcessorAPI.html" class="sidebar-link">Flink扩展库——StateProcessorAPI</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink扩展库——MachineLearning.html" class="sidebar-link">Flink扩展库——MachineLearning</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink扩展库——Gelly.html" class="sidebar-link">Flink扩展库——Gelly</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink配置详解及如何配置高可用？.html" class="sidebar-link">Flink配置详解及如何配置高可用？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkJob如何在Standalone、YARN、Mesos、K8S上部署运行？.html" class="sidebar-link">FlinkJob如何在Standalone、YARN、Mesos、K8S上部署运行？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何实时监控Flink和你的Job？.html" class="sidebar-link">如何实时监控Flink和你的Job？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何搭建一套完整的Flink监控系统.html" class="sidebar-link">如何搭建一套完整的Flink监控系统</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何处理FlinkJobBackPressure（反压）问题？.html" class="sidebar-link">如何处理FlinkJobBackPressure（反压）问题？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何查看FlinkJob执行计划？.html" class="sidebar-link">如何查看FlinkJob执行计划？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkParallelism和Slot深度理解.html" class="sidebar-link">FlinkParallelism和Slot深度理解</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何合理的设置FlinkJob并行度？.html" class="sidebar-link">如何合理的设置FlinkJob并行度？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink中如何保证ExactlyOnce？（上）.html" class="sidebar-link">Flink中如何保证ExactlyOnce？（上）</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink中如何保证ExactlyOnce？（下）.html" class="sidebar-link">Flink中如何保证ExactlyOnce？（下）</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何处理Flink中数据倾斜问题？.html" class="active sidebar-link">如何处理Flink中数据倾斜问题？</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何设置FlinkJobRestartStrategy（重启策略）？.html" class="sidebar-link">如何设置FlinkJobRestartStrategy（重启策略）？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何使用FlinkParameterTool读取配置？.html" class="sidebar-link">如何使用FlinkParameterTool读取配置？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何统计网站各页面一天内的PV和UV？.html" class="sidebar-link">如何统计网站各页面一天内的PV和UV？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何使用FlinkProcessFunction处理宕机告警.html" class="sidebar-link">如何使用FlinkProcessFunction处理宕机告警</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何利用AsyncIO读取告警规则？.html" class="sidebar-link">如何利用AsyncIO读取告警规则？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何利用广播变量动态更新告警规则？.html" class="sidebar-link">如何利用广播变量动态更新告警规则？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何实时将应用Error日志告警？.html" class="sidebar-link">如何实时将应用Error日志告警？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/基于Flink的海量日志实时处理系统的实践.html" class="sidebar-link">基于Flink的海量日志实时处理系统的实践</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/基于Flink的百亿数据去重实践.html" class="sidebar-link">基于Flink的百亿数据去重实践</a></li></ul></section></li></ul></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Kylin</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Kafka</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Hbase</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>ClickHouse</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Impala</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Kudu</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Redis</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>hive</span> <span class="arrow right"></span></p> <!----></section></li><li><a href="/bigdata/zookeeper.html" class="sidebar-link">Zookeeper</a></li><li><a href="/bigdata/solution.html" class="sidebar-link">解决方案</a></li><li><a href="/bigdata/design.html" class="sidebar-link">编程设计</a></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="如何处理flink中数据倾斜问题"><a href="#如何处理flink中数据倾斜问题" class="header-anchor">#</a> 如何处理Flink中数据倾斜问题？</h1> <p></p><div class="table-of-contents"><ul><li><a href="#数据倾斜简介">数据倾斜简介</a></li><li><a href="#判断是否存在数据倾斜">判断是否存在数据倾斜</a></li><li><a href="#分析和解决数据倾斜问题">分析和解决数据倾斜问题</a></li><li><a href="#小结与反思">小结与反思</a></li></ul></div><p></p> <p>在大数据计算场景，无论使用 MapReduce、Spark 还是 Flink
+计算框架，无论是批处理还是流处理都存在数据倾斜的问题，通过本节学习产生数据倾斜的原因及如何在生产环境解决数据倾斜。</p> <h3 id="数据倾斜简介"><a href="#数据倾斜简介" class="header-anchor">#</a> 数据倾斜简介</h3> <p>分析一个计算各 app PV 的案例，如下图所示，圆球表示 app1 的日志，方块表示 app2 的日志，Source 端从外部系统读取用户上报的各 app
+行为日志，要计算各 app 的 PV，所以按照 app 进行 keyBy，相同 app 的数据发送到同一个 Operator 实例中处理，keyBy 后对
+app 的 PV 值进行累加来，最后将计算的 PV 结果输出到外部 Sink 端。</p> <p><img src="https://static.lovedata.net/zs/2019-11-12-004442.jpg" alt="images">
+可以看到在任务运行过程中，计算 Count 的算子有两个并行度，其中一个并行度处理 app1 的数据，另一个并行度处理 app2 的数据。由于 app1
+比较热门，所以 app1 的日志量远大于 app2 的日志量，造成计算 app1 PV 的并行度压力过大成为整个系统的瓶颈，而计算 app2 PV
+的并行度数据量较少所以 CPU、内存以及网络资源的使用率整体都比较低，这就是产生数据倾斜的案例。</p> <p>随着业务的不断发展，如果 app1 的日志量暴增，单个节点的单个并行度已经承担不了计算 app1 PV 的任务，此时如何来解决呢？</p> <p>对于不了解数据倾斜的同学看到 Flink 任务出现了延迟，结合之前学习的反压内容，定位整个 Flink 任务的瓶颈在于 Count 算子，所以认为
+Count 算子的并行度不够，于是解决思路就是调大 Count 算子的并行度至 4 来提高 Count 算子的计算能力，调大并行度以后发现 Flink
+任务的吞吐量并没有提升，而且通过反压机制定位到系统的瓶颈还在于 Count 算子，难道 Count 算子的并行度需要从 2 调大到 10 吗？</p> <p>不，上述情况就算把并行度调大到 100，依然不能解决任务瓶颈。为什么出现这种情况呢？要计算各 app 的 PV 数据，那么相同 app
+的数据必然要发送到相同的 Operator 实例去处理，现在只有两个 app，最多只能分配到两个并行度上去执行，如果 Count 算子的并行度大于
+2，意味着肯定有一些并行度分配不到数据，所以上述情况调大 Count 算子的并行度不能解决问题。那使用 Flink 如何来解决数据倾斜呢，我们先学习
+Flink 中如何来判断是否发生了数据倾斜。</p> <h3 id="判断是否存在数据倾斜"><a href="#判断是否存在数据倾斜" class="header-anchor">#</a> 判断是否存在数据倾斜</h3> <p>这里再通过一个案例来讲述 Flink 任务如何来判断是否存在数据倾斜，如下图所示，是 Flink Web UI Job
+页面展示的任务执行计划，可以看到任务经过 Operator Chain 后，总共有两个 Task，上游 Task 将数据 keyBy 后发送到下游
+Task，如何判断第二个 Task 计算的数据是否存在数据呢？</p> <p><img src="https://static.lovedata.net/zs/2019-11-12-004443.jpg" alt="images">
+如下图所示，通过 Flink Web UI 中 Job 页面的第一个 Subtasks 选项卡，可以看到任务的两个 Task，点击 Task，可以看到
+Task 相应的 Subtask 详情。例如 Subtask 的启动时间、结束时间、持续时长、接收数据量的字节数以及接收数据的个数。图中可以看到，相同
+Task 的多个 Subtask 中，有的 Subtask 接收到 1.69 TB 的数据量，有的 Subtask 接收到 17.6 TB 的数据量，通过
+Flink Web UI 可以精确地看到每个 Subtask 处理了多少数据，即可判断出 Flink 任务是否存在数据倾斜，接下来学习 Flink
+中如何来解决数据倾斜。</p> <p><img src="https://static.lovedata.net/zs/2019-11-12-004431.jpg" alt="images"></p> <h3 id="分析和解决数据倾斜问题"><a href="#分析和解决数据倾斜问题" class="header-anchor">#</a> 分析和解决数据倾斜问题</h3> <p>在 Flink 中，很多因素都会导致数据倾斜，例如 9.6.1 节描述的 keyBy 后的聚合操作存在数据倾斜。keyBy
+之前的数据直接来自于数据源，一般不会出现数据倾斜，除非数据源中的数据发生了数据倾斜。本小节将从多个角度来解决数据倾斜。</p> <h5 id="keyby-后的聚合操作存在数据倾斜"><a href="#keyby-后的聚合操作存在数据倾斜" class="header-anchor">#</a> keyBy 后的聚合操作存在数据倾斜</h5> <p>Flink 社区关于数据倾斜的解决方案炒得最热的也莫过于 LocalKeyBy 了。Flink 中数据倾斜一般发生于 keyBy
+之后的聚合操作，LocalKeyBy 的思想是：在 keyBy
+上游算子数据发送之前，首先在上游算子的本地对数据进行聚合后再发送到下游，使下游接收到的数据量大大减少，从而使得 keyBy 之后的聚合操作不再是任务的瓶颈。</p> <p>如下图所示，Source 算子向下游发送数据之前，首先对数据进行预聚合，Source Subtask 0 预聚合后，圆圈 PV 值为 5、方块 PV 值为
+2，Source Subtask 1 预聚合后，圆圈 PV 值为 6、方块 PV 值为 1。keyBy 后，Count 算子进行 PV 值的累加，计算圆圈
+PV 的 Subtask 接收到 5 和 6，只需要将 5+6 即可计算出圆圈总 PV 值为 11，计算方块 PV 的 Subtask 接收到 2 和
+1，只需要将 2 +1 即可计算出方块总 PV 值为 3，最后将圆圈和方块的 PV 结果输出到 Sink 端即可。</p> <p><img src="https://static.lovedata.net/zs/2019-11-12-004439.jpg" alt="images">
+使用该方案计算 PV，带来了两个非常大的好处。</p> <ul><li>在上游算子中对数据进行了预聚合，因此大大减少了上游往下游发送的数据量，从而减少了网络间的数据传输，节省了集群的带宽资源。上图案例中如果不聚合，上游需要往下游发送 14 条数据，聚合后仅仅需要发送 4 条数据即可。如果上游算子接收 1 万条数据后聚合一次，那么数据的压缩比会更大，优化效果会更加明显。</li> <li>下游拿到的直接是上游聚合好的中间结果，因此下游 Count 算子计算的数据量大大减少，而且 Count 算子不再会有数据倾斜的问题。</li></ul> <p>同学们可能会想，这样压力是不是压在了上游的 Source
+算子？上游算子相比之前多了一个聚合的工作，所以压力必然会增加，但是只要数据源不发生数据倾斜，那么上游 Source 算子的各并行度之间的负载就会比较均衡。</p> <p>对 MapReduce 了解的同学可能就发现了，这里不就是 MapReduce 中 Combiner 的思想嘛，在 Map
+端对数据进行预聚合之后，再将预聚合后的数据发送到 Reduce 端去处理，从而大大减少了 shuffle 的数据量。</p> <p>虽然思想一样，但 Flink 流处理的预聚合相比 MapReduce 的批处理而言，带来了一个新的挑战：Flink
+是天然的流式处理，即来一条数据处理一条（这里不考虑 Flink 网络传输层的 Buffer
+机制），但是聚合操作要求必须是多条数据或者一批数据才能聚合，单条数据没有办法通过聚合来减少数据量。</p> <p>所以从 Flink LocalKeyBy
+实现原理来讲，必然会存在一个积攒批次的过程，在上游算子中必须攒够一定的数据量，对这些数据聚合后再发送到下游。既然是积攒批次，那肯定有一个积攒批次的策略，上图案例可以理解为每个批次
+7 条数据，当读取到 7 条数据后，将这 7 条数据聚合后发送到下游。</p> <p>具体实现逻辑是：内存里维护一个计数器，每来一条数据计数器加一，并将数据聚合放到内存 Buffer 中，当计数器到达 7 时，将内存 Buffer
+中的数据发送到下游、计数器清零、Buffer 清空。代码实现如下所示：</p> <p>​</p> <p>​</p> <div class="language-java extra-class"><pre class="language-java"><code> <span class="token keyword">class</span> <span class="token class-name">LocalKeyByFlatMap</span> <span class="token keyword">extends</span> <span class="token class-name">FlatMapFunction</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Tuple2</span><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Long</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> <span class="token punctuation">{</span>  
+  <span class="token comment">//本地 buffer，存放 local 端缓存的 app 的 pv 信息</span>
+    <span class="token keyword">private</span> <span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Long</span><span class="token punctuation">&gt;</span></span> localPvStat<span class="token punctuation">;</span>
+
+    <span class="token comment">//缓存的数据量大小，即：缓存多少数据再向下游发送</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> batchSize<span class="token punctuation">;</span>
+
+    <span class="token comment">//计数器，获取当前批次接收的数据量</span>
+    <span class="token keyword">private</span> <span class="token class-name">AtomicInteger</span> currentSize <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AtomicInteger</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token punctuation">;</span>
+
+    <span class="token class-name">LocalKeyByFlatMap</span><span class="token punctuation">(</span><span class="token keyword">int</span> batchSize<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>batchSize <span class="token operator">=</span> batchSize<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">flatMap</span><span class="token punctuation">(</span><span class="token class-name">String</span> in<span class="token punctuation">,</span> <span class="token class-name">Collector</span> collector<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Exception</span> <span class="token punctuation">{</span>
+        <span class="token comment">//  将新来的数据添加到 buffer 中</span>
+        <span class="token class-name">Long</span> pv <span class="token operator">=</span> localPvStat<span class="token punctuation">.</span><span class="token function">getOrDefault</span><span class="token punctuation">(</span>in<span class="token punctuation">,</span> <span class="token number">0L</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        localPvStat<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>in<span class="token punctuation">,</span> pv <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 如果到达设定的批次，则将 buffer 中的数据发送到下游</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>currentSize<span class="token punctuation">.</span><span class="token function">incrementAndGet</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&gt;=</span> batchSize<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token comment">// 遍历 Buffer 中数据，发送到下游</span>
+            <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token class-name">Map</span><span class="token punctuation">.</span><span class="token class-name">Entry</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Long</span><span class="token punctuation">&gt;</span></span> appIdPv<span class="token operator">:</span> localPvStat<span class="token punctuation">.</span><span class="token function">entrySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                collector<span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span><span class="token class-name">Tuple2</span><span class="token punctuation">.</span><span class="token function">of</span><span class="token punctuation">(</span>appIdPv<span class="token punctuation">.</span><span class="token function">getKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> appIdPv<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment">// buffer 清空，计数器清零</span>
+            localPvStat<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            currentSize<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>代码逻辑比较简单，使用了 FlatMap 算子来做缓冲，每来一条数据都需要检索，为了提高检索效率，所以这里使用 HashMap 类型的
+localPvStat 用来做 Buffer 来缓存数据，currentSize 记录当前批次已经往 localPvStat 中写入的数据量。在
+LocalKeyByFlatMap 构造器中需要初始化 batchSize，即批次大小。flatMap 方法将新数据添加到 localPvStat
+中，currentSize 进行加一操作，且 currentSize 加一后如果大于 batchSize
+则表示当前批次的数据已经够了，需要将数据发送到下游，则遍历 localPvStat，将 Buffer 中的数据发送到下游，并将 localPvStat
+清空且 currentSize 清零。</p> <p>代码逻辑简单易懂，但是问题又来了，在积攒批次的过程中，如果发生故障，Flink 任务能保障 Exactly Once 吗？</p> <p>直接给出答案：不能保证 Exactly Once，可能会丢数据，为什么呢？</p> <p>如下图所示，batchSize 设置的 7，但是当 JobManager 触发 Checkpoint 的时候，Source Subtask 0 消费到
+offset 为 13 的位置、Source Subtask 1 消费到 offset 为 12 的位置，所以 Source 0 会将 offset=13
+保存到状态后端，Source 1 会将 offset=12 保存到状态后端。接着 Checkpoint barrier 跟随着数据往下游发送到
+LocalKeyBy，此时 LocalKeyBy 0 的 Buffer 中只有 6 条数据、LocalKeyBy 1 的 Buffer 中只有 5
+条数据，所以 LocalKeyBy 0 和 1 都不会将数据发送到下游。但是 barrier 会接着往下游传递到 Count 算子，Count
+算子会对自身状态信息进行快照，Count 0 会将圆圈 PV=11 保存到状态后端、Count 1 会将圆圈 PV=3 保存到状态后端，各 task 向
+JobManager 反馈，最后 Checkpoint 成功了，紧接着数据正常开始处理。</p> <p><img src="https://static.lovedata.net/zs/2019-11-12-004433.jpg" alt="images">
+数据正常处理一段时间后，由于机器故障 Flink 任务突然挂了，如下图所示，Flink 任务会从状态恢复，Source Subtask 0 从 offset
+为 13 的位置开始消费 Kafka，Source Subtask 1 从 offset 为 12 的位置开始消费 Kafka。Count 0
+恢复后保存圆圈的 PV 为 11，Count 1 恢复后保存方块的 PV 为 3。此时任务从状态中恢复完成，正常开始处理数据，请问 Flink
+任务从状态恢复后丢数据了吗？</p> <p>丢了，因为 Source 0 对应的 offset 13 表示 Source 0 消费了 13 条数据，但是其中有 6 条数据缓存在 LocalKeyBy
+0 的 Buffer 中没及时发送到下游，所以这 6 条数据丢了，同理 Source 1 对应的 offset 12 表示 Source 1 消费了 12
+条数据，其中还有 5 条数据缓存在 LocalKeyBy 1 的 Buffer 中没及时发送到下游，所以这 5 条数据也丢了。</p> <p><img src="https://static.lovedata.net/zs/2019-11-13-%E7%A7%AF%E6%94%92%E6%89%B9%E6%AC%A1%E7%9A%84%E8%BF%87%E7%A8%8B%E4%B8%AD%20Restore.png" alt="images">
+通过上述详细案例分析，知道了我们设计的 LocalKeyBy 虽然能够提高性能，但存在丢数据的风险。读者也应该要知道， <strong>Flink 虽然支持
+Exactly Once，但不是说你的代码随便瞎写 Flink 也能保证 Exactly Once，做为使用 Flink
+的一员，我们应该根据原理书写出能保证 Flink Exactly Once 的代码。</strong></p> <p>上述方案该如何完善才能保证 Exactly Once 呢？在 Checkpoint 时上述方案会把 LocalKeyBy 算子 Buffer
+中的数据丢弃，所以重点应该是如何来保证 LocalKeyBy 算子 Buffer 中的数据不丢。在 Checkpoint 时可以将 Buffer
+中还未发送到下游的数据保存到 Flink 的状态中，这样当 Flink 任务从 Checkpoint 处恢复时，可以将那些在 Buffer
+中的数据从状态后端恢复。如下图所示，相比上述方案，Checkpoint 时会将 LocalKeyBy 算子 Buffer 中的数据也保存到状态后端。</p> <p><img src="https://static.lovedata.net/zs/2019-11-12-4434.jpg" alt="images">
+如下图所示，当 Flink 任务从 Checkpoint 处恢复时，不仅恢复 offset 信息和 PV 信息，还需要把 LocalKeyBy 算子
+Buffer 中的数据恢复，这样就可以保证不丢数据了。</p> <p><img src="https://static.lovedata.net/zs/2019-11-12-004436.jpg" alt="images">
+具体代码如何实现呢？Checkpoint 时 LocalKeyBy 算子可能还有缓冲的数据没发送到下游，为了保证 Exactly Once，这里需要将
+Buffer 中的数据保存在状态中。</p> <p>Flink 有两种 State 分别是 OperatorState 和 KeyedState，OperatorState 是一个 Operator
+实例对应一个State，KeyedState 是每个 key 对应一个 State，KeyedState 只能作用于 keyby 算子之后的
+KeyedStream。</p> <p>上图中我们可以看出，LocalKeyBy 算子位于 keyBy 算子之前，因此 LocalKeyBy 算子内部不能使用 KeyedState，只能使用
+OperatorState，且 OperatorState 只支持一种数据结构，即 ListState，所以这里 buffer 中的数据只能保存在
+OperatorState 类型的 ListState 中。当 Checkpoint 时，需要将内存 buffer 中的数据添加到
+ListState，状态中需要保存 KV 类型的数据，key 是 appId、value 是 app 对应的 PV 值。</p> <p>这里为了在 ListState 中保存 KV 格式的数据，需要将 buffer 中 KV 类型的数据转化为 Tuple2 类型后再添加到 ListState
+中。代码具体实现如下所示：</p> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">class</span> <span class="token class-name">LocalKeyByFlatMap</span> <span class="token keyword">extends</span> <span class="token class-name">RichFlatMapFunction</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Tuple2</span><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Long</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> <span class="token keyword">implements</span> <span class="token class-name">CheckpointedFunction</span> <span class="token punctuation">{</span>
+   <span class="token comment">//Checkpoint 时为了保证 Exactly Once，将 buffer 中的数据保存到该 ListState 中</span>
+    <span class="token keyword">private</span> <span class="token class-name">ListState</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Tuple2</span><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Long</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> localPvStatListState<span class="token punctuation">;</span>
+
+    <span class="token comment">//本地 buffer，存放 local 端缓存的 app 的 pv 信息</span>
+    <span class="token keyword">private</span> <span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Long</span><span class="token punctuation">&gt;</span></span> localPvStat<span class="token punctuation">;</span>
+
+    <span class="token comment">//缓存的数据量大小，即：缓存多少数据再向下游发送</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> batchSize<span class="token punctuation">;</span>
+
+    <span class="token comment">//计数器，获取当前批次接收的数据量</span>
+    <span class="token keyword">private</span> <span class="token class-name">AtomicInteger</span> currentSize<span class="token punctuation">;</span>
+
+    <span class="token class-name">LocalKeyByFlatMap</span><span class="token punctuation">(</span><span class="token keyword">int</span> batchSize<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>batchSize <span class="token operator">=</span> batchSize<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">flatMap</span><span class="token punctuation">(</span><span class="token class-name">String</span> in<span class="token punctuation">,</span> <span class="token class-name">Collector</span> collector<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Exception</span> <span class="token punctuation">{</span>
+        <span class="token comment">//  将新来的数据添加到 buffer 中</span>
+        <span class="token class-name">Long</span> pv <span class="token operator">=</span> localPvStat<span class="token punctuation">.</span><span class="token function">getOrDefault</span><span class="token punctuation">(</span>in<span class="token punctuation">,</span> <span class="token number">0L</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        localPvStat<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>in<span class="token punctuation">,</span> pv <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 如果到达设定的批次，则将 buffer 中的数据发送到下游</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>currentSize<span class="token punctuation">.</span><span class="token function">incrementAndGet</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&gt;=</span> batchSize<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token comment">// 遍历 Buffer 中数据，发送到下游</span>
+            <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token class-name">Map</span><span class="token punctuation">.</span><span class="token class-name">Entry</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Long</span><span class="token punctuation">&gt;</span></span> appIdPv<span class="token operator">:</span> localPvStat<span class="token punctuation">.</span><span class="token function">entrySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                collector<span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span><span class="token class-name">Tuple2</span><span class="token punctuation">.</span><span class="token function">of</span><span class="token punctuation">(</span>appIdPv<span class="token punctuation">.</span><span class="token function">getKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> appIdPv<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment">// Buffer 清空，计数器清零</span>
+            localPvStat<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            currentSize<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">snapshotState</span><span class="token punctuation">(</span><span class="token class-name">FunctionSnapshotContext</span> functionSnapshotContext<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 将 buffer 中的数据保存到状态中，来保证 Exactly Once</span>
+        localPvStatListState<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token class-name">Map</span><span class="token punctuation">.</span><span class="token class-name">Entry</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Long</span><span class="token punctuation">&gt;</span></span> appIdPv<span class="token operator">:</span> localPvStat<span class="token punctuation">.</span><span class="token function">entrySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            localPvStatListState<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token class-name">Tuple2</span><span class="token punctuation">.</span><span class="token function">of</span><span class="token punctuation">(</span>appIdPv<span class="token punctuation">.</span><span class="token function">getKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> appIdPv<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">initializeState</span><span class="token punctuation">(</span><span class="token class-name">FunctionInitializationContext</span> context<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 从状态中恢复 buffer 中的数据</span>
+        localPvStatListState <span class="token operator">=</span> context<span class="token punctuation">.</span><span class="token function">getOperatorStateStore</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getListState</span><span class="token punctuation">(</span>
+                <span class="token keyword">new</span> <span class="token class-name">ListStateDescriptor</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token string">&quot;localPvStat&quot;</span><span class="token punctuation">,</span>
+                        <span class="token class-name">TypeInformation</span><span class="token punctuation">.</span><span class="token function">of</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">TypeHint</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Tuple2</span><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Long</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        localPvStat <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>context<span class="token punctuation">.</span><span class="token function">isRestored</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">// 从状态中恢复数据到 localPvStat 中</span>
+            <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token class-name">Tuple2</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Long</span><span class="token punctuation">&gt;</span></span> appIdPv<span class="token operator">:</span> localPvStatListState<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+                localPvStat<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>appIdPv<span class="token punctuation">.</span>f0<span class="token punctuation">,</span> appIdPv<span class="token punctuation">.</span>f1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment">//  从状态恢复时，默认认为 buffer 中数据量达到了 batchSize，需要向下游发送数据了</span>
+            currentSize <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AtomicInteger</span><span class="token punctuation">(</span>batchSize<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            currentSize <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AtomicInteger</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>上述改进方案后的 LocalKeyByFlatMap 相比之前方案仅仅增加了一个属性，即：<code>ListState&lt;Tuple2&lt;String, Long&gt;&gt;</code>
+类型的 localPvStatListState 用来存放 Checkpoint 时 buffer 中那些可能丢失的数据。在 snapshotState
+方法中将 buffer 中的数据保存到状态中，在 initializeState 方法中将状态中恢复的数据 put 到 buffer 中并初始化计数器
+currentSize。代码相对比较简答，容易看懂。</p> <p>请问上述代码能保障 buffer 中的数据不丢吗？如果不修改 Source Task 和 LocalKeyByFlatMap 算子的并行度，理论来讲可以保证
+Exactly Once，但是一旦修改并行度，还能保证 Exactly Once
+吗？当并行度降低后，getOperatorStateStore().getListState() 恢复 ListState 时，会把 ListState
+中的状态信息均匀分布到各个 Operator 实例中。当上述案例中 LocalKeyBy 的并行度从 2 调节为 1 时，数据恢复如下图所示：</p> <p><img src="https://static.lovedata.net/zs/2019-11-12-004441.jpg" alt="images">
+首先 Source 端 partition 0 和 partition 1 的 offset 信息恢复没有问题，Count 算子圆圈和方块的 PV
+信息恢复也没有问题。关键在于 LocalKeyBy 算子中 PV 信息恢复时会丢数据吗？状态恢复时，从状态中将 PV 信息恢复到 buffer
+中的核心代码如下所示：</p> <div class="language-java extra-class"><pre class="language-java"><code>    <span class="token comment">// 从状态中恢复数据到 localPvStat 中</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token class-name">Tuple2</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Long</span><span class="token punctuation">&gt;</span></span> appIdPv<span class="token operator">:</span> localPvStatListState<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        localPvStat<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>appIdPv<span class="token punctuation">.</span>f0<span class="token punctuation">,</span> appIdPv<span class="token punctuation">.</span>f1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+</code></pre></div><p>从状态中会恢复 4 个 Tuple2，分别是 &lt;圆圈,4&gt;、&lt;方块,2&gt;、&lt;圆圈,4&gt;、&lt;方块,1&gt;，这里有两个圆圈、两个方块，恢复到 HashMap
+类型的 localPvStat，HashMap 中相同的 key 不能重复，所以 HashMap 中不可能保存两个圆圈和两个方块。恢复时 app
+相同的数据，应该将其 PV 值累加，所以恢复的结果应该是 &lt;圆圈,8&gt;、&lt;方块,3&gt;。但是上述代码，仅仅是覆盖操作，假如遍历状态时返回的顺序为
+&lt;圆圈,4&gt;、&lt;方块,2&gt;、&lt;圆圈,4&gt;、&lt;方块,1&gt;，那么上述恢复流程为：将上述元素依次 put 到 HashMap 中，所以 HashMap 类型的
+buffer 恢复完数据后，buffer 中保存的 PV 信息为 &lt;圆圈,4&gt;、&lt;方块,1&gt;。显然恢复过程中的覆盖操作将状态数据 &lt;圆圈,4&gt;、&lt;方块,2&gt;
+丢了，所以上述方案如果不修改并行度时，不会丢数据，如果修改并行度时，可能会丢数据。</p> <p>在使用状态来保证 Exactly Once 时，必须考虑修改并行度后，状态如何正常恢复的情况。优化后的代码如下所示，仅仅修改 initializeState
+方法中恢复状态的逻辑：</p> <div class="language-java extra-class"><pre class="language-java"><code>  <span class="token comment">// 从状态中恢复 buffer 中的数据</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token class-name">Tuple2</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Long</span><span class="token punctuation">&gt;</span></span> appIdPv<span class="token operator">:</span> localPvStatListState<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">long</span> pv <span class="token operator">=</span> localPvStat<span class="token punctuation">.</span><span class="token function">getOrDefault</span><span class="token punctuation">(</span>appIdPv<span class="token punctuation">.</span>f0<span class="token punctuation">,</span> <span class="token number">0L</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 如果出现 pv != 0，说明改变了并行度，</span>
+        <span class="token comment">// ListState 中的数据会被均匀分发到新的 subtask 中</span>
+        <span class="token comment">// 所以单个 subtask 恢复的状态中可能包含两个相同的 app 的数据</span>
+        localPvStat<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>appIdPv<span class="token punctuation">.</span>f0<span class="token punctuation">,</span> pv <span class="token operator">+</span> appIdPv<span class="token punctuation">.</span>f1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+</code></pre></div><p>代码中，首先从 buffer 中获取当前 app 的 PV 数据，如果 buffer 中不包含当前 app 则 PV 值返回 0，如果 buffer
+中包含了当前 app 则返回相应的 PV 值，将 buffer 中的 pv 加当前的 pv，put 到 buffer 中即可保证恢复时不丢数据。</p> <p>到这里 LocalKeyBy
+的思路及具体代码实现都讲完了，也带着大家分析了多种可能丢数据的情况，并一一解决。上述完整的代码实现请参阅。上述代码实现有个局限性，就是需要了解业务，按照下游的聚合逻辑，在上游
+keyBy 之前同样也需要实现一遍。关于通用的 LocalKeyBy 实现，Flink
+源码中目前还没有此功能，对具体实现原理感兴趣的同学可以参阅腾讯杨华老师贡献的
+<a href="https://cwiki.apache.org/confluence/display/FLINK/FLIP-44%3A+Support+Local+Aggregation+in+Flink" target="_blank" rel="noopener noreferrer">FLIP-44<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>。</p> <h5 id="keyby-之前发生数据倾斜"><a href="#keyby-之前发生数据倾斜" class="header-anchor">#</a> keyBy 之前发生数据倾斜</h5> <p>上一部分分析了 keyBy 后由于数据本身的特征可能会发生数据倾斜，可以在 keyBy 之前进行一次预聚合，从而使得 keyBy
+后的数据量大大降低。但是如果 keyBy
+之前就存在数据倾斜呢？这样上游算子的某些实例可能处理的数据较多，某些实例可能处理的数据较少，产生该情况可能是因为数据源的数据本身就不均匀，例如由于某些原因
+Kafka 的 topic 中某些 partition 的数据量较大，某些 partition 的数据量较少。对于不存在 keyBy 的 Flink
+任务也会出现该情况，解决思路都一样，主要在于没有 shuffle 的 Flink 任务如何来解决数据倾斜。对于这种情况，需要让 Flink 任务强制进行
+shuffle。如何强制 shuffle 呢？了解一下 DataStream 的物理分区策略。</p> <table><thead><tr><th>分区策略</th> <th>描述</th></tr></thead> <tbody></tbody></table> <p>dataStream.partitionCustom(partitioner, &quot;someKey&quot;);
+dataStream.partitionCustom(partitioner, 0); | 根据指定的字段进行分区，指定字段值相同的数据发送到同一个Operator 实例处理<br>
+dataStream.shuffle(); | 将数据随机地分配到下游 Operator 实例<br>
+dataStream.rebalance(); | 使用轮循的策略将数据发送到下游 Operator 实例<br>
+dataStream.rescale(); | 基于 rebalance 优化的策略，依然使用轮循策略，但仅仅是 TaskManager 内的轮循，只会在TaskManager 本地进行 shuffle 操作，减少了网络传输<br>
+dataStream.broadcast(); | 将数据广播到下游所有的 Operator 实例</p> <p>在这里需要解决数据倾斜，只需要使用 shuffle、rebalance 或 rescale 即可将数据均匀分配，从而解决数据倾斜的问题。</p> <h3 id="小结与反思"><a href="#小结与反思" class="header-anchor">#</a> 小结与反思</h3> <p>通过本节，首先了解了什么是数据倾斜以及数据倾斜的来源，其次学些了 Flink
+任务中如何来判断是否存在数据倾斜。最后通过案例学习了数据倾斜的一些解决方案，并且在解决数据倾斜的过程中一定要考虑是否能保证 Exactly
+Once。请问大家在工作中使用 Flink 的过程中有遇到数据倾斜的问题吗，都是如何解决的？关于流计算中其他场景的数据倾斜能通过本节的思想来解决优化吗？</p></div> <footer class="page-edit"><div class="edit-link"><a href="https://github.com/pengshuangbao/databook/edit/master/docs/bigdata/flink/Flink实战与性能优化/如何处理Flink中数据倾斜问题？.md" target="_blank" rel="noopener noreferrer">Edit this page on GitHub</a> <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></div> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">2023/4/14 16:56:47</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/bigdata/flink/Flink实战与性能优化/Flink中如何保证ExactlyOnce？（下）.html" class="prev">
+        Flink中如何保证ExactlyOnce？（下）
+      </a></span> <span class="next"><a href="/bigdata/flink/Flink实战与性能优化/如何设置FlinkJobRestartStrategy（重启策略）？.html">
+        如何设置FlinkJobRestartStrategy（重启策略）？
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"><!----><!----></div></div>
+    <script src="/assets/js/app.0f56a723.js" defer></script><script src="/assets/js/4.a8ef5668.js" defer></script><script src="/assets/js/71.3a6c6141.js" defer></script><script src="/assets/js/11.0473ae06.js" defer></script>
+  </body>
+</html>

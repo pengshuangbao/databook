@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>如何使用FlinkConnectors——Redis？ | 编程手册</title>
+    <meta name="generator" content="VuePress 1.7.1">
+    <link rel="icon" href="/logo.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon-152x152.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#3eaf7c">
+    <meta name="description" content="苍穹浩渺,取之须臾">
+    <meta name="theme-color" content="#3eaf7c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="msapplication-TileImage" content="/icons/msapplication-icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#000000">
+    
+    <link rel="preload" href="/assets/css/0.styles.225a8ff9.css" as="style"><link rel="preload" href="/assets/js/app.0f56a723.js" as="script"><link rel="preload" href="/assets/js/4.a8ef5668.js" as="script"><link rel="preload" href="/assets/js/63.86482c79.js" as="script"><link rel="preload" href="/assets/js/11.0473ae06.js" as="script"><link rel="prefetch" href="/assets/js/10.06cc4fbb.js"><link rel="prefetch" href="/assets/js/100.79e96d05.js"><link rel="prefetch" href="/assets/js/101.bcac0b9f.js"><link rel="prefetch" href="/assets/js/102.c5d92a95.js"><link rel="prefetch" href="/assets/js/103.697856ab.js"><link rel="prefetch" href="/assets/js/104.8f2db4d2.js"><link rel="prefetch" href="/assets/js/105.d4f2bb07.js"><link rel="prefetch" href="/assets/js/106.1a533c3f.js"><link rel="prefetch" href="/assets/js/107.b2845ea0.js"><link rel="prefetch" href="/assets/js/108.226e46ed.js"><link rel="prefetch" href="/assets/js/109.0de9c16c.js"><link rel="prefetch" href="/assets/js/110.4657c34b.js"><link rel="prefetch" href="/assets/js/111.3409d3a7.js"><link rel="prefetch" href="/assets/js/112.a46b486c.js"><link rel="prefetch" href="/assets/js/113.ba001fa9.js"><link rel="prefetch" href="/assets/js/114.ad1e6ba1.js"><link rel="prefetch" href="/assets/js/115.a0ac732f.js"><link rel="prefetch" href="/assets/js/116.4ee2a7b2.js"><link rel="prefetch" href="/assets/js/117.a76fd29a.js"><link rel="prefetch" href="/assets/js/118.83c5badf.js"><link rel="prefetch" href="/assets/js/119.09fec567.js"><link rel="prefetch" href="/assets/js/12.286e979d.js"><link rel="prefetch" href="/assets/js/120.42120fe1.js"><link rel="prefetch" href="/assets/js/121.9d79a9dd.js"><link rel="prefetch" href="/assets/js/122.f71a459c.js"><link rel="prefetch" href="/assets/js/123.b75308dc.js"><link rel="prefetch" href="/assets/js/124.e4d4643b.js"><link rel="prefetch" href="/assets/js/125.73fc990d.js"><link rel="prefetch" href="/assets/js/126.3b0eccd0.js"><link rel="prefetch" href="/assets/js/127.3eb3ab27.js"><link rel="prefetch" href="/assets/js/128.64ba68bb.js"><link rel="prefetch" href="/assets/js/129.82cfac7a.js"><link rel="prefetch" href="/assets/js/13.7207d991.js"><link rel="prefetch" href="/assets/js/130.42811f32.js"><link rel="prefetch" href="/assets/js/131.6f498e16.js"><link rel="prefetch" href="/assets/js/132.f0cc9ad2.js"><link rel="prefetch" href="/assets/js/133.325e755a.js"><link rel="prefetch" href="/assets/js/134.076a808c.js"><link rel="prefetch" href="/assets/js/135.fad7be83.js"><link rel="prefetch" href="/assets/js/136.042fc555.js"><link rel="prefetch" href="/assets/js/137.b67b55bc.js"><link rel="prefetch" href="/assets/js/138.6476c99f.js"><link rel="prefetch" href="/assets/js/139.ad07500f.js"><link rel="prefetch" href="/assets/js/14.a1cb7c1b.js"><link rel="prefetch" href="/assets/js/140.3edd2237.js"><link rel="prefetch" href="/assets/js/141.5181db27.js"><link rel="prefetch" href="/assets/js/142.67b4c4a2.js"><link rel="prefetch" href="/assets/js/143.9d249a3f.js"><link rel="prefetch" href="/assets/js/144.e6db5540.js"><link rel="prefetch" href="/assets/js/145.5b4305a7.js"><link rel="prefetch" href="/assets/js/146.bc674178.js"><link rel="prefetch" href="/assets/js/147.964ff3df.js"><link rel="prefetch" href="/assets/js/148.570b6864.js"><link rel="prefetch" href="/assets/js/149.4b9796c2.js"><link rel="prefetch" href="/assets/js/15.3cafda64.js"><link rel="prefetch" href="/assets/js/150.c677bf4b.js"><link rel="prefetch" href="/assets/js/151.b8977c93.js"><link rel="prefetch" href="/assets/js/152.535e2db4.js"><link rel="prefetch" href="/assets/js/153.754fc05e.js"><link rel="prefetch" href="/assets/js/154.5a5928b6.js"><link rel="prefetch" href="/assets/js/155.19893ca5.js"><link rel="prefetch" href="/assets/js/156.da1f2665.js"><link rel="prefetch" href="/assets/js/157.cb7b551f.js"><link rel="prefetch" href="/assets/js/158.f5d94a11.js"><link rel="prefetch" href="/assets/js/159.0b2b78d9.js"><link rel="prefetch" href="/assets/js/16.54ab9242.js"><link rel="prefetch" href="/assets/js/160.c2548b6c.js"><link rel="prefetch" href="/assets/js/161.8f694ed1.js"><link rel="prefetch" href="/assets/js/162.1adc1aa4.js"><link rel="prefetch" href="/assets/js/163.5688827c.js"><link rel="prefetch" href="/assets/js/164.8442474f.js"><link rel="prefetch" href="/assets/js/165.d0e21e5c.js"><link rel="prefetch" href="/assets/js/166.2e90ae99.js"><link rel="prefetch" href="/assets/js/167.374185de.js"><link rel="prefetch" href="/assets/js/168.2426769f.js"><link rel="prefetch" href="/assets/js/169.829516d9.js"><link rel="prefetch" href="/assets/js/17.9cad59f9.js"><link rel="prefetch" href="/assets/js/170.db0c4609.js"><link rel="prefetch" href="/assets/js/171.7bdcc41b.js"><link rel="prefetch" href="/assets/js/172.7f7ab109.js"><link rel="prefetch" href="/assets/js/173.c1d51df9.js"><link rel="prefetch" href="/assets/js/174.afa4c5f6.js"><link rel="prefetch" href="/assets/js/175.b46d9dd8.js"><link rel="prefetch" href="/assets/js/176.c38ba756.js"><link rel="prefetch" href="/assets/js/177.ba85b912.js"><link rel="prefetch" href="/assets/js/178.af1a44e8.js"><link rel="prefetch" href="/assets/js/179.e097e164.js"><link rel="prefetch" href="/assets/js/18.3776b09c.js"><link rel="prefetch" href="/assets/js/180.d9d5d80c.js"><link rel="prefetch" href="/assets/js/181.79401f8c.js"><link rel="prefetch" href="/assets/js/182.343db47f.js"><link rel="prefetch" href="/assets/js/183.005841bb.js"><link rel="prefetch" href="/assets/js/19.d0ac1e7f.js"><link rel="prefetch" href="/assets/js/20.e0100fb2.js"><link rel="prefetch" href="/assets/js/21.f59cd52c.js"><link rel="prefetch" href="/assets/js/22.3ecf54da.js"><link rel="prefetch" href="/assets/js/23.2508850b.js"><link rel="prefetch" href="/assets/js/24.0ac10322.js"><link rel="prefetch" href="/assets/js/25.7c3ee156.js"><link rel="prefetch" href="/assets/js/26.7021c42c.js"><link rel="prefetch" href="/assets/js/27.d716476b.js"><link rel="prefetch" href="/assets/js/28.58ebf808.js"><link rel="prefetch" href="/assets/js/29.88c37f6c.js"><link rel="prefetch" href="/assets/js/30.87bc4a91.js"><link rel="prefetch" href="/assets/js/31.a69c2a35.js"><link rel="prefetch" href="/assets/js/32.89f74912.js"><link rel="prefetch" href="/assets/js/33.df886872.js"><link rel="prefetch" href="/assets/js/34.835d0785.js"><link rel="prefetch" href="/assets/js/35.5e38ab06.js"><link rel="prefetch" href="/assets/js/36.5b639051.js"><link rel="prefetch" href="/assets/js/37.bb32ead0.js"><link rel="prefetch" href="/assets/js/38.c2541da0.js"><link rel="prefetch" href="/assets/js/39.3c8f0f06.js"><link rel="prefetch" href="/assets/js/40.4cc077aa.js"><link rel="prefetch" href="/assets/js/41.cbcd81a7.js"><link rel="prefetch" href="/assets/js/42.6d002f78.js"><link rel="prefetch" href="/assets/js/43.3f67c882.js"><link rel="prefetch" href="/assets/js/44.58ce7a4d.js"><link rel="prefetch" href="/assets/js/45.bfb9d6e0.js"><link rel="prefetch" href="/assets/js/46.691097de.js"><link rel="prefetch" href="/assets/js/47.e6b5c9b5.js"><link rel="prefetch" href="/assets/js/48.38159f5c.js"><link rel="prefetch" href="/assets/js/49.e03ce66a.js"><link rel="prefetch" href="/assets/js/5.340b4b76.js"><link rel="prefetch" href="/assets/js/50.7df345cb.js"><link rel="prefetch" href="/assets/js/51.b3eed5d5.js"><link rel="prefetch" href="/assets/js/52.bb282842.js"><link rel="prefetch" href="/assets/js/53.6b21ec8f.js"><link rel="prefetch" href="/assets/js/54.bab98944.js"><link rel="prefetch" href="/assets/js/55.59437904.js"><link rel="prefetch" href="/assets/js/56.18b88131.js"><link rel="prefetch" href="/assets/js/57.b0cbba56.js"><link rel="prefetch" href="/assets/js/58.d9379002.js"><link rel="prefetch" href="/assets/js/59.e8663882.js"><link rel="prefetch" href="/assets/js/6.c48e1ddb.js"><link rel="prefetch" href="/assets/js/60.0a00b724.js"><link rel="prefetch" href="/assets/js/61.cd09980d.js"><link rel="prefetch" href="/assets/js/62.b092ff62.js"><link rel="prefetch" href="/assets/js/64.3c1ee4d2.js"><link rel="prefetch" href="/assets/js/65.0621decf.js"><link rel="prefetch" href="/assets/js/66.cf7a6241.js"><link rel="prefetch" href="/assets/js/67.99e103bc.js"><link rel="prefetch" href="/assets/js/68.b3589f28.js"><link rel="prefetch" href="/assets/js/69.f0932a12.js"><link rel="prefetch" href="/assets/js/7.0f410b85.js"><link rel="prefetch" href="/assets/js/70.0a941773.js"><link rel="prefetch" href="/assets/js/71.3a6c6141.js"><link rel="prefetch" href="/assets/js/72.2299ff58.js"><link rel="prefetch" href="/assets/js/73.544fe8c6.js"><link rel="prefetch" href="/assets/js/74.98219c05.js"><link rel="prefetch" href="/assets/js/75.244a9d80.js"><link rel="prefetch" href="/assets/js/76.cefd9fe2.js"><link rel="prefetch" href="/assets/js/77.59793840.js"><link rel="prefetch" href="/assets/js/78.a7d9a079.js"><link rel="prefetch" href="/assets/js/79.f9ec013d.js"><link rel="prefetch" href="/assets/js/8.269955a4.js"><link rel="prefetch" href="/assets/js/80.b0f2cbe5.js"><link rel="prefetch" href="/assets/js/81.3d245e9a.js"><link rel="prefetch" href="/assets/js/82.061b170d.js"><link rel="prefetch" href="/assets/js/83.d2c42148.js"><link rel="prefetch" href="/assets/js/84.f6f487a4.js"><link rel="prefetch" href="/assets/js/85.c5305650.js"><link rel="prefetch" href="/assets/js/86.0c30a2ef.js"><link rel="prefetch" href="/assets/js/87.d9a99f2e.js"><link rel="prefetch" href="/assets/js/88.03792030.js"><link rel="prefetch" href="/assets/js/89.95684850.js"><link rel="prefetch" href="/assets/js/9.5c3462fb.js"><link rel="prefetch" href="/assets/js/90.185b012e.js"><link rel="prefetch" href="/assets/js/91.d19f0020.js"><link rel="prefetch" href="/assets/js/92.9e7855de.js"><link rel="prefetch" href="/assets/js/93.1ee902df.js"><link rel="prefetch" href="/assets/js/94.4bfab4ad.js"><link rel="prefetch" href="/assets/js/95.5f0b1d15.js"><link rel="prefetch" href="/assets/js/96.bd50a446.js"><link rel="prefetch" href="/assets/js/97.749fd671.js"><link rel="prefetch" href="/assets/js/98.bc09c746.js"><link rel="prefetch" href="/assets/js/99.40f98e75.js"><link rel="prefetch" href="/assets/js/vendors~flowchart.98d8c7d3.js"><link rel="prefetch" href="/assets/js/vendors~notification.5515ddcd.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.225a8ff9.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">编程手册</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/java/" class="nav-link">
+  Java
+</a></div><div class="nav-item"><a href="/bigdata/" class="nav-link router-link-active">
+  大数据
+</a></div><div class="nav-item"><a href="/algorithm/" class="nav-link">
+  算法 
+</a></div><div class="nav-item"><a href="/architecture/" class="nav-link">
+  架构 
+</a></div><div class="nav-item"><a href="/computer/" class="nav-link">
+  计算机 
+</a></div><div class="nav-item"><a href="/database/" class="nav-link">
+  数据库 
+</a></div><div class="nav-item"><a href="/fe/" class="nav-link">
+  前端
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="运维 " class="dropdown-title"><span class="title">运维 </span> <span class="arrow down"></span></button> <button type="button" aria-label="运维 " class="mobile-dropdown-title"><span class="title">运维 </span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/ops/" class="nav-link">
+  基础
+</a></li><li class="dropdown-item"><h4>
+          分类
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/ops/java.html" class="nav-link">
+  Java
+</a></li><li class="dropdown-subitem"><a href="/ops/bigdata.html" class="nav-link">
+  大数据
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="编程" class="dropdown-title"><span class="title">编程</span> <span class="arrow down"></span></button> <button type="button" aria-label="编程" class="mobile-dropdown-title"><span class="title">编程</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          语言
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/programming/python.html" class="nav-link">
+  Python
+</a></li><li class="dropdown-subitem"><a href="/programming/scala.html" class="nav-link">
+  Scala
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="资源" class="dropdown-title"><span class="title">资源</span> <span class="arrow down"></span></button> <button type="button" aria-label="资源" class="mobile-dropdown-title"><span class="title">资源</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          我的书单
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/tech.html" class="nav-link">
+  技术类
+</a></li><li class="dropdown-subitem"><a href="/book/growth.html" class="nav-link">
+  成长类
+</a></li></ul></li><li class="dropdown-item"><h4>
+          网课
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/geek.html" class="nav-link">
+  专栏
+</a></li><li class="dropdown-subitem"><a href="/book/video.html" class="nav-link">
+  视频
+</a></li></ul></li><li class="dropdown-item"><h4>
+          面经
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/tech.html" class="nav-link">
+  大厂面经
+</a></li><li class="dropdown-subitem"><a href="/interview/sword-to-offer.html" class="nav-link">
+  剑指Offer
+</a></li><li class="dropdown-subitem"><a href="/interview/fe.html" class="nav-link">
+  前端面经
+</a></li><li class="dropdown-subitem"><a href="/interview/interview_guide.html" class="nav-link">
+  面试导航
+</a></li></ul></li><li class="dropdown-item"><h4>
+          其他
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/study.html" class="nav-link">
+  学习笔记
+</a></li></ul></li></ul></div></div> <a href="https://github.com/pengshuangbao/databook" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/java/" class="nav-link">
+  Java
+</a></div><div class="nav-item"><a href="/bigdata/" class="nav-link router-link-active">
+  大数据
+</a></div><div class="nav-item"><a href="/algorithm/" class="nav-link">
+  算法 
+</a></div><div class="nav-item"><a href="/architecture/" class="nav-link">
+  架构 
+</a></div><div class="nav-item"><a href="/computer/" class="nav-link">
+  计算机 
+</a></div><div class="nav-item"><a href="/database/" class="nav-link">
+  数据库 
+</a></div><div class="nav-item"><a href="/fe/" class="nav-link">
+  前端
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="运维 " class="dropdown-title"><span class="title">运维 </span> <span class="arrow down"></span></button> <button type="button" aria-label="运维 " class="mobile-dropdown-title"><span class="title">运维 </span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/ops/" class="nav-link">
+  基础
+</a></li><li class="dropdown-item"><h4>
+          分类
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/ops/java.html" class="nav-link">
+  Java
+</a></li><li class="dropdown-subitem"><a href="/ops/bigdata.html" class="nav-link">
+  大数据
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="编程" class="dropdown-title"><span class="title">编程</span> <span class="arrow down"></span></button> <button type="button" aria-label="编程" class="mobile-dropdown-title"><span class="title">编程</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          语言
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/programming/python.html" class="nav-link">
+  Python
+</a></li><li class="dropdown-subitem"><a href="/programming/scala.html" class="nav-link">
+  Scala
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="资源" class="dropdown-title"><span class="title">资源</span> <span class="arrow down"></span></button> <button type="button" aria-label="资源" class="mobile-dropdown-title"><span class="title">资源</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          我的书单
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/tech.html" class="nav-link">
+  技术类
+</a></li><li class="dropdown-subitem"><a href="/book/growth.html" class="nav-link">
+  成长类
+</a></li></ul></li><li class="dropdown-item"><h4>
+          网课
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/geek.html" class="nav-link">
+  专栏
+</a></li><li class="dropdown-subitem"><a href="/book/video.html" class="nav-link">
+  视频
+</a></li></ul></li><li class="dropdown-item"><h4>
+          面经
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/tech.html" class="nav-link">
+  大厂面经
+</a></li><li class="dropdown-subitem"><a href="/interview/sword-to-offer.html" class="nav-link">
+  剑指Offer
+</a></li><li class="dropdown-subitem"><a href="/interview/fe.html" class="nav-link">
+  前端面经
+</a></li><li class="dropdown-subitem"><a href="/interview/interview_guide.html" class="nav-link">
+  面试导航
+</a></li></ul></li><li class="dropdown-item"><h4>
+          其他
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/book/study.html" class="nav-link">
+  学习笔记
+</a></li></ul></li></ul></div></div> <a href="https://github.com/pengshuangbao/databook" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <ul class="sidebar-links"><li><a href="/bigdata/" aria-current="page" class="sidebar-link">大数据</a></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Hadoop</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Spark</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>Flink</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/bigdata/flink/" aria-current="page" class="sidebar-link">Flink</a></li><li><a href="/bigdata/flink/通关手册.html" class="sidebar-link">通关手册</a></li><li><a href="/bigdata/flink/学习资源.html" class="sidebar-link">学习资源</a></li><li><a href="/bigdata/flink/开源动态.html" class="sidebar-link">开源动态</a></li><li><a href="/bigdata/flink/Flink状态原理.html" class="sidebar-link">状态原理</a></li><li><section class="sidebar-group collapsable is-sub-group depth-1"><p class="sidebar-heading open"><span>Flink实战与性能优化</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/bigdata/flink/Flink实战与性能优化/公司到底需不需要引入实时计算引擎？.html" class="sidebar-link">公司到底需不需要引入实时计算引擎？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/彻底了解大数据实时计算框架Flink.html" class="sidebar-link">彻底了解大数据实时计算框架Flink</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/大数据框架Flink、Blink、SparkStreaming、StructuredStreaming和Storm之间的区别.html" class="sidebar-link">大数据框架Flink、Blink、SparkStreaming、StructuredStreaming和Storm之间的区别</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink环境准备.html" class="sidebar-link">Flink环境准备</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink环境搭建.html" class="sidebar-link">Flink环境搭建</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkWordCount应用程序.html" class="sidebar-link">FlinkWordCount应用程序</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink实时处理Socket数据.html" class="sidebar-link">Flink实时处理Socket数据</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink多种时间语义对比.html" class="sidebar-link">Flink多种时间语义对比</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkWindow基础概念与实现原理.html" class="sidebar-link">FlinkWindow基础概念与实现原理</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/数据转换必须熟悉的算子（Operator）.html" class="sidebar-link">数据转换必须熟悉的算子（Operator）</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何使用DataStreamAPI来处理数据？.html" class="sidebar-link">如何使用DataStreamAPI来处理数据？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkWaterMark详解及结合WaterMark处理延迟数据.html" class="sidebar-link">FlinkWaterMark详解及结合WaterMark处理延迟数据</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink常用的Source和SinkConnectors介绍.html" class="sidebar-link">Flink常用的Source和SinkConnectors介绍</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkConnectorKafka使用和剖析.html" class="sidebar-link">FlinkConnectorKafka使用和剖析</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何自定义FlinkConnectors（Source和Sink）？.html" class="sidebar-link">如何自定义FlinkConnectors（Source和Sink）？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何使用FlinkConnectors——ElasticSearch？.html" class="sidebar-link">如何使用FlinkConnectors——ElasticSearch？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何使用FlinkConnectors——HBase？.html" class="sidebar-link">如何使用FlinkConnectors——HBase？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何使用FlinkConnectors——Redis？.html" class="active sidebar-link">如何使用FlinkConnectors——Redis？</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何使用SideOutput来分流.html" class="sidebar-link">如何使用SideOutput来分流</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkState深度讲解.html" class="sidebar-link">FlinkState深度讲解</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何选择Flink状态后端存储.html" class="sidebar-link">如何选择Flink状态后端存储</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkCheckpoint和Savepoint区别及其如何配置使用？.html" class="sidebar-link">FlinkCheckpoint和Savepoint区别及其如何配置使用？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkTable&amp;SQL概念与通用API.html" class="sidebar-link">FlinkTable&amp;SQL概念与通用API</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkTableAPI&amp;SQL功能.html" class="sidebar-link">FlinkTableAPI&amp;SQL功能</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkCEP介绍及其使用场景.html" class="sidebar-link">FlinkCEP介绍及其使用场景</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkCEP如何处理复杂事件？.html" class="sidebar-link">FlinkCEP如何处理复杂事件？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink扩展库——StateProcessorAPI.html" class="sidebar-link">Flink扩展库——StateProcessorAPI</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink扩展库——MachineLearning.html" class="sidebar-link">Flink扩展库——MachineLearning</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink扩展库——Gelly.html" class="sidebar-link">Flink扩展库——Gelly</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink配置详解及如何配置高可用？.html" class="sidebar-link">Flink配置详解及如何配置高可用？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkJob如何在Standalone、YARN、Mesos、K8S上部署运行？.html" class="sidebar-link">FlinkJob如何在Standalone、YARN、Mesos、K8S上部署运行？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何实时监控Flink和你的Job？.html" class="sidebar-link">如何实时监控Flink和你的Job？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何搭建一套完整的Flink监控系统.html" class="sidebar-link">如何搭建一套完整的Flink监控系统</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何处理FlinkJobBackPressure（反压）问题？.html" class="sidebar-link">如何处理FlinkJobBackPressure（反压）问题？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何查看FlinkJob执行计划？.html" class="sidebar-link">如何查看FlinkJob执行计划？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/FlinkParallelism和Slot深度理解.html" class="sidebar-link">FlinkParallelism和Slot深度理解</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何合理的设置FlinkJob并行度？.html" class="sidebar-link">如何合理的设置FlinkJob并行度？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink中如何保证ExactlyOnce？（上）.html" class="sidebar-link">Flink中如何保证ExactlyOnce？（上）</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/Flink中如何保证ExactlyOnce？（下）.html" class="sidebar-link">Flink中如何保证ExactlyOnce？（下）</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何处理Flink中数据倾斜问题？.html" class="sidebar-link">如何处理Flink中数据倾斜问题？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何设置FlinkJobRestartStrategy（重启策略）？.html" class="sidebar-link">如何设置FlinkJobRestartStrategy（重启策略）？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何使用FlinkParameterTool读取配置？.html" class="sidebar-link">如何使用FlinkParameterTool读取配置？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何统计网站各页面一天内的PV和UV？.html" class="sidebar-link">如何统计网站各页面一天内的PV和UV？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何使用FlinkProcessFunction处理宕机告警.html" class="sidebar-link">如何使用FlinkProcessFunction处理宕机告警</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何利用AsyncIO读取告警规则？.html" class="sidebar-link">如何利用AsyncIO读取告警规则？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何利用广播变量动态更新告警规则？.html" class="sidebar-link">如何利用广播变量动态更新告警规则？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/如何实时将应用Error日志告警？.html" class="sidebar-link">如何实时将应用Error日志告警？</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/基于Flink的海量日志实时处理系统的实践.html" class="sidebar-link">基于Flink的海量日志实时处理系统的实践</a></li><li><a href="/bigdata/flink/Flink实战与性能优化/基于Flink的百亿数据去重实践.html" class="sidebar-link">基于Flink的百亿数据去重实践</a></li></ul></section></li></ul></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Kylin</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Kafka</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Hbase</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>ClickHouse</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Impala</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Kudu</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Redis</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>hive</span> <span class="arrow right"></span></p> <!----></section></li><li><a href="/bigdata/zookeeper.html" class="sidebar-link">Zookeeper</a></li><li><a href="/bigdata/solution.html" class="sidebar-link">解决方案</a></li><li><a href="/bigdata/design.html" class="sidebar-link">编程设计</a></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="如何使用flinkconnectors-redis"><a href="#如何使用flinkconnectors-redis" class="header-anchor">#</a> 如何使用FlinkConnectors——Redis？</h1> <p></p><div class="table-of-contents"><ul><li><a href="#安装-redis">安装 Redis</a><ul><li><a href="#下载安装">下载安装</a></li><li><a href="#通过-homebrew-安装">通过 HomeBrew 安装</a></li></ul></li><li><a href="#准备商品数据发送至-kafka">准备商品数据发送至 Kafka</a></li><li><a href="#flink-消费-kafka-中商品数据">Flink 消费 Kafka 中商品数据</a></li><li><a href="#redis-connector-简介">Redis Connector 简介</a></li><li><a href="#添加依赖">添加依赖</a></li><li><a href="#flink-写入数据到-redis">Flink 写入数据到 Redis</a></li><li><a href="#验证写入结果">验证写入结果</a></li><li><a href="#小结与反思">小结与反思</a></li></ul></div><p></p> <p>在生产环境中，通常会将一些计算后的数据存储在 Redis 中，以供第三方的应用去 Redis 查找对应的数据，至于 Redis
+的特性笔者不会在本节做过多的讲解。</p> <h3 id="安装-redis"><a href="#安装-redis" class="header-anchor">#</a> 安装 Redis</h3> <h4 id="下载安装"><a href="#下载安装" class="header-anchor">#</a> 下载安装</h4> <p>先在 <a href="https://redis.io/download" target="_blank" rel="noopener noreferrer">https://redis.io/download<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> 下载到 Redis。</p> <p>​<br>
+wget http://download.redis.io/releases/redis-5.0.4.tar.gz
+tar xzf redis-5.0.4.tar.gz
+cd redis-5.0.4
+make</p> <h4 id="通过-homebrew-安装"><a href="#通过-homebrew-安装" class="header-anchor">#</a> 通过 HomeBrew 安装</h4> <p>​<br>
+brew install redis</p> <p>如果需要后台运行 Redis 服务，使用命令：</p> <p>​<br>
+brew services start redis</p> <p>要运行命令，可以直接到 /usr/local/bin 目录下，有：</p> <p>​<br>
+redis-server
+redis-cli</p> <p>两个命令，执行 <code>redis-server</code> 可以打开服务端：</p> <p><img src="https://static.lovedata.net/zs/2019-04-29-081734.jpg" alt="images">
+然后另外开一个终端，运行 <code>redis-cli</code> 命令可以运行客户端：</p> <p><img src="https://static.lovedata.net/zs/2019-04-29-081942.jpg" alt="images"></p> <h3 id="准备商品数据发送至-kafka"><a href="#准备商品数据发送至-kafka" class="header-anchor">#</a> 准备商品数据发送至 Kafka</h3> <p>这里我打算将从 Kafka 读取到所有到商品的信息，然后将商品信息中的 <strong>商品ID</strong> 和 <strong>商品价格</strong> 提取出来，然后写入到 Redis
+中，供第三方服务根据商品 ID 查询到其对应的商品价格。</p> <p>首先定义我们的商品类 （其中 id 和 price 字段是我们最后要提取的）为：</p> <p>ProductEvent.java</p> <p>​</p> <div class="language-java extra-class"><pre class="language-java"><code><span class="token comment">/**
+ * Desc: 商品
+ * blog：http://www.54tianzhisheng.cn/
+ * 微信公众号：zhisheng
+ */</span>
+<span class="token annotation punctuation">@Data</span>
+<span class="token annotation punctuation">@Builder</span>
+<span class="token annotation punctuation">@AllArgsConstructor</span>
+<span class="token annotation punctuation">@NoArgsConstructor</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ProductEvent</span> <span class="token punctuation">{</span>
+
+    <span class="token comment">/**
+     * Product Id
+     */</span>
+    <span class="token keyword">private</span> <span class="token class-name">Long</span> id<span class="token punctuation">;</span>
+
+    <span class="token comment">/**
+     * Product 类目 Id
+     */</span>
+    <span class="token keyword">private</span> <span class="token class-name">Long</span> categoryId<span class="token punctuation">;</span>
+
+    <span class="token comment">/**
+     * Product 编码
+     */</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> code<span class="token punctuation">;</span>
+
+    <span class="token comment">/**
+     * Product 店铺 Id
+     */</span>
+    <span class="token keyword">private</span> <span class="token class-name">Long</span> shopId<span class="token punctuation">;</span>
+
+    <span class="token comment">/**
+     * Product 店铺 name
+     */</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> shopName<span class="token punctuation">;</span>
+
+    <span class="token comment">/**
+     * Product 品牌 Id
+     */</span>
+    <span class="token keyword">private</span> <span class="token class-name">Long</span> brandId<span class="token punctuation">;</span>
+
+    <span class="token comment">/**
+     * Product 品牌 name
+     */</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> brandName<span class="token punctuation">;</span>
+
+    <span class="token comment">/**
+     * Product name
+     */</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> name<span class="token punctuation">;</span>
+
+    <span class="token comment">/**
+     * Product 图片地址
+     */</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> imageUrl<span class="token punctuation">;</span>
+
+    <span class="token comment">/**
+     * Product 状态（1(上架),-1(下架),-2(冻结),-3(删除)）
+     */</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> status<span class="token punctuation">;</span>
+
+    <span class="token comment">/**
+     * Product 类型
+     */</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> type<span class="token punctuation">;</span>
+
+    <span class="token comment">/**
+     * Product 标签
+     */</span>
+    <span class="token keyword">private</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> tags<span class="token punctuation">;</span>
+
+    <span class="token comment">/**
+     * Product 价格（以分为单位）
+     */</span>
+    <span class="token keyword">private</span> <span class="token class-name">Long</span> price<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>然后写个工具类不断的模拟商品数据发往 Kafka，工具类 <code>ProductUtil.java</code> ：</p> <p>​</p> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ProductUtil</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">String</span> broker_list <span class="token operator">=</span> <span class="token string">&quot;localhost:9092&quot;</span><span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">String</span> topic <span class="token operator">=</span> <span class="token string">&quot;zhisheng&quot;</span><span class="token punctuation">;</span>  <span class="token comment">//kafka topic 需要和 flink 程序用同一个 topic</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">Random</span> random <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Random</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">Properties</span> props <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Properties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">&quot;bootstrap.servers&quot;</span><span class="token punctuation">,</span> broker_list<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">&quot;key.serializer&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;org.apache.kafka.common.serialization.StringSerializer&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">&quot;value.serializer&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;org.apache.kafka.common.serialization.StringSerializer&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">KafkaProducer</span> producer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">KafkaProducer</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>props<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;=</span> <span class="token number">10000</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token class-name">ProductEvent</span> product <span class="token operator">=</span> <span class="token class-name">ProductEvent</span><span class="token punctuation">.</span><span class="token function">builder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">id</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">long</span><span class="token punctuation">)</span> i<span class="token punctuation">)</span>  <span class="token comment">//商品的 id</span>
+                    <span class="token punctuation">.</span><span class="token function">name</span><span class="token punctuation">(</span><span class="token string">&quot;product&quot;</span> <span class="token operator">+</span> i<span class="token punctuation">)</span>    <span class="token comment">//商品 name</span>
+                    <span class="token punctuation">.</span><span class="token function">price</span><span class="token punctuation">(</span>random<span class="token punctuation">.</span><span class="token function">nextLong</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">10000000000000L</span><span class="token punctuation">)</span> <span class="token comment">//商品价格（以分为单位）</span>
+                    <span class="token punctuation">.</span><span class="token function">code</span><span class="token punctuation">(</span><span class="token string">&quot;code&quot;</span> <span class="token operator">+</span> i<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">//商品编码</span>
+
+            <span class="token class-name">ProducerRecord</span> <span class="token keyword">record</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ProducerRecord</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>topic<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token class-name">GsonUtil</span><span class="token punctuation">.</span><span class="token function">toJson</span><span class="token punctuation">(</span>product<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            producer<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token keyword">record</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">&quot;发送数据: &quot;</span> <span class="token operator">+</span> <span class="token class-name">GsonUtil</span><span class="token punctuation">.</span><span class="token function">toJson</span><span class="token punctuation">(</span>product<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        producer<span class="token punctuation">.</span><span class="token function">flush</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="flink-消费-kafka-中商品数据"><a href="#flink-消费-kafka-中商品数据" class="header-anchor">#</a> Flink 消费 Kafka 中商品数据</h3> <p>我们需要在 Flink 中消费 Kafka 数据，然后将商品中的两个数据（商品 id 和 price）取出来。先来看下这段 Flink Job 代码：</p> <p>​</p> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Main</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Exception</span> <span class="token punctuation">{</span>
+        <span class="token keyword">final</span> <span class="token class-name">StreamExecutionEnvironment</span> env <span class="token operator">=</span> <span class="token class-name">StreamExecutionEnvironment</span><span class="token punctuation">.</span><span class="token function">getExecutionEnvironment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">ParameterTool</span> parameterTool <span class="token operator">=</span> <span class="token class-name">ExecutionEnvUtil</span><span class="token punctuation">.</span>PARAMETER_TOOL<span class="token punctuation">;</span>
+        <span class="token class-name">Properties</span> props <span class="token operator">=</span> <span class="token class-name">KafkaConfigUtil</span><span class="token punctuation">.</span><span class="token function">buildKafkaProps</span><span class="token punctuation">(</span>parameterTool<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">SingleOutputStreamOperator</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Tuple2</span><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> product <span class="token operator">=</span> env<span class="token punctuation">.</span><span class="token function">addSource</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">FlinkKafkaConsumer011</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>
+                parameterTool<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>METRICS_TOPIC<span class="token punctuation">)</span><span class="token punctuation">,</span>   <span class="token comment">//这个 kafka topic 需要和上面的工具类的 topic 一致</span>
+                <span class="token keyword">new</span> <span class="token class-name">SimpleStringSchema</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                props<span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>string <span class="token operator">-&gt;</span> <span class="token class-name">GsonUtil</span><span class="token punctuation">.</span><span class="token function">fromJson</span><span class="token punctuation">(</span>string<span class="token punctuation">,</span> <span class="token class-name">ProductEvent</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">//反序列化 JSON</span>
+                <span class="token punctuation">.</span><span class="token function">flatMap</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">FlatMapFunction</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ProductEvent</span><span class="token punctuation">,</span> <span class="token class-name">Tuple2</span><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token annotation punctuation">@Override</span>
+                    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">flatMap</span><span class="token punctuation">(</span><span class="token class-name">ProductEvent</span> value<span class="token punctuation">,</span> <span class="token class-name">Collector</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Tuple2</span><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> out<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Exception</span> <span class="token punctuation">{</span>
+                        <span class="token comment">//收集商品 id 和 price 两个属性</span>
+                        out<span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Tuple2</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>value<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> value<span class="token punctuation">.</span><span class="token function">getPrice</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        product<span class="token punctuation">.</span><span class="token function">print</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        env<span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token string">&quot;flink redis connector&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>然后 IDEA 中启动运行 Job，再运行上面的 ProductUtil 发送 Kafka 数据的工具类，注意：也得提前启动 Kafka。</p> <p><img src="https://static.lovedata.net/zs/2019-04-28-Flink-time.png" alt="images"></p> <p>上图左半部分是工具类发送数据到 Kafka 打印的日志，右半部分是 Job 执行的结果，可以看到它已经将商品的 id 和 price 数据获取到了。</p> <p>那么接下来我们需要的就是将这种 <code>Tuple2&lt;Long, Long&gt;</code> 格式的 KV 数据写入到 Redis 中去。要将数据写入到 Redis
+的话是需要先添加依赖的。</p> <h3 id="redis-connector-简介"><a href="#redis-connector-简介" class="header-anchor">#</a> Redis Connector 简介</h3> <p>Redis Connector 提供用于向 Redis 发送数据的接口的类。接收器可以使用三种不同的方法与不同类型的 Redis 环境进行通信：</p> <ul><li>单 Redis 服务器</li> <li>Redis 集群</li> <li>Redis Sentinel</li></ul> <h3 id="添加依赖"><a href="#添加依赖" class="header-anchor">#</a> 添加依赖</h3> <p>需要添加 Flink Redis Sink 的 Connector，这个 Redis Connector
+官方只有老的版本，后面也一直没有更新，所以可以看到网上有些文章都是添加老的版本的依赖：</p> <p>​<br> <dependency><groupId>org.apache.flink</groupId> <artifactId>flink-connector-redis_2.10</artifactId> <version>1.1.5</version></dependency></p> <p>包括该部分的文档都是很早之前的啦，可以查看 &lt;https://ci.apache.org/projects/flink/flink-docs-
+release-1.1/apis/streaming/connectors/redis.html&gt;。</p> <p>另外在 <a href="https://bahir.apache.org/docs/flink/current/flink-streaming-redis/" target="_blank" rel="noopener noreferrer">https://bahir.apache.org/docs/flink/current/flink-streaming-redis/<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> 也看到一个
+Flink Redis Connector 的依赖：</p> <p>​<br> <dependency><groupId>org.apache.bahir</groupId> <artifactId>flink-connector-redis_2.11</artifactId> <version>1.0</version></dependency></p> <p>两个依赖功能都是一样的，我们还是就用官方的那个 Maven 依赖来进行演示。</p> <h3 id="flink-写入数据到-redis"><a href="#flink-写入数据到-redis" class="header-anchor">#</a> Flink 写入数据到 Redis</h3> <p>像写入到 Redis，那么肯定要配置 Redis 服务的地址（不管是单机的还是集群）。</p> <p><strong>单机的 Redis</strong> 你可以这样配置：</p> <p>​<br>
+FlinkJedisPoolConfig conf = new FlinkJedisPoolConfig.Builder().setHost(&quot;127.0.0.1&quot;).build();</p> <p>这个 FlinkJedisPoolConfig 源码中有四个属性：</p> <p>​<br>
+private final String host;  //hostname or IP
+private final int port;     //端口，默认 6379
+private final int database; //database index
+private final String password;  //password</p> <p>另外你还可以通过 FlinkJedisPoolConfig 设置其他的的几个属性（因为 FlinkJedisPoolConfig 继承自
+FlinkJedisConfigBase，这几个属性在 FlinkJedisConfigBase 抽象类的）：</p> <p>​<br>
+protected final int maxTotal;   //池可分配的对象最大数量，默认是 8
+protected final int maxIdle;    //池中空闲的对象最大数量，默认是 8
+protected final int minIdle;    //池中空闲的对象最小数量，默认是 0
+protected final int connectionTimeout;  //socket 或者连接超时时间，默认是 2000ms</p> <p><strong>Redis 集群</strong> 你可以这样配置：</p> <p>​<br>
+FlinkJedisClusterConfig config = new FlinkJedisClusterConfig.Builder()
+.setNodes(new HashSet<InetSocketAddress>(
+Arrays.asList(new InetSocketAddress(&quot;redis1&quot;, 6379)))).build();</InetSocketAddress></p> <p><strong>Redis Sentinels</strong> 你可以这样配置：</p> <p>​<br>
+FlinkJedisSentinelConfig sentinelConfig = new FlinkJedisSentinelConfig.Builder()
+.setMasterName(&quot;master&quot;)
+.setSentinels(new HashSet&lt;&gt;(Arrays.asList(&quot;sentinel1&quot;, &quot;sentinel2&quot;)))
+.setPassword(&quot;&quot;)
+.setDatabase(1).build();</p> <p>另外就是 Redis Sink 了，Redis Sink 核心类是 RedisMapper，它是一个接口，里面有三个方法，使用时我们需要重写这三个方法：</p> <p>​<br>
+public interface RedisMapper<T> extends Function, Serializable {
+//设置使用 Redis 的数据结构类型，和 key 的名词，RedisCommandDescription 中有两个属性 RedisCommand、key
+RedisCommandDescription getCommandDescription();
+//获取 key 值
+String getKeyFromData(T var1);
+//获取 value 值
+String getValueFromData(T var1);
+}</T></p> <p>上面 RedisCommandDescription 中有两个属性 RedisCommand、key。RedisCommand 可以设置 Redis
+的数据结果类型，下面是 Redis 数据结构的类型对应着的 Redis Command 的类型：</p> <p><img src="https://static.lovedata.net/zs/2019-04-29-141529.jpg" alt="images">
+其对应的源码如下：</p> <p>​</p> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">enum</span> <span class="token class-name">RedisCommand</span> <span class="token punctuation">{</span>
+    <span class="token function">LPUSH</span><span class="token punctuation">(</span><span class="token class-name">RedisDataType</span><span class="token punctuation">.</span>LIST<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">RPUSH</span><span class="token punctuation">(</span><span class="token class-name">RedisDataType</span><span class="token punctuation">.</span>LIST<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">SADD</span><span class="token punctuation">(</span><span class="token class-name">RedisDataType</span><span class="token punctuation">.</span>SET<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">SET</span><span class="token punctuation">(</span><span class="token class-name">RedisDataType</span><span class="token punctuation">.</span>STRING<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">PFADD</span><span class="token punctuation">(</span><span class="token class-name">RedisDataType</span><span class="token punctuation">.</span>HYPER_LOG_LOG<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">PUBLISH</span><span class="token punctuation">(</span><span class="token class-name">RedisDataType</span><span class="token punctuation">.</span>PUBSUB<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">ZADD</span><span class="token punctuation">(</span><span class="token class-name">RedisDataType</span><span class="token punctuation">.</span>SORTED_SET<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">HSET</span><span class="token punctuation">(</span><span class="token class-name">RedisDataType</span><span class="token punctuation">.</span>HASH<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token class-name">RedisDataType</span> redisDataType<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token class-name">RedisCommand</span><span class="token punctuation">(</span><span class="token class-name">RedisDataType</span> redisDataType<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>redisDataType <span class="token operator">=</span> redisDataType<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">RedisDataType</span> <span class="token function">getRedisDataType</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>redisDataType<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>我们实现这个 RedisMapper 接口如下：</p> <p>​</p> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">RedisSinkMapper</span> <span class="token keyword">implements</span> <span class="token class-name">RedisMapper</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Tuple2</span><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token class-name">RedisCommandDescription</span> <span class="token function">getCommandDescription</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">//指定 RedisCommand 的类型是 HSET，对应 Redis 中的数据结构是 HASH，另外设置 key = zhisheng</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">RedisCommandDescription</span><span class="token punctuation">(</span><span class="token class-name">RedisCommand</span><span class="token punctuation">.</span>HSET<span class="token punctuation">,</span> <span class="token string">&quot;zhisheng&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">getKeyFromData</span><span class="token punctuation">(</span><span class="token class-name">Tuple2</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> data<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> data<span class="token punctuation">.</span>f0<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">getValueFromData</span><span class="token punctuation">(</span><span class="token class-name">Tuple2</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> data<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> data<span class="token punctuation">.</span>f1<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>然后在 Flink Job 中加入下面这行，将数据通过 RedisSinkMapper 写入到 Redis 中去：</p> <p>​<br>
+product.addSink(new RedisSink&lt;Tuple2&lt;String, String&gt;&gt;(conf, new RedisSinkMapper()));</p> <h3 id="验证写入结果"><a href="#验证写入结果" class="header-anchor">#</a> 验证写入结果</h3> <p>运行 Job 的话，就是把数据已经插入进 Redis 了，那么如何验证我们的结果是否正确呢？</p> <p>1、我们去终端 Cli 执行命令查看这个 zhisheng 的 key，然后查找某个商品 id (1 ~ 10000) 对应的商品价格，超过这个 id 则为
+nil。</p> <p><img src="https://static.lovedata.net/zs/2019-04-28-Flink-time.png" alt="images"></p> <p>2、另外一种验证的方式就是通过 Java 代码来操作 Redis 查询数据了。</p> <p>我们先引入 Redis 的依赖：</p> <p>​</p> <div class="language-xml extra-class"><pre class="language-xml"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>redis.clients<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>jedis<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>2.9.0<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span>
+</code></pre></div><p>连接 Redis 查询数据：</p> <p>​</p> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RedisTest</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">Jedis</span> jedis <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Jedis</span><span class="token punctuation">(</span><span class="token string">&quot;127.0.0.1&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">&quot;Server is running: &quot;</span> <span class="token operator">+</span> jedis<span class="token punctuation">.</span><span class="token function">ping</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">&quot;result:&quot;</span> <span class="token operator">+</span> jedis<span class="token punctuation">.</span><span class="token function">hgetAll</span><span class="token punctuation">(</span><span class="token string">&quot;zhisheng&quot;</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><img src="https://static.lovedata.net/zs/2019-04-29-144224.jpg" alt="images">
+这一行把所有的数据都打印出来了，所以我们的数据确实成功地插入到 Redis 中去了。</p> <h3 id="小结与反思"><a href="#小结与反思" class="header-anchor">#</a> 小结与反思</h3> <p>本文先讲解了 Redis 的安装，然后讲了 Flink 如何消费 Kafka 的数据并将数据写入到 Redis 中去。在实战的过程中还分析了 Flink
+Redis Connector 中的原理，只要我们懂得了这些原理，后面再去做这块的需求就难不倒大家了。</p> <p>本节涉及的代码地址在：&lt;https://github.com/zhisheng17/flink-learning/tree/master/flink-
+learning-connectors/flink-learning-connectors-redis&gt;</p></div> <footer class="page-edit"><div class="edit-link"><a href="https://github.com/pengshuangbao/databook/edit/master/docs/bigdata/flink/Flink实战与性能优化/如何使用FlinkConnectors——Redis？.md" target="_blank" rel="noopener noreferrer">Edit this page on GitHub</a> <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></div> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">2023/4/14 16:56:47</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/bigdata/flink/Flink实战与性能优化/如何使用FlinkConnectors——HBase？.html" class="prev">
+        如何使用FlinkConnectors——HBase？
+      </a></span> <span class="next"><a href="/bigdata/flink/Flink实战与性能优化/如何使用SideOutput来分流.html">
+        如何使用SideOutput来分流
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"><!----><!----></div></div>
+    <script src="/assets/js/app.0f56a723.js" defer></script><script src="/assets/js/4.a8ef5668.js" defer></script><script src="/assets/js/63.86482c79.js" defer></script><script src="/assets/js/11.0473ae06.js" defer></script>
+  </body>
+</html>
